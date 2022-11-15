@@ -1,0 +1,9 @@
+---
+# Requires LLVM 14.0
+
+CompileFlags:
+  Add: [-Wno-unknown-pragmas]
+
+Diagnostics:
+  UnusedIncludes: None
+...

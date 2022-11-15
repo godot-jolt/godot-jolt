@@ -1,0 +1,35 @@
+include_guard()
+
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
+	message(FATAL_ERROR
+		"Please use a subdirectory for CMake's binary directory. "
+		"Preferably use the ready-made presets found in 'CMakePresets.json'. "
+		"If not, there is a Git ignore rule set up for a 'build' directory."
+	)
+endif()
+
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+	set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH
+		"Install path prefix, prepended onto install directories."
+	)
+
+	set(CMAKE_ERROR_DEPRECATED TRUE CACHE BOOL
+		"Whether to issue errors for deprecated CMake functionality."
+	)
+
+	mark_as_advanced(CMAKE_ERROR_DEPRECATED)
+endif()
+
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL Darwin)
+	set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING
+		"Semicolon-separated list of target architectures."
+	)
+
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING
+		"Minimum version of target platform. Set to empty string for default value."
+	)
+endif()
+
+if(NOT DEFINED MSVC)
+	set(MSVC FALSE)
+endif()

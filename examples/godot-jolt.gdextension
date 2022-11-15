@@ -1,0 +1,12 @@
+[configuration]
+
+entry_symbol = "godot_jolt_main"
+
+[libraries]
+
+windows.debug.x86_64 = "res://../bin/godot-jolt-windows-x64-editor.dll"
+windows.release.x86_64 = "res://../bin/godot-jolt-windows-x64.dll"
+linux.debug.x86_64 = "res://../bin/godot-jolt-linux-x64-editor.so"
+linux.release.x86_64 = "res://../bin/godot-jolt-linux-x64.so"
+macos.debug = "res://../bin/godot-jolt-macos-editor.framework"
+macos.release = "res://../bin/godot-jolt-macos.framework"

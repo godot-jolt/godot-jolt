@@ -1,0 +1,33 @@
+name: 🍎 Build (macOS)
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-12
+    name: "\
+      ${{ matrix.platform }}-\
+      ${{ matrix.editor == true && 'editor-' || '' }}\
+      ${{ matrix.config }}"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-clang]
+        editor: [false, true]
+        config: [debug, development, distribution]
+        xcode: [14.1]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up C++ environment
+        shell: pwsh
+        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
+
+      - name: Configure and build
+        uses: ./.github/actions/build-with-cmake
+        with:
+          platform: ${{ matrix.platform }}
+          editor: ${{ matrix.editor }}
+          config: ${{ matrix.config }}

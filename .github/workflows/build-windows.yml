@@ -1,0 +1,37 @@
+name: 🪟 Build (Windows)
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    name: "\
+      ${{ matrix.platform }}-\
+      ${{ matrix.arch }}-\
+      ${{ matrix.editor == true && 'editor-' || '' }}\
+      ${{ matrix.config }}"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-msvc, windows-clangcl]
+        arch: [x64]
+        editor: [false, true]
+        config: [debug, development, distribution]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up C++ environment
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: vs-2022
+          architecture: ${{ matrix.arch }}
+
+      - name: Configure and build
+        uses: ./.github/actions/build-with-cmake
+        with:
+          platform: ${{ matrix.platform }}
+          arch: ${{ matrix.arch }}
+          editor: ${{ matrix.editor }}
+          config: ${{ matrix.config }}

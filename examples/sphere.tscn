@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://crueoftu50dwd"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_s1iwo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bhl6y"]
+albedo_color = Color(0.546667, 0.8, 0, 1)
+
+[node name="Body" type="RigidBody3D"]
+
+[node name="Shape" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_s1iwo")
+
+[node name="Mesh" type="CSGSphere3D" parent="."]
+radial_segments = 30
+rings = 30
+material = SubResource("StandardMaterial3D_bhl6y")

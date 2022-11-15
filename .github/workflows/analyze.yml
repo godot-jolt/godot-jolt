@@ -1,0 +1,95 @@
+name: 🔍 Analyze
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  clang-format:
+    name: Formatting
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up LLVM
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: llvm-14.0.0
+          architecture: x64
+
+      - name: Identify clang-format
+        shell: pwsh
+        run: clang-format --version
+
+      - name: Run clang-format
+        shell: pwsh
+        run: ./scripts/run_clang_format.ps1 -SourcePath ./src
+
+  clang-tidy:
+    name: Linting
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up LLVM
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: llvm-14.0.0
+          architecture: x64
+
+      - name: Build 'Debug' configuration
+        uses: ./.github/actions/build-with-cmake
+        with:
+          platform: linux-clang
+          arch: x64
+          editor: false
+          config: debug
+
+      - name: Build 'Development' configuration
+        uses: ./.github/actions/build-with-cmake
+        with:
+          platform: linux-clang
+          arch: x64
+          editor: false
+          config: development
+
+      - name: Build 'Distribution' configuration
+        uses: ./.github/actions/build-with-cmake
+        with:
+          platform: linux-clang
+          arch: x64
+          editor: false
+          config: distribution
+
+      - name: Build 'EditorDebug' configuration
+        uses: ./.github/actions/build-with-cmake
+        with:
+          platform: linux-clang
+          arch: x64
+          editor: true
+          config: debug
+
+      - name: Build 'EditorDevelopment' configuration
+        uses: ./.github/actions/build-with-cmake
+        with:
+          platform: linux-clang
+          arch: x64
+          editor: true
+          config: development
+
+      - name: Build 'EditorDistribution' configuration
+        uses: ./.github/actions/build-with-cmake
+        with:
+          platform: linux-clang
+          arch: x64
+          editor: true
+          config: distribution
+
+      - name: Identify clang-tidy
+        shell: pwsh
+        run: clang-tidy --version
+
+      - name: Run clang-tidy
+        shell: pwsh
+        run: ./scripts/run_clang_tidy.ps1 -SourcePath ./src -BuildPath ./build/linux-clang-x64

@@ -1,0 +1,35 @@
+name: Build with CMake
+
+inputs:
+  platform:
+    required: true
+  arch:
+    default: null
+  editor:
+    required: true
+  config:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - shell: pwsh
+      run: |
+        $Platform = "${{ inputs.platform }}"
+        $Arch = "${{ inputs.arch != null && format('-{0}', inputs.arch) || '' }}"
+        $Editor = "${{ inputs.editor == 'true' && '-editor' || '' }}"
+        $BuildConfig = "${{ format('-{0}', inputs.config) }}"
+        $ConfigurePreset = "$Platform$Arch"
+        $BuildPreset = "$ConfigurePreset$Editor$BuildConfig"
+
+        "GDJOLT_CONFIGURE_PRESET=$ConfigurePreset" >> $env:GITHUB_ENV
+        "GDJOLT_BUILD_PRESET=$BuildPreset" >> $env:GITHUB_ENV
+
+    - shell: pwsh
+      run: cmake --version
+
+    - shell: pwsh
+      run: cmake --warn-uninitialized -Werror=dev --preset ${{ env.GDJOLT_CONFIGURE_PRESET }}
+
+    - shell: pwsh
+      run: cmake --build --preset ${{ env.GDJOLT_BUILD_PRESET }}
