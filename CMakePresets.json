@@ -130,22 +130,12 @@
     {
       "name": "windows-msvc-x64",
       "displayName": "MSVC, 64-bit",
-      "inherits": ["windows-base", "msvc-base", "x64-base"],
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "windows-msvc-x64"
-        }
-      }
+      "inherits": ["windows-base", "msvc-base", "x64-base"]
     },
     {
       "name": "windows-clangcl-x64",
       "displayName": "Clang, 64-bit",
-      "inherits": ["windows-base", "clangcl-base", "x64-base"],
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "windows-clang-x64"
-        }
-      }
+      "inherits": ["windows-base", "clangcl-base", "x64-base"]
     },
     {
       "name": "linux-clang-x64",
