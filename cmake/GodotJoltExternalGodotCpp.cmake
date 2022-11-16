@@ -19,7 +19,7 @@ set(editor_definitions
 
 GodotJoltExternalLibrary_Add(godot-cpp "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/godot-cpp.git
-	GIT_COMMIT e33f3e4b0f83612da30e9afae1808313501e4e7d
+	GIT_COMMIT b5ce301e8f860ba774bc75fb4abad15f4b6a1a0f
 	OUTPUT_NAME godot-cpp
 	INCLUDE_DIRECTORIES
 		<SOURCE_DIR>/godot-headers
