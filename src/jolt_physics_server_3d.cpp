@@ -1388,6 +1388,10 @@ void JoltPhysicsServer3D::_sync() {
 }
 
 void JoltPhysicsServer3D::_flush_queries() {
+	if (!active) {
+		return;
+	}
+
 	flushing_queries = true;
 
 	for (JoltPhysicsSpace3D* space : active_spaces) {
