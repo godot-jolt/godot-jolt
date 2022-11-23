@@ -60,12 +60,18 @@ public:
 
 	void set_mass(float p_mass);
 
+	Vector3 get_inertia() const override { return inertia; }
+
+	void set_inertia(const Vector3& p_inertia);
+
 	bool is_sensor() const override { return false; }
 
 private:
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
 
 	float mass = 1.0f;
+
+	Vector3 inertia;
 
 	Vector3 constant_force;
 

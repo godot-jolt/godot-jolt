@@ -36,20 +36,23 @@ void JoltPhysicsBody3D::set_state(PhysicsServer3D::BodyState p_state, const Vari
 }
 
 Variant JoltPhysicsBody3D::get_param(PhysicsServer3D::BodyParameter p_param) const {
-	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
 	switch (p_param) {
 	case PhysicsServer3D::BODY_PARAM_MASS:
 		return get_mass();
+	case PhysicsServer3D::BODY_PARAM_INERTIA:
+		return get_inertia();
 	default:
 		ERR_FAIL_V_NOT_IMPL({});
 	}
 }
 
 void JoltPhysicsBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const Variant& p_value) {
-	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
 	switch (p_param) {
 	case PhysicsServer3D::BODY_PARAM_MASS:
 		set_mass(p_value);
+		break;
+	case PhysicsServer3D::BODY_PARAM_INERTIA:
+		set_inertia(p_value);
 		break;
 	default:
 		ERR_FAIL_NOT_IMPL();
@@ -161,4 +164,9 @@ void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode) {
 void JoltPhysicsBody3D::set_mass(float p_mass) {
 	ERR_FAIL_COND_MSG(space, "Cannot change mass after body has been created.");
 	mass = p_mass;
+}
+
+void JoltPhysicsBody3D::set_inertia(const Vector3& p_inertia) {
+	ERR_FAIL_COND_MSG(space, "Cannot change inertia after body has been created.");
+	inertia = p_inertia;
 }

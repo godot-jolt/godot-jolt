@@ -229,8 +229,23 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 
 	settings.mAllowDynamicOrKinematic = true;
 	settings.mIsSensor = is_sensor;
-	settings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
-	settings.mMassPropertiesOverride.mMass = p_object->get_mass();
+
+	const float mass = p_object->get_mass();
+	const Vector3 inertia = p_object->get_inertia();
+
+	const bool calculate_mass = mass <= 0;
+	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
+
+	if (calculate_mass && calculate_inertia) {
+		settings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateMassAndInertia;
+	} else if (calculate_inertia) {
+		settings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
+		settings.mMassPropertiesOverride.mMass = mass;
+	} else {
+		settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
+		settings.mMassPropertiesOverride.mMass = mass;
+		settings.mMassPropertiesOverride.mInertia.SetDiagonal4({to_jolt(inertia), 1});
+	}
 
 	JPH::Body* body = physics_system->GetBodyInterface().CreateBody(settings);
 

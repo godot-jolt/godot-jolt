@@ -67,6 +67,8 @@ public:
 
 	virtual float get_mass() const = 0;
 
+	virtual Vector3 get_inertia() const = 0;
+
 	virtual bool is_sensor() const = 0;
 
 protected:
