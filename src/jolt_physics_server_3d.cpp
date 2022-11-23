@@ -619,11 +619,13 @@ void JoltPhysicsServer3D::_body_set_collision_priority(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] double p_priority
 ) {
-	ERR_FAIL_NOT_IMPL();
+	if (p_priority != 1.0) {
+		WARN_PRINT_ONCE("Collision priorities are not supported.");
+	}
 }
 
 double JoltPhysicsServer3D::_body_get_collision_priority([[maybe_unused]] const RID& p_body) const {
-	ERR_FAIL_V_NOT_IMPL({});
+	return 1.0;
 }
 
 void JoltPhysicsServer3D::_body_set_user_flags(
