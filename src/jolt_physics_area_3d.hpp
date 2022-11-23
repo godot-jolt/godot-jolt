@@ -29,6 +29,8 @@ public:
 
 	float get_mass() const override { return 1.0f; }
 
+	Vector3 get_inertia() const override { return {0, 0, 0}; }
+
 	bool is_sensor() const override { return true; }
 
 private:
