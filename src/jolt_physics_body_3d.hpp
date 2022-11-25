@@ -21,15 +21,17 @@ public:
 
 	bool is_sleeping(bool p_lock = true) const;
 
+	void set_sleep_state(bool p_enabled, bool p_lock = true);
+
 	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
 
 	Vector3 get_linear_velocity(bool p_lock = true) const;
 
-	void set_linear_velocity(const Vector3& p_velocity);
+	void set_linear_velocity(const Vector3& p_velocity, bool p_lock = true);
 
 	Vector3 get_angular_velocity(bool p_lock = true) const;
 
-	void set_angular_velocity(const Vector3& p_velocity);
+	void set_angular_velocity(const Vector3& p_velocity, bool p_lock = true);
 
 	void add_constant_central_force(const Vector3& p_force) { constant_force += p_force; }
 
@@ -54,19 +56,23 @@ public:
 
 	PhysicsServer3D::BodyMode get_mode() const override { return mode; }
 
-	void set_mode(PhysicsServer3D::BodyMode p_mode);
+	void set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock = true);
 
 	float get_mass() const override { return mass; }
 
-	void set_mass(float p_mass);
+	void set_mass(float p_mass, bool p_lock = true);
 
 	Vector3 get_inertia() const override { return inertia; }
 
-	void set_inertia(const Vector3& p_inertia);
+	void set_inertia(const Vector3& p_inertia, bool p_lock = true);
 
 	bool is_sensor() const override { return false; }
 
 private:
+	void shapes_changed(bool p_lock) override;
+
+	void mass_properties_changed(bool p_lock);
+
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
 
 	float mass = 1.0f;

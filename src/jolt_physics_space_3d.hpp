@@ -24,7 +24,11 @@ public:
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
-	JPH::PhysicsSystem* get_system() const { return physics_system; }
+	JPH::BodyInterface& get_body_iface(bool p_locked = true);
+
+	const JPH::BodyInterface& get_body_iface(bool p_locked = true) const;
+
+	const JPH::BodyLockInterface& get_body_lock_iface(bool p_locked = true) const;
 
 	PhysicsDirectSpaceState3D* get_direct_state() const;
 

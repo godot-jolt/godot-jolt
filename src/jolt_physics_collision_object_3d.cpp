@@ -1,5 +1,6 @@
 #include "jolt_physics_collision_object_3d.hpp"
 
+#include "body_access.hpp"
 #include "conversion.hpp"
 #include "jolt_physics_shape_3d.hpp"
 #include "jolt_physics_space_3d.hpp"
@@ -25,32 +26,36 @@ void JoltPhysicsCollisionObject3D::set_space(JoltPhysicsSpace3D* p_space) {
 	space = p_space;
 }
 
-void JoltPhysicsCollisionObject3D::set_collision_layer(uint32_t p_layer) {
-	if (space) {
-		JPH::PhysicsSystem* system = space->get_system();
-		const JPH::BodyLockInterface& lock_iface = system->GetBodyLockInterface();
-
-		{
-			const JPH::BodyLockWrite lock(lock_iface, jid);
-			lock.GetBody().GetCollisionGroup().SetGroupID(p_layer);
-		}
+void JoltPhysicsCollisionObject3D::set_collision_layer(uint32_t p_layer, bool p_lock) {
+	if (p_layer == collision_layer) {
+		return;
 	}
 
 	collision_layer = p_layer;
+
+	if (!space) {
+		return;
+	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+	body_access.get_body().GetCollisionGroup().SetGroupID(p_layer);
 }
 
-void JoltPhysicsCollisionObject3D::set_collision_mask(uint32_t p_mask) {
-	if (space) {
-		JPH::PhysicsSystem* system = space->get_system();
-		const JPH::BodyLockInterface& lock_iface = system->GetBodyLockInterface();
-
-		{
-			const JPH::BodyLockWrite lock(lock_iface, jid);
-			lock.GetBody().GetCollisionGroup().SetSubGroupID(p_mask);
-		}
+void JoltPhysicsCollisionObject3D::set_collision_mask(uint32_t p_mask, bool p_lock) {
+	if (p_mask == collision_mask) {
+		return;
 	}
 
 	collision_mask = p_mask;
+
+	if (!space) {
+		return;
+	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+	body_access.get_body().GetCollisionGroup().SetSubGroupID(p_mask);
 }
 
 Transform3D JoltPhysicsCollisionObject3D::get_transform(bool p_lock) const {
@@ -58,27 +63,25 @@ Transform3D JoltPhysicsCollisionObject3D::get_transform(bool p_lock) const {
 		return transform;
 	}
 
-	JPH::PhysicsSystem* system = space->get_system();
-	const JPH::BodyInterface& body_iface =
-		p_lock ? system->GetBodyInterface() : system->GetBodyInterfaceNoLock();
+	const BodyAccessRead body_access(*space, jid, p_lock);
+	ERR_FAIL_COND_V(!body_access.is_valid(), {});
 
-	JPH::Vec3 position = {};
-	JPH::Quat rotation = {};
-	body_iface.GetPositionAndRotation(jid, position, rotation);
+	const JPH::Body& body = body_access.get_body();
 
-	return {to_godot(rotation), to_godot(position)};
+	return {to_godot(body.GetRotation()), to_godot(body.GetPosition())};
 }
 
-void JoltPhysicsCollisionObject3D::set_transform(const Transform3D& p_transform) {
+void JoltPhysicsCollisionObject3D::set_transform(const Transform3D& p_transform, bool p_lock) {
 	transform = p_transform;
 
 	if (!space) {
 		return;
 	}
 
-	JPH::PhysicsSystem* system = space->get_system();
-	JPH::BodyInterface& body_iface = system->GetBodyInterface();
-	body_iface.SetPositionAndRotation(
+	// We need to go through `JPH::BodyInterface` instead of `JPH::Body`, because the latter doesn't
+	// allow us to set position/rotation, presumably due to needing to modify the broad phase
+
+	space->get_body_iface(p_lock).SetPositionAndRotation(
 		jid,
 		to_jolt(p_transform.get_origin()),
 		to_jolt(p_transform.get_basis()),
@@ -86,18 +89,52 @@ void JoltPhysicsCollisionObject3D::set_transform(const Transform3D& p_transform)
 	);
 }
 
-Vector3 JoltPhysicsCollisionObject3D::get_center_of_mass() const {
+Vector3 JoltPhysicsCollisionObject3D::get_center_of_mass(bool p_lock) const {
 	ERR_FAIL_COND_V_MSG(!space, Vector3(), "Object does not belong to any space.");
 
-	JPH::PhysicsSystem* system = space->get_system();
-	const JPH::BodyInterface& body_iface = system->GetBodyInterface();
-	return to_godot(body_iface.GetCenterOfMassPosition(jid));
+	const BodyAccessRead body_access(*space, jid, p_lock);
+	ERR_FAIL_COND_V(!body_access.is_valid(), {});
+
+	return to_godot(body_access.get_body().GetCenterOfMassPosition());
+}
+
+JPH::MassProperties JoltPhysicsCollisionObject3D::calculate_mass_properties(
+	const JPH::Shape& p_root_shape
+) const {
+	const float mass = get_mass();
+	const Vector3 inertia = get_inertia();
+
+	const bool calculate_mass = mass <= 0;
+	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
+
+	JPH::MassProperties mass_properties = p_root_shape.GetMassProperties();
+
+	if (calculate_mass && calculate_inertia) {
+		mass_properties.mInertia(3, 3) = 1.0f;
+	} else if (calculate_inertia) {
+		mass_properties.ScaleToMass(mass);
+		mass_properties.mInertia(3, 3) = 1.0f;
+	} else {
+		mass_properties.mMass = mass;
+		mass_properties.mInertia.SetDiagonal3(to_jolt(inertia));
+	}
+
+	return mass_properties;
+}
+
+JPH::MassProperties JoltPhysicsCollisionObject3D::calculate_mass_properties(bool p_lock) const {
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND_V(!body_access.is_valid(), {});
+
+	const JPH::Body& body = body_access.get_body();
+	return calculate_mass_properties(*body.GetShape());
 }
 
 void JoltPhysicsCollisionObject3D::add_shape(
 	JoltPhysicsShape3D* p_shape,
 	const Transform3D& p_transform,
-	bool p_disabled
+	bool p_disabled,
+	bool p_lock
 ) {
 	Shape shape;
 	shape.ref = p_shape;
@@ -107,16 +144,29 @@ void JoltPhysicsCollisionObject3D::add_shape(
 
 	p_shape->set_owner(this);
 
-	if (JPH::MutableCompoundShape* root_shape = find_root_shape()) {
-		root_shape->AddShape(
-			to_jolt(p_transform.origin),
-			to_jolt(p_transform.basis),
-			p_shape->get_jref()
-		);
+	if (!space) {
+		shapes_changed(p_lock);
+		return;
 	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	JPH::MutableCompoundShape* root_shape = get_root_shape();
+	ERR_FAIL_NULL(root_shape);
+
+	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
+
+	root_shape
+		->AddShape(to_jolt(p_transform.origin), to_jolt(p_transform.basis), p_shape->get_jref());
+
+	space->get_body_iface(false)
+		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::Activate);
+
+	shapes_changed(false);
 }
 
-void JoltPhysicsCollisionObject3D::remove_shape(JoltPhysicsShape3D* p_shape) {
+void JoltPhysicsCollisionObject3D::remove_shape(JoltPhysicsShape3D* p_shape, bool p_lock) {
 	const int index = find_shape_index(p_shape);
 	if (index == -1) {
 		return;
@@ -124,17 +174,33 @@ void JoltPhysicsCollisionObject3D::remove_shape(JoltPhysicsShape3D* p_shape) {
 
 	ERR_FAIL_INDEX(index, shapes.size());
 
-	remove_shape(index);
+	remove_shape(index, p_lock);
 }
 
-void JoltPhysicsCollisionObject3D::remove_shape(int p_index) {
+void JoltPhysicsCollisionObject3D::remove_shape(int p_index, bool p_lock) {
 	const Shape& shape = shapes[p_index];
 	shape.ref->set_owner(nullptr);
 	shapes.remove_at(p_index);
 
-	if (JPH::MutableCompoundShape* root_shape = find_root_shape()) {
-		root_shape->RemoveShape((JPH::uint)p_index);
+	if (!space) {
+		shapes_changed(p_lock);
+		return;
 	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	JPH::MutableCompoundShape* root_shape = get_root_shape();
+	ERR_FAIL_NULL(root_shape);
+
+	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
+
+	root_shape->RemoveShape((JPH::uint)p_index);
+
+	space->get_body_iface(false)
+		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::Activate);
+
+	shapes_changed(false);
 }
 
 int JoltPhysicsCollisionObject3D::find_shape_index(JoltPhysicsShape3D* p_shape) {
@@ -149,34 +215,47 @@ int JoltPhysicsCollisionObject3D::find_shape_index(JoltPhysicsShape3D* p_shape) 
 
 void JoltPhysicsCollisionObject3D::set_shape_transform(
 	int64_t p_index,
-	const Transform3D& p_transform
+	const Transform3D& p_transform,
+	bool p_lock
 ) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	shapes.get((int)p_index).transform = p_transform;
 
-	if (JPH::MutableCompoundShape* root_shape = find_root_shape()) {
-		root_shape->ModifyShape(
-			(JPH::uint)p_index,
-			to_jolt(p_transform.origin),
-			to_jolt(p_transform.basis)
-		);
+	if (!space) {
+		shapes_changed(p_lock);
+		return;
 	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	JPH::MutableCompoundShape* root_shape = get_root_shape();
+	ERR_FAIL_NULL(root_shape);
+
+	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
+
+	root_shape
+		->ModifyShape((JPH::uint)p_index, to_jolt(p_transform.origin), to_jolt(p_transform.basis));
+
+	space->get_body_iface(false)
+		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::Activate);
+
+	shapes_changed(false);
 }
 
-JPH::MutableCompoundShape* JoltPhysicsCollisionObject3D::find_root_shape() const {
-	if (!space) {
-		return nullptr;
-	}
+JPH::MutableCompoundShape* JoltPhysicsCollisionObject3D::get_root_shape() const {
+	ERR_FAIL_NULL_V(space, nullptr);
 
-	JPH::PhysicsSystem* system = space->get_system();
-	const JPH::BodyInterface& body_iface = system->GetBodyInterface();
-	const JPH::ShapeRefC root_shape_ref = body_iface.GetShape(jid);
+	// We assume that we're already locked, since anything returned from this function after the
+	// lock is released could disappear from underneath us anyway
+	const BodyAccessRead body_access(*space, jid, false);
+	ERR_FAIL_COND_V(!body_access.is_valid(), {});
 
 	// HACK(mihe): const_cast is not ideal, but that's what the official tests for
 	// MutableCompoundShape is using, as well as RefConst::InternalGetPtr
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-	auto* root_shape = const_cast<JPH::Shape*>(root_shape_ref.GetPtr());
+	auto* root_shape = const_cast<JPH::Shape*>(body_access.get_body().GetShape());
 
 	// TODO(mihe): See if this could leverage JPH::DynamicCast instead
 	return static_cast<JPH::MutableCompoundShape*>(root_shape);
