@@ -78,6 +78,10 @@ public:
 
 	virtual Vector3 get_inertia() const = 0;
 
+	virtual float get_bounce() const = 0;
+
+	virtual float get_friction() const = 0;
+
 	virtual bool is_sensor() const = 0;
 
 	virtual bool can_sleep() const = 0;

@@ -70,6 +70,14 @@ public:
 
 	void set_inertia(const Vector3& p_inertia, bool p_lock = true);
 
+	float get_bounce() const override { return bounce; }
+
+	void set_bounce(float p_bounce, bool p_lock = true);
+
+	float get_friction() const override { return friction; }
+
+	void set_friction(float p_friction, bool p_lock = true);
+
 	bool is_sensor() const override { return false; }
 
 private:
@@ -82,6 +90,10 @@ private:
 	float mass = 1.0f;
 
 	Vector3 inertia;
+
+	float bounce = 0.0f;
+
+	float friction = 1.0f;
 
 	bool allowed_sleep = true;
 

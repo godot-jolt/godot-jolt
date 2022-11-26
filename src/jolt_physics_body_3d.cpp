@@ -5,6 +5,7 @@
 #include "error_macros.hpp"
 #include "jolt_physics_direct_body_state_3d.hpp"
 #include "jolt_physics_space_3d.hpp"
+#include "utility_functions.hpp"
 #include "vformat.hpp"
 
 JoltPhysicsBody3D::~JoltPhysicsBody3D() {
@@ -55,6 +56,10 @@ void JoltPhysicsBody3D::set_state(PhysicsServer3D::BodyState p_state, const Vari
 
 Variant JoltPhysicsBody3D::get_param(PhysicsServer3D::BodyParameter p_param) const {
 	switch (p_param) {
+	case PhysicsServer3D::BODY_PARAM_BOUNCE:
+		return get_bounce();
+	case PhysicsServer3D::BODY_PARAM_FRICTION:
+		return get_friction();
 	case PhysicsServer3D::BODY_PARAM_MASS:
 		return get_mass();
 	case PhysicsServer3D::BODY_PARAM_INERTIA:
@@ -66,6 +71,12 @@ Variant JoltPhysicsBody3D::get_param(PhysicsServer3D::BodyParameter p_param) con
 
 void JoltPhysicsBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const Variant& p_value) {
 	switch (p_param) {
+	case PhysicsServer3D::BODY_PARAM_BOUNCE:
+		set_bounce(p_value);
+		break;
+	case PhysicsServer3D::BODY_PARAM_FRICTION:
+		set_friction(p_value);
+		break;
 	case PhysicsServer3D::BODY_PARAM_MASS:
 		set_mass(p_value);
 		break;
@@ -242,6 +253,58 @@ void JoltPhysicsBody3D::set_inertia(const Vector3& p_inertia, bool p_lock) {
 		inertia = p_inertia;
 		mass_properties_changed(p_lock);
 	}
+}
+
+void JoltPhysicsBody3D::set_bounce(float p_bounce, bool p_lock) {
+	if (p_bounce < 0 || p_bounce > 1) {
+		WARN_PRINT(
+			"Bounce values less than 0 or greater than 1 are not supported by Godot Jolt. "
+			"Values outside this range will be clamped."
+		);
+
+		p_bounce = clamp(p_bounce, 0.0f, 1.0f);
+	}
+
+	if (p_bounce == bounce) {
+		return;
+	}
+
+	bounce = p_bounce;
+
+	if (!space) {
+		return;
+	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	body_access.get_body().SetRestitution(bounce);
+}
+
+void JoltPhysicsBody3D::set_friction(float p_friction, bool p_lock) {
+	if (p_friction < 0) {
+		WARN_PRINT(
+			"Friction values less than 0 are not supported by Godot Jolt. "
+			"Values outside this range will be clamped."
+		);
+
+		p_friction = 0;
+	}
+
+	if (p_friction == friction) {
+		return;
+	}
+
+	friction = p_friction;
+
+	if (!space) {
+		return;
+	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	body_access.get_body().SetFriction(friction);
 }
 
 void JoltPhysicsBody3D::shapes_changed(bool p_lock) {
