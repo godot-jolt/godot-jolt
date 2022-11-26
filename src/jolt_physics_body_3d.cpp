@@ -27,7 +27,7 @@ Variant JoltPhysicsBody3D::get_state(PhysicsServer3D::BodyState p_state) {
 	case PhysicsServer3D::BODY_STATE_CAN_SLEEP:
 		return can_sleep();
 	default:
-		ERR_FAIL_V_MSG({}, vformat("Unhandled body state: '{}'", p_state));
+		ERR_FAIL_D_MSG(vformat("Unhandled body state: '{}'", p_state));
 	}
 }
 
@@ -60,7 +60,7 @@ Variant JoltPhysicsBody3D::get_param(PhysicsServer3D::BodyParameter p_param) con
 	case PhysicsServer3D::BODY_PARAM_INERTIA:
 		return get_inertia();
 	default:
-		ERR_FAIL_V_NOT_IMPL({});
+		ERR_FAIL_D_NOT_IMPL();
 	}
 }
 
@@ -82,10 +82,10 @@ void JoltPhysicsBody3D::set_state_sync_callback(const Callable& p_callback) {
 }
 
 bool JoltPhysicsBody3D::is_sleeping(bool p_lock) const {
-	ERR_FAIL_COND_V(!space, false);
+	ERR_FAIL_NULL_D(space);
 
 	const BodyAccessRead body_access(*space, jid, p_lock);
-	ERR_FAIL_COND_V(!body_access.is_valid(), false);
+	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	return !body_access.get_body().IsActive();
 }
@@ -118,19 +118,19 @@ void JoltPhysicsBody3D::set_can_sleep(bool p_enabled, bool p_lock) {
 }
 
 Basis JoltPhysicsBody3D::get_inverse_inertia_tensor(bool p_lock) const {
-	ERR_FAIL_COND_V(!space, Basis());
+	ERR_FAIL_NULL_D(space);
 
 	const BodyAccessRead body_access(*space, jid, p_lock);
-	ERR_FAIL_COND_V(!body_access.is_valid(), Basis());
+	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	return to_godot(body_access.get_body().GetInverseInertia().GetQuaternion());
 }
 
 Vector3 JoltPhysicsBody3D::get_linear_velocity(bool p_lock) const {
-	ERR_FAIL_COND_V(!space, Vector3());
+	ERR_FAIL_NULL_D(space);
 
 	const BodyAccessRead body_access(*space, jid, p_lock);
-	ERR_FAIL_COND_V(!body_access.is_valid(), Vector3());
+	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	return to_godot(body_access.get_body().GetLinearVelocity());
 }
@@ -148,10 +148,10 @@ void JoltPhysicsBody3D::set_linear_velocity(
 }
 
 Vector3 JoltPhysicsBody3D::get_angular_velocity(bool p_lock) const {
-	ERR_FAIL_COND_V(!space, Vector3());
+	ERR_FAIL_NULL_D(space);
 
 	const BodyAccessRead body_access(*space, jid, p_lock);
-	ERR_FAIL_COND_V(!body_access.is_valid(), Vector3());
+	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	return to_godot(body_access.get_body().GetAngularVelocity());
 }

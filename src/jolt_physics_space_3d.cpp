@@ -31,7 +31,7 @@ bool jolt_can_collide_object(JPH::ObjectLayer p_object1, JPH::ObjectLayer p_obje
 	case GDJOLT_OBJECT_LAYER_MOVING:
 		return true;
 	default:
-		ERR_FAIL_V_NOT_IMPL({});
+		ERR_FAIL_D_NOT_IMPL();
 	}
 }
 
@@ -42,7 +42,7 @@ bool jolt_can_collide_broadphase(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer
 	case GDJOLT_OBJECT_LAYER_MOVING:
 		return true;
 	default:
-		ERR_FAIL_V_NOT_IMPL({});
+		ERR_FAIL_D_NOT_IMPL();
 	}
 }
 
@@ -176,7 +176,7 @@ Variant JoltPhysicsSpace3D::get_param(PhysicsServer3D::AreaParameter p_param) co
 	case PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR:
 		return gravity_vector;
 	default:
-		ERR_FAIL_V_NOT_IMPL({});
+		ERR_FAIL_D_NOT_IMPL();
 	}
 }
 

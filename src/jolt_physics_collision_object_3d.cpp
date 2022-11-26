@@ -2,6 +2,7 @@
 
 #include "body_access.hpp"
 #include "conversion.hpp"
+#include "error_macros.hpp"
 #include "jolt_physics_shape_3d.hpp"
 #include "jolt_physics_space_3d.hpp"
 
@@ -64,7 +65,7 @@ Transform3D JoltPhysicsCollisionObject3D::get_transform(bool p_lock) const {
 	}
 
 	const BodyAccessRead body_access(*space, jid, p_lock);
-	ERR_FAIL_COND_V(!body_access.is_valid(), {});
+	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	const JPH::Body& body = body_access.get_body();
 
@@ -90,10 +91,10 @@ void JoltPhysicsCollisionObject3D::set_transform(const Transform3D& p_transform,
 }
 
 Vector3 JoltPhysicsCollisionObject3D::get_center_of_mass(bool p_lock) const {
-	ERR_FAIL_COND_V_MSG(!space, Vector3(), "Object does not belong to any space.");
+	ERR_FAIL_NULL_D(space);
 
 	const BodyAccessRead body_access(*space, jid, p_lock);
-	ERR_FAIL_COND_V(!body_access.is_valid(), {});
+	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	return to_godot(body_access.get_body().GetCenterOfMassPosition());
 }
@@ -124,7 +125,7 @@ JPH::MassProperties JoltPhysicsCollisionObject3D::calculate_mass_properties(
 
 JPH::MassProperties JoltPhysicsCollisionObject3D::calculate_mass_properties(bool p_lock) const {
 	const BodyAccessWrite body_access(*space, jid, p_lock);
-	ERR_FAIL_COND_V(!body_access.is_valid(), {});
+	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	const JPH::Body& body = body_access.get_body();
 	return calculate_mass_properties(*body.GetShape());
@@ -245,12 +246,12 @@ void JoltPhysicsCollisionObject3D::set_shape_transform(
 }
 
 JPH::MutableCompoundShape* JoltPhysicsCollisionObject3D::get_root_shape() const {
-	ERR_FAIL_NULL_V(space, nullptr);
+	ERR_FAIL_NULL_D(space);
 
 	// We assume that we're already locked, since anything returned from this function after the
 	// lock is released could disappear from underneath us anyway
 	const BodyAccessRead body_access(*space, jid, false);
-	ERR_FAIL_COND_V(!body_access.is_valid(), {});
+	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	// HACK(mihe): const_cast is not ideal, but that's what the official tests for
 	// MutableCompoundShape is using, as well as RefConst::InternalGetPtr

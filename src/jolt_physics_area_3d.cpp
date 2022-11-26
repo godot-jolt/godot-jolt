@@ -13,7 +13,7 @@ Variant JoltPhysicsArea3D::get_param(PhysicsServer3D::AreaParameter p_param) con
 	case PhysicsServer3D::AREA_PARAM_ANGULAR_DAMP:
 		return angular_damp;
 	default:
-		ERR_FAIL_V_NOT_IMPL({});
+		ERR_FAIL_D_NOT_IMPL();
 	}
 }
 
