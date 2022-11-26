@@ -33,6 +33,8 @@ public:
 
 	bool is_sensor() const override { return true; }
 
+	bool can_sleep() const override { return false; }
+
 private:
 	Vector3 gravity_vector = Vector3(0, -1, 0);
 

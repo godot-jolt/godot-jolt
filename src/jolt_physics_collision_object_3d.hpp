@@ -80,6 +80,8 @@ public:
 
 	virtual bool is_sensor() const = 0;
 
+	virtual bool can_sleep() const = 0;
+
 protected:
 	virtual void shapes_changed([[maybe_unused]] bool p_lock) { }
 

@@ -25,7 +25,7 @@ Variant JoltPhysicsBody3D::get_state(PhysicsServer3D::BodyState p_state) {
 	case PhysicsServer3D::BODY_STATE_SLEEPING:
 		return is_sleeping();
 	case PhysicsServer3D::BODY_STATE_CAN_SLEEP:
-		ERR_FAIL_V_NOT_IMPL({});
+		return can_sleep();
 	default:
 		ERR_FAIL_V_MSG({}, vformat("Unhandled body state: '{}'", p_state));
 	}
@@ -46,7 +46,8 @@ void JoltPhysicsBody3D::set_state(PhysicsServer3D::BodyState p_state, const Vari
 		set_sleep_state(p_value);
 		break;
 	case PhysicsServer3D::BODY_STATE_CAN_SLEEP:
-		ERR_FAIL_NOT_IMPL();
+		set_can_sleep(p_value);
+		break;
 	default:
 		ERR_FAIL_MSG(vformat("Unhandled body state: '{}'", p_state));
 	}
@@ -97,6 +98,23 @@ void JoltPhysicsBody3D::set_sleep_state(bool p_enabled, bool p_lock) {
 	} else {
 		space->get_body_iface(p_lock).ActivateBody(jid);
 	}
+}
+
+void JoltPhysicsBody3D::set_can_sleep(bool p_enabled, bool p_lock) {
+	if (p_enabled == allowed_sleep) {
+		return;
+	}
+
+	allowed_sleep = p_enabled;
+
+	if (!space) {
+		return;
+	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	body_access.get_body().SetAllowSleeping(allowed_sleep);
 }
 
 Basis JoltPhysicsBody3D::get_inverse_inertia_tensor(bool p_lock) const {
