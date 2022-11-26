@@ -245,6 +245,7 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 
 	settings.mAllowDynamicOrKinematic = true;
 	settings.mIsSensor = is_sensor;
+	settings.mAllowSleeping = p_object->can_sleep();
 	settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
 	settings.mMassPropertiesOverride = p_object->calculate_mass_properties(*settings.GetShape());
 

@@ -23,6 +23,10 @@ public:
 
 	void set_sleep_state(bool p_enabled, bool p_lock = true);
 
+	bool can_sleep() const override { return allowed_sleep; }
+
+	void set_can_sleep(bool p_enabled, bool p_lock = true);
+
 	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
 
 	Vector3 get_linear_velocity(bool p_lock = true) const;
@@ -78,6 +82,8 @@ private:
 	float mass = 1.0f;
 
 	Vector3 inertia;
+
+	bool allowed_sleep = true;
 
 	Vector3 constant_force;
 
