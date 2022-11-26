@@ -149,6 +149,22 @@ void JoltPhysicsSpace3D::call_queries() {
 	}
 }
 
+JPH::BodyInterface& JoltPhysicsSpace3D::get_body_iface(bool p_locked) {
+	return p_locked ? physics_system->GetBodyInterface() : physics_system->GetBodyInterfaceNoLock();
+}
+
+const JPH::BodyInterface& JoltPhysicsSpace3D::get_body_iface(bool p_locked) const {
+	return p_locked ? physics_system->GetBodyInterface() : physics_system->GetBodyInterfaceNoLock();
+}
+
+const JPH::BodyLockInterface& JoltPhysicsSpace3D::get_body_lock_iface(bool p_locked) const {
+	if (p_locked) {
+		return physics_system->GetBodyLockInterface();
+	} else {
+		return physics_system->GetBodyLockInterfaceNoLock();
+	}
+}
+
 PhysicsDirectSpaceState3D* JoltPhysicsSpace3D::get_direct_state() const {
 	return direct_state;
 }
@@ -229,23 +245,8 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 
 	settings.mAllowDynamicOrKinematic = true;
 	settings.mIsSensor = is_sensor;
-
-	const float mass = p_object->get_mass();
-	const Vector3 inertia = p_object->get_inertia();
-
-	const bool calculate_mass = mass <= 0;
-	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
-
-	if (calculate_mass && calculate_inertia) {
-		settings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateMassAndInertia;
-	} else if (calculate_inertia) {
-		settings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
-		settings.mMassPropertiesOverride.mMass = mass;
-	} else {
-		settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
-		settings.mMassPropertiesOverride.mMass = mass;
-		settings.mMassPropertiesOverride.mInertia.SetDiagonal4({to_jolt(inertia), 1});
-	}
+	settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
+	settings.mMassPropertiesOverride = p_object->calculate_mass_properties(*settings.GetShape());
 
 	JPH::Body* body = physics_system->GetBodyInterface().CreateBody(settings);
 

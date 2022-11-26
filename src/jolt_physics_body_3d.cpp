@@ -1,5 +1,6 @@
 #include "jolt_physics_body_3d.hpp"
 
+#include "body_access.hpp"
 #include "conversion.hpp"
 #include "error_macros.hpp"
 #include "jolt_physics_direct_body_state_3d.hpp"
@@ -19,19 +20,35 @@ Variant JoltPhysicsBody3D::get_state(PhysicsServer3D::BodyState p_state) {
 		return get_transform();
 	case PhysicsServer3D::BODY_STATE_LINEAR_VELOCITY:
 		return get_linear_velocity();
-	default:
+	case PhysicsServer3D::BODY_STATE_ANGULAR_VELOCITY:
+		return get_angular_velocity();
+	case PhysicsServer3D::BODY_STATE_SLEEPING:
+		return is_sleeping();
+	case PhysicsServer3D::BODY_STATE_CAN_SLEEP:
 		ERR_FAIL_V_NOT_IMPL({});
+	default:
+		ERR_FAIL_V_MSG({}, vformat("Unhandled body state: '{}'", p_state));
 	}
 }
 
 void JoltPhysicsBody3D::set_state(PhysicsServer3D::BodyState p_state, const Variant& p_value) {
-	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
 	switch (p_state) {
 	case PhysicsServer3D::BODY_STATE_TRANSFORM:
 		set_transform(p_value);
 		break;
-	default:
+	case PhysicsServer3D::BODY_STATE_LINEAR_VELOCITY:
+		set_linear_velocity(p_value);
+		break;
+	case PhysicsServer3D::BODY_STATE_ANGULAR_VELOCITY:
+		set_angular_velocity(p_value);
+		break;
+	case PhysicsServer3D::BODY_STATE_SLEEPING:
+		set_sleep_state(p_value);
+		break;
+	case PhysicsServer3D::BODY_STATE_CAN_SLEEP:
 		ERR_FAIL_NOT_IMPL();
+	default:
+		ERR_FAIL_MSG(vformat("Unhandled body state: '{}'", p_state));
 	}
 }
 
@@ -66,49 +83,71 @@ void JoltPhysicsBody3D::set_state_sync_callback(const Callable& p_callback) {
 bool JoltPhysicsBody3D::is_sleeping(bool p_lock) const {
 	ERR_FAIL_COND_V(!space, false);
 
-	JPH::PhysicsSystem* system = space->get_system();
-	const JPH::BodyInterface& body_iface =
-		p_lock ? system->GetBodyInterface() : system->GetBodyInterfaceNoLock();
+	const BodyAccessRead body_access(*space, jid, p_lock);
+	ERR_FAIL_COND_V(!body_access.is_valid(), false);
 
-	return !body_iface.IsActive(jid);
+	return !body_access.get_body().IsActive();
+}
+
+void JoltPhysicsBody3D::set_sleep_state(bool p_enabled, bool p_lock) {
+	ERR_FAIL_NULL(space);
+
+	if (p_enabled) {
+		space->get_body_iface(p_lock).DeactivateBody(jid);
+	} else {
+		space->get_body_iface(p_lock).ActivateBody(jid);
+	}
 }
 
 Basis JoltPhysicsBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 	ERR_FAIL_COND_V(!space, Basis());
 
-	JPH::PhysicsSystem* system = space->get_system();
-	const JPH::BodyInterface& body_iface =
-		p_lock ? system->GetBodyInterface() : system->GetBodyInterfaceNoLock();
+	const BodyAccessRead body_access(*space, jid, p_lock);
+	ERR_FAIL_COND_V(!body_access.is_valid(), Basis());
 
-	return to_godot(body_iface.GetInverseInertia(jid).GetQuaternion());
+	return to_godot(body_access.get_body().GetInverseInertia().GetQuaternion());
 }
 
 Vector3 JoltPhysicsBody3D::get_linear_velocity(bool p_lock) const {
 	ERR_FAIL_COND_V(!space, Vector3());
 
-	JPH::PhysicsSystem* system = space->get_system();
-	const JPH::BodyInterface& body_iface =
-		p_lock ? system->GetBodyInterface() : system->GetBodyInterfaceNoLock();
+	const BodyAccessRead body_access(*space, jid, p_lock);
+	ERR_FAIL_COND_V(!body_access.is_valid(), Vector3());
 
-	return to_godot(body_iface.GetLinearVelocity(jid));
+	return to_godot(body_access.get_body().GetLinearVelocity());
 }
 
-void JoltPhysicsBody3D::set_linear_velocity([[maybe_unused]] const Vector3& p_velocity) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsBody3D::set_linear_velocity(
+	[[maybe_unused]] const Vector3& p_velocity,
+	bool p_lock
+) {
+	ERR_FAIL_NULL(space);
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	body_access.get_body().SetLinearVelocityClamped(to_jolt(p_velocity));
 }
 
 Vector3 JoltPhysicsBody3D::get_angular_velocity(bool p_lock) const {
 	ERR_FAIL_COND_V(!space, Vector3());
 
-	JPH::PhysicsSystem* system = space->get_system();
-	const JPH::BodyInterface& body_iface =
-		p_lock ? system->GetBodyInterface() : system->GetBodyInterfaceNoLock();
+	const BodyAccessRead body_access(*space, jid, p_lock);
+	ERR_FAIL_COND_V(!body_access.is_valid(), Vector3());
 
-	return to_godot(body_iface.GetAngularVelocity(jid));
+	return to_godot(body_access.get_body().GetAngularVelocity());
 }
 
-void JoltPhysicsBody3D::set_angular_velocity([[maybe_unused]] const Vector3& p_velocity) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsBody3D::set_angular_velocity(
+	[[maybe_unused]] const Vector3& p_velocity,
+	bool p_lock
+) {
+	ERR_FAIL_NULL(space);
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	body_access.get_body().SetAngularVelocityClamped(to_jolt(p_velocity));
 }
 
 void JoltPhysicsBody3D::call_queries() {
@@ -127,7 +166,7 @@ JoltPhysicsDirectBodyState3D* JoltPhysicsBody3D::get_direct_state() {
 	return direct_state;
 }
 
-void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode) {
+void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 	if (p_mode == mode) {
 		return;
 	}
@@ -137,9 +176,6 @@ void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode) {
 	if (!space) {
 		return;
 	}
-
-	JPH::PhysicsSystem* system = space->get_system();
-	JPH::BodyInterface& body_iface = system->GetBodyInterface();
 
 	JPH::EMotionType motion_type = {};
 
@@ -158,15 +194,50 @@ void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode) {
 		ERR_FAIL_MSG(vformat("Unhandled body mode: '{}'", p_mode));
 	}
 
-	body_iface.SetMotionType(jid, motion_type, JPH::EActivation::Activate);
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	if (!is_sleeping(false) && motion_type == JPH::EMotionType::Static) {
+		set_sleep_state(true, false);
+	}
+
+	body_access.get_body().SetMotionType(motion_type);
+
+	if (is_sleeping(false) && motion_type != JPH::EMotionType::Static) {
+		set_sleep_state(false, false);
+	}
+
+	if (motion_type != JPH::EMotionType::Static) {
+		mass_properties_changed(false);
+	}
 }
 
-void JoltPhysicsBody3D::set_mass(float p_mass) {
-	ERR_FAIL_COND_MSG(space, "Cannot change mass after body has been created.");
-	mass = p_mass;
+void JoltPhysicsBody3D::set_mass(float p_mass, bool p_lock) {
+	if (p_mass != mass) {
+		mass = p_mass;
+		mass_properties_changed(p_lock);
+	}
 }
 
-void JoltPhysicsBody3D::set_inertia(const Vector3& p_inertia) {
-	ERR_FAIL_COND_MSG(space, "Cannot change inertia after body has been created.");
-	inertia = p_inertia;
+void JoltPhysicsBody3D::set_inertia(const Vector3& p_inertia, bool p_lock) {
+	if (p_inertia != inertia) {
+		inertia = p_inertia;
+		mass_properties_changed(p_lock);
+	}
+}
+
+void JoltPhysicsBody3D::shapes_changed(bool p_lock) {
+	mass_properties_changed(p_lock);
+}
+
+void JoltPhysicsBody3D::mass_properties_changed(bool p_lock) {
+	if (!space || mode == PhysicsServer3D::BODY_MODE_STATIC) {
+		return;
+	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	const JPH::MassProperties mass_properties = calculate_mass_properties(false);
+	body_access.get_body().GetMotionProperties()->SetMassProperties(mass_properties);
 }

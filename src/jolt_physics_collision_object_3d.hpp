@@ -31,23 +31,32 @@ public:
 
 	uint32_t get_collision_layer() const { return collision_layer; }
 
-	void set_collision_layer(uint32_t p_layer);
+	void set_collision_layer(uint32_t p_layer, bool p_lock = true);
 
 	uint32_t get_collision_mask() const { return collision_mask; }
 
-	void set_collision_mask(uint32_t p_mask);
+	void set_collision_mask(uint32_t p_mask, bool p_lock = true);
 
 	Transform3D get_transform(bool p_lock = true) const;
 
-	void set_transform(const Transform3D& p_transform);
+	void set_transform(const Transform3D& p_transform, bool p_lock = true);
 
-	Vector3 get_center_of_mass() const;
+	Vector3 get_center_of_mass(bool p_lock = true) const;
 
-	void add_shape(JoltPhysicsShape3D* p_shape, const Transform3D& p_transform, bool p_disabled);
+	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_root_shape) const;
 
-	void remove_shape(JoltPhysicsShape3D* p_shape);
+	JPH::MassProperties calculate_mass_properties(bool p_lock = true) const;
 
-	void remove_shape(int p_index);
+	void add_shape(
+		JoltPhysicsShape3D* p_shape,
+		const Transform3D& p_transform,
+		bool p_disabled,
+		bool p_lock = true
+	);
+
+	void remove_shape(JoltPhysicsShape3D* p_shape, bool p_lock = true);
+
+	void remove_shape(int p_index, bool p_lock = true);
 
 	const Vector<Shape>& get_shapes() const { return shapes; }
 
@@ -55,7 +64,7 @@ public:
 
 	int find_shape_index(JoltPhysicsShape3D* p_shape);
 
-	void set_shape_transform(int64_t p_index, const Transform3D& p_transform);
+	void set_shape_transform(int64_t p_index, const Transform3D& p_transform, bool p_lock = true);
 
 	bool is_ray_pickable() const { return ray_pickable; }
 
@@ -72,7 +81,9 @@ public:
 	virtual bool is_sensor() const = 0;
 
 protected:
-	JPH::MutableCompoundShape* find_root_shape() const;
+	virtual void shapes_changed([[maybe_unused]] bool p_lock) { }
+
+	JPH::MutableCompoundShape* get_root_shape() const;
 
 	RID rid;
 

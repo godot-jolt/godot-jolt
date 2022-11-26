@@ -149,7 +149,8 @@ bool JoltPhysicsDirectBodyState3D::_is_sleeping() const {
 }
 
 void JoltPhysicsDirectBodyState3D::_set_sleep_state([[maybe_unused]] bool p_enabled) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_NULL(body);
+	body->set_sleep_state(p_enabled);
 }
 
 int64_t JoltPhysicsDirectBodyState3D::_get_contact_count() const {
