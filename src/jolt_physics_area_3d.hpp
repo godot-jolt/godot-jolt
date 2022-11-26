@@ -31,6 +31,10 @@ public:
 
 	Vector3 get_inertia() const override { return {0, 0, 0}; }
 
+	float get_bounce() const override { return 0.0f; }
+
+	float get_friction() const override { return 1.0f; }
+
 	bool is_sensor() const override { return true; }
 
 	bool can_sleep() const override { return false; }
