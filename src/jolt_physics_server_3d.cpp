@@ -6,7 +6,7 @@
 #include "jolt_physics_group_filter_3d.hpp"
 #include "jolt_physics_shape_3d.hpp"
 #include "jolt_physics_space_3d.hpp"
-#include "vformat.hpp"
+#include "utility_functions.hpp"
 
 namespace {
 
@@ -250,8 +250,7 @@ PhysicsDirectSpaceState3D* JoltPhysicsServer3D::_space_get_direct_state(const RI
 	ERR_FAIL_NULL_D(space);
 	ERR_FAIL_COND_D_MSG(
 		!doing_sync || space->is_locked(),
-		"Space state is inaccessible right now, wait for iteration or physics "
-		"process notification."
+		"Space state is inaccessible right now, wait for iteration or physics process notification."
 	);
 
 	return space->get_direct_state();
@@ -616,7 +615,7 @@ int64_t JoltPhysicsServer3D::_body_get_collision_mask(const RID& p_body) const {
 
 void JoltPhysicsServer3D::_body_set_collision_priority(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] double p_priority
+	double p_priority
 ) {
 	if (p_priority != 1.0) {
 		WARN_PRINT("Collision priority is not supported by Godot Jolt.");
@@ -788,7 +787,7 @@ void JoltPhysicsServer3D::_body_set_axis_velocity(
 void JoltPhysicsServer3D::_body_set_axis_lock(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] BodyAxis p_axis,
-	[[maybe_unused]] bool p_lock
+	bool p_lock
 ) {
 	if (p_lock) {
 		WARN_PRINT("Axis lock is not supported by Godot Jolt.");

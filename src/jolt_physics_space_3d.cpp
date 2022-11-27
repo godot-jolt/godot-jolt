@@ -35,7 +35,7 @@ bool jolt_can_collide_object(JPH::ObjectLayer p_object1, JPH::ObjectLayer p_obje
 	}
 }
 
-bool jolt_can_collide_broadphase(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) {
+bool jolt_can_collide_broad_phase(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) {
 	switch (p_layer1) {
 	case GDJOLT_OBJECT_LAYER_STATIC:
 		return p_layer2 == JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MOVING);
@@ -49,16 +49,16 @@ bool jolt_can_collide_broadphase(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer
 class JoltPhysicsLayerMapper3D final : public JPH::BroadPhaseLayerInterface {
 public:
 	JoltPhysicsLayerMapper3D() {
-		broadphase_by_object[GDJOLT_OBJECT_LAYER_STATIC] =
+		broad_phase_by_object[GDJOLT_OBJECT_LAYER_STATIC] =
 			JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_STATIC);
-		broadphase_by_object[GDJOLT_OBJECT_LAYER_MOVING] =
+		broad_phase_by_object[GDJOLT_OBJECT_LAYER_MOVING] =
 			JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MOVING);
 	}
 
 	uint32_t GetNumBroadPhaseLayers() const override { return GDJOLT_BROAD_PHASE_LAYER_COUNT; }
 
 	JPH::BroadPhaseLayer GetBroadPhaseLayer(JPH::ObjectLayer p_layer) const override {
-		return broadphase_by_object[p_layer];
+		return broad_phase_by_object[p_layer];
 	}
 
 #if defined(JPH_EXTERNAL_PROFILE) || defined(JPH_PROFILE_ENABLED)
@@ -75,7 +75,7 @@ public:
 #endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
 
 private:
-	JPH::BroadPhaseLayer broadphase_by_object[GDJOLT_OBJECT_LAYER_COUNT];
+	JPH::BroadPhaseLayer broad_phase_by_object[GDJOLT_OBJECT_LAYER_COUNT];
 };
 
 } // namespace
@@ -95,7 +95,7 @@ JoltPhysicsSpace3D::JoltPhysicsSpace3D(
 		GDJOLT_MAX_BODY_PAIRS,
 		GDJOLT_MAX_CONTACT_CONSTRAINTS,
 		*bp_layer,
-		jolt_can_collide_broadphase,
+		jolt_can_collide_broad_phase,
 		jolt_can_collide_object
 	);
 }
@@ -200,8 +200,7 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 		return;
 	}
 
-	JPH::Ref<JPH::MutableCompoundShapeSettings> compound_shape =
-		new JPH::MutableCompoundShapeSettings();
+	JPH::Ref compound_shape = new JPH::MutableCompoundShapeSettings();
 
 	for (const JoltPhysicsCollisionObject3D::Shape& shape : p_object->get_shapes()) {
 		compound_shape->AddShape(

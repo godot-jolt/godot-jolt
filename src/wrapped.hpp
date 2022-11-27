@@ -23,7 +23,7 @@
 
 // TODO(mihe): When LLVM 15 becomes the norm this macro can be NOLINT'ed instead of having to do it
 // at every single call site.
-#define GDCLASS_SILENT(m_class, m_inherits) \
-	GDCLASS_DISABLE_WARNINGS                \
-	GDCLASS(m_class, m_inherits)            \
+#define GDCLASS_NO_WARN(m_class, m_inherits) \
+	GDCLASS_DISABLE_WARNINGS                 \
+	GDCLASS(m_class, m_inherits)             \
 	GDCLASS_RESTORE_WARNINGS

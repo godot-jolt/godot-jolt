@@ -148,7 +148,7 @@ bool JoltPhysicsDirectBodyState3D::_is_sleeping() const {
 	return body->is_sleeping(false);
 }
 
-void JoltPhysicsDirectBodyState3D::_set_sleep_state([[maybe_unused]] bool p_enabled) {
+void JoltPhysicsDirectBodyState3D::_set_sleep_state(bool p_enabled) {
 	ERR_FAIL_NULL(body);
 	body->set_sleep_state(p_enabled);
 }

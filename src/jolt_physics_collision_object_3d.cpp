@@ -254,10 +254,9 @@ JPH::MutableCompoundShape* JoltPhysicsCollisionObject3D::get_root_shape() const 
 	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	// HACK(mihe): const_cast is not ideal, but that's what the official tests for
-	// MutableCompoundShape is using, as well as RefConst::InternalGetPtr
+	// `MutableCompoundShape` are using, as well as `RefConst::InternalGetPtr`
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	auto* root_shape = const_cast<JPH::Shape*>(body_access.get_body().GetShape());
 
-	// TODO(mihe): See if this could leverage JPH::DynamicCast instead
 	return static_cast<JPH::MutableCompoundShape*>(root_shape);
 }

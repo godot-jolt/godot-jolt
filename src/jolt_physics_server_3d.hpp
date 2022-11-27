@@ -6,7 +6,7 @@ class JoltPhysicsShape3D;
 class JoltPhysicsSpace3D;
 
 class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
-	GDCLASS_SILENT(JoltPhysicsServer3D, PhysicsServer3DExtension) // NOLINT
+	GDCLASS_NO_WARN(JoltPhysicsServer3D, PhysicsServer3DExtension) // NOLINT
 
 protected:
 	// NOLINTNEXTLINE(readability-identifier-naming)
