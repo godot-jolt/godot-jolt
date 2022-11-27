@@ -78,6 +78,10 @@ public:
 
 	void set_friction(float p_friction, bool p_lock = true);
 
+	float get_gravity_scale() const override { return gravity_scale; }
+
+	void set_gravity_scale(float p_scale, bool p_lock = true);
+
 	bool is_sensor() const override { return false; }
 
 private:
@@ -94,6 +98,8 @@ private:
 	float bounce = 0.0f;
 
 	float friction = 1.0f;
+
+	float gravity_scale = 1.0f;
 
 	bool allowed_sleep = true;
 
