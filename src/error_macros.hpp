@@ -10,7 +10,7 @@
 #define ERR_FAIL_NULL_D_MSG(m_param, m_msg) ERR_FAIL_NULL_V_MSG(m_param, {}, m_msg)
 #define ERR_FAIL_COND_D(m_cond) ERR_FAIL_COND_V(m_cond, {})
 #define ERR_FAIL_COND_D_MSG(m_cond, m_msg) ERR_FAIL_COND_V_MSG(m_cond, {}, m_msg)
-#define ERR_FAIL_D(m_cond) ERR_FAIL_V(m_cond, {})
+#define ERR_FAIL_D() ERR_FAIL_V({})
 #define ERR_FAIL_D_MSG(m_msg) ERR_FAIL_V_MSG({}, m_msg)
 
 #define ERR_FAIL_NOT_IMPL() ERR_FAIL_MSG("Not implemented")
