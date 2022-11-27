@@ -15,8 +15,10 @@ include(GodotJoltExternalGodotCpp)
 include(GodotJoltExternalJolt)
 include(GodotJoltExternalFmt)
 
-file(GLOB_RECURSE godot-jolt_SOURCES CONFIGURE_DEPENDS src/*.cpp)
-file(GLOB_RECURSE godot-jolt_HEADERS CONFIGURE_DEPENDS src/*.hpp)
+set(source_dir ${CMAKE_CURRENT_LIST_DIR}/src)
+
+file(GLOB_RECURSE godot-jolt_SOURCES CONFIGURE_DEPENDS ${source_dir}/*.cpp)
+file(GLOB_RECURSE godot-jolt_HEADERS CONFIGURE_DEPENDS ${source_dir}/*.hpp)
 
 add_library(godot-jolt SHARED ${godot-jolt_SOURCES} ${godot-jolt_HEADERS})
 add_library(godot-jolt::godot-jolt ALIAS godot-jolt)
@@ -27,7 +29,7 @@ target_link_libraries(godot-jolt
 	godot-jolt::fmt
 )
 
-target_precompile_headers(godot-jolt PRIVATE src/pch.hpp)
+target_precompile_headers(godot-jolt PRIVATE ${source_dir}/pch.hpp)
 
 set(is_editor_config $<CONFIG:EditorDebug,EditorDevelopment,EditorDistribution>)
 set(is_debug_config $<CONFIG:Debug,EditorDebug>)
@@ -75,6 +77,8 @@ set(is_msvc_cl $<CXX_COMPILER_ID:MSVC>)
 set(is_llvm_clang $<CXX_COMPILER_ID:Clang>)
 set(is_gcc $<CXX_COMPILER_ID:GNU>)
 set(is_clang_cl $<AND:${is_msvc_like},${is_llvm_clang}>)
+
+set(macro_prefix_option -fmacro-prefix-map=${source_dir}=.)
 
 set_target_properties(godot-jolt PROPERTIES
 	OUTPUT_NAME godot-jolt${suffix}
@@ -124,6 +128,7 @@ if(MSVC)
 		PRIVATE $<${target_avx2}:/arch:AVX2> # Enable AVX2 instructions
 		PRIVATE $<${target_avx512}:/arch:AVX512> # Enable AVX-512 instructions
 		PRIVATE $<${is_msvc_cl}:/MP> # Multi-threaded compilation
+		PRIVATE $<${is_clang_cl}:/clang:${macro_prefix_option}> # Make `__FILE__` relative
 		PRIVATE $<${is_clang_cl}:-Qunused-arguments> # Disable warnings about unused arguments
 	)
 
@@ -150,6 +155,7 @@ else()
 		PRIVATE -Wshadow # Enable variable/type shadowing warnings
 		PRIVATE -Wundef # Enable warnings about undefined identifiers in `#if` directives
 		PRIVATE -pthread # Use POSIX threads
+		PRIVATE ${macro_prefix_option} # Make `__FILE__` relative
 		PRIVATE $<${deterministic}:-ffp-contract=off> # Disable floating-point contractions
 		PRIVATE $<${not_deterministic}:-ffast-math> # Enable aggressive floating-point optimizations
 		PRIVATE $<${use_sse2}:-msse2> # Enable SSE2 instructions
