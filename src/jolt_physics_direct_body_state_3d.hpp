@@ -3,7 +3,7 @@
 class JoltPhysicsBody3D;
 
 class JoltPhysicsDirectBodyState3D final : public PhysicsDirectBodyState3DExtension {
-	GDCLASS_SILENT(JoltPhysicsDirectBodyState3D, PhysicsDirectBodyState3DExtension) // NOLINT
+	GDCLASS_NO_WARN(JoltPhysicsDirectBodyState3D, PhysicsDirectBodyState3DExtension) // NOLINT
 
 protected:
 	// NOLINTNEXTLINE(readability-identifier-naming)

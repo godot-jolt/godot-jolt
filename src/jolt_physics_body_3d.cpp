@@ -6,7 +6,6 @@
 #include "jolt_physics_direct_body_state_3d.hpp"
 #include "jolt_physics_space_3d.hpp"
 #include "utility_functions.hpp"
-#include "vformat.hpp"
 
 JoltPhysicsBody3D::~JoltPhysicsBody3D() {
 	if (direct_state) {
@@ -146,10 +145,7 @@ Vector3 JoltPhysicsBody3D::get_linear_velocity(bool p_lock) const {
 	return to_godot(body_access.get_body().GetLinearVelocity());
 }
 
-void JoltPhysicsBody3D::set_linear_velocity(
-	[[maybe_unused]] const Vector3& p_velocity,
-	bool p_lock
-) {
+void JoltPhysicsBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
 	const BodyAccessWrite body_access(*space, jid, p_lock);
@@ -167,10 +163,7 @@ Vector3 JoltPhysicsBody3D::get_angular_velocity(bool p_lock) const {
 	return to_godot(body_access.get_body().GetAngularVelocity());
 }
 
-void JoltPhysicsBody3D::set_angular_velocity(
-	[[maybe_unused]] const Vector3& p_velocity,
-	bool p_lock
-) {
+void JoltPhysicsBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
 	const BodyAccessWrite body_access(*space, jid, p_lock);

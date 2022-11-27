@@ -3,7 +3,7 @@
 #include "jolt_physics_server_3d.hpp"
 
 class JoltPhysicsServerFactory3D : public Object {
-	GDCLASS_SILENT(JoltPhysicsServerFactory3D, Object) // NOLINT
+	GDCLASS_NO_WARN(JoltPhysicsServerFactory3D, Object) // NOLINT
 
 protected:
 	// NOLINTNEXTLINE(readability-identifier-naming)
