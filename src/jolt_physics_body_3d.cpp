@@ -65,6 +65,14 @@ Variant JoltPhysicsBody3D::get_param(PhysicsServer3D::BodyParameter p_param) con
 		return get_inertia();
 	case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE:
 		return get_gravity_scale();
+	case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP_MODE:
+		ERR_FAIL_D_NOT_IMPL();
+	case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP_MODE:
+		ERR_FAIL_D_NOT_IMPL();
+	case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP:
+		return get_linear_damp();
+	case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP:
+		return get_angular_damp();
 	default:
 		ERR_FAIL_D_MSG(vformat("Unhandled body parameter: '{}'", p_param));
 	}
@@ -86,6 +94,18 @@ void JoltPhysicsBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const 
 		break;
 	case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE:
 		set_gravity_scale(p_value);
+		break;
+	case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP_MODE:
+		ERR_FAIL_NOT_IMPL();
+		break;
+	case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP_MODE:
+		ERR_FAIL_NOT_IMPL();
+		break;
+	case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP:
+		set_linear_damp(p_value);
+		break;
+	case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP:
+		set_angular_damp(p_value);
 		break;
 	default:
 		ERR_FAIL_MSG(vformat("Unhandled body parameter: '{}'", p_param));
@@ -320,6 +340,58 @@ void JoltPhysicsBody3D::set_gravity_scale(float p_scale, bool p_lock) {
 	ERR_FAIL_COND(!body_access.is_valid());
 
 	body_access.get_body().GetMotionPropertiesUnchecked()->SetGravityFactor(p_scale);
+}
+
+void JoltPhysicsBody3D::set_linear_damp(float p_damp, bool p_lock) {
+	if (p_damp < 0) {
+		WARN_PRINT(
+			"Linear damp values less than 0 are not supported by Godot Jolt. "
+			"Values outside this range will be clamped."
+		);
+
+		p_damp = 0;
+	}
+
+	if (p_damp == linear_damp) {
+		return;
+	}
+
+	linear_damp = p_damp;
+
+	if (!space) {
+		return;
+	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	body_access.get_body().GetMotionPropertiesUnchecked()->SetLinearDamping(linear_damp);
+}
+
+void JoltPhysicsBody3D::set_angular_damp(float p_damp, bool p_lock) {
+	if (p_damp < 0) {
+		WARN_PRINT(
+			"Angular damp values less than 0 are not supported by Godot Jolt. "
+			"Values outside this range will be clamped."
+		);
+
+		p_damp = 0;
+	}
+
+	if (p_damp == angular_damp) {
+		return;
+	}
+
+	angular_damp = p_damp;
+
+	if (!space) {
+		return;
+	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	body_access.get_body().GetMotionPropertiesUnchecked()->SetAngularDamping(angular_damp);
 }
 
 void JoltPhysicsBody3D::shapes_changed(bool p_lock) {

@@ -84,6 +84,10 @@ public:
 
 	virtual float get_gravity_scale() const = 0;
 
+	virtual float get_linear_damp() const = 0;
+
+	virtual float get_angular_damp() const = 0;
+
 	virtual bool is_sensor() const = 0;
 
 	virtual bool can_sleep() const = 0;

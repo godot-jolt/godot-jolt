@@ -247,6 +247,8 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 	settings.mAllowSleeping = p_object->can_sleep();
 	settings.mFriction = p_object->get_friction();
 	settings.mRestitution = p_object->get_bounce();
+	settings.mLinearDamping = p_object->get_linear_damp();
+	settings.mAngularDamping = p_object->get_angular_damp();
 	settings.mGravityFactor = p_object->get_gravity_scale();
 	settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
 	settings.mMassPropertiesOverride = p_object->calculate_mass_properties(*settings.GetShape());
