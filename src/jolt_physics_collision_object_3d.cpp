@@ -60,9 +60,7 @@ void JoltPhysicsCollisionObject3D::set_collision_mask(uint32_t p_mask, bool p_lo
 }
 
 Transform3D JoltPhysicsCollisionObject3D::get_transform(bool p_lock) const {
-	if (!space) {
-		return transform;
-	}
+	ERR_FAIL_NULL_D(space);
 
 	const BodyAccessRead body_access(*space, jid, p_lock);
 	ERR_FAIL_COND_D(!body_access.is_valid());
@@ -73,9 +71,8 @@ Transform3D JoltPhysicsCollisionObject3D::get_transform(bool p_lock) const {
 }
 
 void JoltPhysicsCollisionObject3D::set_transform(const Transform3D& p_transform, bool p_lock) {
-	transform = p_transform;
-
 	if (!space) {
+		initial_transform = p_transform;
 		return;
 	}
 

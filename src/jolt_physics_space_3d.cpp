@@ -231,7 +231,7 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 		ERR_FAIL_MSG("Unhandled body mode");
 	}
 
-	const Transform3D& transform = p_object->get_transform();
+	const Transform3D& transform = p_object->get_initial_transform();
 	const bool is_sensor = p_object->is_sensor();
 
 	JPH::BodyCreationSettings settings(

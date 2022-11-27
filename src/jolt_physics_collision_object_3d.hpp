@@ -37,6 +37,8 @@ public:
 
 	void set_collision_mask(uint32_t p_mask, bool p_lock = true);
 
+	Transform3D get_initial_transform() const { return initial_transform; }
+
 	Transform3D get_transform(bool p_lock = true) const;
 
 	void set_transform(const Transform3D& p_transform, bool p_lock = true);
@@ -113,5 +115,5 @@ protected:
 
 	bool ray_pickable = false;
 
-	Transform3D transform;
+	Transform3D initial_transform;
 };
