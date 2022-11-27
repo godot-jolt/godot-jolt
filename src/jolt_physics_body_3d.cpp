@@ -171,7 +171,10 @@ Vector3 JoltPhysicsBody3D::get_linear_velocity(bool p_lock) const {
 }
 
 void JoltPhysicsBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	if (!space) {
+		initial_linear_velocity = p_velocity;
+		return;
+	}
 
 	const BodyAccessWrite body_access(*space, jid, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());
@@ -189,7 +192,10 @@ Vector3 JoltPhysicsBody3D::get_angular_velocity(bool p_lock) const {
 }
 
 void JoltPhysicsBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	if (!space) {
+		initial_angular_velocity = p_velocity;
+		return;
+	}
 
 	const BodyAccessWrite body_access(*space, jid, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());

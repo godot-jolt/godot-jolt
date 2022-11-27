@@ -74,6 +74,10 @@ public:
 
 	virtual void call_queries() = 0;
 
+	virtual Vector3 get_initial_linear_velocity() const = 0;
+
+	virtual Vector3 get_initial_angular_velocity() const = 0;
+
 	virtual PhysicsServer3D::BodyMode get_mode() const = 0;
 
 	virtual float get_mass() const = 0;

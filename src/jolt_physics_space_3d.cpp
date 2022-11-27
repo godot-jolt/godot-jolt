@@ -242,6 +242,8 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 		object_layer
 	);
 
+	settings.mLinearVelocity = to_jolt(p_object->get_initial_linear_velocity());
+	settings.mAngularVelocity = to_jolt(p_object->get_initial_angular_velocity());
 	settings.mAllowDynamicOrKinematic = true;
 	settings.mIsSensor = is_sensor;
 	settings.mAllowSleeping = p_object->can_sleep();

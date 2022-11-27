@@ -23,6 +23,10 @@ public:
 
 	void call_queries() override;
 
+	Vector3 get_initial_linear_velocity() const override { return {0, 0, 0}; }
+
+	Vector3 get_initial_angular_velocity() const override { return {0, 0, 0}; }
+
 	PhysicsServer3D::BodyMode get_mode() const override {
 		return PhysicsServer3D::BODY_MODE_KINEMATIC;
 	}

@@ -29,6 +29,10 @@ public:
 
 	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
 
+	Vector3 get_initial_linear_velocity() const override { return initial_linear_velocity; }
+
+	Vector3 get_initial_angular_velocity() const override { return initial_angular_velocity; }
+
 	Vector3 get_linear_velocity(bool p_lock = true) const;
 
 	void set_linear_velocity(const Vector3& p_velocity, bool p_lock = true);
@@ -114,6 +118,10 @@ private:
 	float angular_damp = 0.0f;
 
 	bool allowed_sleep = true;
+
+	Vector3 initial_linear_velocity;
+
+	Vector3 initial_angular_velocity;
 
 	Vector3 constant_force;
 
