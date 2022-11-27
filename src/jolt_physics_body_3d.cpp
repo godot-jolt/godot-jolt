@@ -63,8 +63,10 @@ Variant JoltPhysicsBody3D::get_param(PhysicsServer3D::BodyParameter p_param) con
 		return get_mass();
 	case PhysicsServer3D::BODY_PARAM_INERTIA:
 		return get_inertia();
+	case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE:
+		return get_gravity_scale();
 	default:
-		ERR_FAIL_D_NOT_IMPL();
+		ERR_FAIL_D_MSG(vformat("Unhandled body parameter: '{}'", p_param));
 	}
 }
 
@@ -82,8 +84,11 @@ void JoltPhysicsBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const 
 	case PhysicsServer3D::BODY_PARAM_INERTIA:
 		set_inertia(p_value);
 		break;
+	case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE:
+		set_gravity_scale(p_value);
+		break;
 	default:
-		ERR_FAIL_NOT_IMPL();
+		ERR_FAIL_MSG(vformat("Unhandled body parameter: '{}'", p_param));
 	}
 }
 
@@ -298,6 +303,23 @@ void JoltPhysicsBody3D::set_friction(float p_friction, bool p_lock) {
 	ERR_FAIL_COND(!body_access.is_valid());
 
 	body_access.get_body().SetFriction(friction);
+}
+
+void JoltPhysicsBody3D::set_gravity_scale(float p_scale, bool p_lock) {
+	if (p_scale == gravity_scale) {
+		return;
+	}
+
+	gravity_scale = p_scale;
+
+	if (!space) {
+		return;
+	}
+
+	const BodyAccessWrite body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	body_access.get_body().GetMotionPropertiesUnchecked()->SetGravityFactor(p_scale);
 }
 
 void JoltPhysicsBody3D::shapes_changed(bool p_lock) {

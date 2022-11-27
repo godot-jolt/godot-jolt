@@ -35,6 +35,8 @@ public:
 
 	float get_friction() const override { return 1.0f; }
 
+	float get_gravity_scale() const override { return 1.0f; }
+
 	bool is_sensor() const override { return true; }
 
 	bool can_sleep() const override { return false; }
