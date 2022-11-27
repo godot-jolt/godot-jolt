@@ -24,6 +24,6 @@ constexpr const TType& clamp(const TType& p_value, const TType& p_min, const TTy
 }
 
 template<typename... TArgs>
-constexpr String vformat(TArgs&&... p_args) {
+String vformat(TArgs&&... p_args) {
 	return String(fmt::format(std::forward<TArgs>(p_args)...).c_str());
 }
