@@ -619,7 +619,7 @@ void JoltPhysicsServer3D::_body_set_collision_priority(
 	[[maybe_unused]] double p_priority
 ) {
 	if (p_priority != 1.0) {
-		WARN_PRINT_ONCE("Collision priority is not supported by Godot Jolt.");
+		WARN_PRINT("Collision priority is not supported by Godot Jolt.");
 	}
 }
 
@@ -791,7 +791,7 @@ void JoltPhysicsServer3D::_body_set_axis_lock(
 	[[maybe_unused]] bool p_lock
 ) {
 	if (p_lock) {
-		WARN_PRINT_ONCE("Axis lock is not supported by Godot Jolt.");
+		WARN_PRINT("Axis lock is not supported by Godot Jolt.");
 	}
 }
 
