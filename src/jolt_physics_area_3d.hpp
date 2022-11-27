@@ -37,6 +37,10 @@ public:
 
 	float get_gravity_scale() const override { return 1.0f; }
 
+	float get_linear_damp() const override { return 0.0f; }
+
+	float get_angular_damp() const override { return 0.0f; }
+
 	bool is_sensor() const override { return true; }
 
 	bool can_sleep() const override { return false; }

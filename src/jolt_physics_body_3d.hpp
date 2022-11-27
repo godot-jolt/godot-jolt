@@ -82,6 +82,14 @@ public:
 
 	void set_gravity_scale(float p_scale, bool p_lock = true);
 
+	float get_linear_damp() const override { return linear_damp; }
+
+	void set_linear_damp(float p_damp, bool p_lock = true);
+
+	float get_angular_damp() const override { return angular_damp; }
+
+	void set_angular_damp(float p_damp, bool p_lock = true);
+
 	bool is_sensor() const override { return false; }
 
 private:
@@ -100,6 +108,10 @@ private:
 	float friction = 1.0f;
 
 	float gravity_scale = 1.0f;
+
+	float linear_damp = 0.0f;
+
+	float angular_damp = 0.0f;
 
 	bool allowed_sleep = true;
 
