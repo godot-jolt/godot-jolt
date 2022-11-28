@@ -20,6 +20,6 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
-[{LICENSE,NOTICE}.txt]
+[{LICENSE,COPYRIGHT}.txt]
 indent_style = space
 indent_size = 4
