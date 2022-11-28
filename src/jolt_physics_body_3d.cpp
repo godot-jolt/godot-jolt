@@ -16,99 +16,117 @@ JoltPhysicsBody3D::~JoltPhysicsBody3D() {
 
 Variant JoltPhysicsBody3D::get_state(PhysicsServer3D::BodyState p_state) {
 	switch (p_state) {
-	case PhysicsServer3D::BODY_STATE_TRANSFORM:
-		return get_transform();
-	case PhysicsServer3D::BODY_STATE_LINEAR_VELOCITY:
-		return get_linear_velocity();
-	case PhysicsServer3D::BODY_STATE_ANGULAR_VELOCITY:
-		return get_angular_velocity();
-	case PhysicsServer3D::BODY_STATE_SLEEPING:
-		return get_sleep_state();
-	case PhysicsServer3D::BODY_STATE_CAN_SLEEP:
-		return can_sleep();
-	default:
-		ERR_FAIL_D_MSG(vformat("Unhandled body state: '{}'", p_state));
+		case PhysicsServer3D::BODY_STATE_TRANSFORM: {
+			return get_transform();
+		}
+		case PhysicsServer3D::BODY_STATE_LINEAR_VELOCITY: {
+			return get_linear_velocity();
+		}
+		case PhysicsServer3D::BODY_STATE_ANGULAR_VELOCITY: {
+			return get_angular_velocity();
+		}
+		case PhysicsServer3D::BODY_STATE_SLEEPING: {
+			return get_sleep_state();
+		}
+		case PhysicsServer3D::BODY_STATE_CAN_SLEEP: {
+			return can_sleep();
+		}
+		default: {
+			ERR_FAIL_D_MSG(vformat("Unhandled body state: '{}'", p_state));
+		}
 	}
 }
 
 void JoltPhysicsBody3D::set_state(PhysicsServer3D::BodyState p_state, const Variant& p_value) {
 	switch (p_state) {
-	case PhysicsServer3D::BODY_STATE_TRANSFORM:
-		set_transform(p_value);
-		break;
-	case PhysicsServer3D::BODY_STATE_LINEAR_VELOCITY:
-		set_linear_velocity(p_value);
-		break;
-	case PhysicsServer3D::BODY_STATE_ANGULAR_VELOCITY:
-		set_angular_velocity(p_value);
-		break;
-	case PhysicsServer3D::BODY_STATE_SLEEPING:
-		set_sleep_state(p_value);
-		break;
-	case PhysicsServer3D::BODY_STATE_CAN_SLEEP:
-		set_can_sleep(p_value);
-		break;
-	default:
-		ERR_FAIL_MSG(vformat("Unhandled body state: '{}'", p_state));
+		case PhysicsServer3D::BODY_STATE_TRANSFORM: {
+			set_transform(p_value);
+		} break;
+		case PhysicsServer3D::BODY_STATE_LINEAR_VELOCITY: {
+			set_linear_velocity(p_value);
+		} break;
+		case PhysicsServer3D::BODY_STATE_ANGULAR_VELOCITY: {
+			set_angular_velocity(p_value);
+		} break;
+		case PhysicsServer3D::BODY_STATE_SLEEPING: {
+			set_sleep_state(p_value);
+		} break;
+		case PhysicsServer3D::BODY_STATE_CAN_SLEEP: {
+			set_can_sleep(p_value);
+		} break;
+		default: {
+			ERR_FAIL_MSG(vformat("Unhandled body state: '{}'", p_state));
+		} break;
 	}
 }
 
 Variant JoltPhysicsBody3D::get_param(PhysicsServer3D::BodyParameter p_param) const {
 	switch (p_param) {
-	case PhysicsServer3D::BODY_PARAM_BOUNCE:
-		return get_bounce();
-	case PhysicsServer3D::BODY_PARAM_FRICTION:
-		return get_friction();
-	case PhysicsServer3D::BODY_PARAM_MASS:
-		return get_mass();
-	case PhysicsServer3D::BODY_PARAM_INERTIA:
-		return get_inertia();
-	case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE:
-		return get_gravity_scale();
-	case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP_MODE:
-		ERR_FAIL_D_NOT_IMPL();
-	case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP_MODE:
-		ERR_FAIL_D_NOT_IMPL();
-	case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP:
-		return get_linear_damp();
-	case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP:
-		return get_angular_damp();
-	default:
-		ERR_FAIL_D_MSG(vformat("Unhandled body parameter: '{}'", p_param));
+		case PhysicsServer3D::BODY_PARAM_BOUNCE: {
+			return get_bounce();
+		}
+		case PhysicsServer3D::BODY_PARAM_FRICTION: {
+			return get_friction();
+		}
+		case PhysicsServer3D::BODY_PARAM_MASS: {
+			return get_mass();
+		}
+		case PhysicsServer3D::BODY_PARAM_INERTIA: {
+			return get_inertia();
+		}
+		case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE: {
+			return get_gravity_scale();
+		}
+		case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP_MODE: {
+			ERR_FAIL_D_NOT_IMPL();
+		}
+		case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP_MODE: {
+			ERR_FAIL_D_NOT_IMPL();
+		}
+		case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP: {
+			return get_linear_damp();
+		}
+		case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP: {
+			return get_angular_damp();
+		}
+		default: {
+			ERR_FAIL_D_MSG(vformat("Unhandled body parameter: '{}'", p_param));
+		}
 	}
 }
 
 void JoltPhysicsBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const Variant& p_value) {
 	switch (p_param) {
-	case PhysicsServer3D::BODY_PARAM_BOUNCE:
-		set_bounce(p_value);
-		break;
-	case PhysicsServer3D::BODY_PARAM_FRICTION:
-		set_friction(p_value);
-		break;
-	case PhysicsServer3D::BODY_PARAM_MASS:
-		set_mass(p_value);
-		break;
-	case PhysicsServer3D::BODY_PARAM_INERTIA:
-		set_inertia(p_value);
-		break;
-	case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE:
-		set_gravity_scale(p_value);
-		break;
-	case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP_MODE:
-		ERR_FAIL_NOT_IMPL();
-		break;
-	case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP_MODE:
-		ERR_FAIL_NOT_IMPL();
-		break;
-	case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP:
-		set_linear_damp(p_value);
-		break;
-	case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP:
-		set_angular_damp(p_value);
-		break;
-	default:
-		ERR_FAIL_MSG(vformat("Unhandled body parameter: '{}'", p_param));
+		case PhysicsServer3D::BODY_PARAM_BOUNCE: {
+			set_bounce(p_value);
+		} break;
+		case PhysicsServer3D::BODY_PARAM_FRICTION: {
+			set_friction(p_value);
+		} break;
+		case PhysicsServer3D::BODY_PARAM_MASS: {
+			set_mass(p_value);
+		} break;
+		case PhysicsServer3D::BODY_PARAM_INERTIA: {
+			set_inertia(p_value);
+		} break;
+		case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE: {
+			set_gravity_scale(p_value);
+		} break;
+		case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP_MODE: {
+			ERR_FAIL_NOT_IMPL();
+		} break;
+		case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP_MODE: {
+			ERR_FAIL_NOT_IMPL();
+		} break;
+		case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP: {
+			set_linear_damp(p_value);
+		} break;
+		case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP: {
+			set_angular_damp(p_value);
+		} break;
+		default: {
+			ERR_FAIL_MSG(vformat("Unhandled body parameter: '{}'", p_param));
+		} break;
 	}
 }
 
@@ -236,18 +254,19 @@ void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) 
 	JPH::EMotionType motion_type = {};
 
 	switch (p_mode) {
-	case PhysicsServer3D::BODY_MODE_STATIC:
-		motion_type = JPH::EMotionType::Static;
-		break;
-	case PhysicsServer3D::BODY_MODE_KINEMATIC:
-		motion_type = JPH::EMotionType::Kinematic;
-		break;
-	case PhysicsServer3D::BODY_MODE_RIGID:
-	case PhysicsServer3D::BODY_MODE_RIGID_LINEAR:
-		motion_type = JPH::EMotionType::Dynamic;
-		break;
-	default:
-		ERR_FAIL_MSG(vformat("Unhandled body mode: '{}'", p_mode));
+		case PhysicsServer3D::BODY_MODE_STATIC: {
+			motion_type = JPH::EMotionType::Static;
+		} break;
+		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
+			motion_type = JPH::EMotionType::Kinematic;
+		} break;
+		case PhysicsServer3D::BODY_MODE_RIGID:
+		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
+			motion_type = JPH::EMotionType::Dynamic;
+		} break;
+		default: {
+			ERR_FAIL_MSG(vformat("Unhandled body mode: '{}'", p_mode));
+		} break;
 	}
 
 	const BodyAccessWrite body_access(*space, jid, p_lock);

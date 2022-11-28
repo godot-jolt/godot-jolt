@@ -26,23 +26,29 @@ constexpr uint32_t GDJOLT_MAX_CONTACT_CONSTRAINTS = 65536;
 
 bool jolt_can_collide_object(JPH::ObjectLayer p_object1, JPH::ObjectLayer p_object2) {
 	switch (p_object1) {
-	case GDJOLT_OBJECT_LAYER_STATIC:
-		return p_object2 == GDJOLT_OBJECT_LAYER_MOVING;
-	case GDJOLT_OBJECT_LAYER_MOVING:
-		return true;
-	default:
-		ERR_FAIL_D_NOT_IMPL();
+		case GDJOLT_OBJECT_LAYER_STATIC: {
+			return p_object2 == GDJOLT_OBJECT_LAYER_MOVING;
+		}
+		case GDJOLT_OBJECT_LAYER_MOVING: {
+			return true;
+		}
+		default: {
+			ERR_FAIL_D_NOT_IMPL();
+		}
 	}
 }
 
 bool jolt_can_collide_broad_phase(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) {
 	switch (p_layer1) {
-	case GDJOLT_OBJECT_LAYER_STATIC:
-		return p_layer2 == JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MOVING);
-	case GDJOLT_OBJECT_LAYER_MOVING:
-		return true;
-	default:
-		ERR_FAIL_D_NOT_IMPL();
+		case GDJOLT_OBJECT_LAYER_STATIC: {
+			return p_layer2 == JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MOVING);
+		}
+		case GDJOLT_OBJECT_LAYER_MOVING: {
+			return true;
+		}
+		default: {
+			ERR_FAIL_D_NOT_IMPL();
+		}
 	}
 }
 
@@ -64,12 +70,15 @@ public:
 #if defined(JPH_EXTERNAL_PROFILE) || defined(JPH_PROFILE_ENABLED)
 	const char* GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer) const override {
 		switch ((JPH::BroadPhaseLayer::Type)p_layer) {
-		case GDJOLT_BROAD_PHASE_LAYER_STATIC:
-			return "STATIC";
-		case GDJOLT_BROAD_PHASE_LAYER_MOVING:
-			return "MOVING";
-		default:
-			return "INVALID";
+			case GDJOLT_BROAD_PHASE_LAYER_STATIC: {
+				return "STATIC";
+			}
+			case GDJOLT_BROAD_PHASE_LAYER_MOVING: {
+				return "MOVING";
+			}
+			default: {
+				return "INVALID";
+			}
 		}
 	}
 #endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
@@ -171,27 +180,31 @@ PhysicsDirectSpaceState3D* JoltPhysicsSpace3D::get_direct_state() const {
 
 Variant JoltPhysicsSpace3D::get_param(PhysicsServer3D::AreaParameter p_param) const {
 	switch (p_param) {
-	case PhysicsServer3D::AREA_PARAM_GRAVITY:
-		return gravity;
-	case PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR:
-		return gravity_vector;
-	default:
-		ERR_FAIL_D_NOT_IMPL();
+		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
+			return gravity;
+		}
+		case PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR: {
+			return gravity_vector;
+		}
+		default: {
+			ERR_FAIL_D_NOT_IMPL();
+		}
 	}
 }
 
 void JoltPhysicsSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value) {
 	switch (p_param) {
-	case PhysicsServer3D::AREA_PARAM_GRAVITY:
-		gravity = p_value;
-		update_gravity();
-		break;
-	case PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR:
-		gravity_vector = p_value;
-		update_gravity();
-		break;
-	default:
-		ERR_FAIL_NOT_IMPL();
+		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
+			gravity = p_value;
+			update_gravity();
+		} break;
+		case PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR: {
+			gravity_vector = p_value;
+			update_gravity();
+		} break;
+		default: {
+			ERR_FAIL_NOT_IMPL();
+		} break;
 	}
 }
 
@@ -214,21 +227,22 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 	JPH::ObjectLayer object_layer = {};
 
 	switch (p_object->get_mode()) {
-	case PhysicsServer3D::BODY_MODE_STATIC:
-		motion_type = JPH::EMotionType::Static;
-		object_layer = GDJOLT_OBJECT_LAYER_STATIC;
-		break;
-	case PhysicsServer3D::BODY_MODE_KINEMATIC:
-		motion_type = JPH::EMotionType::Kinematic;
-		object_layer = GDJOLT_OBJECT_LAYER_MOVING;
-		break;
-	case PhysicsServer3D::BODY_MODE_RIGID:
-	case PhysicsServer3D::BODY_MODE_RIGID_LINEAR:
-		motion_type = JPH::EMotionType::Dynamic;
-		object_layer = GDJOLT_OBJECT_LAYER_MOVING;
-		break;
-	default:
-		ERR_FAIL_MSG("Unhandled body mode");
+		case PhysicsServer3D::BODY_MODE_STATIC: {
+			motion_type = JPH::EMotionType::Static;
+			object_layer = GDJOLT_OBJECT_LAYER_STATIC;
+		} break;
+		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
+			motion_type = JPH::EMotionType::Kinematic;
+			object_layer = GDJOLT_OBJECT_LAYER_MOVING;
+		} break;
+		case PhysicsServer3D::BODY_MODE_RIGID:
+		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
+			motion_type = JPH::EMotionType::Dynamic;
+			object_layer = GDJOLT_OBJECT_LAYER_MOVING;
+		} break;
+		default: {
+			ERR_FAIL_MSG("Unhandled body mode");
+		} break;
 	}
 
 	const Transform3D& transform = p_object->get_initial_transform();

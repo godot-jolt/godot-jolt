@@ -37,7 +37,7 @@ ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
 IndentAccessModifiers: false
 IndentCaseBlocks: false
-IndentCaseLabels: false
+IndentCaseLabels: true
 IndentExternBlock: NoIndent
 IndentGotoLabels: false
 IndentPPDirectives: None
