@@ -19,7 +19,9 @@ public:
 
 	void set_state_sync_callback(const Callable& p_callback);
 
-	bool is_sleeping(bool p_lock = true) const;
+	bool get_initial_sleep_state() const override { return initial_sleep_state; }
+
+	bool get_sleep_state(bool p_lock = true) const;
 
 	void set_sleep_state(bool p_enabled, bool p_lock = true);
 
@@ -116,6 +118,8 @@ private:
 	float linear_damp = 0.0f;
 
 	float angular_damp = 0.0f;
+
+	bool initial_sleep_state = false;
 
 	bool allowed_sleep = true;
 

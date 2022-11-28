@@ -269,7 +269,11 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 }
 
 void JoltPhysicsSpace3D::add_object(JoltPhysicsCollisionObject3D* p_object) {
-	physics_system->GetBodyInterface().AddBody(p_object->get_jid(), JPH::EActivation::Activate);
+	physics_system->GetBodyInterface().AddBody(
+		p_object->get_jid(),
+		p_object->get_initial_sleep_state() ? JPH::EActivation::DontActivate
+											: JPH::EActivation::Activate
+	);
 }
 
 void JoltPhysicsSpace3D::remove_object(JoltPhysicsCollisionObject3D* p_object) {
