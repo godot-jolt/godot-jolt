@@ -262,10 +262,6 @@ void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) 
 	if (get_sleep_state(false) && motion_type != JPH::EMotionType::Static) {
 		set_sleep_state(false, false);
 	}
-
-	if (motion_type != JPH::EMotionType::Static) {
-		mass_properties_changed(false);
-	}
 }
 
 void JoltPhysicsBody3D::set_mass(float p_mass, bool p_lock) {
@@ -408,7 +404,7 @@ void JoltPhysicsBody3D::shapes_changed(bool p_lock) {
 }
 
 void JoltPhysicsBody3D::mass_properties_changed(bool p_lock) {
-	if (!space || mode == PhysicsServer3D::BODY_MODE_STATIC) {
+	if (!space) {
 		return;
 	}
 
@@ -416,5 +412,5 @@ void JoltPhysicsBody3D::mass_properties_changed(bool p_lock) {
 	ERR_FAIL_COND(!body_access.is_valid());
 
 	const JPH::MassProperties mass_properties = calculate_mass_properties(false);
-	body_access.get_body().GetMotionProperties()->SetMassProperties(mass_properties);
+	body_access.get_body().GetMotionPropertiesUnchecked()->SetMassProperties(mass_properties);
 }
