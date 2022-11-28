@@ -37,6 +37,8 @@ public:
 
 	void set_collision_mask(uint32_t p_mask, bool p_lock = true);
 
+	Transform3D get_initial_transform() const { return initial_transform; }
+
 	Transform3D get_transform(bool p_lock = true) const;
 
 	void set_transform(const Transform3D& p_transform, bool p_lock = true);
@@ -71,6 +73,12 @@ public:
 	void set_ray_pickable(bool p_enable) { ray_pickable = p_enable; }
 
 	virtual void call_queries() = 0;
+
+	virtual Vector3 get_initial_linear_velocity() const = 0;
+
+	virtual Vector3 get_initial_angular_velocity() const = 0;
+
+	virtual bool get_initial_sleep_state() const = 0;
 
 	virtual PhysicsServer3D::BodyMode get_mode() const = 0;
 
@@ -113,5 +121,5 @@ protected:
 
 	bool ray_pickable = false;
 
-	Transform3D transform;
+	Transform3D initial_transform;
 };

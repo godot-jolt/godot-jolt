@@ -231,7 +231,7 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 		ERR_FAIL_MSG("Unhandled body mode");
 	}
 
-	const Transform3D& transform = p_object->get_transform();
+	const Transform3D& transform = p_object->get_initial_transform();
 	const bool is_sensor = p_object->is_sensor();
 
 	JPH::BodyCreationSettings settings(
@@ -242,6 +242,8 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 		object_layer
 	);
 
+	settings.mLinearVelocity = to_jolt(p_object->get_initial_linear_velocity());
+	settings.mAngularVelocity = to_jolt(p_object->get_initial_angular_velocity());
 	settings.mAllowDynamicOrKinematic = true;
 	settings.mIsSensor = is_sensor;
 	settings.mAllowSleeping = p_object->can_sleep();
@@ -267,7 +269,11 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 }
 
 void JoltPhysicsSpace3D::add_object(JoltPhysicsCollisionObject3D* p_object) {
-	physics_system->GetBodyInterface().AddBody(p_object->get_jid(), JPH::EActivation::Activate);
+	physics_system->GetBodyInterface().AddBody(
+		p_object->get_jid(),
+		p_object->get_initial_sleep_state() ? JPH::EActivation::DontActivate
+											: JPH::EActivation::Activate
+	);
 }
 
 void JoltPhysicsSpace3D::remove_object(JoltPhysicsCollisionObject3D* p_object) {

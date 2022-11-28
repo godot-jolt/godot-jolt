@@ -23,7 +23,7 @@ Variant JoltPhysicsBody3D::get_state(PhysicsServer3D::BodyState p_state) {
 	case PhysicsServer3D::BODY_STATE_ANGULAR_VELOCITY:
 		return get_angular_velocity();
 	case PhysicsServer3D::BODY_STATE_SLEEPING:
-		return is_sleeping();
+		return get_sleep_state();
 	case PhysicsServer3D::BODY_STATE_CAN_SLEEP:
 		return can_sleep();
 	default:
@@ -116,7 +116,7 @@ void JoltPhysicsBody3D::set_state_sync_callback(const Callable& p_callback) {
 	body_state_callback = p_callback;
 }
 
-bool JoltPhysicsBody3D::is_sleeping(bool p_lock) const {
+bool JoltPhysicsBody3D::get_sleep_state(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
 	const BodyAccessRead body_access(*space, jid, p_lock);
@@ -126,7 +126,10 @@ bool JoltPhysicsBody3D::is_sleeping(bool p_lock) const {
 }
 
 void JoltPhysicsBody3D::set_sleep_state(bool p_enabled, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	if (!space) {
+		initial_sleep_state = p_enabled;
+		return;
+	}
 
 	if (p_enabled) {
 		space->get_body_iface(p_lock).DeactivateBody(jid);
@@ -171,7 +174,10 @@ Vector3 JoltPhysicsBody3D::get_linear_velocity(bool p_lock) const {
 }
 
 void JoltPhysicsBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	if (!space) {
+		initial_linear_velocity = p_velocity;
+		return;
+	}
 
 	const BodyAccessWrite body_access(*space, jid, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());
@@ -189,7 +195,10 @@ Vector3 JoltPhysicsBody3D::get_angular_velocity(bool p_lock) const {
 }
 
 void JoltPhysicsBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	if (!space) {
+		initial_angular_velocity = p_velocity;
+		return;
+	}
 
 	const BodyAccessWrite body_access(*space, jid, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());
@@ -244,13 +253,13 @@ void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) 
 	const BodyAccessWrite body_access(*space, jid, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());
 
-	if (!is_sleeping(false) && motion_type == JPH::EMotionType::Static) {
+	if (!get_sleep_state(false) && motion_type == JPH::EMotionType::Static) {
 		set_sleep_state(true, false);
 	}
 
 	body_access.get_body().SetMotionType(motion_type);
 
-	if (is_sleeping(false) && motion_type != JPH::EMotionType::Static) {
+	if (get_sleep_state(false) && motion_type != JPH::EMotionType::Static) {
 		set_sleep_state(false, false);
 	}
 

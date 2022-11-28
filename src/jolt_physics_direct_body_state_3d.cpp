@@ -145,7 +145,7 @@ void JoltPhysicsDirectBodyState3D::_set_constant_torque([[maybe_unused]] const V
 
 bool JoltPhysicsDirectBodyState3D::_is_sleeping() const {
 	ERR_FAIL_NULL_D(body);
-	return body->is_sleeping(false);
+	return body->get_sleep_state(false);
 }
 
 void JoltPhysicsDirectBodyState3D::_set_sleep_state(bool p_enabled) {

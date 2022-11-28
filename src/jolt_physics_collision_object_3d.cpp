@@ -60,9 +60,7 @@ void JoltPhysicsCollisionObject3D::set_collision_mask(uint32_t p_mask, bool p_lo
 }
 
 Transform3D JoltPhysicsCollisionObject3D::get_transform(bool p_lock) const {
-	if (!space) {
-		return transform;
-	}
+	ERR_FAIL_NULL_D(space);
 
 	const BodyAccessRead body_access(*space, jid, p_lock);
 	ERR_FAIL_COND_D(!body_access.is_valid());
@@ -73,9 +71,8 @@ Transform3D JoltPhysicsCollisionObject3D::get_transform(bool p_lock) const {
 }
 
 void JoltPhysicsCollisionObject3D::set_transform(const Transform3D& p_transform, bool p_lock) {
-	transform = p_transform;
-
 	if (!space) {
+		initial_transform = p_transform;
 		return;
 	}
 
@@ -86,7 +83,7 @@ void JoltPhysicsCollisionObject3D::set_transform(const Transform3D& p_transform,
 		jid,
 		to_jolt(p_transform.get_origin()),
 		to_jolt(p_transform.get_basis()),
-		JPH::EActivation::Activate
+		JPH::EActivation::DontActivate
 	);
 }
 
@@ -162,7 +159,7 @@ void JoltPhysicsCollisionObject3D::add_shape(
 		->AddShape(to_jolt(p_transform.origin), to_jolt(p_transform.basis), p_shape->get_jref());
 
 	space->get_body_iface(false)
-		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::Activate);
+		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::DontActivate);
 
 	shapes_changed(false);
 }
@@ -199,7 +196,7 @@ void JoltPhysicsCollisionObject3D::remove_shape(int p_index, bool p_lock) {
 	root_shape->RemoveShape((JPH::uint)p_index);
 
 	space->get_body_iface(false)
-		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::Activate);
+		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::DontActivate);
 
 	shapes_changed(false);
 }
@@ -240,7 +237,7 @@ void JoltPhysicsCollisionObject3D::set_shape_transform(
 		->ModifyShape((JPH::uint)p_index, to_jolt(p_transform.origin), to_jolt(p_transform.basis));
 
 	space->get_body_iface(false)
-		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::Activate);
+		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::DontActivate);
 
 	shapes_changed(false);
 }

@@ -19,7 +19,9 @@ public:
 
 	void set_state_sync_callback(const Callable& p_callback);
 
-	bool is_sleeping(bool p_lock = true) const;
+	bool get_initial_sleep_state() const override { return initial_sleep_state; }
+
+	bool get_sleep_state(bool p_lock = true) const;
 
 	void set_sleep_state(bool p_enabled, bool p_lock = true);
 
@@ -28,6 +30,10 @@ public:
 	void set_can_sleep(bool p_enabled, bool p_lock = true);
 
 	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
+
+	Vector3 get_initial_linear_velocity() const override { return initial_linear_velocity; }
+
+	Vector3 get_initial_angular_velocity() const override { return initial_angular_velocity; }
 
 	Vector3 get_linear_velocity(bool p_lock = true) const;
 
@@ -113,7 +119,13 @@ private:
 
 	float angular_damp = 0.0f;
 
+	bool initial_sleep_state = false;
+
 	bool allowed_sleep = true;
+
+	Vector3 initial_linear_velocity;
+
+	Vector3 initial_angular_velocity;
 
 	Vector3 constant_force;
 
