@@ -573,16 +573,20 @@ int64_t JoltPhysicsServer3D::_body_get_object_instance_id(const RID& p_body) con
 }
 
 void JoltPhysicsServer3D::_body_set_enable_continuous_collision_detection(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] bool p_enable
+	const RID& p_body,
+	bool p_enable
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_ccd_enabled(p_enable);
 }
 
-bool JoltPhysicsServer3D::_body_is_continuous_collision_detection_enabled(
-	[[maybe_unused]] const RID& p_body
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+bool JoltPhysicsServer3D::_body_is_continuous_collision_detection_enabled(const RID& p_body) const {
+	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->is_ccd_enabled();
 }
 
 void JoltPhysicsServer3D::_body_set_collision_layer(const RID& p_body, int64_t p_layer) {

@@ -283,6 +283,23 @@ void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) 
 	}
 }
 
+void JoltPhysicsBody3D::set_ccd_enabled(bool p_enable, bool p_lock) {
+	if (p_enable == ccd_enabled) {
+		return;
+	}
+
+	ccd_enabled = p_enable;
+
+	if (!space) {
+		return;
+	}
+
+	space->get_body_iface(p_lock).SetMotionQuality(
+		jid,
+		ccd_enabled ? JPH::EMotionQuality::LinearCast : JPH::EMotionQuality::Discrete
+	);
+}
+
 void JoltPhysicsBody3D::set_mass(float p_mass, bool p_lock) {
 	if (p_mass != mass) {
 		mass = p_mass;
