@@ -241,6 +241,15 @@ JoltPhysicsDirectBodyState3D* JoltPhysicsBody3D::get_direct_state() {
 }
 
 void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
+	if (p_mode == PhysicsServer3D::BODY_MODE_RIGID_LINEAR) {
+		WARN_PRINT(
+			"Locking rotation is not supported by Godot Jolt. "
+			"Any such setting will be treated as disabled."
+		);
+
+		p_mode = PhysicsServer3D::BODY_MODE_RIGID;
+	}
+
 	if (p_mode == mode) {
 		return;
 	}
@@ -260,8 +269,7 @@ void JoltPhysicsBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) 
 		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
 			motion_type = JPH::EMotionType::Kinematic;
 		} break;
-		case PhysicsServer3D::BODY_MODE_RIGID:
-		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
+		case PhysicsServer3D::BODY_MODE_RIGID: {
 			motion_type = JPH::EMotionType::Dynamic;
 		} break;
 		default: {
