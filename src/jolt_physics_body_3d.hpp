@@ -68,6 +68,10 @@ public:
 
 	void set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock = true);
 
+	bool is_ccd_enabled() const override { return ccd_enabled; }
+
+	void set_ccd_enabled(bool p_enable, bool p_lock = true);
+
 	float get_mass() const override { return mass; }
 
 	void set_mass(float p_mass, bool p_lock = true);
@@ -104,6 +108,8 @@ private:
 	void mass_properties_changed(bool p_lock);
 
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
+
+	bool ccd_enabled = false;
 
 	float mass = 1.0f;
 

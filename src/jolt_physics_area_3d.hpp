@@ -33,6 +33,8 @@ public:
 		return PhysicsServer3D::BODY_MODE_KINEMATIC;
 	}
 
+	bool is_ccd_enabled() const override { return false; }
+
 	float get_mass() const override { return 1.0f; }
 
 	Vector3 get_inertia() const override { return {0, 0, 0}; }
