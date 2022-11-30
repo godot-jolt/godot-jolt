@@ -99,5 +99,5 @@ jobs:
         shell: pwsh
         run: >
           ./scripts/run_clang_tidy.ps1
-            -SourcePath ./src
-            -BuildPath ./build/linux-clang-${{ matrix.arch }}
+          -SourcePath ./src
+          -BuildPath ./build/linux-clang-${{ matrix.arch }}
