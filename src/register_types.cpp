@@ -4,7 +4,7 @@
 
 namespace {
 
-constexpr ModuleInitializationLevel GDJOLT_INIT_LEVEL = MODULE_INITIALIZATION_LEVEL_SCENE;
+constexpr ModuleInitializationLevel GDJOLT_INIT_LEVEL = MODULE_INITIALIZATION_LEVEL_SERVERS;
 
 JoltPhysicsServerFactory3D* server_factory = nullptr;
 
