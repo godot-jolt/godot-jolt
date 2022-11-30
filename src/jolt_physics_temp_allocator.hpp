@@ -8,7 +8,7 @@ public:
 		: base(static_cast<uint8_t*>(JPH::Allocate(p_capacity)))
 		, capacity(p_capacity) { }
 
-	~JoltPhysicsTempAllocator() { JPH::Free(base); }
+	~JoltPhysicsTempAllocator() override { JPH::Free(base); }
 
 	void* Allocate(uint32_t p_size) override {
 		if (p_size == 0) {
