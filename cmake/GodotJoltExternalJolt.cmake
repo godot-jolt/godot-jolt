@@ -30,7 +30,7 @@ set(dev_definitions
 
 GodotJoltExternalLibrary_Add(jolt "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/jolt.git
-	GIT_COMMIT 64802d163a7336e60916365ad9bce764cec4ca70
+	GIT_COMMIT 287a2ddf84158a24e84dd6e8811c281afdc4c45c
 	SOURCE_SUBDIR Build
 	OUTPUT_NAME Jolt
 	INCLUDE_DIRECTORIES
