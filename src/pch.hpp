@@ -58,6 +58,7 @@
 #include <Jolt/RegisterTypes.h>
 
 #include <fmt/format.h>
+#include <mimalloc.h>
 
 #include <cstdarg>
 #include <cstdio>

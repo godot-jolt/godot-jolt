@@ -84,6 +84,7 @@
       "name": "msvc-base",
       "hidden": true,
       "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl",
         "CMAKE_CXX_FLAGS": "/WX"
       },
@@ -96,6 +97,7 @@
       "name": "clangcl-base",
       "hidden": true,
       "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl",
         "CMAKE_CXX_FLAGS": "/WX"
       },
@@ -108,6 +110,7 @@
       "name": "clang-base",
       "hidden": true,
       "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
         "CMAKE_CXX_FLAGS": "-Werror"
       }
@@ -116,6 +119,7 @@
       "name": "gcc-base",
       "hidden": true,
       "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_CXX_FLAGS": "-Werror"
       }

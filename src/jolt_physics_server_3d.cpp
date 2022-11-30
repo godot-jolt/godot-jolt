@@ -14,29 +14,19 @@ constexpr int32_t GDJOLT_MAX_PHYSICS_JOBS = 2048;
 constexpr int32_t GDJOLT_MAX_PHYSICS_BARRIERS = 8;
 
 void* jolt_alloc(size_t p_size) {
-	return memalloc(p_size);
+	return mi_malloc(p_size);
 }
 
 void jolt_free(void* p_mem) {
-	memfree(p_mem);
+	mi_free(p_mem);
 }
 
 void* jolt_aligned_alloc(size_t p_size, size_t p_alignment) {
-	p_size = (p_size + p_alignment - 1) & ~(p_alignment - 1);
-
-#if defined(_WIN32) && defined(_MSC_VER)
-	return _aligned_malloc(p_size, p_alignment);
-#else // _WIN32 && _MSC_VER
-	return aligned_alloc(p_alignment, p_size);
-#endif // _WIN32 && _MSC_VER
+	return mi_aligned_alloc(p_alignment, p_size);
 }
 
 void jolt_aligned_free(void* p_mem) {
-#if defined(_WIN32) && defined(_MSC_VER)
-	_aligned_free(p_mem);
-#else // _WIN32 && _MSC_VER
-	free(p_mem);
-#endif // _WIN32 && _MSC_VER
+	mi_free(p_mem);
 }
 
 void jolt_trace(const char* p_format, ...) {
