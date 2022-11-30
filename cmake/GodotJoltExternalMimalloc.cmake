@@ -7,10 +7,16 @@ set(configurations
 	RelWithDebInfo
 )
 
+if(MSVC)
+	set(output_name mimalloc-static)
+else()
+	set(output_name mimalloc)
+endif()
+
 GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/mimalloc.git
 	GIT_COMMIT 91ba1f374da66e624841f53f6659da3a8f8f93ea
-	OUTPUT_NAME mimalloc-static
+	OUTPUT_NAME ${output_name}
 	INCLUDE_DIRECTORIES
 		<SOURCE_DIR>/include
 	CMAKE_CACHE_ARGS
