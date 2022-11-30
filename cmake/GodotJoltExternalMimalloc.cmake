@@ -20,7 +20,7 @@ else()
 endif()
 
 if(DEFINED ENV{CFLAGS})
-	set(c_flags $ENV{CFLAGS} ${c_flags})
+	set(c_flags "$ENV{CFLAGS} ${c_flags}")
 endif()
 
 GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
