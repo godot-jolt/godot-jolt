@@ -7,7 +7,7 @@ set(configurations
 	RelWithDebInfo
 )
 
-if(MSVC)
+if(WIN32)
 	set(output_name mimalloc-static)
 else()
 	set(output_name mimalloc)
