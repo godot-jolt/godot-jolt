@@ -4,6 +4,7 @@
 #include "error_macros.hpp"
 #include "jolt_physics_collision_object_3d.hpp"
 #include "jolt_physics_shape_3d.hpp"
+#include "jolt_physics_temp_allocator.hpp"
 
 namespace {
 
@@ -19,10 +20,11 @@ enum JoltPhysicsBroadPhaseLayer3D {
 	GDJOLT_BROAD_PHASE_LAYER_COUNT
 };
 
-constexpr uint32_t GDJOLT_MAX_BODIES = 65536;
+constexpr uint32_t GDJOLT_TEMP_CAPACITY = 8 * 1024 * 1024;
+constexpr uint32_t GDJOLT_MAX_BODIES = 8192;
 constexpr uint32_t GDJOLT_NUM_BODY_MUTEXES = 0; // 0 = default
 constexpr uint32_t GDJOLT_MAX_BODY_PAIRS = 65536;
-constexpr uint32_t GDJOLT_MAX_CONTACT_CONSTRAINTS = 65536;
+constexpr uint32_t GDJOLT_MAX_CONTACT_CONSTRAINTS = 8192;
 
 bool jolt_can_collide_object(JPH::ObjectLayer p_object1, JPH::ObjectLayer p_object2) {
 	switch (p_object1) {
@@ -94,7 +96,7 @@ JoltPhysicsSpace3D::JoltPhysicsSpace3D(
 	JPH::GroupFilter* p_group_filter
 )
 	: job_system(p_job_system)
-	, temp_allocator(new JPH::TempAllocatorMalloc())
+	, temp_allocator(new JoltPhysicsTempAllocator(GDJOLT_TEMP_CAPACITY))
 	, bp_layer(new JoltPhysicsLayerMapper3D())
 	, physics_system(new JPH::PhysicsSystem())
 	, group_filter(p_group_filter) {
