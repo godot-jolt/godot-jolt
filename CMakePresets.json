@@ -99,7 +99,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl",
-        "CMAKE_CXX_FLAGS": "/WX"
+        "CMAKE_CXX_FLAGS": "$env{CXXFLAGS} /WX"
       },
       "toolset": {
         "value": "ClangCL,host=x64",
@@ -112,7 +112,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_CXX_FLAGS": "-Werror"
+        "CMAKE_CXX_FLAGS": "$env{CXXFLAGS} -Werror"
       }
     },
     {
@@ -121,14 +121,14 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
-        "CMAKE_CXX_FLAGS": "-Werror"
+        "CMAKE_CXX_FLAGS": "$env{CXXFLAGS} -Werror"
       }
     },
     {
       "name": "lld-base",
       "hidden": true,
       "environment": {
-        "LDFLAGS": "-fuse-ld=lld"
+        "LDFLAGS": "$penv{LDFLAGS} -fuse-ld=lld"
       }
     },
     {

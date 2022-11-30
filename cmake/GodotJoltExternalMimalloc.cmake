@@ -19,6 +19,8 @@ else()
 	set(nowarn_option -w)
 endif()
 
+set(c_flags "$ENV{CFLAGS} ${nowarn_option}")
+
 GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/mimalloc.git
 	GIT_COMMIT 91ba1f374da66e624841f53f6659da3a8f8f93ea
@@ -26,7 +28,7 @@ GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
 	INCLUDE_DIRECTORIES
 		<SOURCE_DIR>/include
 	CMAKE_CACHE_ARGS
-		-DCMAKE_C_FLAGS=${nowarn_option}
+		-DCMAKE_C_FLAGS=${c_flags}
 		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO=${GDJOLT_LTO}
 		-DMI_OVERRIDE=FALSE
 		-DMI_USE_CXX=FALSE
