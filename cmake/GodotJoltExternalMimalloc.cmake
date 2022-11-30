@@ -14,9 +14,13 @@ else()
 endif()
 
 if(MSVC)
-	set(nowarn_option /W0)
+	set(c_flags /W0)
 else()
-	set(nowarn_option -w)
+	set(c_flags -w)
+endif()
+
+if(DEFINED ENV{CFLAGS})
+	set(c_flags $ENV{CFLAGS} ${c_flags})
 endif()
 
 GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
@@ -26,7 +30,7 @@ GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
 	INCLUDE_DIRECTORIES
 		<SOURCE_DIR>/include
 	CMAKE_CACHE_ARGS
-		-DCMAKE_C_FLAGS=${nowarn_option}
+		-DCMAKE_C_FLAGS=${c_flags}
 		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO=${GDJOLT_LTO}
 		-DMI_OVERRIDE=FALSE
 		-DMI_USE_CXX=FALSE
