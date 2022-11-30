@@ -5,8 +5,12 @@ entry_symbol = "godot_jolt_main"
 [libraries]
 
 windows.debug.x86_64 = "res://../bin/godot-jolt-windows-x64-editor.dll"
+windows.debug.x86_32 = "res://../bin/godot-jolt-windows-x86-editor.dll"
 windows.release.x86_64 = "res://../bin/godot-jolt-windows-x64.dll"
+windows.release.x86_32 = "res://../bin/godot-jolt-windows-x86.dll"
 linux.debug.x86_64 = "res://../bin/godot-jolt-linux-x64-editor.so"
+linux.debug.x86_32 = "res://../bin/godot-jolt-linux-x86-editor.so"
 linux.release.x86_64 = "res://../bin/godot-jolt-linux-x64.so"
+linux.release.x86_32 = "res://../bin/godot-jolt-linux-x86.so"
 macos.debug = "res://../bin/godot-jolt-macos-editor.framework"
 macos.release = "res://../bin/godot-jolt-macos.framework"

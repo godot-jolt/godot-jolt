@@ -59,9 +59,13 @@ need to installed separately.
 The following configuration presets are currently available:
 
 - `windows-msvc-x64` (Microsoft Visual C++, x86-64)
+- `windows-msvc-x86` (Microsoft Visual C++, x86)
 - `windows-clangcl-x64` (LLVM clang-cl, x86-64)
+- `windows-clangcl-x86` (LLVM clang-cl, x86)
 - `linux-gcc-x64` (GCC, x86-64)
+- `linux-gcc-x86` (GCC, x86)
 - `linux-clang-x64` (LLVM Clang, x86-64)
+- `linux-clang-x86` (LLVM Clang, x86)
 - `macos-clang` (Apple Clang, [universal][uvb])
 
 One of the following suffixes are then applied to the configuration presets to create the build

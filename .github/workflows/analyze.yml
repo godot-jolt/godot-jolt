@@ -25,8 +25,13 @@ jobs:
         run: ./scripts/run_clang_format.ps1 -SourcePath ./src
 
   clang-tidy:
-    name: Linting
+    name: Linting (${{ matrix.arch }})
     runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, x86]
 
     steps:
       - name: Checkout code
@@ -36,13 +41,13 @@ jobs:
         uses: aminya/setup-cpp@v1
         with:
           compiler: llvm-14.0.0
-          architecture: x64
+          architecture: ${{ matrix.arch }}
 
       - name: Build 'Debug' configuration
         uses: ./.github/actions/build-with-cmake
         with:
           platform: linux-clang
-          arch: x64
+          arch: ${{ matrix.arch }}
           editor: false
           config: debug
 
@@ -50,7 +55,7 @@ jobs:
         uses: ./.github/actions/build-with-cmake
         with:
           platform: linux-clang
-          arch: x64
+          arch: ${{ matrix.arch }}
           editor: false
           config: development
 
@@ -58,7 +63,7 @@ jobs:
         uses: ./.github/actions/build-with-cmake
         with:
           platform: linux-clang
-          arch: x64
+          arch: ${{ matrix.arch }}
           editor: false
           config: distribution
 
@@ -66,7 +71,7 @@ jobs:
         uses: ./.github/actions/build-with-cmake
         with:
           platform: linux-clang
-          arch: x64
+          arch: ${{ matrix.arch }}
           editor: true
           config: debug
 
@@ -74,7 +79,7 @@ jobs:
         uses: ./.github/actions/build-with-cmake
         with:
           platform: linux-clang
-          arch: x64
+          arch: ${{ matrix.arch }}
           editor: true
           config: development
 
@@ -82,7 +87,7 @@ jobs:
         uses: ./.github/actions/build-with-cmake
         with:
           platform: linux-clang
-          arch: x64
+          arch: ${{ matrix.arch }}
           editor: true
           config: distribution
 
@@ -92,4 +97,7 @@ jobs:
 
       - name: Run clang-tidy
         shell: pwsh
-        run: ./scripts/run_clang_tidy.ps1 -SourcePath ./src -BuildPath ./build/linux-clang-x64
+        run: >
+          ./scripts/run_clang_tidy.ps1
+            -SourcePath ./src
+            -BuildPath ./build/linux-clang-${{ matrix.arch }}
