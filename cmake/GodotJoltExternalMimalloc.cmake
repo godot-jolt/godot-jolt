@@ -13,6 +13,12 @@ else()
 	set(output_name mimalloc)
 endif()
 
+if(MSVC)
+	set(nowarn_option /W0)
+else()
+	set(nowarn_option -w)
+endif()
+
 GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/mimalloc.git
 	GIT_COMMIT 91ba1f374da66e624841f53f6659da3a8f8f93ea
@@ -20,6 +26,7 @@ GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
 	INCLUDE_DIRECTORIES
 		<SOURCE_DIR>/include
 	CMAKE_CACHE_ARGS
+		-DCMAKE_C_FLAGS=${nowarn_option}
 		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO=${GDJOLT_LTO}
 		-DMI_OVERRIDE=FALSE
 		-DMI_USE_CXX=FALSE
