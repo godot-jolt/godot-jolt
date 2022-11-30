@@ -14,12 +14,14 @@ else()
 endif()
 
 if(MSVC)
-	set(nowarn_option /W0)
+	set(c_flags /W0)
 else()
-	set(nowarn_option -w)
+	set(c_flags -w)
 endif()
 
-set(c_flags "$ENV{CFLAGS} ${nowarn_option}")
+if(DEFINED ENV{CFLAGS})
+	set(c_flags $ENV{CFLAGS} ${c_flags})
+endif()
 
 GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/mimalloc.git
