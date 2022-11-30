@@ -24,8 +24,8 @@ constexpr const TType& clamp(const TType& p_value, const TType& p_min, const TTy
 }
 
 template<typename TValue, typename TAlignment>
-constexpr TValue align_up(TValue value, TAlignment alignment) {
-	return (value + alignment - 1) & ~(alignment - 1);
+constexpr TValue align_up(TValue p_value, TAlignment p_alignment) {
+	return (p_value + p_alignment - 1) & ~(p_alignment - 1);
 }
 
 template<typename... TArgs>
