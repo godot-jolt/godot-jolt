@@ -23,6 +23,11 @@ constexpr const TType& clamp(const TType& p_value, const TType& p_min, const TTy
 	return min(max(p_value, p_min), p_max);
 }
 
+template<typename TValue, typename TAlignment>
+constexpr TValue align_up(TValue value, TAlignment alignment) {
+	return (value + alignment - 1) & ~(alignment - 1);
+}
+
 template<typename... TArgs>
 String vformat(TArgs&&... p_args) {
 	return String(fmt::format(std::forward<TArgs>(p_args)...).c_str());
