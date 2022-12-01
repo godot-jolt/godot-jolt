@@ -17,16 +17,17 @@ jobs:
         arch: [x64]
         editor: [false, true]
         config: [debug, development, distribution]
+        version: [17]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up C++ environment
-        uses: aminya/setup-cpp@v1
+      - name: Set up environment
+        uses: ./.github/actions/setup-windows
         with:
-          compiler: vs-2022
-          architecture: ${{ matrix.arch }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
 
       - name: Configure and build
         uses: ./.github/actions/build-with-cmake
