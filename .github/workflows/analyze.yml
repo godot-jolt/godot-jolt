@@ -11,10 +11,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up LLVM
-        uses: aminya/setup-cpp@v1
+        uses: ./.github/actions/setup-linux
         with:
-          compiler: llvm-14.0.0
-          architecture: x64
+          toolchain: llvm
+          version: 14
 
       - name: Identify clang-format
         shell: pwsh
@@ -38,10 +38,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up LLVM
-        uses: aminya/setup-cpp@v1
+        uses: ./.github/actions/setup-linux
         with:
-          compiler: llvm-14.0.0
-          architecture: ${{ matrix.arch }}
+          toolchain: llvm
+          version: 14
 
       - name: Build 'Debug' configuration
         uses: ./.github/actions/build-with-cmake

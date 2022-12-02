@@ -1,0 +1,16 @@
+name: Setup Linux
+
+inputs:
+  toolchain:
+    required: true
+  version:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - shell: pwsh
+      run: >
+        sudo ./scripts/ci_setup_linux.ps1
+        -Toolchain ${{ inputs.toolchain }}
+        -Version ${{ inputs.version }}
