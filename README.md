@@ -17,8 +17,8 @@ Jolt provides will be exposed as custom node types in the editor.
 Godot Jolt aims to support most platforms that Godot can be deployed to. Currently only the major
 desktop platforms are supported. These include:
 
-- Windows (x86-64)
-- Linux (x86-64)
+- Windows (x86-64, x86)
+- Linux (x86-64, x86)
 - macOS (x86-64 + Apple Silicon)
 
 ## Download

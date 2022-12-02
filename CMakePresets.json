@@ -73,14 +73,6 @@
       }
     },
     {
-      "name": "x64-base",
-      "hidden": true,
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      }
-    },
-    {
       "name": "msvc-base",
       "hidden": true,
       "cacheVariables": {
@@ -132,24 +124,96 @@
       }
     },
     {
+      "name": "x64-base",
+      "hidden": true,
+      "cacheVariables": {
+        "GDJOLT_TARGET_ARCHITECTURES": "x64"
+      }
+    },
+    {
+      "name": "x86-base",
+      "hidden": true,
+      "cacheVariables": {
+        "GDJOLT_TARGET_ARCHITECTURES": "x86"
+      }
+    },
+    {
+      "name": "msvc-x64-base",
+      "inherits": ["x64-base"],
+      "hidden": true,
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "msvc-x86-base",
+      "inherits": ["x86-base"],
+      "hidden": true,
+      "architecture": {
+        "value": "x86",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "gcc-x64-base",
+      "inherits": ["x64-base"],
+      "hidden": true,
+      "environment": {
+        "CFLAGS": "$penv{CFLAGS} -m64",
+        "CXXFLAGS": "$penv{CXXFLAGS} -m64",
+        "LDFLAGS": "$penv{LDFLAGS} -m64"
+      }
+    },
+    {
+      "name": "gcc-x86-base",
+      "inherits": ["x86-base"],
+      "hidden": true,
+      "environment": {
+        "CFLAGS": "$penv{CFLAGS} -m32",
+        "CXXFLAGS": "$penv{CXXFLAGS} -m32",
+        "LDFLAGS": "$penv{LDFLAGS} -m32"
+      }
+    },
+    {
       "name": "windows-msvc-x64",
       "displayName": "MSVC, 64-bit",
-      "inherits": ["windows-base", "msvc-base", "x64-base"]
+      "inherits": ["windows-base", "msvc-base", "msvc-x64-base"]
+    },
+    {
+      "name": "windows-msvc-x86",
+      "displayName": "MSVC, 32-bit",
+      "inherits": ["windows-base", "msvc-base", "msvc-x86-base"]
     },
     {
       "name": "windows-clangcl-x64",
       "displayName": "Clang, 64-bit",
-      "inherits": ["windows-base", "clangcl-base", "x64-base"]
+      "inherits": ["windows-base", "clangcl-base", "msvc-x64-base"]
+    },
+    {
+      "name": "windows-clangcl-x86",
+      "displayName": "Clang, 32-bit",
+      "inherits": ["windows-base", "clangcl-base", "msvc-x86-base"]
     },
     {
       "name": "linux-clang-x64",
       "displayName": "Clang, 64-bit",
-      "inherits": ["linux-base", "clang-base", "lld-base", "x64-base"]
+      "inherits": ["linux-base", "clang-base", "lld-base", "gcc-x64-base"]
+    },
+    {
+      "name": "linux-clang-x86",
+      "displayName": "Clang, 32-bit",
+      "inherits": ["linux-base", "clang-base", "lld-base", "gcc-x86-base"]
     },
     {
       "name": "linux-gcc-x64",
       "displayName": "GCC, 64-bit",
-      "inherits": ["linux-base", "gcc-base", "x64-base"]
+      "inherits": ["linux-base", "gcc-base", "gcc-x64-base"]
+    },
+    {
+      "name": "linux-gcc-x86",
+      "displayName": "GCC, 32-bit",
+      "inherits": ["linux-base", "gcc-base", "gcc-x86-base"]
     },
     {
       "name": "macos-clang",
@@ -233,6 +297,48 @@
       "displayName": "EditorDistribution"
     },
     {
+      "name": "windows-msvc-x86-debug",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-msvc-x86",
+      "configuration": "Debug",
+      "displayName": "Debug"
+    },
+    {
+      "name": "windows-msvc-x86-development",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-msvc-x86",
+      "configuration": "Development",
+      "displayName": "Development"
+    },
+    {
+      "name": "windows-msvc-x86-distribution",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-msvc-x86",
+      "configuration": "Distribution",
+      "displayName": "Distribution"
+    },
+    {
+      "name": "windows-msvc-x86-editor-debug",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-msvc-x86",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug"
+    },
+    {
+      "name": "windows-msvc-x86-editor-development",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-msvc-x86",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment"
+    },
+    {
+      "name": "windows-msvc-x86-editor-distribution",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-msvc-x86",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution"
+    },
+    {
       "name": "windows-clangcl-x64-debug",
       "inherits": ["windows-base", "install-base"],
       "configurePreset": "windows-clangcl-x64",
@@ -271,6 +377,48 @@
       "name": "windows-clangcl-x64-editor-distribution",
       "inherits": ["windows-base", "install-base"],
       "configurePreset": "windows-clangcl-x64",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution"
+    },
+    {
+      "name": "windows-clangcl-x86-debug",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-clangcl-x86",
+      "configuration": "Debug",
+      "displayName": "Debug"
+    },
+    {
+      "name": "windows-clangcl-x86-development",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-clangcl-x86",
+      "configuration": "Development",
+      "displayName": "Development"
+    },
+    {
+      "name": "windows-clangcl-x86-distribution",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-clangcl-x86",
+      "configuration": "Distribution",
+      "displayName": "Distribution"
+    },
+    {
+      "name": "windows-clangcl-x86-editor-debug",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-clangcl-x86",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug"
+    },
+    {
+      "name": "windows-clangcl-x86-editor-development",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-clangcl-x86",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment"
+    },
+    {
+      "name": "windows-clangcl-x86-editor-distribution",
+      "inherits": ["windows-base", "install-base"],
+      "configurePreset": "windows-clangcl-x86",
       "configuration": "EditorDistribution",
       "displayName": "EditorDistribution"
     },
@@ -317,6 +465,48 @@
       "displayName": "EditorDistribution"
     },
     {
+      "name": "linux-clang-x86-debug",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-clang-x86",
+      "configuration": "Debug",
+      "displayName": "Debug"
+    },
+    {
+      "name": "linux-clang-x86-development",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-clang-x86",
+      "configuration": "Development",
+      "displayName": "Development"
+    },
+    {
+      "name": "linux-clang-x86-distribution",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-clang-x86",
+      "configuration": "Distribution",
+      "displayName": "Distribution"
+    },
+    {
+      "name": "linux-clang-x86-editor-debug",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-clang-x86",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug"
+    },
+    {
+      "name": "linux-clang-x86-editor-development",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-clang-x86",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment"
+    },
+    {
+      "name": "linux-clang-x86-editor-distribution",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-clang-x86",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution"
+    },
+    {
       "name": "linux-gcc-x64-debug",
       "inherits": ["linux-base", "install-base"],
       "configurePreset": "linux-gcc-x64",
@@ -355,6 +545,48 @@
       "name": "linux-gcc-x64-editor-distribution",
       "inherits": ["linux-base", "install-base"],
       "configurePreset": "linux-gcc-x64",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution"
+    },
+    {
+      "name": "linux-gcc-x86-debug",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-gcc-x86",
+      "configuration": "Debug",
+      "displayName": "Debug"
+    },
+    {
+      "name": "linux-gcc-x86-development",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-gcc-x86",
+      "configuration": "Development",
+      "displayName": "Development"
+    },
+    {
+      "name": "linux-gcc-x86-distribution",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-gcc-x86",
+      "configuration": "Distribution",
+      "displayName": "Distribution"
+    },
+    {
+      "name": "linux-gcc-x86-editor-debug",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-gcc-x86",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug"
+    },
+    {
+      "name": "linux-gcc-x86-editor-development",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-gcc-x86",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment"
+    },
+    {
+      "name": "linux-gcc-x86-editor-distribution",
+      "inherits": ["linux-base", "install-base"],
+      "configurePreset": "linux-gcc-x86",
       "configuration": "EditorDistribution",
       "displayName": "EditorDistribution"
     },

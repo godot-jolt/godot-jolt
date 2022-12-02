@@ -23,6 +23,9 @@ Prerequisites:
 ⚠️ Either of these need to be run from a [developer command prompt][cmd] for CMake to find the
 correct toolchain.
 
+⚠️ These commands will build binaries for 64-bit systems. If you instead wish to build binaries for
+32-bit systems then replace `x64` with `x86`.
+
 Using Microsoft Visual C++:
 
 ```pwsh
@@ -47,6 +50,9 @@ Prerequisites:
 - Python 3.8 or newer
 - (Optional) Clang 14.0.0 or newer
 - (Optional) GCC 11 or newer
+
+⚠️ These commands will build binaries for 64-bit systems. If you instead wish to build binaries for
+32-bit systems then replace `x64` with `x86`.
 
 Using Clang:
 
