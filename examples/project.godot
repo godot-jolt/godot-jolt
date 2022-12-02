@@ -21,7 +21,6 @@ window/size/viewport_height=900
 
 [physics]
 
-common/physics_ticks_per_second=120
 3d/physics_engine="Jolt"
 
 [rendering]
