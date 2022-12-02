@@ -15,15 +15,16 @@ jobs:
         platform: [macos-clang]
         editor: [false, true]
         config: [debug, development, distribution]
-        xcode: [14.1]
+        version: [14.1]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up C++ environment
-        shell: pwsh
-        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
+      - name: Set up environment
+        uses: ./.github/actions/setup-macos
+        with:
+          version: ${{ matrix.version }}
 
       - name: Configure and build
         uses: ./.github/actions/build-with-cmake
