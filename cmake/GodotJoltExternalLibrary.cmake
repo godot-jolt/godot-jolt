@@ -233,6 +233,23 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		set(build_type_arg -DCMAKE_BUILD_TYPE=${library_config_current})
 	endif()
 
+	# Figure out whether we should pass `--verbose` to the build command or not. Note that this has
+	# to happen at configure-time, which means it can't be based on whether we pass `--verbose` when
+	# we `--build` the consuming project and instead has to use the `--log-level` argument from when
+	# configuring.
+
+	if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.25)
+		cmake_language(GET_MESSAGE_LOG_LEVEL verbosity)
+	else()
+		set(verbosity "")
+	endif()
+
+	if (verbosity STREQUAL VERBOSE)
+		set(verbose_arg --verbose)
+	else()
+		set(verbose_arg "")
+	endif()
+
 	# Finally declare the ExternalProject, which will be the one doing the actual work
 
 	ExternalProject_Add(${library_name}
@@ -240,7 +257,10 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		GIT_TAG ${arg_GIT_COMMIT}
 		SOURCE_SUBDIR ${arg_SOURCE_SUBDIR}
 		CMAKE_ARGS -C ${cache_file} ${build_type_arg}
-		BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config ${library_config_current}
+		BUILD_COMMAND ${CMAKE_COMMAND}
+			--build <BINARY_DIR>
+			--config ${library_config_current}
+			${verbose_arg}
 		INSTALL_COMMAND ""
 		BUILD_BYPRODUCTS ${output_dir_current}/${output_name_current}
 		EXCLUDE_FROM_ALL TRUE # These will always be dependencies anyway
