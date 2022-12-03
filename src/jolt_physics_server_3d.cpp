@@ -3,7 +3,7 @@
 #include "error_macros.hpp"
 #include "jolt_physics_area_3d.hpp"
 #include "jolt_physics_body_3d.hpp"
-#include "jolt_physics_group_filter_3d.hpp"
+#include "jolt_physics_group_filter.hpp"
 #include "jolt_physics_shape_3d.hpp"
 #include "jolt_physics_space_3d.hpp"
 #include "utility_functions.hpp"
@@ -75,7 +75,7 @@ void JoltPhysicsServer3D::init_statics() {
 		(int)std::thread::hardware_concurrency() - 1
 	);
 
-	group_filter = new JoltPhysicsGroupFilter3D();
+	group_filter = new JoltPhysicsGroupFilter();
 }
 
 void JoltPhysicsServer3D::finish_statics() {
