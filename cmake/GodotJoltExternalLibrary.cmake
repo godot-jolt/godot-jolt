@@ -51,6 +51,7 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		GIT_COMMIT
 		SOURCE_SUBDIR
 		OUTPUT_NAME
+		LANGUAGE
 	)
 
 	set(multi_value_args
@@ -295,7 +296,7 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 	escape_separator(arg_INCLUDE_DIRECTORIES include_directories_)
 
 	set(target_properties
-		IMPORTED_LINK_INTERFACE_LANGUAGES CXX
+		IMPORTED_LINK_INTERFACE_LANGUAGES ${arg_LANGUAGE}
 		IMPORTED_CONFIGURATIONS ${library_configs_}
 		INTERFACE_INCLUDE_DIRECTORIES ${include_directories_}
 	)
