@@ -4,4 +4,4 @@
 #Requires -Version 7.2
 
 Set-StrictMode -Version Latest
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = "Stop"

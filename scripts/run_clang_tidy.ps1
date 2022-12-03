@@ -1,21 +1,21 @@
 #!/usr/bin/env pwsh
 
 param (
-	[Parameter(Mandatory = $true, HelpMessage = 'Path to directory with source files')]
+	[Parameter(Mandatory = $true, HelpMessage = "Path to directory with source files")]
 	[ValidateNotNullOrEmpty()]
 	[string]$SourcePath,
 
-	[Parameter(Mandatory = $true, HelpMessage = 'Path to directory with compile_commands.json')]
+	[Parameter(Mandatory = $true, HelpMessage = "Path to directory with compile_commands.json")]
 	[ValidateNotNullOrEmpty()]
 	[string]$BuildPath,
 
-	[Parameter(HelpMessage = 'Apply fixes if applicable (warning: slow)')]
+	[Parameter(HelpMessage = "Apply fixes if applicable (warning: slow)")]
 	[switch]$Fix = $false
 )
 
 . $PSScriptRoot/_common.ps1
 
-$SourceFiles = Get-ChildItem -Recurse -Path $SourcePath -Include '*.cpp'
+$SourceFiles = Get-ChildItem -Recurse -Path $SourcePath -Include "*.cpp"
 
 if ($Fix) {
 	clang-tidy -p $BuildPath --quiet --fix-notes @SourceFiles
@@ -33,7 +33,7 @@ $SourceFiles | ForEach-Object -Parallel {
 
 $Outputs | Where-Object { $_ -ne $null } | ForEach-Object {
 	Write-Output $_
-	Write-Output ''
+	Write-Output ""
 }
 
 exit $Outputs.IsEmpty ? 0 : 1
