@@ -202,6 +202,20 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 	set(msvcrt_dll $<$<NOT:${use_static_crt}>:DLL>)
 	set(msvcrt MultiThreaded${msvcrt_debug}${msvcrt_dll})
 
+	if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.25)
+		cmake_language(GET_MESSAGE_LOG_LEVEL log_level)
+	elseif(DEFINED CMAKE_MESSAGE_LOG_LEVEL)
+		set(log_level ${CMAKE_MESSAGE_LOG_LEVEL})
+	else()
+		set(log_level "")
+	endif()
+
+	if(NOT "${log_level}" STREQUAL "")
+		set(log_level_arg -DCMAKE_MESSAGE_LOG_LEVEL=${log_level})
+	else()
+		set(log_level_arg "")
+	endif()
+
 	set(cmake_cache_args
 		-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
 		-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
@@ -210,6 +224,7 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		-DCMAKE_POLICY_DEFAULT_CMP0069=NEW # Allows use of INTERPROCEDURAL_OPTIMIZATION
 		-DCMAKE_POLICY_DEFAULT_CMP0091=NEW # Allows use of MSVC_RUNTIME_LIBRARY
 		-DCMAKE_MSVC_RUNTIME_LIBRARY=${msvcrt}
+		${log_level_arg}
 		${arg_CMAKE_CACHE_ARGS}
 	)
 
@@ -233,6 +248,15 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		set(build_type_arg -DCMAKE_BUILD_TYPE=${library_config_current})
 	endif()
 
+	# Figure out whether we should pass `--verbose` to the build command or not. Note that this uses
+	# the configure-time log level since there's no way to retrieve verbosity at build-time.
+
+	if (log_level STREQUAL VERBOSE)
+		set(verbose_arg --verbose)
+	else()
+		set(verbose_arg "")
+	endif()
+
 	# Finally declare the ExternalProject, which will be the one doing the actual work
 
 	ExternalProject_Add(${library_name}
@@ -240,7 +264,10 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		GIT_TAG ${arg_GIT_COMMIT}
 		SOURCE_SUBDIR ${arg_SOURCE_SUBDIR}
 		CMAKE_ARGS -C ${cache_file} ${build_type_arg}
-		BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config ${library_config_current}
+		BUILD_COMMAND ${CMAKE_COMMAND}
+			--build <BINARY_DIR>
+			--config ${library_config_current}
+			${verbose_arg}
 		INSTALL_COMMAND ""
 		BUILD_BYPRODUCTS ${output_dir_current}/${output_name_current}
 		EXCLUDE_FROM_ALL TRUE # These will always be dependencies anyway
