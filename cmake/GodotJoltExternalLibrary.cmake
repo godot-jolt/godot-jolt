@@ -202,6 +202,18 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 	set(msvcrt_dll $<$<NOT:${use_static_crt}>:DLL>)
 	set(msvcrt MultiThreaded${msvcrt_debug}${msvcrt_dll})
 
+	if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.25)
+		cmake_language(GET_MESSAGE_LOG_LEVEL log_level)
+	else()
+		set(log_level ${CMAKE_MESSAGE_LOG_LEVEL})
+	endif()
+
+	if(NOT "${log_level}" STREQUAL "")
+		set(log_level_arg -DCMAKE_MESSAGE_LOG_LEVEL=${log_level})
+	else()
+		set(log_level_arg "")
+	endif()
+
 	set(cmake_cache_args
 		-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
 		-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
@@ -210,6 +222,7 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		-DCMAKE_POLICY_DEFAULT_CMP0069=NEW # Allows use of INTERPROCEDURAL_OPTIMIZATION
 		-DCMAKE_POLICY_DEFAULT_CMP0091=NEW # Allows use of MSVC_RUNTIME_LIBRARY
 		-DCMAKE_MSVC_RUNTIME_LIBRARY=${msvcrt}
+		${log_level_arg}
 		${arg_CMAKE_CACHE_ARGS}
 	)
 
@@ -233,18 +246,10 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		set(build_type_arg -DCMAKE_BUILD_TYPE=${library_config_current})
 	endif()
 
-	# Figure out whether we should pass `--verbose` to the build command or not. Note that this has
-	# to happen at configure-time, which means it can't be based on whether we pass `--verbose` when
-	# we `--build` the consuming project and instead has to use the `--log-level` argument from when
-	# configuring.
+	# Figure out whether we should pass `--verbose` to the build command or not. Note that this uses
+	# the configure-time log level since there's no way to retrieve verbosity at build-time.
 
-	if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.25)
-		cmake_language(GET_MESSAGE_LOG_LEVEL verbosity)
-	else()
-		set(verbosity "")
-	endif()
-
-	if (verbosity STREQUAL VERBOSE)
+	if (log_level STREQUAL VERBOSE)
 		set(verbose_arg --verbose)
 	else()
 		set(verbose_arg "")
