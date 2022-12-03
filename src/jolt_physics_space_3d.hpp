@@ -57,7 +57,7 @@ private:
 
 	JPH::TempAllocator* temp_allocator = nullptr;
 
-	JPH::BroadPhaseLayerInterface* bp_layer = nullptr;
+	JPH::BroadPhaseLayerInterface* layer_mapper = nullptr;
 
 	JPH::PhysicsSystem* physics_system = nullptr;
 

@@ -2,92 +2,20 @@
 
 #include "conversion.hpp"
 #include "error_macros.hpp"
+#include "jolt_physics_broad_phase_layer_3d.hpp"
 #include "jolt_physics_collision_object_3d.hpp"
+#include "jolt_physics_layer_mapper_3d.hpp"
+#include "jolt_physics_object_layer_3d.hpp"
 #include "jolt_physics_shape_3d.hpp"
 #include "jolt_physics_temp_allocator.hpp"
 
 namespace {
-
-enum JoltPhysicsObjectLayer3D {
-	GDJOLT_OBJECT_LAYER_STATIC,
-	GDJOLT_OBJECT_LAYER_MOVING,
-	GDJOLT_OBJECT_LAYER_COUNT
-};
-
-enum JoltPhysicsBroadPhaseLayer3D {
-	GDJOLT_BROAD_PHASE_LAYER_STATIC,
-	GDJOLT_BROAD_PHASE_LAYER_MOVING,
-	GDJOLT_BROAD_PHASE_LAYER_COUNT
-};
 
 constexpr uint32_t GDJOLT_TEMP_CAPACITY = 8 * 1024 * 1024;
 constexpr uint32_t GDJOLT_MAX_BODIES = 8192;
 constexpr uint32_t GDJOLT_NUM_BODY_MUTEXES = 0; // 0 = default
 constexpr uint32_t GDJOLT_MAX_BODY_PAIRS = 65536;
 constexpr uint32_t GDJOLT_MAX_CONTACT_CONSTRAINTS = 8192;
-
-bool jolt_can_collide_object(JPH::ObjectLayer p_object1, JPH::ObjectLayer p_object2) {
-	switch (p_object1) {
-		case GDJOLT_OBJECT_LAYER_STATIC: {
-			return p_object2 == GDJOLT_OBJECT_LAYER_MOVING;
-		}
-		case GDJOLT_OBJECT_LAYER_MOVING: {
-			return true;
-		}
-		default: {
-			ERR_FAIL_D_NOT_IMPL();
-		}
-	}
-}
-
-bool jolt_can_collide_broad_phase(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) {
-	switch (p_layer1) {
-		case GDJOLT_OBJECT_LAYER_STATIC: {
-			return p_layer2 == JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MOVING);
-		}
-		case GDJOLT_OBJECT_LAYER_MOVING: {
-			return true;
-		}
-		default: {
-			ERR_FAIL_D_NOT_IMPL();
-		}
-	}
-}
-
-class JoltPhysicsLayerMapper3D final : public JPH::BroadPhaseLayerInterface {
-public:
-	JoltPhysicsLayerMapper3D() {
-		broad_phase_by_object[GDJOLT_OBJECT_LAYER_STATIC] =
-			JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_STATIC);
-		broad_phase_by_object[GDJOLT_OBJECT_LAYER_MOVING] =
-			JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MOVING);
-	}
-
-	uint32_t GetNumBroadPhaseLayers() const override { return GDJOLT_BROAD_PHASE_LAYER_COUNT; }
-
-	JPH::BroadPhaseLayer GetBroadPhaseLayer(JPH::ObjectLayer p_layer) const override {
-		return broad_phase_by_object[p_layer];
-	}
-
-#if defined(JPH_EXTERNAL_PROFILE) || defined(JPH_PROFILE_ENABLED)
-	const char* GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer) const override {
-		switch ((JPH::BroadPhaseLayer::Type)p_layer) {
-			case GDJOLT_BROAD_PHASE_LAYER_STATIC: {
-				return "STATIC";
-			}
-			case GDJOLT_BROAD_PHASE_LAYER_MOVING: {
-				return "MOVING";
-			}
-			default: {
-				return "INVALID";
-			}
-		}
-	}
-#endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
-
-private:
-	JPH::BroadPhaseLayer broad_phase_by_object[GDJOLT_OBJECT_LAYER_COUNT];
-};
 
 } // namespace
 
@@ -97,7 +25,7 @@ JoltPhysicsSpace3D::JoltPhysicsSpace3D(
 )
 	: job_system(p_job_system)
 	, temp_allocator(new JoltPhysicsTempAllocator(GDJOLT_TEMP_CAPACITY))
-	, bp_layer(new JoltPhysicsLayerMapper3D())
+	, layer_mapper(new JoltPhysicsLayerMapper3D())
 	, physics_system(new JPH::PhysicsSystem())
 	, group_filter(p_group_filter) {
 	physics_system->Init(
@@ -105,15 +33,15 @@ JoltPhysicsSpace3D::JoltPhysicsSpace3D(
 		GDJOLT_NUM_BODY_MUTEXES,
 		GDJOLT_MAX_BODY_PAIRS,
 		GDJOLT_MAX_CONTACT_CONSTRAINTS,
-		*bp_layer,
-		jolt_can_collide_broad_phase,
-		jolt_can_collide_object
+		*layer_mapper,
+		&JoltPhysicsLayerMapper3D::can_layers_collide,
+		&JoltPhysicsLayerMapper3D::can_layers_collide
 	);
 }
 
 JoltPhysicsSpace3D::~JoltPhysicsSpace3D() {
 	delete physics_system;
-	delete bp_layer;
+	delete layer_mapper;
 	delete temp_allocator;
 }
 
