@@ -7,8 +7,11 @@
 class JoltPhysicsLayerMapper3D final : public JPH::BroadPhaseLayerInterface {
 public:
 	JoltPhysicsLayerMapper3D() {
-		mappings[GDJOLT_OBJECT_LAYER_STATIC] = {GDJOLT_BROAD_PHASE_LAYER_STATIC};
-		mappings[GDJOLT_OBJECT_LAYER_MOVING] = {GDJOLT_BROAD_PHASE_LAYER_MOVING};
+		mappings[GDJOLT_OBJECT_LAYER_STATIC] =
+			JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_STATIC);
+
+		mappings[GDJOLT_OBJECT_LAYER_MOVING] =
+			JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MOVING);
 	}
 
 	uint32_t GetNumBroadPhaseLayers() const override { return GDJOLT_BROAD_PHASE_LAYER_COUNT; }
