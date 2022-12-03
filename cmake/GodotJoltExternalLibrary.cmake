@@ -204,8 +204,10 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 
 	if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.25)
 		cmake_language(GET_MESSAGE_LOG_LEVEL log_level)
-	else()
+	elseif(DEFINED CMAKE_MESSAGE_LOG_LEVEL)
 		set(log_level ${CMAKE_MESSAGE_LOG_LEVEL})
+	else()
+		set(log_level "")
 	endif()
 
 	if(NOT "${log_level}" STREQUAL "")
