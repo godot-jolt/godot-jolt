@@ -79,7 +79,6 @@ void JoltPhysicsServer3D::init_statics() {
 }
 
 void JoltPhysicsServer3D::finish_statics() {
-	delete group_filter;
 	group_filter = nullptr;
 
 	delete job_system;
