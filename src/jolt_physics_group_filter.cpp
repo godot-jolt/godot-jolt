@@ -1,6 +1,6 @@
-#include "jolt_physics_group_filter_3d.hpp"
+#include "jolt_physics_group_filter.hpp"
 
-bool JoltPhysicsGroupFilter3D::CanCollide(
+bool JoltPhysicsGroupFilter::CanCollide(
 	const JPH::CollisionGroup& p_first,
 	const JPH::CollisionGroup& p_second
 ) const {
