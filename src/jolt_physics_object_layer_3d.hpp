@@ -1,0 +1,7 @@
+#pragma once
+
+enum JoltPhysicsObjectLayer3D {
+	GDJOLT_OBJECT_LAYER_STATIC,
+	GDJOLT_OBJECT_LAYER_MOVING,
+	GDJOLT_OBJECT_LAYER_COUNT
+};
