@@ -10,6 +10,7 @@ set(configurations
 GodotJoltExternalLibrary_Add(fmt "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/fmt.git
 	GIT_COMMIT a33701196adfad74917046096bf5a2aa0ab0bb50
+	LANGUAGE CXX
 	OUTPUT_NAME_DEBUG fmtd
 	OUTPUT_NAME_RELWITHDEBINFO fmt
 	INCLUDE_DIRECTORIES
