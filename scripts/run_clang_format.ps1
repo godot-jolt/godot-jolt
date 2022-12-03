@@ -1,17 +1,17 @@
 #!/usr/bin/env pwsh
 
 param (
-	[Parameter(Mandatory = $true, HelpMessage = 'Path to directory with source files')]
+	[Parameter(Mandatory = $true, HelpMessage = "Path to directory with source files")]
 	[ValidateNotNullOrEmpty()]
 	[string]$SourcePath,
 
-	[Parameter(HelpMessage = 'Apply fixes if applicable')]
+	[Parameter(HelpMessage = "Apply fixes if applicable")]
 	[switch]$Fix = $false
 )
 
 . $PSScriptRoot/_common.ps1
 
-$SourceFiles = Get-ChildItem -Recurse -Path $SourcePath -Include ('*.cpp', '*.h')
+$SourceFiles = Get-ChildItem -Recurse -Path $SourcePath -Include ("*.cpp", "*.h")
 
 $Outputs = [Collections.Concurrent.ConcurrentBag[psobject]]::new()
 
@@ -19,12 +19,12 @@ $SourceFiles | ForEach-Object -Parallel {
 	$Outputs = $using:Outputs
 	$Fix = $using:Fix
 	$Output = $null
-	$($Output = clang-format $($Fix ? '-i' : '-n') --Werror $_ *>&1) || $Outputs.Add($Output)
+	$($Output = clang-format $($Fix ? "-i" : "-n") --Werror $_ *>&1) || $Outputs.Add($Output)
 } -ThrottleLimit ([Environment]::ProcessorCount)
 
 $Outputs | Where-Object { $_ -ne $null } | ForEach-Object {
 	Write-Output $_
-	Write-Output ''
+	Write-Output ""
 }
 
 exit $Outputs.IsEmpty ? 0 : 1
