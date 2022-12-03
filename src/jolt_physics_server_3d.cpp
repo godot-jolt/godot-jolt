@@ -612,7 +612,10 @@ void JoltPhysicsServer3D::_body_set_collision_priority(
 	double p_priority
 ) {
 	if (p_priority != 1.0) {
-		WARN_PRINT("Collision priority is not supported by Godot Jolt.");
+		WARN_PRINT(
+			"Collision priority is not supported by Godot Jolt. "
+			"Any value will be treated as a value of 1."
+		);
 	}
 }
 
@@ -784,7 +787,10 @@ void JoltPhysicsServer3D::_body_set_axis_lock(
 	bool p_lock
 ) {
 	if (p_lock) {
-		WARN_PRINT("Axis lock is not supported by Godot Jolt.");
+		WARN_PRINT(
+			"Axis lock is not supported by Godot Jolt. "
+			"Any such setting will be treated as disabled."
+		);
 	}
 }
 
@@ -896,80 +902,80 @@ PhysicsDirectBodyState3D* JoltPhysicsServer3D::_body_get_direct_state(
 }
 
 RID JoltPhysicsServer3D::_soft_body_create() {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_update_rendering_server(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] PhysicsServer3DRenderingServerHandler* p_rendering_server_handler
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_space(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] const RID& p_space
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 RID JoltPhysicsServer3D::_soft_body_get_space([[maybe_unused]] const RID& p_body) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_mesh(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] const RID& p_mesh
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 AABB JoltPhysicsServer3D::_soft_body_get_bounds([[maybe_unused]] const RID& p_body) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_collision_layer(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] int64_t p_layer
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 int64_t JoltPhysicsServer3D::_soft_body_get_collision_layer([[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_collision_mask(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] int64_t p_mask
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 int64_t JoltPhysicsServer3D::_soft_body_get_collision_mask([[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_add_collision_exception(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] const RID& p_body_b
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_remove_collision_exception(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] const RID& p_body_b
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 TypedArray<RID> JoltPhysicsServer3D::_soft_body_get_collision_exceptions(
 	[[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_state(
@@ -977,99 +983,99 @@ void JoltPhysicsServer3D::_soft_body_set_state(
 	[[maybe_unused]] BodyState p_state,
 	[[maybe_unused]] const Variant& p_variant
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 Variant JoltPhysicsServer3D::_soft_body_get_state(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] BodyState p_state
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_transform(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] const Transform3D& p_transform
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_ray_pickable(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] bool p_enable
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_simulation_precision(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] int64_t p_simulation_precision
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 int64_t JoltPhysicsServer3D::_soft_body_get_simulation_precision([[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_total_mass(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] double p_total_mass
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 double JoltPhysicsServer3D::_soft_body_get_total_mass([[maybe_unused]] const RID& p_body) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_linear_stiffness(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] double p_linear_stiffness
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 double JoltPhysicsServer3D::_soft_body_get_linear_stiffness([[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_pressure_coefficient(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] double p_pressure_coefficient
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 double JoltPhysicsServer3D::_soft_body_get_pressure_coefficient([[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_damping_coefficient(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] double p_damping_coefficient
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 double JoltPhysicsServer3D::_soft_body_get_damping_coefficient([[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_drag_coefficient(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] double p_drag_coefficient
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 double JoltPhysicsServer3D::_soft_body_get_drag_coefficient([[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_move_point(
@@ -1077,18 +1083,18 @@ void JoltPhysicsServer3D::_soft_body_move_point(
 	[[maybe_unused]] int64_t p_point_index,
 	[[maybe_unused]] const Vector3& p_global_position
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 Vector3 JoltPhysicsServer3D::_soft_body_get_point_global_position(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] int64_t p_point_index
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_remove_all_pinned_points([[maybe_unused]] const RID& p_body) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_pin_point(
@@ -1096,14 +1102,14 @@ void JoltPhysicsServer3D::_soft_body_pin_point(
 	[[maybe_unused]] int64_t p_point_index,
 	[[maybe_unused]] bool p_pin
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 bool JoltPhysicsServer3D::_soft_body_is_point_pinned(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] int64_t p_point_index
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 RID JoltPhysicsServer3D::_joint_create() {
