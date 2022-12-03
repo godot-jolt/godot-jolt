@@ -29,7 +29,16 @@ runs:
       run: cmake --version
 
     - shell: pwsh
-      run: cmake --warn-uninitialized -Werror=dev --preset ${{ env.GDJOLT_CONFIGURE_PRESET }}
+      run: >
+        cmake
+        --log-level=VERBOSE
+        --warn-uninitialized
+        -Werror=dev
+        --preset ${{ env.GDJOLT_CONFIGURE_PRESET }}
 
     - shell: pwsh
-      run: cmake --build --preset ${{ env.GDJOLT_BUILD_PRESET }}
+      run: >
+        cmake
+        --build
+        --verbose
+        --preset ${{ env.GDJOLT_BUILD_PRESET }}
