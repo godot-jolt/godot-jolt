@@ -125,7 +125,10 @@ RID JoltPhysicsServer3D::_box_shape_create() {
 }
 
 RID JoltPhysicsServer3D::_capsule_shape_create() {
-	ERR_FAIL_D_NOT_IMPL();
+	JoltPhysicsShape3D* shape = memnew(JoltPhysicsCapsuleShape3D);
+	RID rid = shape_owner.make_rid(shape);
+	shape->set_rid(rid);
+	return rid;
 }
 
 RID JoltPhysicsServer3D::_cylinder_shape_create() {

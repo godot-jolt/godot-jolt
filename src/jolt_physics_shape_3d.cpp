@@ -21,3 +21,25 @@ void JoltPhysicsBoxShape3D::set_data(const Variant& p_data) {
 	half_extents = p_data;
 	jref = new JPH::BoxShape(to_jolt(half_extents));
 }
+
+Variant JoltPhysicsCapsuleShape3D::get_data() const {
+	Dictionary dict;
+	dict["height"] = height;
+	dict["radius"] = radius;
+	return dict;
+}
+
+void JoltPhysicsCapsuleShape3D::set_data(const Variant& p_data) {
+	const Dictionary dict = p_data;
+
+	const Variant maybe_height = dict.get("height", {});
+	ERR_FAIL_COND(maybe_height.get_type() != Variant::FLOAT);
+
+	const Variant maybe_radius = dict.get("radius", {});
+	ERR_FAIL_COND(maybe_radius.get_type() != Variant::FLOAT);
+
+	height = maybe_height;
+	radius = maybe_radius;
+
+	jref = new JPH::CapsuleShape(height / 2.0f, radius);
+}
