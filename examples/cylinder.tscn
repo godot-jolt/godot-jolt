@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfx7au5ioreuu"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_nfxxm"]
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_suohj"]
+albedo_color = Color(0.434596, 0.642322, 0, 1)
+
+[node name="Cylinder" type="RigidBody3D"]
+
+[node name="Shape" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_nfxxm")
+
+[node name="Mesh" type="CSGCylinder3D" parent="."]
+height = 1.0
+sides = 30
+material = SubResource("StandardMaterial3D_suohj")
