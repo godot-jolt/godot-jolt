@@ -9,8 +9,8 @@ use the [Jolt physics engine][jlt] to power Godot's 3D physics.
 
 To begin with the focus will be on implementing the existing physics API that Godot exposes through
 GDExtension. During this time the feature set will be lesser to that of Godot Physics, due to Jolt
-not supporting things like soft-body physics or double-precision. Eventually any new features that
-Jolt provides will be exposed as custom node types in the editor.
+not supporting things like soft-body dynamics. Eventually any new features that Jolt provides will
+be exposed as custom node types in the editor.
 
 ## Platforms
 
