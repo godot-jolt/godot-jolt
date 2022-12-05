@@ -57,3 +57,15 @@ private:
 
 	float radius = 0.0f;
 };
+
+class JoltPhysicsCylinderShape3D final : public JoltPhysicsShape3D {
+public:
+	Variant get_data() const override;
+
+	void set_data(const Variant& p_data) override;
+
+private:
+	float height = 0.0f;
+
+	float radius = 0.0f;
+};
