@@ -190,7 +190,7 @@ void JoltPhysicsCollisionObject3D::remove_shape(int p_index, bool p_lock) {
 
 	JPH::MutableCompoundShape* root_shape = get_root_shape();
 	ERR_FAIL_NULL(root_shape);
-	ERR_FAIL_INDEX(p_index, root_shape->GetNumSubShapes());
+	ERR_FAIL_INDEX(p_index, (int)root_shape->GetNumSubShapes());
 
 	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
 
@@ -231,7 +231,7 @@ void JoltPhysicsCollisionObject3D::set_shape_transform(
 
 	JPH::MutableCompoundShape* root_shape = get_root_shape();
 	ERR_FAIL_NULL(root_shape);
-	ERR_FAIL_INDEX(p_index, root_shape->GetNumSubShapes());
+	ERR_FAIL_INDEX(p_index, (int)root_shape->GetNumSubShapes());
 
 	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
 
