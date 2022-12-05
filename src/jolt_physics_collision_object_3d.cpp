@@ -170,12 +170,12 @@ void JoltPhysicsCollisionObject3D::remove_shape(JoltPhysicsShape3D* p_shape, boo
 		return;
 	}
 
-	ERR_FAIL_INDEX(index, shapes.size());
-
 	remove_shape(index, p_lock);
 }
 
 void JoltPhysicsCollisionObject3D::remove_shape(int p_index, bool p_lock) {
+	ERR_FAIL_INDEX(p_index, shapes.size());
+
 	const Shape& shape = shapes[p_index];
 	shape.ref->set_owner(nullptr);
 	shapes.remove_at(p_index);
@@ -190,6 +190,7 @@ void JoltPhysicsCollisionObject3D::remove_shape(int p_index, bool p_lock) {
 
 	JPH::MutableCompoundShape* root_shape = get_root_shape();
 	ERR_FAIL_NULL(root_shape);
+	ERR_FAIL_INDEX(p_index, (int)root_shape->GetNumSubShapes());
 
 	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
 
@@ -230,6 +231,7 @@ void JoltPhysicsCollisionObject3D::set_shape_transform(
 
 	JPH::MutableCompoundShape* root_shape = get_root_shape();
 	ERR_FAIL_NULL(root_shape);
+	ERR_FAIL_INDEX(p_index, (int)root_shape->GetNumSubShapes());
 
 	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
 
