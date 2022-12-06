@@ -69,3 +69,15 @@ private:
 
 	float radius = 0.0f;
 };
+
+class JoltPhysicsConvexPolygonShape3D final : public JoltPhysicsShape3D {
+public:
+	Variant get_data() const override;
+
+	void set_data(const Variant& p_data) override;
+
+private:
+	void vertices_changed();
+
+	PackedVector3Array vertices;
+};

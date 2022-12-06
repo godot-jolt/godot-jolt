@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://chutsbwjbhepv"
+path="res://.godot/imported/convex_polygon.obj-0fe323fc719b52f314f5db18ef06d450.mesh"
+
+[deps]
+
+files=["res://.godot/imported/convex_polygon.obj-0fe323fc719b52f314f5db18ef06d450.mesh"]
+
+source_file="res://assets/convex_polygon.obj"
+dest_files=["res://.godot/imported/convex_polygon.obj-0fe323fc719b52f314f5db18ef06d450.mesh", "res://.godot/imported/convex_polygon.obj-0fe323fc719b52f314f5db18ef06d450.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
