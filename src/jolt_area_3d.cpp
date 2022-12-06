@@ -1,4 +1,4 @@
-#include "jolt_physics_area_3d.hpp"
+#include "jolt_area_3d.hpp"
 
 #include "error_macros.hpp"
 

@@ -1,13 +1,13 @@
-#include "jolt_physics_space_3d.hpp"
+#include "jolt_space_3d.hpp"
 
 #include "conversion.hpp"
 #include "error_macros.hpp"
-#include "jolt_physics_broad_phase_layer_3d.hpp"
-#include "jolt_physics_collision_object_3d.hpp"
-#include "jolt_physics_layer_mapper_3d.hpp"
-#include "jolt_physics_object_layer_3d.hpp"
-#include "jolt_physics_shape_3d.hpp"
-#include "jolt_physics_temp_allocator.hpp"
+#include "jolt_broad_phase_layer.hpp"
+#include "jolt_collision_object_3d.hpp"
+#include "jolt_layer_mapper.hpp"
+#include "jolt_object_layer.hpp"
+#include "jolt_shape_3d.hpp"
+#include "jolt_temp_allocator.hpp"
 
 namespace {
 

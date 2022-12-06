@@ -1,6 +1,6 @@
 #pragma once
 
-#include "jolt_physics_collision_object_3d.hpp"
+#include "jolt_collision_object_3d.hpp"
 
 class JoltArea3D final : public JoltCollisionObject3D {
 public:
