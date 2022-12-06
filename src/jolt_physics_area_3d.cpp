@@ -2,7 +2,7 @@
 
 #include "error_macros.hpp"
 
-Variant JoltPhysicsArea3D::get_param(PhysicsServer3D::AreaParameter p_param) const {
+Variant JoltArea3D::get_param(PhysicsServer3D::AreaParameter p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
 			return gravity;
@@ -22,7 +22,7 @@ Variant JoltPhysicsArea3D::get_param(PhysicsServer3D::AreaParameter p_param) con
 	}
 }
 
-void JoltPhysicsArea3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value) {
+void JoltArea3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value) {
 	switch (p_param) {
 		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
 			gravity = p_value;
@@ -42,4 +42,4 @@ void JoltPhysicsArea3D::set_param(PhysicsServer3D::AreaParameter p_param, const 
 	}
 }
 
-void JoltPhysicsArea3D::call_queries() { }
+void JoltArea3D::call_queries() { }

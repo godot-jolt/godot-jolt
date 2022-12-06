@@ -77,7 +77,7 @@ void JoltPhysicsServer3D::init_statics() {
 		(int)std::thread::hardware_concurrency() - 1
 	);
 
-	group_filter = new JoltPhysicsGroupFilter();
+	group_filter = new JoltGroupFilter();
 }
 
 void JoltPhysicsServer3D::finish_statics() {
@@ -111,35 +111,35 @@ RID JoltPhysicsServer3D::_separation_ray_shape_create() {
 }
 
 RID JoltPhysicsServer3D::_sphere_shape_create() {
-	JoltPhysicsShape3D* shape = memnew(JoltPhysicsSphereShape3D);
+	JoltShape3D* shape = memnew(JoltSphereShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_box_shape_create() {
-	JoltPhysicsShape3D* shape = memnew(JoltPhysicsBoxShape3D);
+	JoltShape3D* shape = memnew(JoltBoxShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_capsule_shape_create() {
-	JoltPhysicsShape3D* shape = memnew(JoltPhysicsCapsuleShape3D);
+	JoltShape3D* shape = memnew(JoltCapsuleShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_cylinder_shape_create() {
-	JoltPhysicsShape3D* shape = memnew(JoltPhysicsCylinderShape3D);
+	JoltShape3D* shape = memnew(JoltCylinderShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_convex_polygon_shape_create() {
-	JoltPhysicsShape3D* shape = memnew(JoltPhysicsConvexPolygonShape3D);
+	JoltShape3D* shape = memnew(JoltConvexPolygonShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
@@ -158,7 +158,7 @@ RID JoltPhysicsServer3D::_custom_shape_create() {
 }
 
 void JoltPhysicsServer3D::_shape_set_data(const RID& p_shape, const Variant& p_data) {
-	JoltPhysicsShape3D* shape = shape_owner.get_or_null(p_shape);
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
 	shape->set_data(p_data);
@@ -177,7 +177,7 @@ PhysicsServer3D::ShapeType JoltPhysicsServer3D::_shape_get_type([[maybe_unused]]
 }
 
 Variant JoltPhysicsServer3D::_shape_get_data(const RID& p_shape) const {
-	JoltPhysicsShape3D* shape = shape_owner.get_or_null(p_shape);
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL_D(shape);
 
 	return shape->get_data();
@@ -200,12 +200,12 @@ double JoltPhysicsServer3D::_shape_get_custom_solver_bias([[maybe_unused]] const
 }
 
 RID JoltPhysicsServer3D::_space_create() {
-	JoltPhysicsSpace3D* space = memnew(JoltPhysicsSpace3D(job_system, group_filter));
+	JoltSpace3D* space = memnew(JoltSpace3D(job_system, group_filter));
 	RID rid = space_owner.make_rid(space);
 	space->set_rid(rid);
 
 	const RID default_area_rid = area_create();
-	JoltPhysicsArea3D* default_area = area_owner.get_or_null(default_area_rid);
+	JoltArea3D* default_area = area_owner.get_or_null(default_area_rid);
 	ERR_FAIL_NULL_D(default_area);
 	space->set_default_area(default_area);
 	default_area->set_space(space);
@@ -214,7 +214,7 @@ RID JoltPhysicsServer3D::_space_create() {
 }
 
 void JoltPhysicsServer3D::_space_set_active(const RID& p_space, bool p_active) {
-	JoltPhysicsSpace3D* space = space_owner.get_or_null(p_space);
+	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL(space);
 
 	if (p_active) {
@@ -225,7 +225,7 @@ void JoltPhysicsServer3D::_space_set_active(const RID& p_space, bool p_active) {
 }
 
 bool JoltPhysicsServer3D::_space_is_active(const RID& p_space) const {
-	JoltPhysicsSpace3D* space = space_owner.get_or_null(p_space);
+	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
 
 	return active_spaces.has(space);
@@ -247,7 +247,7 @@ double JoltPhysicsServer3D::_space_get_param(
 }
 
 PhysicsDirectSpaceState3D* JoltPhysicsServer3D::_space_get_direct_state(const RID& p_space) {
-	JoltPhysicsSpace3D* space = space_owner.get_or_null(p_space);
+	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
 	ERR_FAIL_COND_D_MSG(
 		!doing_sync || space->is_locked(),
@@ -274,7 +274,7 @@ int64_t JoltPhysicsServer3D::_space_get_contact_count([[maybe_unused]] const RID
 }
 
 RID JoltPhysicsServer3D::_area_create() {
-	JoltPhysicsArea3D* area = memnew(JoltPhysicsArea3D);
+	JoltArea3D* area = memnew(JoltArea3D);
 	RID rid = area_owner.make_rid(area);
 	area->set_rid(rid);
 	return rid;
@@ -354,14 +354,14 @@ void JoltPhysicsServer3D::_area_set_shape_disabled(
 }
 
 void JoltPhysicsServer3D::_area_attach_object_instance_id(const RID& p_area, int64_t p_id) {
-	JoltPhysicsArea3D* area = area_owner.get_or_null(p_area);
+	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
 	area->set_instance_id(p_id);
 }
 
 int64_t JoltPhysicsServer3D::_area_get_object_instance_id(const RID& p_area) const {
-	JoltPhysicsArea3D* area = area_owner.get_or_null(p_area);
+	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_V(area, -1);
 
 	return area->get_instance_id();
@@ -375,11 +375,11 @@ void JoltPhysicsServer3D::_area_set_param(
 	RID area_rid = p_area;
 
 	if (space_owner.owns(area_rid)) {
-		JoltPhysicsSpace3D* space = space_owner.get_or_null(area_rid);
+		JoltSpace3D* space = space_owner.get_or_null(area_rid);
 		area_rid = space->get_default_area()->get_rid();
 	}
 
-	JoltPhysicsArea3D* area = area_owner.get_or_null(area_rid);
+	JoltArea3D* area = area_owner.get_or_null(area_rid);
 	ERR_FAIL_NULL(area);
 
 	area->set_param(p_param, p_value);
@@ -418,7 +418,7 @@ void JoltPhysicsServer3D::_area_set_collision_layer(
 }
 
 void JoltPhysicsServer3D::_area_set_monitorable(const RID& p_area, bool p_monitorable) {
-	JoltPhysicsArea3D* area = area_owner.get_or_null(p_area);
+	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
 	area->set_monitorable(p_monitorable);
@@ -428,7 +428,7 @@ void JoltPhysicsServer3D::_area_set_monitor_callback(
 	const RID& p_area,
 	const Callable& p_callback
 ) {
-	JoltPhysicsArea3D* area = area_owner.get_or_null(p_area);
+	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
 	area->set_monitor_callback(p_callback.is_valid() ? p_callback : Callable());
@@ -438,7 +438,7 @@ void JoltPhysicsServer3D::_area_set_area_monitor_callback(
 	const RID& p_area,
 	const Callable& p_callback
 ) {
-	JoltPhysicsArea3D* area = area_owner.get_or_null(p_area);
+	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
 	area->set_area_monitor_callback(p_callback.is_valid() ? p_callback : Callable());
@@ -452,17 +452,17 @@ void JoltPhysicsServer3D::_area_set_ray_pickable(
 }
 
 RID JoltPhysicsServer3D::_body_create() {
-	JoltPhysicsBody3D* body = memnew(JoltPhysicsBody3D);
+	JoltBody3D* body = memnew(JoltBody3D);
 	RID rid = body_owner.make_rid(body);
 	body->set_rid(rid);
 	return rid;
 }
 
 void JoltPhysicsServer3D::_body_set_space(const RID& p_body, const RID& p_space) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	JoltPhysicsSpace3D* space = nullptr;
+	JoltSpace3D* space = nullptr;
 
 	if (p_space.is_valid()) {
 		space = space_owner.get_or_null(p_space);
@@ -477,7 +477,7 @@ RID JoltPhysicsServer3D::_body_get_space([[maybe_unused]] const RID& p_body) con
 }
 
 void JoltPhysicsServer3D::_body_set_mode(const RID& p_body, BodyMode p_mode) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_mode(p_mode);
@@ -494,10 +494,10 @@ void JoltPhysicsServer3D::_body_add_shape(
 	const Transform3D& p_transform,
 	bool p_disabled
 ) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	JoltPhysicsShape3D* shape = shape_owner.get_or_null(p_shape);
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
 	body->add_shape(shape, p_transform, p_disabled);
@@ -516,7 +516,7 @@ void JoltPhysicsServer3D::_body_set_shape_transform(
 	int64_t p_shape_idx,
 	const Transform3D& p_transform
 ) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_shape_transform(p_shape_idx, p_transform);
@@ -541,7 +541,7 @@ Transform3D JoltPhysicsServer3D::_body_get_shape_transform(
 }
 
 void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int64_t p_shape_idx) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->remove_shape((int)p_shape_idx);
@@ -560,14 +560,14 @@ void JoltPhysicsServer3D::_body_set_shape_disabled(
 }
 
 void JoltPhysicsServer3D::_body_attach_object_instance_id(const RID& p_body, int64_t p_id) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_instance_id(p_id);
 }
 
 int64_t JoltPhysicsServer3D::_body_get_object_instance_id(const RID& p_body) const {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_V(body, -1);
 
 	return body->get_instance_id();
@@ -577,42 +577,42 @@ void JoltPhysicsServer3D::_body_set_enable_continuous_collision_detection(
 	const RID& p_body,
 	bool p_enable
 ) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_ccd_enabled(p_enable);
 }
 
 bool JoltPhysicsServer3D::_body_is_continuous_collision_detection_enabled(const RID& p_body) const {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->is_ccd_enabled();
 }
 
 void JoltPhysicsServer3D::_body_set_collision_layer(const RID& p_body, int64_t p_layer) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_collision_layer((uint32_t)p_layer);
 }
 
 int64_t JoltPhysicsServer3D::_body_get_collision_layer(const RID& p_body) const {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_collision_layer();
 }
 
 void JoltPhysicsServer3D::_body_set_collision_mask(const RID& p_body, int64_t p_mask) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_collision_mask((uint32_t)p_mask);
 }
 
 int64_t JoltPhysicsServer3D::_body_get_collision_mask(const RID& p_body) const {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_collision_mask();
@@ -650,14 +650,14 @@ void JoltPhysicsServer3D::_body_set_param(
 	BodyParameter p_param,
 	const Variant& p_value
 ) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_param(p_param, p_value);
 }
 
 Variant JoltPhysicsServer3D::_body_get_param(const RID& p_body, BodyParameter p_param) const {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_param(p_param);
@@ -672,14 +672,14 @@ void JoltPhysicsServer3D::_body_set_state(
 	BodyState p_state,
 	const Variant& p_value
 ) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_state(p_state, p_value);
 }
 
 Variant JoltPhysicsServer3D::_body_get_state(const RID& p_body, BodyState p_state) const {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_state(p_state);
@@ -733,7 +733,7 @@ void JoltPhysicsServer3D::_body_add_constant_central_force(
 	const RID& p_body,
 	const Vector3& p_force
 ) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->add_constant_central_force(p_force);
@@ -744,42 +744,42 @@ void JoltPhysicsServer3D::_body_add_constant_force(
 	const Vector3& p_force,
 	const Vector3& p_position
 ) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->add_constant_force(p_force, p_position);
 }
 
 void JoltPhysicsServer3D::_body_add_constant_torque(const RID& p_body, const Vector3& p_torque) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->add_constant_torque(p_torque);
 }
 
 void JoltPhysicsServer3D::_body_set_constant_force(const RID& p_body, const Vector3& p_force) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_constant_force(p_force);
 }
 
 Vector3 JoltPhysicsServer3D::_body_get_constant_force(const RID& p_body) const {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_constant_force();
 }
 
 void JoltPhysicsServer3D::_body_set_constant_torque(const RID& p_body, const Vector3& p_torque) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_constant_torque(p_torque);
 }
 
 Vector3 JoltPhysicsServer3D::_body_get_constant_torque(const RID& p_body) const {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_constant_torque();
@@ -873,7 +873,7 @@ void JoltPhysicsServer3D::_body_set_state_sync_callback(
 	const RID& p_body,
 	const Callable& p_callable
 ) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_state_sync_callback(p_callable);
@@ -888,7 +888,7 @@ void JoltPhysicsServer3D::_body_set_force_integration_callback(
 }
 
 void JoltPhysicsServer3D::_body_set_ray_pickable(const RID& p_body, bool p_enable) {
-	JoltPhysicsBody3D* body = body_owner.get_or_null(p_body);
+	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_ray_pickable(p_enable);
@@ -1342,16 +1342,16 @@ int64_t JoltPhysicsServer3D::_joint_get_solver_priority([[maybe_unused]] const R
 
 void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
 	if (shape_owner.owns(p_rid)) {
-		JoltPhysicsShape3D* shape = shape_owner.get_or_null(p_rid);
+		JoltShape3D* shape = shape_owner.get_or_null(p_rid);
 
-		if (JoltPhysicsCollisionObject3D* owner = shape->get_owner()) {
+		if (JoltCollisionObject3D* owner = shape->get_owner()) {
 			owner->remove_shape(shape);
 		}
 
 		shape_owner.free(p_rid);
 		memdelete(shape);
 	} else if (body_owner.owns(p_rid)) {
-		JoltPhysicsBody3D* body = body_owner.get_or_null(p_rid);
+		JoltBody3D* body = body_owner.get_or_null(p_rid);
 
 		body->set_space(nullptr);
 
@@ -1362,12 +1362,12 @@ void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
 		body_owner.free(p_rid);
 		memdelete(body);
 	} else if (area_owner.owns(p_rid)) {
-		JoltPhysicsArea3D* area = area_owner.get_or_null(p_rid);
+		JoltArea3D* area = area_owner.get_or_null(p_rid);
 		area->set_space(nullptr);
 		area_owner.free(p_rid);
 		memdelete(area);
 	} else if (space_owner.owns(p_rid)) {
-		JoltPhysicsSpace3D* space = space_owner.get_or_null(p_rid);
+		JoltSpace3D* space = space_owner.get_or_null(p_rid);
 		space_set_active(p_rid, false);
 		space_owner.free(p_rid);
 		memdelete(space);
@@ -1391,7 +1391,7 @@ void JoltPhysicsServer3D::_step(double p_step) {
 		return;
 	}
 
-	for (JoltPhysicsSpace3D* active_space : active_spaces) {
+	for (JoltSpace3D* active_space : active_spaces) {
 		active_space->step((float)p_step);
 	}
 }
@@ -1407,7 +1407,7 @@ void JoltPhysicsServer3D::_flush_queries() {
 
 	flushing_queries = true;
 
-	for (JoltPhysicsSpace3D* space : active_spaces) {
+	for (JoltSpace3D* space : active_spaces) {
 		space->call_queries();
 	}
 

@@ -1,14 +1,14 @@
 #pragma once
 
-class JoltPhysicsArea3D;
-class JoltPhysicsBody3D;
-class JoltPhysicsCollisionObject3D;
+class JoltArea3D;
+class JoltBody3D;
+class JoltCollisionObject3D;
 
-class JoltPhysicsSpace3D final {
+class JoltSpace3D final {
 public:
-	JoltPhysicsSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group_filter);
+	JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group_filter);
 
-	~JoltPhysicsSpace3D();
+	~JoltSpace3D();
 
 	void step(float p_step);
 
@@ -32,21 +32,21 @@ public:
 
 	PhysicsDirectSpaceState3D* get_direct_state() const;
 
-	void set_default_area(JoltPhysicsArea3D* p_area) { area = p_area; }
+	void set_default_area(JoltArea3D* p_area) { area = p_area; }
 
-	JoltPhysicsArea3D* get_default_area() const { return area; }
+	JoltArea3D* get_default_area() const { return area; }
 
 	Variant get_param(PhysicsServer3D::AreaParameter p_param) const;
 
 	void set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value);
 
-	void create_object(JoltPhysicsCollisionObject3D* p_object);
+	void create_object(JoltCollisionObject3D* p_object);
 
-	void add_object(JoltPhysicsCollisionObject3D* p_object);
+	void add_object(JoltCollisionObject3D* p_object);
 
-	void remove_object(JoltPhysicsCollisionObject3D* p_object);
+	void remove_object(JoltCollisionObject3D* p_object);
 
-	void destroy_object(JoltPhysicsCollisionObject3D* p_object);
+	void destroy_object(JoltCollisionObject3D* p_object);
 
 private:
 	void update_gravity();
@@ -65,11 +65,11 @@ private:
 
 	PhysicsDirectSpaceState3D* direct_state = nullptr;
 
-	SelfList<JoltPhysicsBody3D>::List state_query_list;
+	SelfList<JoltBody3D>::List state_query_list;
 
-	SelfList<JoltPhysicsArea3D>::List monitor_query_list;
+	SelfList<JoltArea3D>::List monitor_query_list;
 
-	JoltPhysicsArea3D* area = nullptr;
+	JoltArea3D* area = nullptr;
 
 	Vector3 gravity_vector = Vector3(0, -1, 0);
 

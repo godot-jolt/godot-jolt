@@ -3,9 +3,9 @@
 #include "jolt_physics_broad_phase_layer_3d.hpp"
 #include "jolt_physics_object_layer_3d.hpp"
 
-class JoltPhysicsLayerMapper3D final : public JPH::BroadPhaseLayerInterface {
+class JoltLayerMapper final : public JPH::BroadPhaseLayerInterface {
 public:
-	JoltPhysicsLayerMapper3D();
+	JoltLayerMapper();
 
 	uint32_t GetNumBroadPhaseLayers() const override { return GDJOLT_BROAD_PHASE_LAYER_COUNT; }
 

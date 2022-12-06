@@ -1,17 +1,17 @@
 #pragma once
 
-class JoltPhysicsSpace3D;
-class JoltPhysicsShape3D;
+class JoltSpace3D;
+class JoltShape3D;
 
-class JoltPhysicsCollisionObject3D {
+class JoltCollisionObject3D {
 public:
 	struct Shape {
-		JoltPhysicsShape3D* ref = nullptr;
+		JoltShape3D* ref = nullptr;
 		bool disabled = false;
 		Transform3D transform;
 	};
 
-	virtual ~JoltPhysicsCollisionObject3D() = 0;
+	virtual ~JoltCollisionObject3D() = 0;
 
 	RID get_rid() const { return rid; }
 
@@ -25,9 +25,9 @@ public:
 
 	void set_jid(JPH::BodyID p_jid) { jid = p_jid; }
 
-	JoltPhysicsSpace3D* get_space() const { return space; }
+	JoltSpace3D* get_space() const { return space; }
 
-	void set_space(JoltPhysicsSpace3D* p_space);
+	void set_space(JoltSpace3D* p_space);
 
 	uint32_t get_collision_layer() const { return collision_layer; }
 
@@ -50,13 +50,13 @@ public:
 	JPH::MassProperties calculate_mass_properties(bool p_lock = true) const;
 
 	void add_shape(
-		JoltPhysicsShape3D* p_shape,
+		JoltShape3D* p_shape,
 		const Transform3D& p_transform,
 		bool p_disabled,
 		bool p_lock = true
 	);
 
-	void remove_shape(JoltPhysicsShape3D* p_shape, bool p_lock = true);
+	void remove_shape(JoltShape3D* p_shape, bool p_lock = true);
 
 	void remove_shape(int p_index, bool p_lock = true);
 
@@ -64,7 +64,7 @@ public:
 
 	int get_shape_count() const { return shapes.size(); }
 
-	int find_shape_index(JoltPhysicsShape3D* p_shape);
+	int find_shape_index(JoltShape3D* p_shape);
 
 	void set_shape_transform(int64_t p_index, const Transform3D& p_transform, bool p_lock = true);
 
@@ -113,7 +113,7 @@ protected:
 
 	JPH::BodyID jid;
 
-	JoltPhysicsSpace3D* space = nullptr;
+	JoltSpace3D* space = nullptr;
 
 	uint32_t collision_layer = 1;
 

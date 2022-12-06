@@ -2,13 +2,13 @@
 
 #include "utility_functions.hpp"
 
-class JoltPhysicsTempAllocator final : public JPH::TempAllocator {
+class JoltTempAllocator final : public JPH::TempAllocator {
 public:
-	explicit JoltPhysicsTempAllocator(size_t p_capacity)
+	explicit JoltTempAllocator(size_t p_capacity)
 		: base(static_cast<uint8_t*>(JPH::Allocate(p_capacity)))
 		, capacity(p_capacity) { }
 
-	~JoltPhysicsTempAllocator() override { JPH::Free(base); }
+	~JoltTempAllocator() override { JPH::Free(base); }
 
 	void* Allocate(uint32_t p_size) override {
 		if (p_size == 0) {

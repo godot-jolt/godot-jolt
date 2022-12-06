@@ -1,9 +1,9 @@
 #pragma once
 
-class JoltPhysicsArea3D;
-class JoltPhysicsBody3D;
-class JoltPhysicsShape3D;
-class JoltPhysicsSpace3D;
+class JoltArea3D;
+class JoltBody3D;
+class JoltShape3D;
+class JoltSpace3D;
 
 class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
 	GDCLASS_NO_WARN(JoltPhysicsServer3D, PhysicsServer3DExtension) // NOLINT
@@ -555,13 +555,13 @@ private:
 
 	bool flushing_queries = false;
 
-	HashSet<JoltPhysicsSpace3D*> active_spaces;
+	HashSet<JoltSpace3D*> active_spaces;
 
-	mutable RID_PtrOwner<JoltPhysicsSpace3D> space_owner;
+	mutable RID_PtrOwner<JoltSpace3D> space_owner;
 
-	mutable RID_PtrOwner<JoltPhysicsBody3D> body_owner;
+	mutable RID_PtrOwner<JoltBody3D> body_owner;
 
-	mutable RID_PtrOwner<JoltPhysicsArea3D> area_owner;
+	mutable RID_PtrOwner<JoltArea3D> area_owner;
 
-	mutable RID_PtrOwner<JoltPhysicsShape3D> shape_owner;
+	mutable RID_PtrOwner<JoltShape3D> shape_owner;
 };

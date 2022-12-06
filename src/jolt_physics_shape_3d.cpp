@@ -2,34 +2,34 @@
 
 #include "conversion.hpp"
 
-JoltPhysicsShape3D::~JoltPhysicsShape3D() = default;
+JoltShape3D::~JoltShape3D() = default;
 
-Variant JoltPhysicsSphereShape3D::get_data() const {
+Variant JoltSphereShape3D::get_data() const {
 	return radius;
 }
 
-void JoltPhysicsSphereShape3D::set_data(const Variant& p_data) {
+void JoltSphereShape3D::set_data(const Variant& p_data) {
 	radius = p_data;
 	jref = new JPH::SphereShape(radius);
 }
 
-Variant JoltPhysicsBoxShape3D::get_data() const {
+Variant JoltBoxShape3D::get_data() const {
 	return half_extents;
 }
 
-void JoltPhysicsBoxShape3D::set_data(const Variant& p_data) {
+void JoltBoxShape3D::set_data(const Variant& p_data) {
 	half_extents = p_data;
 	jref = new JPH::BoxShape(to_jolt(half_extents));
 }
 
-Variant JoltPhysicsCapsuleShape3D::get_data() const {
+Variant JoltCapsuleShape3D::get_data() const {
 	Dictionary dict;
 	dict["height"] = height;
 	dict["radius"] = radius;
 	return dict;
 }
 
-void JoltPhysicsCapsuleShape3D::set_data(const Variant& p_data) {
+void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	const Dictionary dict = p_data;
 
 	const Variant maybe_height = dict.get("height", {});
@@ -44,14 +44,14 @@ void JoltPhysicsCapsuleShape3D::set_data(const Variant& p_data) {
 	jref = new JPH::CapsuleShape(height / 2.0f, radius);
 }
 
-Variant JoltPhysicsCylinderShape3D::get_data() const {
+Variant JoltCylinderShape3D::get_data() const {
 	Dictionary dict;
 	dict["height"] = height;
 	dict["radius"] = radius;
 	return dict;
 }
 
-void JoltPhysicsCylinderShape3D::set_data(const Variant& p_data) {
+void JoltCylinderShape3D::set_data(const Variant& p_data) {
 	const Dictionary dict = p_data;
 
 	const Variant maybe_height = dict.get("height", {});
@@ -66,17 +66,17 @@ void JoltPhysicsCylinderShape3D::set_data(const Variant& p_data) {
 	jref = new JPH::CylinderShape(height / 2.0f, radius);
 }
 
-Variant JoltPhysicsConvexPolygonShape3D::get_data() const {
+Variant JoltConvexPolygonShape3D::get_data() const {
 	return vertices;
 }
 
-void JoltPhysicsConvexPolygonShape3D::set_data(const Variant& p_data) {
+void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND(p_data.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 	vertices = p_data;
 	vertices_changed();
 }
 
-void JoltPhysicsConvexPolygonShape3D::vertices_changed() {
+void JoltConvexPolygonShape3D::vertices_changed() {
 	const int64_t num_vertices = vertices.size();
 	ERR_FAIL_COND(num_vertices == 0);
 

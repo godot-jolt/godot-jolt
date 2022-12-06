@@ -19,13 +19,10 @@ constexpr uint32_t GDJOLT_MAX_CONTACT_CONSTRAINTS = 8192;
 
 } // namespace
 
-JoltPhysicsSpace3D::JoltPhysicsSpace3D(
-	JPH::JobSystem* p_job_system,
-	JPH::GroupFilter* p_group_filter
-)
+JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group_filter)
 	: job_system(p_job_system)
-	, temp_allocator(new JoltPhysicsTempAllocator(GDJOLT_TEMP_CAPACITY))
-	, layer_mapper(new JoltPhysicsLayerMapper3D())
+	, temp_allocator(new JoltTempAllocator(GDJOLT_TEMP_CAPACITY))
+	, layer_mapper(new JoltLayerMapper())
 	, physics_system(new JPH::PhysicsSystem())
 	, group_filter(p_group_filter) {
 	physics_system->Init(
@@ -34,18 +31,18 @@ JoltPhysicsSpace3D::JoltPhysicsSpace3D(
 		GDJOLT_MAX_BODY_PAIRS,
 		GDJOLT_MAX_CONTACT_CONSTRAINTS,
 		*layer_mapper,
-		&JoltPhysicsLayerMapper3D::can_layers_collide,
-		&JoltPhysicsLayerMapper3D::can_layers_collide
+		&JoltLayerMapper::can_layers_collide,
+		&JoltLayerMapper::can_layers_collide
 	);
 }
 
-JoltPhysicsSpace3D::~JoltPhysicsSpace3D() {
+JoltSpace3D::~JoltSpace3D() {
 	delete physics_system;
 	delete layer_mapper;
 	delete temp_allocator;
 }
 
-void JoltPhysicsSpace3D::step(float p_step) {
+void JoltSpace3D::step(float p_step) {
 	lock();
 
 	// TODO(mihe): Integrate forces/velocities
@@ -55,7 +52,7 @@ void JoltPhysicsSpace3D::step(float p_step) {
 	unlock();
 }
 
-void JoltPhysicsSpace3D::call_queries() {
+void JoltSpace3D::call_queries() {
 	JPH::BodyIDVector body_ids;
 	physics_system->GetActiveBodies(body_ids);
 
@@ -69,8 +66,7 @@ void JoltPhysicsSpace3D::call_queries() {
 		for (int i = 0; i < (int)body_ids.size(); ++i) {
 			if (const JPH::Body* body = lock.GetBody(i)) {
 				if (!body->IsSensor()) {
-					auto* object =
-						reinterpret_cast<JoltPhysicsCollisionObject3D*>(body->GetUserData());
+					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
 					object->call_queries();
 				}
 			}
@@ -79,8 +75,7 @@ void JoltPhysicsSpace3D::call_queries() {
 		for (int i = 0; i < (int)body_ids.size(); ++i) {
 			if (const JPH::Body* body = lock.GetBody(i)) {
 				if (body->IsSensor()) {
-					auto* object =
-						reinterpret_cast<JoltPhysicsCollisionObject3D*>(body->GetUserData());
+					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
 					object->call_queries();
 				}
 			}
@@ -88,15 +83,15 @@ void JoltPhysicsSpace3D::call_queries() {
 	}
 }
 
-JPH::BodyInterface& JoltPhysicsSpace3D::get_body_iface(bool p_locked) {
+JPH::BodyInterface& JoltSpace3D::get_body_iface(bool p_locked) {
 	return p_locked ? physics_system->GetBodyInterface() : physics_system->GetBodyInterfaceNoLock();
 }
 
-const JPH::BodyInterface& JoltPhysicsSpace3D::get_body_iface(bool p_locked) const {
+const JPH::BodyInterface& JoltSpace3D::get_body_iface(bool p_locked) const {
 	return p_locked ? physics_system->GetBodyInterface() : physics_system->GetBodyInterfaceNoLock();
 }
 
-const JPH::BodyLockInterface& JoltPhysicsSpace3D::get_body_lock_iface(bool p_locked) const {
+const JPH::BodyLockInterface& JoltSpace3D::get_body_lock_iface(bool p_locked) const {
 	if (p_locked) {
 		return physics_system->GetBodyLockInterface();
 	} else {
@@ -104,11 +99,11 @@ const JPH::BodyLockInterface& JoltPhysicsSpace3D::get_body_lock_iface(bool p_loc
 	}
 }
 
-PhysicsDirectSpaceState3D* JoltPhysicsSpace3D::get_direct_state() const {
+PhysicsDirectSpaceState3D* JoltSpace3D::get_direct_state() const {
 	return direct_state;
 }
 
-Variant JoltPhysicsSpace3D::get_param(PhysicsServer3D::AreaParameter p_param) const {
+Variant JoltSpace3D::get_param(PhysicsServer3D::AreaParameter p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
 			return gravity;
@@ -122,7 +117,7 @@ Variant JoltPhysicsSpace3D::get_param(PhysicsServer3D::AreaParameter p_param) co
 	}
 }
 
-void JoltPhysicsSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value) {
+void JoltSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value) {
 	switch (p_param) {
 		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
 			gravity = p_value;
@@ -138,14 +133,14 @@ void JoltPhysicsSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const
 	}
 }
 
-void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
+void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 	if (!p_object->get_jid().IsInvalid()) {
 		return;
 	}
 
 	JPH::Ref compound_shape = new JPH::MutableCompoundShapeSettings();
 
-	for (const JoltPhysicsCollisionObject3D::Shape& shape : p_object->get_shapes()) {
+	for (const JoltCollisionObject3D::Shape& shape : p_object->get_shapes()) {
 		compound_shape->AddShape(
 			to_jolt(shape.transform.origin),
 			to_jolt(shape.transform.basis),
@@ -214,7 +209,7 @@ void JoltPhysicsSpace3D::create_object(JoltPhysicsCollisionObject3D* p_object) {
 	p_object->set_jid(body->GetID());
 }
 
-void JoltPhysicsSpace3D::add_object(JoltPhysicsCollisionObject3D* p_object) {
+void JoltSpace3D::add_object(JoltCollisionObject3D* p_object) {
 	physics_system->GetBodyInterface().AddBody(
 		p_object->get_jid(),
 		p_object->get_initial_sleep_state() ? JPH::EActivation::DontActivate
@@ -222,15 +217,15 @@ void JoltPhysicsSpace3D::add_object(JoltPhysicsCollisionObject3D* p_object) {
 	);
 }
 
-void JoltPhysicsSpace3D::remove_object(JoltPhysicsCollisionObject3D* p_object) {
+void JoltSpace3D::remove_object(JoltCollisionObject3D* p_object) {
 	physics_system->GetBodyInterface().RemoveBody(p_object->get_jid());
 }
 
-void JoltPhysicsSpace3D::destroy_object(JoltPhysicsCollisionObject3D* p_object) {
+void JoltSpace3D::destroy_object(JoltCollisionObject3D* p_object) {
 	physics_system->GetBodyInterface().DestroyBody(p_object->get_jid());
 	p_object->set_jid(JPH::BodyID());
 }
 
-void JoltPhysicsSpace3D::update_gravity() {
+void JoltSpace3D::update_gravity() {
 	physics_system->SetGravity(to_jolt(gravity_vector * gravity));
 }

@@ -1,10 +1,10 @@
 #pragma once
 
-class JoltPhysicsSpace3D;
+class JoltSpace3D;
 
-class BodyAccessRead {
+class JoltBodyAccessRead3D {
 public:
-	BodyAccessRead(const JoltPhysicsSpace3D& p_space, const JPH::BodyID& p_jid, bool p_lock);
+	JoltBodyAccessRead3D(const JoltSpace3D& p_space, const JPH::BodyID& p_jid, bool p_lock);
 
 	bool is_valid() const { return lock.Succeeded(); }
 
@@ -14,9 +14,9 @@ private:
 	JPH::BodyLockRead lock;
 };
 
-class BodyAccessWrite {
+class JoltBodyAccessWrite3D {
 public:
-	BodyAccessWrite(const JoltPhysicsSpace3D& p_space, const JPH::BodyID& p_jid, bool p_lock);
+	JoltBodyAccessWrite3D(const JoltSpace3D& p_space, const JPH::BodyID& p_jid, bool p_lock);
 
 	bool is_valid() const { return lock.Succeeded(); }
 
