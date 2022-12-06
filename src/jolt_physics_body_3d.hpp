@@ -3,9 +3,9 @@
 #include "jolt_physics_collision_object_3d.hpp"
 #include "jolt_physics_direct_body_state_3d.hpp"
 
-class JoltPhysicsBody3D final : public JoltPhysicsCollisionObject3D {
+class JoltBody3D final : public JoltCollisionObject3D {
 public:
-	~JoltPhysicsBody3D() override;
+	~JoltBody3D() override;
 
 	Variant get_state(PhysicsServer3D::BodyState p_state);
 

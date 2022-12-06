@@ -1,18 +1,18 @@
 #pragma once
 
-class JoltPhysicsCollisionObject3D;
+class JoltCollisionObject3D;
 
-class JoltPhysicsShape3D {
+class JoltShape3D {
 public:
-	virtual ~JoltPhysicsShape3D() = 0;
+	virtual ~JoltShape3D() = 0;
 
 	RID get_rid() const { return rid; }
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
-	virtual JoltPhysicsCollisionObject3D* get_owner() const { return owner; }
+	virtual JoltCollisionObject3D* get_owner() const { return owner; }
 
-	virtual void set_owner(JoltPhysicsCollisionObject3D* p_owner) { owner = p_owner; }
+	virtual void set_owner(JoltCollisionObject3D* p_owner) { owner = p_owner; }
 
 	virtual Variant get_data() const = 0;
 
@@ -23,12 +23,12 @@ public:
 protected:
 	RID rid;
 
-	JoltPhysicsCollisionObject3D* owner = nullptr;
+	JoltCollisionObject3D* owner = nullptr;
 
 	JPH::Ref<JPH::Shape> jref;
 };
 
-class JoltPhysicsSphereShape3D final : public JoltPhysicsShape3D {
+class JoltSphereShape3D final : public JoltShape3D {
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -36,7 +36,7 @@ class JoltPhysicsSphereShape3D final : public JoltPhysicsShape3D {
 	float radius = 0.0f;
 };
 
-class JoltPhysicsBoxShape3D final : public JoltPhysicsShape3D {
+class JoltBoxShape3D final : public JoltShape3D {
 public:
 	Variant get_data() const override;
 
@@ -46,7 +46,7 @@ private:
 	Vector3 half_extents;
 };
 
-class JoltPhysicsCapsuleShape3D final : public JoltPhysicsShape3D {
+class JoltCapsuleShape3D final : public JoltShape3D {
 public:
 	Variant get_data() const override;
 
@@ -58,7 +58,7 @@ private:
 	float radius = 0.0f;
 };
 
-class JoltPhysicsCylinderShape3D final : public JoltPhysicsShape3D {
+class JoltCylinderShape3D final : public JoltShape3D {
 public:
 	Variant get_data() const override;
 
@@ -70,7 +70,7 @@ private:
 	float radius = 0.0f;
 };
 
-class JoltPhysicsConvexPolygonShape3D final : public JoltPhysicsShape3D {
+class JoltConvexPolygonShape3D final : public JoltShape3D {
 public:
 	Variant get_data() const override;
 

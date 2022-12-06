@@ -2,7 +2,7 @@
 
 #include "jolt_physics_collision_object_3d.hpp"
 
-class JoltPhysicsArea3D final : public JoltPhysicsCollisionObject3D {
+class JoltArea3D final : public JoltCollisionObject3D {
 public:
 	bool has_monitor_callback() const { return !monitor_callback.is_null(); }
 

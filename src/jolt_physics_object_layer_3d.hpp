@@ -1,6 +1,6 @@
 #pragma once
 
-enum JoltPhysicsObjectLayer3D {
+enum JoltObjectLayer {
 	GDJOLT_OBJECT_LAYER_STATIC,
 	GDJOLT_OBJECT_LAYER_MOVING,
 	GDJOLT_OBJECT_LAYER_COUNT

@@ -1,6 +1,6 @@
 #pragma once
 
-class JoltPhysicsBody3D;
+class JoltBody3D;
 
 class JoltPhysicsDirectBodyState3D final : public PhysicsDirectBodyState3DExtension {
 	GDCLASS_NO_WARN(JoltPhysicsDirectBodyState3D, PhysicsDirectBodyState3DExtension) // NOLINT
@@ -12,7 +12,7 @@ protected:
 public:
 	JoltPhysicsDirectBodyState3D() = default;
 
-	explicit JoltPhysicsDirectBodyState3D(JoltPhysicsBody3D* p_body);
+	explicit JoltPhysicsDirectBodyState3D(JoltBody3D* p_body);
 
 	Vector3 _get_total_gravity() const override;
 
@@ -105,5 +105,5 @@ public:
 	PhysicsDirectSpaceState3D* _get_space_state() override;
 
 private:
-	JoltPhysicsBody3D* body = nullptr;
+	JoltBody3D* body = nullptr;
 };

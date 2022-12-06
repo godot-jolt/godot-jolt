@@ -3,7 +3,7 @@
 #include "error_macros.hpp"
 #include "jolt_physics_body_3d.hpp"
 
-JoltPhysicsDirectBodyState3D::JoltPhysicsDirectBodyState3D(JoltPhysicsBody3D* p_body)
+JoltPhysicsDirectBodyState3D::JoltPhysicsDirectBodyState3D(JoltBody3D* p_body)
 	: body(p_body) { }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_total_gravity() const {

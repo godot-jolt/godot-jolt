@@ -1,6 +1,6 @@
 #pragma once
 
-enum JoltPhysicsBroadPhaseLayer3D {
+enum JoltBroadPhaseLayer {
 	GDJOLT_BROAD_PHASE_LAYER_STATIC,
 	GDJOLT_BROAD_PHASE_LAYER_MOVING,
 	GDJOLT_BROAD_PHASE_LAYER_COUNT
