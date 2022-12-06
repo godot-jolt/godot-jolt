@@ -1,4 +1,4 @@
-#include "jolt_physics_layer_mapper_3d.hpp"
+#include "jolt_layer_mapper.hpp"
 
 #include "utility_functions.hpp"
 

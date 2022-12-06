@@ -1,7 +1,7 @@
 #pragma once
 
-#include "jolt_physics_broad_phase_layer_3d.hpp"
-#include "jolt_physics_object_layer_3d.hpp"
+#include "jolt_broad_phase_layer.hpp"
+#include "jolt_object_layer.hpp"
 
 class JoltLayerMapper final : public JPH::BroadPhaseLayerInterface {
 public:

@@ -1,4 +1,4 @@
-#include "jolt_physics_shape_3d.hpp"
+#include "jolt_shape_3d.hpp"
 
 #include "conversion.hpp"
 

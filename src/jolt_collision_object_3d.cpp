@@ -1,10 +1,10 @@
-#include "jolt_physics_collision_object_3d.hpp"
+#include "jolt_collision_object_3d.hpp"
 
-#include "body_access.hpp"
 #include "conversion.hpp"
 #include "error_macros.hpp"
-#include "jolt_physics_shape_3d.hpp"
-#include "jolt_physics_space_3d.hpp"
+#include "jolt_body_access_3d.hpp"
+#include "jolt_shape_3d.hpp"
+#include "jolt_space_3d.hpp"
 
 JoltCollisionObject3D::~JoltCollisionObject3D() = default;
 

@@ -1,11 +1,11 @@
 #include "jolt_physics_server_3d.hpp"
 
 #include "error_macros.hpp"
-#include "jolt_physics_area_3d.hpp"
-#include "jolt_physics_body_3d.hpp"
-#include "jolt_physics_group_filter.hpp"
-#include "jolt_physics_shape_3d.hpp"
-#include "jolt_physics_space_3d.hpp"
+#include "jolt_area_3d.hpp"
+#include "jolt_body_3d.hpp"
+#include "jolt_group_filter.hpp"
+#include "jolt_shape_3d.hpp"
+#include "jolt_space_3d.hpp"
 #include "utility_functions.hpp"
 
 namespace {

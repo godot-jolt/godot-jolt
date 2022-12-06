@@ -1,7 +1,7 @@
 #include "jolt_physics_direct_body_state_3d.hpp"
 
 #include "error_macros.hpp"
-#include "jolt_physics_body_3d.hpp"
+#include "jolt_body_3d.hpp"
 
 JoltPhysicsDirectBodyState3D::JoltPhysicsDirectBodyState3D(JoltBody3D* p_body)
 	: body(p_body) { }
