@@ -18,20 +18,25 @@ public:
 
 	virtual void set_data(const Variant& p_data) = 0;
 
-	JPH::Shape* get_jref() const { return jref; }
+	const JPH::Shape* get_jref() const { return jref; }
 
 protected:
+	virtual void clear_data();
+
 	RID rid;
 
 	JoltCollisionObject3D* owner = nullptr;
 
-	JPH::Ref<JPH::Shape> jref;
+	JPH::RefConst<JPH::Shape> jref;
 };
 
 class JoltSphereShape3D final : public JoltShape3D {
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
+
+private:
+	void clear_data() override;
 
 	float radius = 0.0f;
 };
@@ -43,6 +48,8 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
+	void clear_data() override;
+
 	Vector3 half_extents;
 };
 
@@ -53,6 +60,8 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
+	void clear_data() override;
+
 	float height = 0.0f;
 
 	float radius = 0.0f;
@@ -65,6 +74,8 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
+	void clear_data() override;
+
 	float height = 0.0f;
 
 	float radius = 0.0f;
@@ -77,7 +88,7 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
-	void vertices_changed();
+	void clear_data() override;
 
 	PackedVector3Array vertices;
 };
