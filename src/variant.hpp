@@ -5,7 +5,7 @@ struct fmt::formatter<String> : public fmt::formatter<std::string_view> {
 	template<typename TContext>
 	auto format(const String& p_str, TContext& p_ctx) const {
 		const CharString utf8_str = p_str.utf8();
-		const std::string_view utf8_view(utf8_str.get_data(), utf8_str.length() - 1);
+		const std::string_view utf8_view(utf8_str.get_data(), (size_t)utf8_str.length() - 1);
 		return fmt::formatter<std::string_view>::format(utf8_view, p_ctx);
 	}
 };
