@@ -20,8 +20,8 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 
 	const float new_radius = p_data;
 
-	JPH::SphereShapeSettings shape_settings(new_radius);
-	JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+	const JPH::SphereShapeSettings shape_settings(new_radius);
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_MSG(
 		shape_result.HasError(),
@@ -53,8 +53,8 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 
 	const Vector3 new_half_extents = p_data;
 
-	JPH::BoxShapeSettings shape_settings(to_jolt(new_half_extents));
-	JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+	const JPH::BoxShapeSettings shape_settings(to_jolt(new_half_extents));
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_MSG(
 		shape_result.HasError(),
@@ -100,8 +100,8 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	const float new_height = maybe_height;
 	const float new_radius = maybe_radius;
 
-	JPH::CapsuleShapeSettings shape_settings(new_height / 2.0f, new_radius);
-	JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+	const JPH::CapsuleShapeSettings shape_settings(new_height / 2.0f, new_radius);
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_MSG(
 		shape_result.HasError(),
@@ -148,8 +148,8 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 	const float new_height = maybe_height;
 	const float new_radius = maybe_radius;
 
-	JPH::CylinderShapeSettings shape_settings(new_height / 2.0f, new_radius);
-	JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+	const JPH::CylinderShapeSettings shape_settings(new_height / 2.0f, new_radius);
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_MSG(
 		shape_result.HasError(),
@@ -197,8 +197,8 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
 	}
 
-	JPH::ConvexHullShapeSettings shape_settings(jolt_vertices);
-	JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+	const JPH::ConvexHullShapeSettings shape_settings(jolt_vertices);
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_MSG(
 		shape_result.HasError(),
