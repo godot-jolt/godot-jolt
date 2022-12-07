@@ -6,6 +6,7 @@
 #include "jolt_physics_direct_body_state_3d.hpp"
 #include "jolt_space_3d.hpp"
 #include "utility_functions.hpp"
+#include "variant.hpp"
 
 JoltBody3D::~JoltBody3D() {
 	if (direct_state) {

@@ -27,8 +27,3 @@ template<typename TValue, typename TAlignment>
 constexpr TValue align_up(TValue p_value, TAlignment p_alignment) {
 	return (p_value + p_alignment - 1) & ~(p_alignment - 1);
 }
-
-template<typename... TArgs>
-String vformat(TArgs&&... p_args) {
-	return String(fmt::format(std::forward<TArgs>(p_args)...).c_str());
-}
