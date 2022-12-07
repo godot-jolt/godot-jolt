@@ -6,7 +6,7 @@
 #include "jolt_group_filter.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
-#include "utility_functions.hpp"
+#include "variant.hpp"
 
 namespace {
 

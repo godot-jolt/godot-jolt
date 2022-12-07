@@ -1,7 +1,7 @@
 #include "jolt_shape_3d.hpp"
 
 #include "conversion.hpp"
-#include "utility_functions.hpp"
+#include "variant.hpp"
 
 JoltShape3D::~JoltShape3D() = default;
 
@@ -59,11 +59,9 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to create box shape with half extents '({}, {}, {})'. "
+			"Failed to create box shape with half extents '{}'. "
 			"Jolt returned the following error: '{}'.",
-			new_half_extents.x,
-			new_half_extents.y,
-			new_half_extents.z,
+			new_half_extents,
 			shape_result.GetError()
 		)
 	);
