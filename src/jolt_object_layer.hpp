@@ -1,6 +1,6 @@
 #pragma once
 
-enum JoltObjectLayer {
+enum JoltObjectLayer : JPH::ObjectLayer {
 	GDJOLT_OBJECT_LAYER_STATIC,
 	GDJOLT_OBJECT_LAYER_MOVING,
 	GDJOLT_OBJECT_LAYER_COUNT
