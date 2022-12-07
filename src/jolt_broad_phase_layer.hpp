@@ -1,6 +1,6 @@
 #pragma once
 
-enum JoltBroadPhaseLayer {
+enum JoltBroadPhaseLayer : JPH::BroadPhaseLayer::Type {
 	GDJOLT_BROAD_PHASE_LAYER_STATIC,
 	GDJOLT_BROAD_PHASE_LAYER_MOVING,
 	GDJOLT_BROAD_PHASE_LAYER_COUNT
