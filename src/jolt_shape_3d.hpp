@@ -20,6 +20,8 @@ public:
 
 	const JPH::Shape* get_jref() const { return jref; }
 
+	bool is_valid() const { return jref != nullptr; }
+
 protected:
 	virtual void clear_data();
 

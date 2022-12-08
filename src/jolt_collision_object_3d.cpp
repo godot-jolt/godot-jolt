@@ -3,8 +3,11 @@
 #include "conversion.hpp"
 #include "error_macros.hpp"
 #include "jolt_body_access_3d.hpp"
+#include "jolt_layer_mapper.hpp"
+#include "jolt_object_layer.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
+#include "variant.hpp"
 
 JoltCollisionObject3D::~JoltCollisionObject3D() = default;
 
@@ -127,6 +130,111 @@ JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(bool p_lock
 	return calculate_mass_properties(*body.GetShape());
 }
 
+JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
+	auto is_shape_eligible = [](const JoltShapeInstance3D& p_shape) {
+		return p_shape.is_enabled() && p_shape->is_valid();
+	};
+
+	int eligible_shape_count = 0;
+
+	for (const JoltShapeInstance3D& shape : shapes) {
+		if (is_shape_eligible(shape)) {
+			++eligible_shape_count;
+		}
+	}
+
+	if (eligible_shape_count == 0) {
+		return {};
+	}
+
+	if (eligible_shape_count == 1) {
+		for (const JoltShapeInstance3D& shape : shapes) {
+			if (!is_shape_eligible(shape)) {
+				continue;
+			}
+
+			const Transform3D& transform = shape.get_transform();
+
+			if (transform == Transform3D()) {
+				return shape->get_jref();
+			}
+
+			JPH::RotatedTranslatedShapeSettings shape_settings(
+				to_jolt(transform.origin),
+				to_jolt(transform.basis),
+				shape->get_jref()
+			);
+
+			const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+			ERR_FAIL_COND_D_MSG(
+				shape_result.HasError(),
+				vformat(
+					"Failed to create offset shape with transform '{}'. "
+					"Jolt returned the following error: '{}'.",
+					transform,
+					shape_result.GetError()
+				)
+			);
+
+			return shape_result.Get();
+		}
+	}
+
+	JPH::MutableCompoundShapeSettings shape_settings;
+
+	for (const JoltShapeInstance3D& shape : shapes) {
+		if (is_shape_eligible(shape)) {
+			shape_settings.AddShape(
+				to_jolt(shape.get_transform().origin),
+				to_jolt(shape.get_transform().basis),
+				shape->get_jref()
+			);
+		}
+	}
+
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to create compound shape with sub-shape count '{}'. "
+			"Jolt returned the following error: '{}'.",
+			shapes.size(),
+			shape_result.GetError()
+		)
+	);
+
+	return shape_result.Get();
+}
+
+void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
+	if (!space) {
+		shapes_changed(p_lock);
+		return;
+	}
+
+	const JoltBodyAccessWrite3D body_access(*space, jid, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	JPH::ShapeRefC shape = try_build_shape();
+
+	JPH::BodyInterface& body_iface = space->get_body_iface(false);
+
+	if (shape == nullptr) {
+		shape = new JPH::SphereShape(1.0f);
+		body_iface.SetObjectLayer(jid, GDJOLT_OBJECT_LAYER_NONE);
+	} else {
+		const JPH::EMotionType motion_type = body_access.get_body().GetMotionType();
+		const JPH::ObjectLayer object_layer = JoltLayerMapper::to_object_layer(motion_type);
+		body_iface.SetObjectLayer(jid, object_layer);
+	}
+
+	body_iface.SetShape(jid, shape, false, JPH::EActivation::DontActivate);
+
+	shapes_changed(false);
+}
+
 void JoltCollisionObject3D::add_shape(
 	JoltShape3D* p_shape,
 	const Transform3D& p_transform,
@@ -134,67 +242,23 @@ void JoltCollisionObject3D::add_shape(
 	bool p_lock
 ) {
 	shapes.push_back({p_shape, p_transform, p_disabled});
-
 	p_shape->set_owner(this);
-
-	if (!space) {
-		shapes_changed(p_lock);
-		return;
-	}
-
-	const JoltBodyAccessWrite3D body_access(*space, jid, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
-
-	JPH::MutableCompoundShape* root_shape = get_root_shape();
-	ERR_FAIL_NULL(root_shape);
-
-	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
-
-	root_shape
-		->AddShape(to_jolt(p_transform.origin), to_jolt(p_transform.basis), p_shape->get_jref());
-
-	space->get_body_iface(false)
-		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::DontActivate);
-
-	shapes_changed(false);
+	rebuild_shape(p_lock);
 }
 
 void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
 	const int index = find_shape_index(p_shape);
-	if (index == -1) {
-		return;
+	if (index >= 0) {
+		remove_shape(index, p_lock);
 	}
-
-	remove_shape(index, p_lock);
 }
 
 void JoltCollisionObject3D::remove_shape(int p_index, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	const JoltShapeInstance3D& shape = shapes[p_index];
-	shape->set_owner(nullptr);
+	shapes[p_index]->set_owner(nullptr);
 	shapes.remove_at(p_index);
-
-	if (!space) {
-		shapes_changed(p_lock);
-		return;
-	}
-
-	const JoltBodyAccessWrite3D body_access(*space, jid, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
-
-	JPH::MutableCompoundShape* root_shape = get_root_shape();
-	ERR_FAIL_NULL(root_shape);
-	ERR_FAIL_INDEX(p_index, (int)root_shape->GetNumSubShapes());
-
-	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
-
-	root_shape->RemoveShape((JPH::uint)p_index);
-
-	space->get_body_iface(false)
-		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::DontActivate);
-
-	shapes_changed(false);
+	rebuild_shape(p_lock);
 }
 
 int JoltCollisionObject3D::find_shape_index(JoltShape3D* p_shape) {
@@ -222,34 +286,10 @@ void JoltCollisionObject3D::set_shape_transform(
 
 	shapes.write[(int)p_index].set_transform(p_transform);
 
-	if (!space) {
-		shapes_changed(p_lock);
-		return;
-	}
-
-	const JoltBodyAccessWrite3D body_access(*space, jid, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
-
-	JPH::MutableCompoundShape* root_shape = get_root_shape();
-	ERR_FAIL_NULL(root_shape);
-	ERR_FAIL_INDEX(p_index, (int)root_shape->GetNumSubShapes());
-
-	const JPH::Vec3 previous_com = root_shape->GetCenterOfMass();
-
-	root_shape
-		->ModifyShape((JPH::uint)p_index, to_jolt(p_transform.origin), to_jolt(p_transform.basis));
-
-	space->get_body_iface(false)
-		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::DontActivate);
-
-	shapes_changed(false);
+	rebuild_shape(p_lock);
 }
 
-void JoltCollisionObject3D::set_shape_disabled(
-	int64_t p_index,
-	bool p_disabled,
-	[[maybe_unused]] bool p_lock
-) {
+void JoltCollisionObject3D::set_shape_disabled(int64_t p_index, bool p_disabled, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	const JoltShapeInstance3D& old_shape = shapes[(int)p_index];
@@ -260,21 +300,5 @@ void JoltCollisionObject3D::set_shape_disabled(
 
 	shapes.write[(int)p_index].set_disabled(p_disabled);
 
-	// TODO(mihe): Actually do something with the disabled state
-}
-
-JPH::MutableCompoundShape* JoltCollisionObject3D::get_root_shape() const {
-	ERR_FAIL_NULL_D(space);
-
-	// We assume that we're already locked, since anything returned from this function after the
-	// lock is released could disappear from underneath us anyway
-	const JoltBodyAccessRead3D body_access(*space, jid, false);
-	ERR_FAIL_COND_D(!body_access.is_valid());
-
-	// HACK(mihe): const_cast is not ideal, but that's what the official tests for
-	// `MutableCompoundShape` are using, as well as `RefConst::InternalGetPtr`
-	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-	auto* root_shape = const_cast<JPH::Shape*>(body_access.get_body().GetShape());
-
-	return static_cast<JPH::MutableCompoundShape*>(root_shape);
+	rebuild_shape(p_lock);
 }

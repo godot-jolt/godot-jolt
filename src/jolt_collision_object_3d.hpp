@@ -45,6 +45,10 @@ public:
 
 	JPH::MassProperties calculate_mass_properties(bool p_lock = true) const;
 
+	JPH::ShapeRefC try_build_shape() const;
+
+	void rebuild_shape(bool p_lock = true);
+
 	void add_shape(
 		JoltShape3D* p_shape,
 		const Transform3D& p_transform,
@@ -102,8 +106,6 @@ public:
 
 protected:
 	virtual void shapes_changed([[maybe_unused]] bool p_lock) { }
-
-	JPH::MutableCompoundShape* get_root_shape() const;
 
 	RID rid;
 

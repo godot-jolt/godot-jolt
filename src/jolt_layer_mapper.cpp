@@ -3,6 +3,7 @@
 #include "variant.hpp"
 
 JoltLayerMapper::JoltLayerMapper() {
+	mappings[GDJOLT_OBJECT_LAYER_NONE] = JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_NONE);
 	mappings[GDJOLT_OBJECT_LAYER_STATIC] = JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_STATIC);
 	mappings[GDJOLT_OBJECT_LAYER_MOVING] = JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MOVING);
 }
@@ -11,6 +12,9 @@ JoltLayerMapper::JoltLayerMapper() {
 
 const char* JoltLayerMapper::GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer) const {
 	switch ((JPH::BroadPhaseLayer::Type)p_layer) {
+		case GDJOLT_BROAD_PHASE_LAYER_NONE: {
+			return "NONE";
+		}
 		case GDJOLT_BROAD_PHASE_LAYER_STATIC: {
 			return "STATIC";
 		}
@@ -27,11 +31,14 @@ const char* JoltLayerMapper::GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer
 
 bool JoltLayerMapper::can_layers_collide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer p_layer2) {
 	switch (p_layer1) {
+		case GDJOLT_OBJECT_LAYER_NONE: {
+			return false;
+		}
 		case GDJOLT_OBJECT_LAYER_STATIC: {
 			return p_layer2 == GDJOLT_OBJECT_LAYER_MOVING;
 		}
 		case GDJOLT_OBJECT_LAYER_MOVING: {
-			return true;
+			return p_layer2 != GDJOLT_OBJECT_LAYER_NONE;
 		}
 		default: {
 			ERR_FAIL_V_MSG(false, vformat("Unhandled object layer: '{}'", p_layer1));
@@ -41,14 +48,32 @@ bool JoltLayerMapper::can_layers_collide(JPH::ObjectLayer p_layer1, JPH::ObjectL
 
 bool JoltLayerMapper::can_layers_collide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) {
 	switch (p_layer1) {
+		case GDJOLT_OBJECT_LAYER_NONE: {
+			return false;
+		}
 		case GDJOLT_OBJECT_LAYER_STATIC: {
 			return p_layer2 == JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MOVING);
 		}
 		case GDJOLT_OBJECT_LAYER_MOVING: {
-			return true;
+			return p_layer2 != JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_NONE);
 		}
 		default: {
 			ERR_FAIL_V_MSG(false, vformat("Unhandled object layer: '{}'", p_layer1));
+		}
+	}
+}
+
+JPH::ObjectLayer JoltLayerMapper::to_object_layer(JPH::EMotionType p_motion_type) {
+	switch (p_motion_type) {
+		case JPH::EMotionType::Static: {
+			return GDJOLT_OBJECT_LAYER_STATIC;
+		}
+		case JPH::EMotionType::Kinematic:
+		case JPH::EMotionType::Dynamic: {
+			return GDJOLT_OBJECT_LAYER_MOVING;
+		}
+		default: {
+			ERR_FAIL_V_MSG(false, vformat("Unhandled motion type: '{}'", (int)p_motion_type));
 		}
 	}
 }

@@ -181,9 +181,11 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND(p_data.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 
 	PackedVector3Array new_vertices = p_data;
-
 	const int64_t num_vertices = new_vertices.size();
-	ERR_FAIL_COND(num_vertices == 0);
+
+	if (num_vertices == 0) {
+		return;
+	}
 
 	JPH::Array<JPH::Vec3> jolt_vertices;
 	jolt_vertices.reserve((size_t)num_vertices);
