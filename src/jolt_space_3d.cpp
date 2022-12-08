@@ -140,11 +140,11 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 
 	JPH::Ref compound_shape = new JPH::MutableCompoundShapeSettings();
 
-	for (const JoltCollisionObject3D::Shape& shape : p_object->get_shapes()) {
+	for (const JoltShapeInstance3D& shape : p_object->get_shapes()) {
 		compound_shape->AddShape(
-			to_jolt(shape.transform.origin),
-			to_jolt(shape.transform.basis),
-			shape.ref->get_jref()
+			to_jolt(shape.get_transform().origin),
+			to_jolt(shape.get_transform().basis),
+			shape->get_jref()
 		);
 	}
 

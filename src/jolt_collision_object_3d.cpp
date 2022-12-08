@@ -133,11 +133,7 @@ void JoltCollisionObject3D::add_shape(
 	bool p_disabled,
 	bool p_lock
 ) {
-	Shape shape;
-	shape.ref = p_shape;
-	shape.transform = p_transform;
-	shape.disabled = p_disabled;
-	shapes.push_back(shape);
+	shapes.push_back({p_shape, p_transform, p_disabled});
 
 	p_shape->set_owner(this);
 
@@ -175,8 +171,8 @@ void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
 void JoltCollisionObject3D::remove_shape(int p_index, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	const Shape& shape = shapes[p_index];
-	shape.ref->set_owner(nullptr);
+	const JoltShapeInstance3D& shape = shapes[p_index];
+	shape->set_owner(nullptr);
 	shapes.remove_at(p_index);
 
 	if (!space) {
@@ -203,7 +199,7 @@ void JoltCollisionObject3D::remove_shape(int p_index, bool p_lock) {
 
 int JoltCollisionObject3D::find_shape_index(JoltShape3D* p_shape) {
 	for (int i = 0; i < shapes.size(); ++i) {
-		if (shapes[i].ref == p_shape) {
+		if (shapes[i] == p_shape) {
 			return i;
 		}
 	}
@@ -218,7 +214,13 @@ void JoltCollisionObject3D::set_shape_transform(
 ) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	shapes.get((int)p_index).transform = p_transform;
+	const JoltShapeInstance3D& old_shape = shapes[(int)p_index];
+
+	if (old_shape.get_transform() == p_transform) {
+		return;
+	}
+
+	shapes.write[(int)p_index].set_transform(p_transform);
 
 	if (!space) {
 		shapes_changed(p_lock);
@@ -241,6 +243,24 @@ void JoltCollisionObject3D::set_shape_transform(
 		.NotifyShapeChanged(jid, previous_com, false, JPH::EActivation::DontActivate);
 
 	shapes_changed(false);
+}
+
+void JoltCollisionObject3D::set_shape_disabled(
+	int64_t p_index,
+	bool p_disabled,
+	[[maybe_unused]] bool p_lock
+) {
+	ERR_FAIL_INDEX(p_index, shapes.size());
+
+	const JoltShapeInstance3D& old_shape = shapes[(int)p_index];
+
+	if (old_shape.is_disabled() == p_disabled) {
+		return;
+	}
+
+	shapes.write[(int)p_index].set_disabled(p_disabled);
+
+	// TODO(mihe): Actually do something with the disabled state
 }
 
 JPH::MutableCompoundShape* JoltCollisionObject3D::get_root_shape() const {

@@ -556,7 +556,10 @@ void JoltPhysicsServer3D::_body_set_shape_disabled(
 	[[maybe_unused]] int64_t p_shape_idx,
 	[[maybe_unused]] bool p_disabled
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_shape_disabled(p_shape_idx, p_disabled);
 }
 
 void JoltPhysicsServer3D::_body_attach_object_instance_id(const RID& p_body, int64_t p_id) {
