@@ -21,6 +21,8 @@ public:
 
 	static bool can_layers_collide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2);
 
+	static JPH::ObjectLayer to_object_layer(JPH::EMotionType motion_type);
+
 private:
 	JPH::BroadPhaseLayer mappings[GDJOLT_OBJECT_LAYER_COUNT] = {};
 };

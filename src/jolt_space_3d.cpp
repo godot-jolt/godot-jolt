@@ -8,6 +8,7 @@
 #include "jolt_object_layer.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_temp_allocator.hpp"
+#include "variant.hpp"
 
 namespace {
 
@@ -138,43 +139,37 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 		return;
 	}
 
-	JPH::Ref compound_shape = new JPH::MutableCompoundShapeSettings();
-
-	for (const JoltShapeInstance3D& shape : p_object->get_shapes()) {
-		compound_shape->AddShape(
-			to_jolt(shape.get_transform().origin),
-			to_jolt(shape.get_transform().basis),
-			shape->get_jref()
-		);
-	}
-
 	JPH::EMotionType motion_type = {};
-	JPH::ObjectLayer object_layer = {};
 
 	switch (p_object->get_mode()) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {
 			motion_type = JPH::EMotionType::Static;
-			object_layer = GDJOLT_OBJECT_LAYER_STATIC;
 		} break;
 		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
 			motion_type = JPH::EMotionType::Kinematic;
-			object_layer = GDJOLT_OBJECT_LAYER_MOVING;
 		} break;
 		case PhysicsServer3D::BODY_MODE_RIGID:
 		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
 			motion_type = JPH::EMotionType::Dynamic;
-			object_layer = GDJOLT_OBJECT_LAYER_MOVING;
 		} break;
 		default: {
 			ERR_FAIL_MSG("Unhandled body mode");
 		} break;
 	}
 
+	JPH::ShapeRefC shape = p_object->try_build_shape();
+	JPH::ObjectLayer object_layer = JoltLayerMapper::to_object_layer(motion_type);
+
+	if (shape == nullptr) {
+		shape = new JPH::SphereShape(1.0f);
+		object_layer = GDJOLT_OBJECT_LAYER_NONE;
+	}
+
 	const Transform3D& transform = p_object->get_initial_transform();
 	const bool is_sensor = p_object->is_sensor();
 
 	JPH::BodyCreationSettings settings(
-		compound_shape,
+		shape,
 		to_jolt(transform.origin),
 		to_jolt(transform.basis),
 		motion_type,
