@@ -131,8 +131,8 @@ JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(bool p_lock
 }
 
 JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
-	auto is_shape_eligible = [](const JoltShapeInstance3D& shape) {
-		return shape.is_enabled() && shape->is_valid();
+	auto is_shape_eligible = [](const JoltShapeInstance3D& p_shape) {
+		return p_shape.is_enabled() && p_shape->is_valid();
 	};
 
 	int eligible_shape_count = 0;

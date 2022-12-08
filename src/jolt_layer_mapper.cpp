@@ -68,9 +68,7 @@ JPH::ObjectLayer JoltLayerMapper::to_object_layer(JPH::EMotionType p_motion_type
 		case JPH::EMotionType::Static: {
 			return GDJOLT_OBJECT_LAYER_STATIC;
 		}
-		case JPH::EMotionType::Kinematic: {
-			return GDJOLT_OBJECT_LAYER_MOVING;
-		}
+		case JPH::EMotionType::Kinematic:
 		case JPH::EMotionType::Dynamic: {
 			return GDJOLT_OBJECT_LAYER_MOVING;
 		}
