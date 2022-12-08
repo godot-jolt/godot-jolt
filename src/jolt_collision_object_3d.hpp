@@ -1,16 +1,12 @@
 #pragma once
 
+#include "jolt_shape_instance_3d.hpp"
+
 class JoltSpace3D;
 class JoltShape3D;
 
 class JoltCollisionObject3D {
 public:
-	struct Shape {
-		JoltShape3D* ref = nullptr;
-		bool disabled = false;
-		Transform3D transform;
-	};
-
 	virtual ~JoltCollisionObject3D() = 0;
 
 	RID get_rid() const { return rid; }
@@ -60,13 +56,15 @@ public:
 
 	void remove_shape(int p_index, bool p_lock = true);
 
-	const Vector<Shape>& get_shapes() const { return shapes; }
+	const Vector<JoltShapeInstance3D>& get_shapes() const { return shapes; }
 
 	int get_shape_count() const { return shapes.size(); }
 
 	int find_shape_index(JoltShape3D* p_shape);
 
 	void set_shape_transform(int64_t p_index, const Transform3D& p_transform, bool p_lock = true);
+
+	void set_shape_disabled(int64_t p_index, bool p_disabled, bool p_lock = true);
 
 	bool is_ray_pickable() const { return ray_pickable; }
 
@@ -119,7 +117,7 @@ protected:
 
 	uint32_t collision_mask = 1;
 
-	Vector<Shape> shapes;
+	Vector<JoltShapeInstance3D> shapes;
 
 	bool ray_pickable = false;
 
