@@ -20,11 +20,12 @@ Prerequisites:
 - (Optional) Visual Studio's [clang-cl][ccl] component
   - If you wish to compile with LLVM/clang-cl instead of Visual C++.
 
-⚠️ Either of these need to be run from a [developer command prompt][cmd] for CMake to find the
-correct toolchain.
-
 ⚠️ These commands will build binaries for 64-bit systems. If you instead wish to build binaries for
 32-bit systems then replace `x64` with `x86`.
+
+⚠️ Either of these need to be run from one of Visual Studio's [Native Tools Command Prompt][cmd] for
+CMake to find the correct toolchain. Make sure you pick the one appropriate for your target
+architecture (x64 or x86).
 
 Using Microsoft Visual C++:
 
