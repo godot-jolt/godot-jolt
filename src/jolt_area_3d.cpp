@@ -42,4 +42,6 @@ void JoltArea3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant
 	}
 }
 
-void JoltArea3D::call_queries() { }
+void JoltArea3D::call_queries() {
+	// TOOD(mihe): Call `area_monitor_callback`
+}
