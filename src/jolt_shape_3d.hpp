@@ -18,9 +18,9 @@ public:
 
 	virtual void set_data(const Variant& p_data) = 0;
 
-	const JPH::Shape* get_jref() const { return jref; }
+	const JPH::ShapeRefC& get_jolt_ref() const { return jolt_ref; }
 
-	bool is_valid() const { return jref != nullptr; }
+	bool is_valid() const { return jolt_ref != nullptr; }
 
 protected:
 	virtual void clear_data();
@@ -29,7 +29,7 @@ protected:
 
 	JoltCollisionObject3D* owner = nullptr;
 
-	JPH::RefConst<JPH::Shape> jref;
+	JPH::ShapeRefC jolt_ref;
 };
 
 class JoltSphereShape3D final : public JoltShape3D {

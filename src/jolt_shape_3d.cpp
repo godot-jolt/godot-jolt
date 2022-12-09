@@ -6,7 +6,7 @@
 JoltShape3D::~JoltShape3D() = default;
 
 void JoltShape3D::clear_data() {
-	jref = nullptr;
+	jolt_ref = nullptr;
 }
 
 Variant JoltSphereShape3D::get_data() const {
@@ -33,7 +33,7 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 		)
 	);
 
-	jref = shape_result.Get();
+	jolt_ref = shape_result.Get();
 	radius = new_radius;
 }
 
@@ -66,7 +66,7 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 		)
 	);
 
-	jref = shape_result.Get();
+	jolt_ref = shape_result.Get();
 	half_extents = new_half_extents;
 }
 
@@ -112,7 +112,7 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 		)
 	);
 
-	jref = shape_result.Get();
+	jolt_ref = shape_result.Get();
 	height = new_height;
 	radius = new_radius;
 }
@@ -160,7 +160,7 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 		)
 	);
 
-	jref = shape_result.Get();
+	jolt_ref = shape_result.Get();
 	height = new_height;
 	radius = new_radius;
 }
@@ -210,7 +210,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 		)
 	);
 
-	jref = shape_result.Get();
+	jolt_ref = shape_result.Get();
 	vertices = std::move(new_vertices);
 }
 

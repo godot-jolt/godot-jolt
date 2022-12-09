@@ -41,7 +41,7 @@ void JoltCollisionObject3D::set_collision_layer(uint32_t p_layer, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jid, p_lock);
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());
 	body_access.get_body().GetCollisionGroup().SetGroupID(p_layer);
 }
@@ -57,7 +57,7 @@ void JoltCollisionObject3D::set_collision_mask(uint32_t p_mask, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jid, p_lock);
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());
 	body_access.get_body().GetCollisionGroup().SetSubGroupID(p_mask);
 }
@@ -65,7 +65,7 @@ void JoltCollisionObject3D::set_collision_mask(uint32_t p_mask, bool p_lock) {
 Transform3D JoltCollisionObject3D::get_transform(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	const JoltBodyAccessRead3D body_access(*space, jid, p_lock);
+	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	const JPH::Body& body = body_access.get_body();
@@ -80,7 +80,7 @@ void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p
 	}
 
 	space->get_body_iface(p_lock).SetPositionAndRotation(
-		jid,
+		jolt_id,
 		to_jolt(p_transform.get_origin()),
 		to_jolt(p_transform.get_basis()),
 		JPH::EActivation::DontActivate
@@ -90,7 +90,7 @@ void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p
 Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	const JoltBodyAccessRead3D body_access(*space, jid, p_lock);
+	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	return to_godot(body_access.get_body().GetCenterOfMassPosition());
@@ -120,7 +120,7 @@ JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(const JPH::
 }
 
 JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(bool p_lock) const {
-	const JoltBodyAccessWrite3D body_access(*space, jid, p_lock);
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND_D(!body_access.is_valid());
 
 	const JPH::Body& body = body_access.get_body();
@@ -153,13 +153,13 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 			const Transform3D& transform = shape.get_transform();
 
 			if (transform == Transform3D()) {
-				return shape->get_jref();
+				return shape->get_jolt_ref();
 			}
 
 			JPH::RotatedTranslatedShapeSettings shape_settings(
 				to_jolt(transform.origin),
 				to_jolt(transform.basis),
-				shape->get_jref()
+				shape->get_jolt_ref()
 			);
 
 			const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
@@ -185,7 +185,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 			shape_settings.AddShape(
 				to_jolt(shape.get_transform().origin),
 				to_jolt(shape.get_transform().basis),
-				shape->get_jref()
+				shape->get_jolt_ref()
 			);
 		}
 	}
@@ -211,7 +211,7 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jid, p_lock);
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());
 
 	JPH::ShapeRefC shape = try_build_shape();
@@ -220,14 +220,14 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 
 	if (shape == nullptr) {
 		shape = new JPH::SphereShape(1.0f);
-		body_iface.SetObjectLayer(jid, GDJOLT_OBJECT_LAYER_NONE);
+		body_iface.SetObjectLayer(jolt_id, GDJOLT_OBJECT_LAYER_NONE);
 	} else {
 		const JPH::EMotionType motion_type = body_access.get_body().GetMotionType();
 		const JPH::ObjectLayer object_layer = JoltLayerMapper::to_object_layer(motion_type);
-		body_iface.SetObjectLayer(jid, object_layer);
+		body_iface.SetObjectLayer(jolt_id, object_layer);
 	}
 
-	body_iface.SetShape(jid, shape, false, JPH::EActivation::DontActivate);
+	body_iface.SetShape(jolt_id, shape, false, JPH::EActivation::DontActivate);
 
 	shapes_changed(false);
 }

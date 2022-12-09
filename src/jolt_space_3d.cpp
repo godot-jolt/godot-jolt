@@ -198,24 +198,24 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 
 	body->SetUserData(reinterpret_cast<JPH::uint64>(p_object));
 
-	p_object->set_jid(body->GetID());
+	p_object->set_jolt_id(body->GetID());
 }
 
 void JoltSpace3D::add_object(JoltCollisionObject3D* p_object) {
 	physics_system->GetBodyInterface().AddBody(
-		p_object->get_jid(),
+		p_object->get_jolt_id(),
 		p_object->get_initial_sleep_state() ? JPH::EActivation::DontActivate
 											: JPH::EActivation::Activate
 	);
 }
 
 void JoltSpace3D::remove_object(JoltCollisionObject3D* p_object) {
-	physics_system->GetBodyInterface().RemoveBody(p_object->get_jid());
+	physics_system->GetBodyInterface().RemoveBody(p_object->get_jolt_id());
 }
 
 void JoltSpace3D::destroy_object(JoltCollisionObject3D* p_object) {
-	physics_system->GetBodyInterface().DestroyBody(p_object->get_jid());
-	p_object->set_jid({});
+	physics_system->GetBodyInterface().DestroyBody(p_object->get_jolt_id());
+	p_object->set_jolt_id({});
 }
 
 void JoltSpace3D::update_gravity() {
