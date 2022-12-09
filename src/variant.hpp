@@ -61,5 +61,5 @@ GDJOLT_DEFINE_FORMATTER(PackedColorArray);
 
 template<typename... TArgs>
 String vformat(fmt::format_string<TArgs...> p_format, TArgs&&... p_args) {
-	return String(fmt::format(p_format, std::forward<TArgs>(p_args)...).c_str());
+	return fmt::format(p_format, std::forward<TArgs>(p_args)...).c_str();
 }
