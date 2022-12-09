@@ -55,7 +55,7 @@ public:
 	bool can_sleep() const override { return false; }
 
 private:
-	Vector3 gravity_vector = Vector3(0, -1, 0);
+	Vector3 gravity_vector = {0, -1, 0};
 
 	float gravity = 9.81f;
 
