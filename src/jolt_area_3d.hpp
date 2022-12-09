@@ -19,6 +19,7 @@ public:
 	void set_monitorable(bool p_monitorable) { monitorable = p_monitorable; }
 
 	Variant get_param(PhysicsServer3D::AreaParameter p_param) const;
+
 	void set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value);
 
 	void call_queries() override;
