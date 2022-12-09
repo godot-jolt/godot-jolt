@@ -219,7 +219,7 @@ void JoltSpace3D::remove_object(JoltCollisionObject3D* p_object) {
 
 void JoltSpace3D::destroy_object(JoltCollisionObject3D* p_object) {
 	physics_system->GetBodyInterface().DestroyBody(p_object->get_jid());
-	p_object->set_jid(JPH::BodyID());
+	p_object->set_jid({});
 }
 
 void JoltSpace3D::update_gravity() {
