@@ -66,7 +66,7 @@ void JoltSpace3D::call_queries() {
 
 		for (int i = 0; i < (int)body_ids.size(); ++i) {
 			if (const JPH::Body* body = lock.GetBody(i)) {
-				if (!body->IsSensor()) {
+				if (!body->IsStatic() && !body->IsSensor()) {
 					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
 					object->call_queries();
 				}
@@ -75,7 +75,7 @@ void JoltSpace3D::call_queries() {
 
 		for (int i = 0; i < (int)body_ids.size(); ++i) {
 			if (const JPH::Body* body = lock.GetBody(i)) {
-				if (body->IsSensor()) {
+				if (!body->IsStatic() && body->IsSensor()) {
 					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
 					object->call_queries();
 				}
