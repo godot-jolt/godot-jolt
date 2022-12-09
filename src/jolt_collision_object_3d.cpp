@@ -79,9 +79,6 @@ void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p
 		return;
 	}
 
-	// We need to go through `JPH::BodyInterface` instead of `JPH::Body`, because the latter doesn't
-	// allow us to set position/rotation, presumably due to needing to modify the broad phase
-
 	space->get_body_iface(p_lock).SetPositionAndRotation(
 		jid,
 		to_jolt(p_transform.get_origin()),
