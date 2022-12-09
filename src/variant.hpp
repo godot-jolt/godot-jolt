@@ -60,6 +60,6 @@ GDJOLT_DEFINE_FORMATTER(PackedVector3Array);
 GDJOLT_DEFINE_FORMATTER(PackedColorArray);
 
 template<typename... TArgs>
-String vformat(fmt::format_string<TArgs...> p_format, TArgs&&... p_args) {
+_ALWAYS_INLINE_ String vformat(fmt::format_string<TArgs...> p_format, TArgs&&... p_args) {
 	return fmt::format(p_format, std::forward<TArgs>(p_args)...).c_str();
 }
