@@ -3,14 +3,17 @@
 param (
 	[Parameter(Mandatory = $true, HelpMessage = "Path to directory with source files")]
 	[ValidateNotNullOrEmpty()]
-	[string]$SourcePath,
+	[string]
+	$SourcePath,
 
 	[Parameter(Mandatory = $true, HelpMessage = "Path to directory with compile_commands.json")]
 	[ValidateNotNullOrEmpty()]
-	[string]$BuildPath,
+	[string]
+	$BuildPath,
 
 	[Parameter(HelpMessage = "Apply fixes if applicable (warning: slow)")]
-	[switch]$Fix = $false
+	[switch]
+	$Fix = $false
 )
 
 . $PSScriptRoot/_common.ps1

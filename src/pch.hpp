@@ -26,7 +26,6 @@
 #include <godot_cpp/core/object.hpp>
 #include <godot_cpp/templates/hash_set.hpp>
 #include <godot_cpp/templates/rid_owner.hpp>
-#include <godot_cpp/templates/self_list.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/basis.hpp>
 #include <godot_cpp/variant/callable.hpp>

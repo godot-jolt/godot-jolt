@@ -66,7 +66,7 @@ void JoltSpace3D::call_queries() {
 
 		for (int i = 0; i < (int)body_ids.size(); ++i) {
 			if (const JPH::Body* body = lock.GetBody(i)) {
-				if (!body->IsSensor()) {
+				if (!body->IsStatic() && !body->IsSensor()) {
 					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
 					object->call_queries();
 				}
@@ -75,7 +75,7 @@ void JoltSpace3D::call_queries() {
 
 		for (int i = 0; i < (int)body_ids.size(); ++i) {
 			if (const JPH::Body* body = lock.GetBody(i)) {
-				if (body->IsSensor()) {
+				if (!body->IsStatic() && body->IsSensor()) {
 					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
 					object->call_queries();
 				}
@@ -135,13 +135,11 @@ void JoltSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Varian
 }
 
 void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
-	if (!p_object->get_jid().IsInvalid()) {
-		return;
-	}
+	const PhysicsServer3D::BodyMode body_mode = p_object->get_mode();
 
 	JPH::EMotionType motion_type = {};
 
-	switch (p_object->get_mode()) {
+	switch (body_mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {
 			motion_type = JPH::EMotionType::Static;
 		} break;
@@ -153,7 +151,7 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 			motion_type = JPH::EMotionType::Dynamic;
 		} break;
 		default: {
-			ERR_FAIL_MSG("Unhandled body mode");
+			ERR_FAIL_MSG(vformat("Unhandled body mode: '{}'", body_mode));
 		} break;
 	}
 
@@ -166,7 +164,6 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 	}
 
 	const Transform3D& transform = p_object->get_initial_transform();
-	const bool is_sensor = p_object->is_sensor();
 
 	JPH::BodyCreationSettings settings(
 		shape,
@@ -179,7 +176,7 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 	settings.mLinearVelocity = to_jolt(p_object->get_initial_linear_velocity());
 	settings.mAngularVelocity = to_jolt(p_object->get_initial_angular_velocity());
 	settings.mAllowDynamicOrKinematic = true;
-	settings.mIsSensor = is_sensor;
+	settings.mIsSensor = p_object->is_sensor();
 	settings.mMotionQuality = p_object->is_ccd_enabled() ? JPH::EMotionQuality::LinearCast
 														 : JPH::EMotionQuality::Discrete;
 	settings.mAllowSleeping = p_object->can_sleep();
@@ -218,7 +215,7 @@ void JoltSpace3D::remove_object(JoltCollisionObject3D* p_object) {
 
 void JoltSpace3D::destroy_object(JoltCollisionObject3D* p_object) {
 	physics_system->GetBodyInterface().DestroyBody(p_object->get_jid());
-	p_object->set_jid(JPH::BodyID());
+	p_object->set_jid({});
 }
 
 void JoltSpace3D::update_gravity() {

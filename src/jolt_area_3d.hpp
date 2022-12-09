@@ -19,6 +19,7 @@ public:
 	void set_monitorable(bool p_monitorable) { monitorable = p_monitorable; }
 
 	Variant get_param(PhysicsServer3D::AreaParameter p_param) const;
+
 	void set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value);
 
 	void call_queries() override;
@@ -54,7 +55,7 @@ public:
 	bool can_sleep() const override { return false; }
 
 private:
-	Vector3 gravity_vector = Vector3(0, -1, 0);
+	Vector3 gravity_vector = {0, -1, 0};
 
 	float gravity = 9.81f;
 

@@ -38,7 +38,7 @@ if ($Toolchain -eq "gcc") {
 
 	apt install --quiet --yes g++-$Version-multilib
 
-	Write-Output "Setting GCC $Version as the default C/C++ toolchain..."
+	Write-Output "Setting GCC $Version as the default..."
 
 	Set-DefaultCommand -Name gcc -Path /usr/bin/gcc-$Version
 	Set-DefaultCommand -Name g++ -Path /usr/bin/g++-$Version
@@ -48,7 +48,7 @@ elseif ($Toolchain -eq "llvm") {
 
 	apt install --quiet --yes g++-multilib
 
-	Write-Output "Setting LLVM $Version as the default C/C++ toolchain..."
+	Write-Output "Setting LLVM $Version as the default..."
 
 	Set-DefaultCommand -Name clang -Path /usr/bin/clang-$Version
 	Set-DefaultCommand -Name clang++ -Path /usr/bin/clang++-$Version
