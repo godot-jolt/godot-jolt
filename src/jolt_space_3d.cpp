@@ -135,10 +135,6 @@ void JoltSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Varian
 }
 
 void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
-	if (!p_object->get_jid().IsInvalid()) {
-		return;
-	}
-
 	const PhysicsServer3D::BodyMode body_mode = p_object->get_mode();
 
 	JPH::EMotionType motion_type = {};
