@@ -65,10 +65,6 @@ private:
 
 	PhysicsDirectSpaceState3D* direct_state = nullptr;
 
-	SelfList<JoltBody3D>::List state_query_list;
-
-	SelfList<JoltArea3D>::List monitor_query_list;
-
 	JoltArea3D* area = nullptr;
 
 	Vector3 gravity_vector = Vector3(0, -1, 0);
