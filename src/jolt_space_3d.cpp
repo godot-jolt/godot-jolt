@@ -139,9 +139,11 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 		return;
 	}
 
+	const PhysicsServer3D::BodyMode body_mode = p_object->get_mode();
+
 	JPH::EMotionType motion_type = {};
 
-	switch (p_object->get_mode()) {
+	switch (body_mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {
 			motion_type = JPH::EMotionType::Static;
 		} break;
@@ -153,7 +155,7 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 			motion_type = JPH::EMotionType::Dynamic;
 		} break;
 		default: {
-			ERR_FAIL_MSG("Unhandled body mode");
+			ERR_FAIL_MSG(vformat("Unhandled body mode: '{}'", body_mode));
 		} break;
 	}
 
