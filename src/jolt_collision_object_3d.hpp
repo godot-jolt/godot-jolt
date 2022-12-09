@@ -17,9 +17,9 @@ public:
 
 	void set_instance_id(int64_t p_id) { instance_id = p_id; }
 
-	JPH::BodyID get_jid() const { return jid; }
+	JPH::BodyID get_jolt_id() const { return jolt_id; }
 
-	void set_jid(JPH::BodyID p_jid) { jid = p_jid; }
+	void set_jolt_id(JPH::BodyID p_jolt_id) { jolt_id = p_jolt_id; }
 
 	JoltSpace3D* get_space() const { return space; }
 
@@ -111,7 +111,7 @@ protected:
 
 	int64_t instance_id = 0LL;
 
-	JPH::BodyID jid;
+	JPH::BodyID jolt_id;
 
 	JoltSpace3D* space = nullptr;
 
