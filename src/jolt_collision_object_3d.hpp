@@ -41,7 +41,7 @@ public:
 
 	Vector3 get_center_of_mass(bool p_lock = true) const;
 
-	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_root_shape) const;
+	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
 
 	JPH::MassProperties calculate_mass_properties(bool p_lock = true) const;
 

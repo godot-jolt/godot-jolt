@@ -99,7 +99,7 @@ Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
 	return to_godot(body_access.get_body().GetCenterOfMassPosition());
 }
 
-JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(const JPH::Shape& p_root_shape
+JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(const JPH::Shape& p_shape
 ) const {
 	const float mass = get_mass();
 	const Vector3 inertia = get_inertia();
@@ -107,7 +107,7 @@ JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(const JPH::
 	const bool calculate_mass = mass <= 0;
 	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
 
-	JPH::MassProperties mass_properties = p_root_shape.GetMassProperties();
+	JPH::MassProperties mass_properties = p_shape.GetMassProperties();
 
 	if (calculate_mass && calculate_inertia) {
 		mass_properties.mInertia(3, 3) = 1.0f;
