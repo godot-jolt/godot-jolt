@@ -43,6 +43,14 @@ public:
 
 	void set_angular_velocity(const Vector3& p_velocity, bool p_lock = true);
 
+	bool has_custom_center_of_mass() const override { return custom_center_of_mass; }
+
+	Vector3 get_center_of_mass_custom() const override { return center_of_mass_custom; }
+
+	void set_center_of_mass_custom(const Vector3& p_center_of_mass, bool p_lock = true);
+
+	void reset_mass_properties(bool p_lock = true);
+
 	void add_constant_central_force(const Vector3& p_force) { constant_force += p_force; }
 
 	void add_constant_force(const Vector3& p_force, const Vector3& p_position = Vector3()) {
@@ -129,9 +137,13 @@ private:
 
 	bool allowed_sleep = true;
 
+	bool custom_center_of_mass = false;
+
 	Vector3 initial_linear_velocity;
 
 	Vector3 initial_angular_velocity;
+
+	Vector3 center_of_mass_custom;
 
 	Vector3 constant_force;
 

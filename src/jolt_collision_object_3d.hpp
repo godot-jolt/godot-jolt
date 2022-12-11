@@ -80,6 +80,10 @@ public:
 
 	virtual Vector3 get_initial_angular_velocity() const = 0;
 
+	virtual bool has_custom_center_of_mass() const = 0;
+
+	virtual Vector3 get_center_of_mass_custom() const = 0;
+
 	virtual bool get_initial_sleep_state() const = 0;
 
 	virtual PhysicsServer3D::BodyMode get_mode() const = 0;

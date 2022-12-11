@@ -28,6 +28,10 @@ public:
 
 	Vector3 get_initial_angular_velocity() const override { return {0, 0, 0}; }
 
+	bool has_custom_center_of_mass() const override { return false; }
+
+	Vector3 get_center_of_mass_custom() const override { return {0, 0, 0}; }
+
 	bool get_initial_sleep_state() const override { return false; }
 
 	PhysicsServer3D::BodyMode get_mode() const override {

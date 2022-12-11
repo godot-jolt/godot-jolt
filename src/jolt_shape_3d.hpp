@@ -22,6 +22,21 @@ public:
 
 	bool is_valid() const { return jolt_ref != nullptr; }
 
+	static JPH::ShapeRefC with_transform(
+		const JPH::ShapeRefC& p_shape,
+		const Transform3D& p_transform
+	);
+
+	static JPH::ShapeRefC with_center_of_mass_offset(
+		const JPH::ShapeRefC& p_shape,
+		const Vector3& p_offset
+	);
+
+	static JPH::ShapeRefC with_center_of_mass(
+		const JPH::ShapeRefC& p_shape,
+		const Vector3& p_center_of_mass
+	);
+
 protected:
 	virtual void clear_data();
 
