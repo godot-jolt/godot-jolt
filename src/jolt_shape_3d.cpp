@@ -1,9 +1,75 @@
 #include "jolt_shape_3d.hpp"
 
 #include "conversion.hpp"
+#include "error_macros.hpp"
 #include "variant.hpp"
 
 JoltShape3D::~JoltShape3D() = default;
+
+JPH::ShapeRefC JoltShape3D::with_transform(
+	const JPH::ShapeRefC& p_shape,
+	const Transform3D& p_transform
+) {
+	ERR_FAIL_NULL_D(p_shape);
+
+	const JPH::RotatedTranslatedShapeSettings shape_settings(
+		to_jolt(p_transform.origin),
+		to_jolt(p_transform.basis),
+		p_shape
+	);
+
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to offset shape with transform '{}'. "
+			"Jolt returned the following error: '{}'.",
+			p_transform,
+			shape_result.GetError()
+		)
+	);
+
+	return shape_result.Get();
+}
+
+JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
+	const JPH::ShapeRefC& p_shape,
+	const Vector3& p_offset
+) {
+	ERR_FAIL_NULL_D(p_shape);
+
+	const JPH::OffsetCenterOfMassShapeSettings shape_settings(to_jolt(p_offset), p_shape);
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to offset center of mass with offset '{}'. "
+			"Jolt returned the following error: '{}'.",
+			p_offset,
+			shape_result.GetError()
+		)
+	);
+
+	return shape_result.Get();
+}
+
+JPH::ShapeRefC JoltShape3D::with_center_of_mass(
+	const JPH::ShapeRefC& p_shape,
+	const Vector3& p_center_of_mass
+) {
+	ERR_FAIL_NULL_D(p_shape);
+
+	const Vector3 center_of_mass_inner = to_godot(p_shape->GetCenterOfMass());
+	const Vector3 center_of_mass_offset = p_center_of_mass - center_of_mass_inner;
+
+	if (center_of_mass_offset == Vector3()) {
+		return p_shape;
+	}
+
+	return with_center_of_mass_offset(p_shape, center_of_mass_offset);
+}
 
 void JoltShape3D::clear_data() {
 	jolt_ref = nullptr;

@@ -75,6 +75,9 @@ Variant JoltBody3D::get_param(PhysicsServer3D::BodyParameter p_param) const {
 		case PhysicsServer3D::BODY_PARAM_INERTIA: {
 			return get_inertia();
 		}
+		case PhysicsServer3D::BODY_PARAM_CENTER_OF_MASS: {
+			return get_center_of_mass_custom();
+		}
 		case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE: {
 			return get_gravity_scale();
 		}
@@ -109,6 +112,9 @@ void JoltBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const Variant
 		} break;
 		case PhysicsServer3D::BODY_PARAM_INERTIA: {
 			set_inertia(p_value);
+		} break;
+		case PhysicsServer3D::BODY_PARAM_CENTER_OF_MASS: {
+			set_center_of_mass_custom(p_value);
 		} break;
 		case PhysicsServer3D::BODY_PARAM_GRAVITY_SCALE: {
 			set_gravity_scale(p_value);
@@ -223,6 +229,19 @@ void JoltBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
 	ERR_FAIL_COND(!body_access.is_valid());
 
 	body_access.get_body().SetAngularVelocityClamped(to_jolt(p_velocity));
+}
+
+void JoltBody3D::set_center_of_mass_custom(const Vector3& p_center_of_mass, bool p_lock) {
+	custom_center_of_mass = true;
+	center_of_mass_custom = p_center_of_mass;
+	rebuild_shape(p_lock);
+}
+
+void JoltBody3D::reset_mass_properties(bool p_lock) {
+	inertia.zero();
+	custom_center_of_mass = false;
+	center_of_mass_custom.zero();
+	mass_properties_changed(p_lock);
 }
 
 void JoltBody3D::call_queries() {

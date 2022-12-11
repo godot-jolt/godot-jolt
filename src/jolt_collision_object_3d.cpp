@@ -134,8 +134,8 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 
 	int eligible_shape_count = 0;
 
-	for (const JoltShapeInstance3D& shape : shapes) {
-		if (is_shape_eligible(shape)) {
+	for (const JoltShapeInstance3D& shape_instance : shapes) {
+		if (is_shape_eligible(shape_instance)) {
 			++eligible_shape_count;
 		}
 	}
@@ -145,47 +145,35 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 	}
 
 	if (eligible_shape_count == 1) {
-		for (const JoltShapeInstance3D& shape : shapes) {
-			if (!is_shape_eligible(shape)) {
+		for (const JoltShapeInstance3D& shape_instance : shapes) {
+			if (!is_shape_eligible(shape_instance)) {
 				continue;
 			}
 
-			const Transform3D& transform = shape.get_transform();
+			JPH::ShapeRefC shape = shape_instance->get_jolt_ref();
 
-			if (transform == Transform3D()) {
-				return shape->get_jolt_ref();
+			const Transform3D& transform = shape_instance.get_transform();
+
+			if (transform != Transform3D()) {
+				shape = JoltShape3D::with_transform(shape, transform);
 			}
 
-			JPH::RotatedTranslatedShapeSettings shape_settings(
-				to_jolt(transform.origin),
-				to_jolt(transform.basis),
-				shape->get_jolt_ref()
-			);
+			if (has_custom_center_of_mass()) {
+				shape = JoltShape3D::with_center_of_mass(shape, get_center_of_mass_custom());
+			}
 
-			const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
-
-			ERR_FAIL_COND_D_MSG(
-				shape_result.HasError(),
-				vformat(
-					"Failed to create offset shape with transform '{}'. "
-					"Jolt returned the following error: '{}'.",
-					transform,
-					shape_result.GetError()
-				)
-			);
-
-			return shape_result.Get();
+			return shape;
 		}
 	}
 
 	JPH::MutableCompoundShapeSettings shape_settings;
 
-	for (const JoltShapeInstance3D& shape : shapes) {
-		if (is_shape_eligible(shape)) {
+	for (const JoltShapeInstance3D& shape_instance : shapes) {
+		if (is_shape_eligible(shape_instance)) {
 			shape_settings.AddShape(
-				to_jolt(shape.get_transform().origin),
-				to_jolt(shape.get_transform().basis),
-				shape->get_jolt_ref()
+				to_jolt(shape_instance.get_transform().origin),
+				to_jolt(shape_instance.get_transform().basis),
+				shape_instance->get_jolt_ref()
 			);
 		}
 	}
@@ -202,7 +190,13 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 		)
 	);
 
-	return shape_result.Get();
+	JPH::ShapeRefC shape = shape_result.Get();
+
+	if (has_custom_center_of_mass()) {
+		shape = JoltShape3D::with_center_of_mass(shape, get_center_of_mass_custom());
+	}
+
+	return shape;
 }
 
 void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
