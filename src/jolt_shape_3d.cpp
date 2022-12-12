@@ -362,13 +362,6 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	PackedVector3Array new_faces = maybe_faces;
 	const bool new_backface_collision = maybe_backface_collision;
 
-	if (new_backface_collision) {
-		WARN_PRINT(
-			"Backface collision for concave polygon shapes is not supported by Godot Jolt. "
-			"Any such setting will be treated as disabled."
-		);
-	}
-
 	const auto num_vertices = (size_t)new_faces.size();
 	const size_t num_vertices_excess = num_vertices % 3;
 
@@ -400,6 +393,14 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 			JPH::Float3(v1->x, v1->y, v1->z),
 			JPH::Float3(v0->x, v0->y, v0->z)
 		);
+
+		if (new_backface_collision) {
+			jolt_faces.emplace_back(
+				JPH::Float3(v0->x, v0->y, v0->z),
+				JPH::Float3(v1->x, v1->y, v1->z),
+				JPH::Float3(v2->x, v2->y, v2->z)
+			);
+		}
 	}
 
 	const JPH::MeshShapeSettings shape_settings(jolt_faces);
