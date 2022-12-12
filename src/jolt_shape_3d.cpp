@@ -369,7 +369,7 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 		);
 	}
 
-	const size_t num_vertices = (size_t)new_faces.size();
+	const auto num_vertices = (size_t)new_faces.size();
 	const size_t num_vertices_excess = num_vertices % 3;
 
 	ERR_FAIL_COND_MSG(
@@ -410,7 +410,7 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 		vformat(
 			"Failed to create concave polygon shape with vertex count '{}'. "
 			"Jolt returned the following error: '{}'.",
-			new_faces.size(),
+			num_vertices,
 			shape_result.GetError()
 		)
 	);
