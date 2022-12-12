@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dkdpdynr0sndd"
+path="res://.godot/imported/concave_polygon.obj-de879950ac823c9bc23b5c34f4bcb592.mesh"
+
+[deps]
+
+files=["res://.godot/imported/concave_polygon.obj-de879950ac823c9bc23b5c34f4bcb592.mesh"]
+
+source_file="res://assets/concave_polygon.obj"
+dest_files=["res://.godot/imported/concave_polygon.obj-de879950ac823c9bc23b5c34f4bcb592.mesh", "res://.godot/imported/concave_polygon.obj-de879950ac823c9bc23b5c34f4bcb592.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
