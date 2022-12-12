@@ -22,6 +22,14 @@ public:
 
 	bool is_valid() const { return jolt_ref != nullptr; }
 
+	static JPH::ShapeRefC with_scale(const JPH::ShapeRefC& p_shape, const Vector3& p_scale);
+
+	static JPH::ShapeRefC with_basis_origin(
+		const JPH::ShapeRefC& p_shape,
+		const Basis& p_basis,
+		const Vector3& p_origin
+	);
+
 	static JPH::ShapeRefC with_transform(
 		const JPH::ShapeRefC& p_shape,
 		const Transform3D& p_transform

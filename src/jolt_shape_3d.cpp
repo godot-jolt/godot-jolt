@@ -6,15 +6,38 @@
 
 JoltShape3D::~JoltShape3D() = default;
 
-JPH::ShapeRefC JoltShape3D::with_transform(
+JPH::ShapeRefC JoltShape3D::with_scale(
+	[[maybe_unused]] const JPH::ShapeRefC& p_shape,
+	[[maybe_unused]] const Vector3& p_scale
+) {
+	ERR_FAIL_NULL_D(p_shape);
+
+	const JPH::ScaledShapeSettings shape_settings(p_shape, to_jolt(p_scale));
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to scale shape with scale '{}'. "
+			"Jolt returned the following error: '{}'.",
+			p_scale,
+			shape_result.GetError()
+		)
+	);
+
+	return shape_result.Get();
+}
+
+JPH::ShapeRefC JoltShape3D::with_basis_origin(
 	const JPH::ShapeRefC& p_shape,
-	const Transform3D& p_transform
+	const Basis& p_basis,
+	const Vector3& p_origin
 ) {
 	ERR_FAIL_NULL_D(p_shape);
 
 	const JPH::RotatedTranslatedShapeSettings shape_settings(
-		to_jolt(p_transform.origin),
-		to_jolt(p_transform.basis),
+		to_jolt(p_origin),
+		to_jolt(p_basis),
 		p_shape
 	);
 
@@ -23,14 +46,45 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to offset shape with transform '{}'. "
+			"Failed to offset shape with basis '{}' and origin '{}'. "
 			"Jolt returned the following error: '{}'.",
-			p_transform,
+			p_basis,
+			p_origin,
 			shape_result.GetError()
 		)
 	);
 
 	return shape_result.Get();
+}
+
+JPH::ShapeRefC JoltShape3D::with_transform(
+	const JPH::ShapeRefC& p_shape,
+	const Transform3D& p_transform
+) {
+	JPH::ShapeRefC shape = p_shape;
+
+	const Vector3 scale_squared(
+		p_transform.basis[Vector3::AXIS_X].length_squared(),
+		p_transform.basis[Vector3::AXIS_Y].length_squared(),
+		p_transform.basis[Vector3::AXIS_Z].length_squared()
+	);
+
+	if (scale_squared != Vector3(1.0f, 1.0f, 1.0f)) {
+		const Vector3 scale(
+			Math::sqrt(scale_squared.x),
+			Math::sqrt(scale_squared.y),
+			Math::sqrt(scale_squared.z)
+		);
+
+		shape = with_scale(shape, scale);
+	}
+
+	if (p_transform != Transform3D()) {
+		const Transform3D transform_normalized = p_transform.orthonormalized();
+		shape = with_basis_origin(shape, transform_normalized.basis, transform_normalized.origin);
+	}
+
+	return shape;
 }
 
 JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
