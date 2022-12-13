@@ -9,6 +9,8 @@ inputs:
     required: true
   config:
     required: true
+  args:
+    default: ''
 
 runs:
   using: composite
@@ -35,6 +37,7 @@ runs:
         --warn-uninitialized
         -Werror=dev
         --preset ${{ env.GDJOLT_CONFIGURE_PRESET }}
+        ${{ inputs.args }}
 
     - shell: pwsh
       run: >

@@ -23,6 +23,11 @@ jobs:
         config: [debug, development, distribution]
         version: [17]
 
+        include:
+          - platform: windows-clangcl
+            arch: x86
+            args: -DGDJOLT_LTO=FALSE
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -40,3 +45,4 @@ jobs:
           arch: ${{ matrix.arch }}
           editor: ${{ matrix.editor }}
           config: ${{ matrix.config }}
+          args: ${{ matrix.args }}
