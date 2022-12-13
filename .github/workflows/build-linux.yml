@@ -40,8 +40,14 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           version: ${{ matrix.version }}
 
-      - name: Configure and build
-        uses: ./.github/actions/build-with-cmake
+      - name: Configure
+        uses: ./.github/actions/cmake-configure
+        with:
+          platform: ${{ matrix.platform }}
+          arch: ${{ matrix.arch }}
+
+      - name: Build
+        uses: ./.github/actions/cmake-build
         with:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}

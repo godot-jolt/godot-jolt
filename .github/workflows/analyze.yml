@@ -47,8 +47,14 @@ jobs:
           toolchain: llvm
           version: 14
 
+      - name: Configure
+        uses: ./.github/actions/cmake-configure
+        with:
+          platform: linux-clang
+          arch: ${{ matrix.arch }}
+
       - name: Build 'Debug' configuration
-        uses: ./.github/actions/build-with-cmake
+        uses: ./.github/actions/cmake-build
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}
@@ -56,7 +62,7 @@ jobs:
           config: debug
 
       - name: Build 'Development' configuration
-        uses: ./.github/actions/build-with-cmake
+        uses: ./.github/actions/cmake-build
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}
@@ -64,7 +70,7 @@ jobs:
           config: development
 
       - name: Build 'Distribution' configuration
-        uses: ./.github/actions/build-with-cmake
+        uses: ./.github/actions/cmake-build
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}
@@ -72,7 +78,7 @@ jobs:
           config: distribution
 
       - name: Build 'EditorDebug' configuration
-        uses: ./.github/actions/build-with-cmake
+        uses: ./.github/actions/cmake-build
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}
@@ -80,7 +86,7 @@ jobs:
           config: debug
 
       - name: Build 'EditorDevelopment' configuration
-        uses: ./.github/actions/build-with-cmake
+        uses: ./.github/actions/cmake-build
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}
@@ -88,7 +94,7 @@ jobs:
           config: development
 
       - name: Build 'EditorDistribution' configuration
-        uses: ./.github/actions/build-with-cmake
+        uses: ./.github/actions/cmake-build
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}

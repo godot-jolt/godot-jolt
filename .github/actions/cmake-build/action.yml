@@ -9,12 +9,13 @@ inputs:
     required: true
   config:
     required: true
-  args:
-    default: ''
 
 runs:
   using: composite
   steps:
+    - shell: pwsh
+      run: cmake --version
+
     - shell: pwsh
       run: |
         $Platform = "${{ inputs.platform }}"
@@ -24,24 +25,7 @@ runs:
         $ConfigurePreset = "$Platform$Arch"
         $BuildPreset = "$ConfigurePreset$Editor$BuildConfig"
 
-        "GDJOLT_CONFIGURE_PRESET=$ConfigurePreset" >> $env:GITHUB_ENV
-        "GDJOLT_BUILD_PRESET=$BuildPreset" >> $env:GITHUB_ENV
-
-    - shell: pwsh
-      run: cmake --version
-
-    - shell: pwsh
-      run: >
-        cmake
-        --log-level=VERBOSE
-        --warn-uninitialized
-        -Werror=dev
-        --preset ${{ env.GDJOLT_CONFIGURE_PRESET }}
-        ${{ inputs.args }}
-
-    - shell: pwsh
-      run: >
-        cmake
-        --build
-        --verbose
-        --preset ${{ env.GDJOLT_BUILD_PRESET }}
+        cmake `
+          --build `
+          --verbose `
+          --preset $BuildPreset
