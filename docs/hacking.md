@@ -39,6 +39,11 @@ defaults by passing `-DGDJOLT_SOME_VARIABLE=VALUE` to CMake.
 - `GDJOLT_LTO`
   - Enables link-time optimizations for optimized builds, also called link-time code generation.
   - Default is `TRUE`.
+- `GDJOLT_PRECOMPILE_HEADERS`
+  - Enables precompiling of header files that don't change often, like external ones, which speeds
+    up compilations.
+  - Disabling this will make it so any precompiled headers gets force-included instead.
+  - Default is `TRUE`.
 - `GDJOLT_STATIC_RUNTIME_LIBRARY`
   - Whether to statically link against the platform-specific C++ runtime, for added portability.
   - ⚠️ This flag is not available on Apple platforms.
