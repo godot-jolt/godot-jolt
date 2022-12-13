@@ -14,9 +14,9 @@ set(GDJOLT_CROSS_PLATFORM_DETERMINISTIC FALSE
 	"Compile in such a way as to attempt to keep things deterministic across platforms."
 )
 
-set(GDJOLT_LTO TRUE
+set(GDJOLT_INTERPROCEDURAL_OPTIMIZATION TRUE
 	CACHE BOOL
-	"Enable link-time optimizations for any optimized builds."
+	"Enable interprocedural optimizations for any optimized builds."
 )
 
 set(GDJOLT_PRECOMPILE_HEADERS TRUE
