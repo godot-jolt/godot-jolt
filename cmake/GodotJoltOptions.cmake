@@ -19,6 +19,11 @@ set(GDJOLT_LTO TRUE
 	"Enable link-time optimizations for any optimized builds."
 )
 
+set(GDJOLT_PRECOMPILE_HEADERS TRUE
+	CACHE BOOL
+	"Precompile header files that don't change often, like external ones."
+)
+
 if(NOT APPLE)
 	set(GDJOLT_X86_INSTRUCTION_SET SSE2
 		CACHE STRING

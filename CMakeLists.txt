@@ -17,6 +17,7 @@ include(GodotJoltExternalFmt)
 include(GodotJoltExternalMimalloc)
 
 set(source_dir ${CMAKE_CURRENT_LIST_DIR}/src)
+set(pch_file ${source_dir}/pch.hpp)
 
 file(GLOB_RECURSE godot-jolt_SOURCES CONFIGURE_DEPENDS ${source_dir}/*.cpp)
 file(GLOB_RECURSE godot-jolt_HEADERS CONFIGURE_DEPENDS ${source_dir}/*.hpp)
@@ -30,8 +31,6 @@ target_link_libraries(godot-jolt
 	godot-jolt::fmt
 	godot-jolt::mimalloc
 )
-
-target_precompile_headers(godot-jolt PRIVATE ${source_dir}/pch.hpp)
 
 set(is_editor_config $<CONFIG:EditorDebug,EditorDevelopment,EditorDistribution>)
 set(is_debug_config $<CONFIG:Debug,EditorDebug>)
@@ -102,6 +101,16 @@ target_compile_features(godot-jolt
 target_compile_definitions(godot-jolt
 	PRIVATE $<IF:${is_debug_config},_DEBUG,NDEBUG>
 )
+
+if(GDJOLT_PRECOMPILE_HEADERS)
+	target_precompile_headers(godot-jolt PRIVATE ${pch_file})
+else()
+	if(MSVC)
+		target_compile_options(godot-jolt PRIVATE /FI${pch_file})
+	else()
+		target_compile_options(godot-jolt PRIVATE "-include${pch_file}")
+	endif()
+endif()
 
 if(MSVC)
 	set(pdb_file $<TARGET_PDB_FILE:godot-jolt>)
