@@ -30,6 +30,8 @@ GodotJoltExternalLibrary_Add(godot-cpp "${configurations}"
 		$<${is_msvc_like}:TYPED_METHOD_BIND>
 	COMPILE_DEFINITIONS_EDITORDEBUG
 		${editor_definitions}
+	COMPILE_DEFINITIONS_EDITORDEVELOPMENT
+		${editor_definitions}
 	COMPILE_DEFINITIONS_EDITORDISTRIBUTION
 		${editor_definitions}
 	CMAKE_CACHE_ARGS
