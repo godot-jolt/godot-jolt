@@ -52,54 +52,15 @@ jobs:
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}
+          args: -DGDJOLT_PRECOMPILE_HEADERS=FALSE
 
-      - name: Build 'Debug' configuration
+      - name: Build
         uses: ./.github/actions/cmake-build
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}
           editor: false
           config: debug
-
-      - name: Build 'Development' configuration
-        uses: ./.github/actions/cmake-build
-        with:
-          platform: linux-clang
-          arch: ${{ matrix.arch }}
-          editor: false
-          config: development
-
-      - name: Build 'Distribution' configuration
-        uses: ./.github/actions/cmake-build
-        with:
-          platform: linux-clang
-          arch: ${{ matrix.arch }}
-          editor: false
-          config: distribution
-
-      - name: Build 'EditorDebug' configuration
-        uses: ./.github/actions/cmake-build
-        with:
-          platform: linux-clang
-          arch: ${{ matrix.arch }}
-          editor: true
-          config: debug
-
-      - name: Build 'EditorDevelopment' configuration
-        uses: ./.github/actions/cmake-build
-        with:
-          platform: linux-clang
-          arch: ${{ matrix.arch }}
-          editor: true
-          config: development
-
-      - name: Build 'EditorDistribution' configuration
-        uses: ./.github/actions/cmake-build
-        with:
-          platform: linux-clang
-          arch: ${{ matrix.arch }}
-          editor: true
-          config: distribution
 
       - name: Identify clang-tidy
         shell: pwsh
