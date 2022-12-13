@@ -36,8 +36,9 @@ defaults by passing `-DGDJOLT_SOME_VARIABLE=VALUE` to CMake.
     not be, and likely aren't, which makes this flag nothing but a performance cost.
   - You do not need this for determinism on the same platform (assuming identical binary).
   - Default is `FALSE`.
-- `GDJOLT_LTO`
-  - Enables link-time optimizations for optimized builds, also called link-time code generation.
+- `GDJOLT_INTERPROCEDURAL_OPTIMIZATION`
+  - Enables interprocedural optimizations for any optimized builds, also known as link-time
+    optimizations or link-time code generation.
   - Default is `TRUE`.
 - `GDJOLT_PRECOMPILE_HEADERS`
   - Enables precompiling of header files that don't change often, like external ones, which speeds
