@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://0bwqcsuswduy"]
+
+[ext_resource type="ArrayMesh" uid="uid://6wstsr13ss2p" path="res://assets/landscape.obj" id="1_waxn4"]
+
+[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_vuedi"]
+map_width = 8
+map_depth = 8
+map_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0.686923, 0.642998, 0.879098, 0.438925, 0.783376, 0.813373, 0, 0, 0.738097, 0.701258, 0.840459, 1.32829, 1.30371, 0.227465, 0, 0, 0.497635, 1.04795, 1.47115, 2, 1.69003, 0.617387, 0, 0, 0.558935, 1.38753, 1.21615, 1.75341, 0.960985, 0.710569, 0, 0, 0.628635, 1.05398, 1.05964, 1.24645, 1.51369, 0.710569, 0, 0, 0.83459, 0.171154, 0.300205, 0.751869, 0.892435, 0.538974, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vjee5"]
+albedo_color = Color(0.290196, 0.290196, 0.290196, 1)
+
+[node name="HeightMap" type="StaticBody3D"]
+
+[node name="Shape" type="CollisionShape3D" parent="."]
+shape = SubResource("HeightMapShape3D_vuedi")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(3.5, 0, 0, 0, 3.912, 0, 0, 0, 3.5, 0, 0, 0)
+mesh = ExtResource("1_waxn4")
+surface_material_override/0 = SubResource("StandardMaterial3D_vjee5")

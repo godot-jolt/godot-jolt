@@ -131,3 +131,19 @@ private:
 
 	bool backface_collision = false;
 };
+
+class JoltHeightMapShape3D final : public JoltShape3D {
+public:
+	Variant get_data() const override;
+
+	void set_data(const Variant& p_data) override;
+
+private:
+	void clear_data() override;
+
+	PackedFloat32Array heights;
+
+	int width = 0;
+
+	int depth = 0;
+};

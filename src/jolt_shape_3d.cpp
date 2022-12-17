@@ -430,3 +430,121 @@ void JoltConcavePolygonShape3D::clear_data() {
 	faces.clear();
 	backface_collision = false;
 }
+
+Variant JoltHeightMapShape3D::get_data() const {
+	Dictionary dict;
+	dict["width"] = width;
+	dict["depth"] = depth;
+	dict["heights"] = heights;
+	return dict;
+}
+
+void JoltHeightMapShape3D::set_data(const Variant& p_data) {
+	clear_data();
+
+	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
+
+	const Dictionary dict = p_data;
+
+	const Variant maybe_heights = dict.get("heights", {});
+	ERR_FAIL_COND(maybe_heights.get_type() != Variant::PACKED_FLOAT32_ARRAY);
+
+	const Variant maybe_width = dict.get("width", {});
+	ERR_FAIL_COND(maybe_width.get_type() != Variant::INT);
+
+	const Variant maybe_depth = dict.get("depth", {});
+	ERR_FAIL_COND(maybe_depth.get_type() != Variant::INT);
+
+	const PackedFloat32Array new_heights = maybe_heights;
+	const int new_width = maybe_width;
+	const int new_depth = maybe_depth;
+
+	const auto num_heights = (int)new_heights.size();
+
+	if (num_heights == 0) {
+		return;
+	}
+
+	// HACK(mihe): A height map shape will have a width or depth of 2 while it's transitioning from
+	// its default state. Since Jolt doesn't support non-square height maps, and it's unlikely that
+	// anyone would actually want a height map of such small dimensions, we silently ignore any such
+	// request in order to not display an error every single time we create a shape of this type.
+	if (new_width == 2 || new_depth == 2) {
+		return;
+	}
+
+	ERR_FAIL_COND_MSG(
+		num_heights != new_width * new_depth,
+		vformat(
+			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
+			"Expected height count to equal width multiplied by depth.",
+			new_width,
+			new_depth,
+			num_heights
+		)
+	);
+
+	ERR_FAIL_COND_MSG(
+		new_width != new_depth,
+		vformat(
+			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
+			"Height maps with differing width and depth are not supported by Godot Jolt.",
+			new_width,
+			new_depth,
+			num_heights
+		)
+	);
+
+	const auto sample_count = (JPH::uint32)new_width;
+
+	ERR_FAIL_COND_MSG(
+		!is_power_of_2(sample_count),
+		vformat(
+			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
+			"Height maps with a width/depth that is not a power of two are not supported by Godot "
+			"Jolt.",
+			new_width,
+			new_depth,
+			num_heights
+		)
+	);
+
+	const int width_tiles = new_width - 1;
+	const int depth_tiles = new_depth - 1;
+
+	const float half_width_tiles = (float)width_tiles / 2.0f;
+	const float half_depth_tiles = (float)depth_tiles / 2.0f;
+
+	const JPH::HeightFieldShapeSettings shape_settings(
+		new_heights.ptr(),
+		JPH::Vec3(-half_width_tiles, 0, -half_depth_tiles),
+		JPH::Vec3::sReplicate(1.0f),
+		sample_count
+	);
+
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
+			"Jolt returned the following error: '{}'.",
+			new_width,
+			new_depth,
+			num_heights,
+			shape_result.GetError()
+		)
+	);
+
+	jolt_ref = shape_result.Get();
+	heights = new_heights;
+	width = new_width;
+	depth = new_depth;
+}
+
+void JoltHeightMapShape3D::clear_data() {
+	JoltShape3D::clear_data();
+	heights.clear();
+	width = 0;
+	depth = 0;
+}
