@@ -2,6 +2,7 @@
 
 #include "conversion.hpp"
 #include "error_macros.hpp"
+#include "utility_functions.hpp"
 #include "variant.hpp"
 
 JoltShape3D::~JoltShape3D() = default;
@@ -218,7 +219,10 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	const float new_height = maybe_height;
 	const float new_radius = maybe_radius;
 
-	const JPH::CapsuleShapeSettings shape_settings(new_height / 2.0f, new_radius);
+	const float half_height = new_height / 2.0f;
+	const float clamped_height = max(half_height - new_radius, CMP_EPSILON);
+
+	const JPH::CapsuleShapeSettings shape_settings(clamped_height, new_radius);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_MSG(
