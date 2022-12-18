@@ -153,7 +153,10 @@ RID JoltPhysicsServer3D::_concave_polygon_shape_create() {
 }
 
 RID JoltPhysicsServer3D::_heightmap_shape_create() {
-	ERR_FAIL_D_NOT_IMPL();
+	JoltShape3D* shape = memnew(JoltHeightMapShape3D);
+	RID rid = shape_owner.make_rid(shape);
+	shape->set_rid(rid);
+	return rid;
 }
 
 RID JoltPhysicsServer3D::_custom_shape_create() {
