@@ -342,10 +342,16 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		endforeach()
 	endforeach()
 
-	if(NOT "${compile_definitions}" STREQUAL "")
-		escape_separator(compile_definitions compile_definitions_)
-		list(APPEND target_properties INTERFACE_COMPILE_DEFINITIONS "${compile_definitions_}")
-	endif()
+	# HACK(mihe): Add the Git commit as a compile definition in order to mark all dependent source
+	# files as dirty when it changes. This is necessary because Ninja is quite aggressive about not
+	# compiling source files that haven't changed at the start of a build, which can lead to
+	# annoying linker errors when an external project gets updated mid-build.
+	string(MAKE_C_IDENTIFIER ${library_name} library_name_identifier)
+	string(TOUPPER ${library_name_identifier} library_name_identifier)
+	list(APPEND compile_definitions GDJOLT_EXTERNAL_${library_name_identifier}=${arg_GIT_COMMIT})
+
+	escape_separator(compile_definitions compile_definitions_)
+	list(APPEND target_properties INTERFACE_COMPILE_DEFINITIONS "${compile_definitions_}")
 
 	# Add the target property that maps library configurations to project configurations. For
 	# project config `Foo` that maps to library config `Bar` we get `MAP_IMPORTED_CONFIG_FOO Bar`.
