@@ -199,7 +199,7 @@ Vector3 JoltBody3D::get_linear_velocity(bool p_lock) const {
 	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND_D(!body_access.is_valid());
 
-	return to_godot(body_access.get_body().GetLinearVelocity());
+	return to_godot(body_access.get_body().GetMotionPropertiesUnchecked()->GetLinearVelocity());
 }
 
 void JoltBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
@@ -211,7 +211,9 @@ void JoltBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
 	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());
 
-	body_access.get_body().SetLinearVelocityClamped(to_jolt(p_velocity));
+	body_access.get_body().GetMotionPropertiesUnchecked()->SetLinearVelocityClamped(
+		to_jolt(p_velocity)
+	);
 }
 
 Vector3 JoltBody3D::get_angular_velocity(bool p_lock) const {
@@ -220,7 +222,7 @@ Vector3 JoltBody3D::get_angular_velocity(bool p_lock) const {
 	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND_D(!body_access.is_valid());
 
-	return to_godot(body_access.get_body().GetAngularVelocity());
+	return to_godot(body_access.get_body().GetMotionPropertiesUnchecked()->GetAngularVelocity());
 }
 
 void JoltBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
@@ -232,7 +234,9 @@ void JoltBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
 	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND(!body_access.is_valid());
 
-	body_access.get_body().SetAngularVelocityClamped(to_jolt(p_velocity));
+	body_access.get_body().GetMotionPropertiesUnchecked()->SetAngularVelocityClamped(
+		to_jolt(p_velocity)
+	);
 }
 
 void JoltBody3D::set_center_of_mass_custom(const Vector3& p_center_of_mass, bool p_lock) {
