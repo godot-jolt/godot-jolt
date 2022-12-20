@@ -10,7 +10,7 @@
 #pragma warning(disable : 4245 4365)
 #endif // _MSC_VER
 
-#include <godot/gdnative_interface.h>
+#include <gdextension_interface.h>
 
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/physics_direct_body_state3d_extension.hpp>
