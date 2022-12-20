@@ -128,7 +128,7 @@ IncludeBlocks: Regroup
 IncludeCategories:
   - Regex: '^".+"$'
     Priority: 1
-  - Regex: '^<godot/.+>$'
+  - Regex: '^<gdextension_interface.h>$'
     Priority: 2
   - Regex: '^<godot_cpp/.+>$'
     Priority: 3

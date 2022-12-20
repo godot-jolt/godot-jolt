@@ -42,12 +42,12 @@ void on_terminate(ModuleInitializationLevel p_level) {
 
 extern "C" {
 
-GDNativeBool GDN_EXPORT godot_jolt_main(
-	GDNativeInterface* p_native_iface,
-	GDNativeExtensionClassLibraryPtr p_native_lib,
-	GDNativeInitialization* p_native_init
+GDExtensionBool GDE_EXPORT godot_jolt_main(
+	GDExtensionInterface* p_interface,
+	GDExtensionClassLibraryPtr p_class_library,
+	GDExtensionInitialization* p_initialization
 ) {
-	const GDExtensionBinding::InitObject init_obj(p_native_iface, p_native_lib, p_native_init);
+	const GDExtensionBinding::InitObject init_obj(p_interface, p_class_library, p_initialization);
 
 	init_obj.register_initializer(&on_initialize);
 	init_obj.register_terminator(&on_terminate);
