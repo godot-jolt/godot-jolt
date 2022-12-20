@@ -308,10 +308,17 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 		set_sleep_state(true, false);
 	}
 
-	body_access.get_body().SetMotionType(motion_type);
+	JPH::Body& body = body_access.get_body();
+
+	body.SetMotionType(motion_type);
 
 	if (get_sleep_state(false) && motion_type != JPH::EMotionType::Static) {
 		set_sleep_state(false, false);
+	}
+
+	if (motion_type == JPH::EMotionType::Kinematic) {
+		body.SetLinearVelocity(JPH::Vec3::sZero());
+		body.SetAngularVelocity(JPH::Vec3::sZero());
 	}
 }
 
