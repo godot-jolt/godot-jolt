@@ -183,6 +183,10 @@ void JoltBody3D::set_can_sleep(bool p_enabled, bool p_lock) {
 Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
+	if (mode != PhysicsServer3D::BodyMode::BODY_MODE_RIGID) {
+		return {};
+	}
+
 	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
 	ERR_FAIL_COND_D(!body_access.is_valid());
 
