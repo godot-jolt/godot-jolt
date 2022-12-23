@@ -4,6 +4,7 @@
 #include "error_macros.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
+#include "jolt_joint_3d.hpp"
 #include "jolt_layer_mapper.hpp"
 #include "jolt_object_layer.hpp"
 #include "jolt_shape_3d.hpp"
@@ -216,6 +217,14 @@ void JoltSpace3D::remove_object(JoltCollisionObject3D* p_object) {
 void JoltSpace3D::destroy_object(JoltCollisionObject3D* p_object) {
 	physics_system->GetBodyInterface().DestroyBody(p_object->get_jolt_id());
 	p_object->set_jolt_id({});
+}
+
+void JoltSpace3D::add_joint(JoltJoint3D* p_joint) {
+	physics_system->AddConstraint(p_joint->get_jolt_ref());
+}
+
+void JoltSpace3D::remove_joint(JoltJoint3D* p_joint) {
+	physics_system->RemoveConstraint(p_joint->get_jolt_ref());
 }
 
 void JoltSpace3D::update_gravity() {
