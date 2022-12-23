@@ -2,28 +2,39 @@
 
 #include "jolt_space_3d.hpp"
 
-class JoltBodyAccessRead3D {
+template<typename TBodyLock>
+class JoltBodyAccess3D {
 public:
-	JoltBodyAccessRead3D(const JoltSpace3D& p_space, const JPH::BodyID& p_jolt_id, bool p_lock)
+	JoltBodyAccess3D(const JoltSpace3D& p_space, const JPH::BodyID& p_jolt_id, bool p_lock)
 		: lock(p_space.get_body_lock_iface(p_lock), p_jolt_id) { }
 
 	bool is_valid() const { return lock.Succeeded(); }
 
-	const JPH::Body& get_body() const { return lock.GetBody(); }
+	decltype(auto) get_body() const { return lock.GetBody(); }
 
 private:
-	JPH::BodyLockRead lock;
+	TBodyLock lock;
 };
 
-class JoltBodyAccessWrite3D {
+template<typename TBodyLock>
+class JoltMultiBodyAccess3D {
 public:
-	JoltBodyAccessWrite3D(const JoltSpace3D& p_space, const JPH::BodyID& p_jolt_id, bool p_lock)
-		: lock(p_space.get_body_lock_iface(p_lock), p_jolt_id) { }
+	JoltMultiBodyAccess3D(
+		const JoltSpace3D& p_space,
+		const JPH::BodyID* p_jolt_ids,
+		const int p_jolt_id_count,
+		bool p_lock
+	)
+		: lock(p_space.get_body_lock_iface(p_lock), p_jolt_ids, p_jolt_id_count) { }
 
-	bool is_valid() const { return lock.Succeeded(); }
-
-	JPH::Body& get_body() const { return lock.GetBody(); }
+	JPH::Body* get_body(int p_body_idx) const { return lock.GetBody(p_body_idx); }
 
 private:
-	JPH::BodyLockWrite lock;
+	TBodyLock lock;
 };
+
+using JoltBodyAccessRead3D = JoltBodyAccess3D<JPH::BodyLockRead>;
+using JoltBodyAccessWrite3D = JoltBodyAccess3D<JPH::BodyLockWrite>;
+
+using JoltMultiBodyAccessRead3D = JoltMultiBodyAccess3D<JPH::BodyLockMultiRead>;
+using JoltMultiBodyAccessWrite3D = JoltMultiBodyAccess3D<JPH::BodyLockMultiWrite>;
