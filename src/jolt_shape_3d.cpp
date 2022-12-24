@@ -453,10 +453,10 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND(maybe_depth.get_type() != Variant::INT);
 
 	const PackedFloat32Array new_heights = maybe_heights;
-	const int new_width = maybe_width;
-	const int new_depth = maybe_depth;
+	const int32_t new_width = maybe_width;
+	const int32_t new_depth = maybe_depth;
 
-	const auto height_count = (int)new_heights.size();
+	const auto height_count = (int32_t)new_heights.size();
 
 	if (height_count == 0) {
 		return;
@@ -506,8 +506,8 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 		)
 	);
 
-	const int width_tiles = new_width - 1;
-	const int depth_tiles = new_depth - 1;
+	const int32_t width_tiles = new_width - 1;
+	const int32_t depth_tiles = new_depth - 1;
 
 	const float half_width_tiles = (float)width_tiles / 2.0f;
 	const float half_depth_tiles = (float)depth_tiles / 2.0f;

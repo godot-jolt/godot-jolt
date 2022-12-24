@@ -132,7 +132,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 		return p_shape.is_enabled() && p_shape->is_valid();
 	};
 
-	int eligible_shape_count = 0;
+	int32_t eligible_shape_count = 0;
 
 	for (const JoltShapeInstance3D& shape_instance : shapes) {
 		if (is_shape_eligible(shape_instance)) {
@@ -236,13 +236,13 @@ void JoltCollisionObject3D::add_shape(
 }
 
 void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
-	const int index = find_shape_index(p_shape);
+	const int32_t index = find_shape_index(p_shape);
 	if (index >= 0) {
 		remove_shape(index, p_lock);
 	}
 }
 
-void JoltCollisionObject3D::remove_shape(int p_index, bool p_lock) {
+void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	shapes[p_index]->set_owner(nullptr);
@@ -250,8 +250,8 @@ void JoltCollisionObject3D::remove_shape(int p_index, bool p_lock) {
 	rebuild_shape(p_lock);
 }
 
-int JoltCollisionObject3D::find_shape_index(JoltShape3D* p_shape) {
-	for (int i = 0; i < shapes.size(); ++i) {
+int32_t JoltCollisionObject3D::find_shape_index(JoltShape3D* p_shape) {
+	for (int32_t i = 0; i < shapes.size(); ++i) {
 		if (shapes[i] == p_shape) {
 			return i;
 		}
@@ -267,13 +267,13 @@ void JoltCollisionObject3D::set_shape_transform(
 ) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	const JoltShapeInstance3D& old_shape = shapes[(int)p_index];
+	const JoltShapeInstance3D& old_shape = shapes[(int32_t)p_index];
 
 	if (old_shape.get_transform() == p_transform) {
 		return;
 	}
 
-	shapes.write[(int)p_index].set_transform(p_transform);
+	shapes.write[(int32_t)p_index].set_transform(p_transform);
 
 	rebuild_shape(p_lock);
 }
@@ -281,13 +281,13 @@ void JoltCollisionObject3D::set_shape_transform(
 void JoltCollisionObject3D::set_shape_disabled(int64_t p_index, bool p_disabled, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	const JoltShapeInstance3D& old_shape = shapes[(int)p_index];
+	const JoltShapeInstance3D& old_shape = shapes[(int32_t)p_index];
 
 	if (old_shape.is_disabled() == p_disabled) {
 		return;
 	}
 
-	shapes.write[(int)p_index].set_disabled(p_disabled);
+	shapes.write[(int32_t)p_index].set_disabled(p_disabled);
 
 	rebuild_shape(p_lock);
 }

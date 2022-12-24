@@ -74,7 +74,7 @@ JPH::ObjectLayer JoltLayerMapper::to_object_layer(JPH::EMotionType p_motion_type
 			return GDJOLT_OBJECT_LAYER_MOVING;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled motion type: '{}'", (int)p_motion_type));
+			ERR_FAIL_D_MSG(vformat("Unhandled motion type: '{}'", (int32_t)p_motion_type));
 		}
 	}
 }

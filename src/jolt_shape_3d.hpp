@@ -141,7 +141,7 @@ private:
 
 	PackedFloat32Array heights;
 
-	int width = 0;
+	int32_t width = 0;
 
-	int depth = 0;
+	int32_t depth = 0;
 };

@@ -22,12 +22,12 @@ public:
 	JoltMultiBodyAccess3D(
 		const JoltSpace3D& p_space,
 		const JPH::BodyID* p_jolt_ids,
-		const int p_jolt_id_count,
+		const int32_t p_jolt_id_count,
 		bool p_lock
 	)
 		: lock(p_space.get_body_lock_iface(p_lock), p_jolt_ids, p_jolt_id_count) { }
 
-	JPH::Body* get_body(int p_body_idx) const { return lock.GetBody(p_body_idx); }
+	JPH::Body* get_body(int32_t p_body_idx) const { return lock.GetBody(p_body_idx); }
 
 private:
 	TBodyLock lock;

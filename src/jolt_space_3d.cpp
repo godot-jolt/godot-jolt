@@ -60,12 +60,12 @@ void JoltSpace3D::call_queries() {
 
 	{
 		const JPH::BodyLockInterface& lock_iface = physics_system->GetBodyLockInterface();
-		const JPH::BodyLockMultiRead lock(lock_iface, body_ids.data(), (int)body_ids.size());
+		const JPH::BodyLockMultiRead lock(lock_iface, body_ids.data(), (int32_t)body_ids.size());
 
 		// TODO(mihe): Is the separation of bodies and areas here important? Maybe merge into a
 		// single loop?
 
-		for (int i = 0; i < (int)body_ids.size(); ++i) {
+		for (int32_t i = 0; i < (int32_t)body_ids.size(); ++i) {
 			if (const JPH::Body* body = lock.GetBody(i)) {
 				if (!body->IsStatic() && !body->IsSensor()) {
 					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
@@ -74,7 +74,7 @@ void JoltSpace3D::call_queries() {
 			}
 		}
 
-		for (int i = 0; i < (int)body_ids.size(); ++i) {
+		for (int32_t i = 0; i < (int32_t)body_ids.size(); ++i) {
 			if (const JPH::Body* body = lock.GetBody(i)) {
 				if (!body->IsStatic() && body->IsSensor()) {
 					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());

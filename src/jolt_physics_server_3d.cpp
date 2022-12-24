@@ -75,7 +75,7 @@ void JoltPhysicsServer3D::init_statics() {
 	job_system = new JPH::JobSystemThreadPool(
 		GDJOLT_MAX_PHYSICS_JOBS,
 		GDJOLT_MAX_PHYSICS_BARRIERS,
-		(int)std::thread::hardware_concurrency() - 1
+		(int32_t)std::thread::hardware_concurrency() - 1
 	);
 
 	group_filter = new JoltGroupFilter();
@@ -551,7 +551,7 @@ void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int64_t p_shape_
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	body->remove_shape((int)p_shape_idx);
+	body->remove_shape((int32_t)p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_body_clear_shapes([[maybe_unused]] const RID& p_body) {

@@ -58,13 +58,13 @@ public:
 
 	void remove_shape(JoltShape3D* p_shape, bool p_lock = true);
 
-	void remove_shape(int p_index, bool p_lock = true);
+	void remove_shape(int32_t p_index, bool p_lock = true);
 
 	const Vector<JoltShapeInstance3D>& get_shapes() const { return shapes; }
 
-	int get_shape_count() const { return shapes.size(); }
+	int32_t get_shape_count() const { return shapes.size(); }
 
-	int find_shape_index(JoltShape3D* p_shape);
+	int32_t find_shape_index(JoltShape3D* p_shape);
 
 	void set_shape_transform(int64_t p_index, const Transform3D& p_transform, bool p_lock = true);
 
