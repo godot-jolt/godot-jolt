@@ -2,6 +2,7 @@
 
 class JoltArea3D;
 class JoltBody3D;
+class JoltJoint3D;
 class JoltShape3D;
 class JoltSpace3D;
 
@@ -564,4 +565,6 @@ private:
 	mutable RID_PtrOwner<JoltArea3D> area_owner;
 
 	mutable RID_PtrOwner<JoltShape3D> shape_owner;
+
+	mutable RID_PtrOwner<JoltJoint3D> joint_owner;
 };

@@ -3,6 +3,7 @@
 class JoltArea3D;
 class JoltBody3D;
 class JoltCollisionObject3D;
+class JoltJoint3D;
 
 class JoltSpace3D final {
 public:
@@ -47,6 +48,10 @@ public:
 	void remove_object(JoltCollisionObject3D* p_object);
 
 	void destroy_object(JoltCollisionObject3D* p_object);
+
+	void add_joint(JoltJoint3D* p_joint);
+
+	void remove_joint(JoltJoint3D* p_joint);
 
 private:
 	void update_gravity();
