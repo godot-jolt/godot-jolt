@@ -154,9 +154,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 
 			const Transform3D& transform = shape_instance.get_transform();
 
-			if (transform != Transform3D()) {
-				shape = JoltShape3D::with_transform(shape, transform);
-			}
+			shape = JoltShape3D::with_transform(shape, transform);
 
 			if (has_custom_center_of_mass()) {
 				shape = JoltShape3D::with_center_of_mass(shape, get_center_of_mass_custom());

@@ -63,11 +63,16 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 	const Transform3D& p_transform
 ) {
 	JPH::ShapeRefC shape = p_shape;
+	Transform3D transform = p_transform;
+
+	if (transform == Transform3D()) {
+		return shape;
+	}
 
 	const Vector3 scale_squared(
-		p_transform.basis[Vector3::AXIS_X].length_squared(),
-		p_transform.basis[Vector3::AXIS_Y].length_squared(),
-		p_transform.basis[Vector3::AXIS_Z].length_squared()
+		transform.basis[Vector3::AXIS_X].length_squared(),
+		transform.basis[Vector3::AXIS_Y].length_squared(),
+		transform.basis[Vector3::AXIS_Z].length_squared()
 	);
 
 	if (scale_squared != Vector3(1.0f, 1.0f, 1.0f)) {
@@ -78,14 +83,10 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 		);
 
 		shape = with_scale(shape, scale);
+		transform = transform.orthonormalized();
 	}
 
-	if (p_transform != Transform3D()) {
-		const Transform3D transform_normalized = p_transform.orthonormalized();
-		shape = with_basis_origin(shape, transform_normalized.basis, transform_normalized.origin);
-	}
-
-	return shape;
+	return with_basis_origin(shape, transform.basis, transform.origin);
 }
 
 JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
