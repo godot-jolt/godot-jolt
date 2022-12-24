@@ -108,7 +108,7 @@ public:
 
 	void set_angular_damp(float p_damp, bool p_lock = true);
 
-	bool is_sensor() const override { return false; }
+	bool is_area() const override { return false; }
 
 private:
 	void shapes_changed(bool p_lock) override;

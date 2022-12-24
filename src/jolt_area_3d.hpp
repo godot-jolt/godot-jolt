@@ -54,7 +54,7 @@ public:
 
 	float get_angular_damp() const override { return 0.0f; }
 
-	bool is_sensor() const override { return true; }
+	bool is_area() const override { return true; }
 
 	bool can_sleep() const override { return false; }
 

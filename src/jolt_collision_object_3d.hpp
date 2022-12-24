@@ -104,7 +104,7 @@ public:
 
 	virtual float get_angular_damp() const = 0;
 
-	virtual bool is_sensor() const = 0;
+	virtual bool is_area() const = 0;
 
 	virtual bool can_sleep() const = 0;
 
