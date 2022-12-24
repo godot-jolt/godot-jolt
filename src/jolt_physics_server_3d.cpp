@@ -632,7 +632,7 @@ void JoltPhysicsServer3D::_body_set_collision_priority(
 	[[maybe_unused]] const RID& p_body,
 	double p_priority
 ) {
-	if (p_priority != 1.0) {
+	if (!Math::is_equal_approx(p_priority, 1.0)) {
 		WARN_PRINT(
 			"Collision priority is not supported by Godot Jolt. "
 			"Any value will be treated as a value of 1."

@@ -358,7 +358,7 @@ void JoltBody3D::set_inertia(const Vector3& p_inertia, bool p_lock) {
 }
 
 void JoltBody3D::set_bounce(float p_bounce, bool p_lock) {
-	if (p_bounce < 0 || p_bounce > 1) {
+	if (p_bounce < 0.0f || p_bounce > 1.0f) {
 		WARN_PRINT(
 			"Bounce values less than 0 or greater than 1 are not supported by Godot Jolt. "
 			"Values outside this range will be clamped."
@@ -384,7 +384,7 @@ void JoltBody3D::set_bounce(float p_bounce, bool p_lock) {
 }
 
 void JoltBody3D::set_friction(float p_friction, bool p_lock) {
-	if (p_friction < 0) {
+	if (p_friction < 0.0f) {
 		WARN_PRINT(
 			"Friction values less than 0 are not supported by Godot Jolt. "
 			"Values outside this range will be clamped."
@@ -427,7 +427,7 @@ void JoltBody3D::set_gravity_scale(float p_scale, bool p_lock) {
 }
 
 void JoltBody3D::set_linear_damp(float p_damp, bool p_lock) {
-	if (p_damp < 0) {
+	if (p_damp < 0.0f) {
 		WARN_PRINT(
 			"Linear damp values less than 0 are not supported by Godot Jolt. "
 			"Values outside this range will be clamped."
@@ -453,7 +453,7 @@ void JoltBody3D::set_linear_damp(float p_damp, bool p_lock) {
 }
 
 void JoltBody3D::set_angular_damp(float p_damp, bool p_lock) {
-	if (p_damp < 0) {
+	if (p_damp < 0.0f) {
 		WARN_PRINT(
 			"Angular damp values less than 0 are not supported by Godot Jolt. "
 			"Values outside this range will be clamped."
