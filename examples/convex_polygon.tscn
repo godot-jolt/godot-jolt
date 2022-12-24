@@ -11,11 +11,9 @@ points = PackedVector3Array(-0.544544, 0.34963, -0.259386, -0.290076, 0.571609, 
 [node name="Body" type="RigidBody3D"]
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0808917, 0)
 mesh = ExtResource("1_7blyc")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_eiqhk")
 
 [node name="Shape" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0808917, 0)
 shape = SubResource("ConvexPolygonShape3D_rcdha")
