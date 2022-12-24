@@ -164,7 +164,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 		}
 	}
 
-	JPH::MutableCompoundShapeSettings shape_settings;
+	JPH::StaticCompoundShapeSettings shape_settings;
 
 	for (const JoltShapeInstance3D& shape_instance : shapes) {
 		if (is_shape_eligible(shape_instance)) {
