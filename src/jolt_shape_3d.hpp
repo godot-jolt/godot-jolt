@@ -46,8 +46,6 @@ public:
 	);
 
 protected:
-	virtual void clear_data();
-
 	RID rid;
 
 	JoltCollisionObject3D* owner = nullptr;
@@ -61,7 +59,7 @@ class JoltSphereShape3D final : public JoltShape3D {
 	void set_data(const Variant& p_data) override;
 
 private:
-	void clear_data() override;
+	void clear_data();
 
 	float radius = 0.0f;
 };
@@ -73,7 +71,7 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
-	void clear_data() override;
+	void clear_data();
 
 	Vector3 half_extents;
 };
@@ -85,7 +83,7 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
-	void clear_data() override;
+	void clear_data();
 
 	float height = 0.0f;
 
@@ -99,7 +97,7 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
-	void clear_data() override;
+	void clear_data();
 
 	float height = 0.0f;
 
@@ -113,7 +111,7 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
-	void clear_data() override;
+	void clear_data();
 
 	PackedVector3Array vertices;
 };
@@ -125,7 +123,7 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
-	void clear_data() override;
+	void clear_data();
 
 	PackedVector3Array faces;
 
@@ -139,7 +137,7 @@ public:
 	void set_data(const Variant& p_data) override;
 
 private:
-	void clear_data() override;
+	void clear_data();
 
 	PackedFloat32Array heights;
 

@@ -126,10 +126,6 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass(
 	return with_center_of_mass_offset(p_shape, center_of_mass_offset);
 }
 
-void JoltShape3D::clear_data() {
-	jolt_ref = nullptr;
-}
-
 Variant JoltSphereShape3D::get_data() const {
 	return radius;
 }
@@ -159,7 +155,7 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltSphereShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	radius = 0.0f;
 }
 
@@ -192,7 +188,7 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltBoxShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	half_extents.zero();
 }
 
@@ -242,7 +238,7 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltCapsuleShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
 }
@@ -290,7 +286,7 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltCylinderShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
 }
@@ -339,7 +335,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltConvexPolygonShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	vertices.clear();
 }
 
@@ -426,7 +422,7 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltConcavePolygonShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	faces.clear();
 	backface_collision = false;
 }
@@ -543,7 +539,7 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltHeightMapShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	heights.clear();
 	width = 0;
 	depth = 0;
