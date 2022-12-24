@@ -43,11 +43,11 @@ void jolt_trace(const char* p_format, ...) {
 
 bool jolt_assert(const char* p_expr, const char* p_msg, const char* p_file, uint32_t p_line) {
 	ERR_PRINT(vformat(
-		"Assertion ({}) failed at '{}:{}' with message '{}'",
+		"Assertion '{}' failed with message '{}' at '{}:{}'",
 		p_expr,
+		p_msg != nullptr ? p_msg : "",
 		p_file,
-		p_line,
-		p_msg != nullptr ? p_msg : ""
+		p_line
 	));
 
 	CRASH_NOW();
