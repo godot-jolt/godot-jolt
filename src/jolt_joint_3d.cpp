@@ -43,13 +43,13 @@ JoltPinJoint3D::JoltPinJoint3D(
 	bool p_lock
 )
 	: JoltJoint3D(p_space)
+	, body_a(p_body_a)
+	, body_b(p_body_b)
 	, local_a(p_local_a)
 	, local_b(p_local_b) {
-	if (p_body_b != nullptr) {
-		const JPH::BodyID body_ids[] = {p_body_a->get_jolt_id(), p_body_b->get_jolt_id()};
-
-		const JoltMultiBodyAccessWrite3D
-			body_access(*p_space, body_ids, count_of(body_ids), p_lock);
+	if (body_b != nullptr) {
+		const JPH::BodyID body_ids[] = {body_a->get_jolt_id(), body_b->get_jolt_id()};
+		const JoltMultiBodyAccessWrite3D body_access(*space, body_ids, count_of(body_ids), p_lock);
 
 		JPH::Body* jolt_body_a = body_access.get_body(0);
 		ERR_FAIL_NULL(jolt_body_a);
@@ -62,12 +62,12 @@ JoltPinJoint3D::JoltPinJoint3D(
 
 		JPH::PointConstraintSettings constraint_settings;
 		constraint_settings.mSpace = JPH::EConstraintSpace::WorldSpace;
-		constraint_settings.mPoint1 = world_transform_a * to_jolt(p_local_a);
-		constraint_settings.mPoint2 = world_transform_b * to_jolt(p_local_b);
+		constraint_settings.mPoint1 = world_transform_a * to_jolt(local_a);
+		constraint_settings.mPoint2 = world_transform_b * to_jolt(local_b);
 
 		jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
 	} else {
-		const JoltBodyAccessWrite3D body_access(*p_space, p_body_a->get_jolt_id(), p_lock);
+		const JoltBodyAccessWrite3D body_access(*space, body_a->get_jolt_id(), p_lock);
 		ERR_FAIL_COND(!body_access.is_valid());
 
 		JPH::Body& jolt_body_a = body_access.get_body();
@@ -76,13 +76,13 @@ JoltPinJoint3D::JoltPinJoint3D(
 
 		JPH::PointConstraintSettings constraint_settings;
 		constraint_settings.mSpace = JPH::EConstraintSpace::WorldSpace;
-		constraint_settings.mPoint1 = world_transform_a * to_jolt(p_local_a);
-		constraint_settings.mPoint2 = to_jolt(p_local_b);
+		constraint_settings.mPoint1 = world_transform_a * to_jolt(local_a);
+		constraint_settings.mPoint2 = to_jolt(local_b);
 
 		jolt_ref = constraint_settings.Create(jolt_body_a, JPH::Body::sFixedToWorld);
 	}
 
-	p_space->add_joint(this);
+	space->add_joint(this);
 }
 
 double JoltPinJoint3D::get_param(PhysicsServer3D::PinJointParam p_param) {
