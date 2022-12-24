@@ -15,7 +15,7 @@ namespace {
 
 constexpr uint32_t GDJOLT_TEMP_CAPACITY = 8 * 1024 * 1024;
 constexpr uint32_t GDJOLT_MAX_BODIES = 8192;
-constexpr uint32_t GDJOLT_NUM_BODY_MUTEXES = 0; // 0 = default
+constexpr uint32_t GDJOLT_BODY_MUTEX_COUNT = 0; // 0 = default
 constexpr uint32_t GDJOLT_MAX_BODY_PAIRS = 65536;
 constexpr uint32_t GDJOLT_MAX_CONTACT_CONSTRAINTS = 8192;
 
@@ -29,7 +29,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group
 	, group_filter(p_group_filter) {
 	physics_system->Init(
 		GDJOLT_MAX_BODIES,
-		GDJOLT_NUM_BODY_MUTEXES,
+		GDJOLT_BODY_MUTEX_COUNT,
 		GDJOLT_MAX_BODY_PAIRS,
 		GDJOLT_MAX_CONTACT_CONSTRAINTS,
 		*layer_mapper,

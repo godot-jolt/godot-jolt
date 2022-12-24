@@ -305,17 +305,17 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND(p_data.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 
 	PackedVector3Array new_vertices = p_data;
-	const int64_t num_vertices = new_vertices.size();
+	const int64_t vertex_count = new_vertices.size();
 
-	if (num_vertices == 0) {
+	if (vertex_count == 0) {
 		return;
 	}
 
 	JPH::Array<JPH::Vec3> jolt_vertices;
-	jolt_vertices.reserve((size_t)num_vertices);
+	jolt_vertices.reserve((size_t)vertex_count);
 
 	const Vector3* vertices_begin = &new_vertices[0];
-	const Vector3* vertices_end = vertices_begin + num_vertices;
+	const Vector3* vertices_end = vertices_begin + vertex_count;
 
 	for (const Vector3* vertex = vertices_begin; vertex != vertices_end; ++vertex) {
 		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
@@ -329,7 +329,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 		vformat(
 			"Failed to create convex polygon shape with vertex count '{}'. "
 			"Jolt returned the following error: '{}'.",
-			num_vertices,
+			vertex_count,
 			shape_result.GetError()
 		)
 	);
@@ -366,26 +366,26 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	PackedVector3Array new_faces = maybe_faces;
 	const bool new_backface_collision = maybe_backface_collision;
 
-	const auto num_vertices = (size_t)new_faces.size();
-	const size_t num_vertices_excess = num_vertices % 3;
+	const auto vertex_count = (size_t)new_faces.size();
+	const size_t excess_vertex_count = vertex_count % 3;
 
 	ERR_FAIL_COND_MSG(
-		num_vertices_excess != 0,
+		excess_vertex_count != 0,
 		"Failed to create concave polygon shape with vertex count '{}'. "
 		"Expected a vertex count divisible by 3."
 	);
 
-	const size_t num_faces = num_vertices / 3;
+	const size_t face_count = vertex_count / 3;
 
-	if (num_faces == 0) {
+	if (face_count == 0) {
 		return;
 	}
 
 	JPH::TriangleList jolt_faces;
-	jolt_faces.reserve(num_faces);
+	jolt_faces.reserve(face_count);
 
 	const Vector3* faces_begin = &new_faces[0];
-	const Vector3* faces_end = faces_begin + num_vertices;
+	const Vector3* faces_end = faces_begin + vertex_count;
 
 	for (const Vector3* vertex = faces_begin; vertex != faces_end; vertex += 3) {
 		const Vector3* v0 = vertex + 0;
@@ -415,7 +415,7 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 		vformat(
 			"Failed to create concave polygon shape with vertex count '{}'. "
 			"Jolt returned the following error: '{}'.",
-			num_vertices,
+			vertex_count,
 			shape_result.GetError()
 		)
 	);
@@ -459,9 +459,9 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	const int new_width = maybe_width;
 	const int new_depth = maybe_depth;
 
-	const auto num_heights = (int)new_heights.size();
+	const auto height_count = (int)new_heights.size();
 
-	if (num_heights == 0) {
+	if (height_count == 0) {
 		return;
 	}
 
@@ -474,13 +474,13 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	}
 
 	ERR_FAIL_COND_MSG(
-		num_heights != new_width * new_depth,
+		height_count != new_width * new_depth,
 		vformat(
 			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
 			"Expected height count to equal width multiplied by depth.",
 			new_width,
 			new_depth,
-			num_heights
+			height_count
 		)
 	);
 
@@ -491,7 +491,7 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 			"Height maps with differing width and depth are not supported by Godot Jolt.",
 			new_width,
 			new_depth,
-			num_heights
+			height_count
 		)
 	);
 
@@ -505,7 +505,7 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 			"Jolt.",
 			new_width,
 			new_depth,
-			num_heights
+			height_count
 		)
 	);
 
@@ -531,7 +531,7 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 			"Jolt returned the following error: '{}'.",
 			new_width,
 			new_depth,
-			num_heights,
+			height_count,
 			shape_result.GetError()
 		)
 	);
