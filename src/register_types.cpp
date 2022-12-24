@@ -22,7 +22,7 @@ void on_initialize(ModuleInitializationLevel p_level) {
 	}
 
 	PhysicsServer3DManager::get_singleton()->register_server(
-		"Jolt",
+		"JoltPhysics3D",
 		Callable(server_factory, "create_server")
 	);
 }

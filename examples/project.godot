@@ -21,7 +21,7 @@ window/size/viewport_height=900
 
 [physics]
 
-3d/physics_engine="Jolt"
+3d/physics_engine="JoltPhysics3D"
 
 [rendering]
 
