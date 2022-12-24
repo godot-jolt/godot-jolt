@@ -329,7 +329,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 		vformat(
 			"Failed to create convex polygon shape with vertex count '{}'. "
 			"Jolt returned the following error: '{}'.",
-			new_vertices.size(),
+			num_vertices,
 			shape_result.GetError()
 		)
 	);
@@ -385,7 +385,7 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	jolt_faces.reserve(num_faces);
 
 	const Vector3* faces_begin = &new_faces[0];
-	const Vector3* faces_end = faces_begin + num_faces * 3;
+	const Vector3* faces_end = faces_begin + num_vertices;
 
 	for (const Vector3* vertex = faces_begin; vertex != faces_end; vertex += 3) {
 		const Vector3* v0 = vertex + 0;
