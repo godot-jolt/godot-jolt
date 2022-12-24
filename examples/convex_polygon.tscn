@@ -1,21 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://d3wkgisn0f8rw"]
+[gd_scene load_steps=3 format=3 uid="uid://d3wkgisn0f8rw"]
 
 [ext_resource type="ArrayMesh" uid="uid://chutsbwjbhepv" path="res://assets/convex_polygon.obj" id="1_7blyc"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_pht20"]
+points = PackedVector3Array(0.513514, -0.220629, 0.259261, 0.136317, 0.220554, 0.526645, -0.116909, -3.76701e-05, 0.618101, -0.0802454, -0.419657, 0.246584, 0.209747, -0.419657, 0.152411, 0.209747, -0.419657, -0.152487, 0.419577, -0.259386, -0.000102997, 0.469187, -3.76701e-05, -0.152487, 0.324501, 0.572665, 0.246584, -0.129751, 0.25931, 0.399097, -0.453818, 0.220554, 0.259261, -0.397787, -0.259386, 0.34813, -0.259419, -0.419657, -0.000102997, -0.544544, -0.259386, -0.349759, 0.129585, -0.259386, -0.399174, 0.289909, -3.76701e-05, -0.399174, 0.080079, 0.419582, -0.439922, 0.396792, 0.25931, -0.0782355, -8.32677e-05, 0.493306, -0.110834, -0.209913, 0.419582, -0.152487, -0.419744, 0.25931, -0.000102997, -0.290076, -3.76701e-05, -0.571738, -8.32677e-05, -3.76701e-05, -0.703425)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eiqhk"]
 albedo_color = Color(0.356863, 0.529412, 0, 1)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_rcdha"]
-points = PackedVector3Array(-0.544544, 0.34963, -0.259386, -0.290076, 0.571609, -3.76701e-05, -8.32677e-05, 0.703425, -3.76701e-05, 0.129585, 0.399045, -0.259386, 0.209747, 0.152358, -0.419657, -0.259419, -2.62856e-05, -0.419657, -0.397787, -0.348259, -0.259386, -0.453818, -0.25939, 0.220554, -0.419744, -2.62856e-05, 0.25931, 0.080079, 0.439793, 0.419582, -0.209913, 0.152358, 0.419582, 0.289909, 0.399045, -3.76701e-05, 0.469187, 0.152358, -3.76701e-05, 0.419577, -2.62856e-05, -0.259386, 0.513514, -0.25939, -0.220629, 0.209747, -0.15254, -0.419657, -0.0802454, -0.246713, -0.419657, -0.116909, -0.618101, -3.76701e-05, -0.129751, -0.399226, 0.25931, 0.324501, -0.246713, 0.572665, -8.32677e-05, 0.110705, 0.493306, 0.396792, 0.0781063, 0.25931, 0.136317, -0.526774, 0.220554)
-
-[node name="Body" type="RigidBody3D"]
-
-[node name="Mesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0808917, 0)
-mesh = ExtResource("1_7blyc")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_eiqhk")
+[node name="ConvexPolygon" type="RigidBody3D"]
 
 [node name="Shape" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0808917, 0)
-shape = SubResource("ConvexPolygonShape3D_rcdha")
+shape = SubResource("ConvexPolygonShape3D_pht20")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_7blyc")
+surface_material_override/0 = SubResource("StandardMaterial3D_eiqhk")

@@ -544,7 +544,7 @@ public:
 	int64_t _get_process_info(PhysicsServer3D::ProcessInfo p_process_info) override;
 
 private:
-	inline static int server_count;
+	inline static int32_t server_count;
 
 	inline static JPH::JobSystem* job_system;
 

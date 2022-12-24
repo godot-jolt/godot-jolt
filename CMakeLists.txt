@@ -103,13 +103,13 @@ target_compile_definitions(godot-jolt
 )
 
 if(GDJOLT_PRECOMPILE_HEADERS)
-	target_precompile_headers(godot-jolt PRIVATE ${pch_file})
+	target_precompile_headers(godot-jolt
+		PRIVATE ${pch_file}
+	)
 else()
-	if(MSVC)
-		target_compile_options(godot-jolt PRIVATE /FI${pch_file})
-	else()
-		target_compile_options(godot-jolt PRIVATE "-include${pch_file}")
-	endif()
+	target_compile_options(godot-jolt
+		PRIVATE $<IF:${is_msvc_like},/FI${pch_file},-include${pch_file}>
+	)
 endif()
 
 if(MSVC)

@@ -63,11 +63,16 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 	const Transform3D& p_transform
 ) {
 	JPH::ShapeRefC shape = p_shape;
+	Transform3D transform = p_transform;
+
+	if (transform == Transform3D()) {
+		return shape;
+	}
 
 	const Vector3 scale_squared(
-		p_transform.basis[Vector3::AXIS_X].length_squared(),
-		p_transform.basis[Vector3::AXIS_Y].length_squared(),
-		p_transform.basis[Vector3::AXIS_Z].length_squared()
+		transform.basis[Vector3::AXIS_X].length_squared(),
+		transform.basis[Vector3::AXIS_Y].length_squared(),
+		transform.basis[Vector3::AXIS_Z].length_squared()
 	);
 
 	if (scale_squared != Vector3(1.0f, 1.0f, 1.0f)) {
@@ -78,14 +83,10 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 		);
 
 		shape = with_scale(shape, scale);
+		transform = transform.orthonormalized();
 	}
 
-	if (p_transform != Transform3D()) {
-		const Transform3D transform_normalized = p_transform.orthonormalized();
-		shape = with_basis_origin(shape, transform_normalized.basis, transform_normalized.origin);
-	}
-
-	return shape;
+	return with_basis_origin(shape, transform.basis, transform.origin);
 }
 
 JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
@@ -126,10 +127,6 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass(
 	return with_center_of_mass_offset(p_shape, center_of_mass_offset);
 }
 
-void JoltShape3D::clear_data() {
-	jolt_ref = nullptr;
-}
-
 Variant JoltSphereShape3D::get_data() const {
 	return radius;
 }
@@ -159,7 +156,7 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltSphereShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	radius = 0.0f;
 }
 
@@ -192,7 +189,7 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltBoxShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	half_extents.zero();
 }
 
@@ -242,7 +239,7 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltCapsuleShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
 }
@@ -290,7 +287,7 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltCylinderShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
 }
@@ -305,17 +302,17 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND(p_data.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 
 	PackedVector3Array new_vertices = p_data;
-	const int64_t num_vertices = new_vertices.size();
+	const int64_t vertex_count = new_vertices.size();
 
-	if (num_vertices == 0) {
+	if (vertex_count == 0) {
 		return;
 	}
 
 	JPH::Array<JPH::Vec3> jolt_vertices;
-	jolt_vertices.reserve((size_t)num_vertices);
+	jolt_vertices.reserve((size_t)vertex_count);
 
 	const Vector3* vertices_begin = &new_vertices[0];
-	const Vector3* vertices_end = vertices_begin + num_vertices;
+	const Vector3* vertices_end = vertices_begin + vertex_count;
 
 	for (const Vector3* vertex = vertices_begin; vertex != vertices_end; ++vertex) {
 		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
@@ -329,7 +326,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 		vformat(
 			"Failed to create convex polygon shape with vertex count '{}'. "
 			"Jolt returned the following error: '{}'.",
-			new_vertices.size(),
+			vertex_count,
 			shape_result.GetError()
 		)
 	);
@@ -339,7 +336,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltConvexPolygonShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	vertices.clear();
 }
 
@@ -366,26 +363,26 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	PackedVector3Array new_faces = maybe_faces;
 	const bool new_backface_collision = maybe_backface_collision;
 
-	const auto num_vertices = (size_t)new_faces.size();
-	const size_t num_vertices_excess = num_vertices % 3;
+	const auto vertex_count = (size_t)new_faces.size();
+	const size_t excess_vertex_count = vertex_count % 3;
 
 	ERR_FAIL_COND_MSG(
-		num_vertices_excess != 0,
+		excess_vertex_count != 0,
 		"Failed to create concave polygon shape with vertex count '{}'. "
 		"Expected a vertex count divisible by 3."
 	);
 
-	const size_t num_faces = num_vertices / 3;
+	const size_t face_count = vertex_count / 3;
 
-	if (num_faces == 0) {
+	if (face_count == 0) {
 		return;
 	}
 
 	JPH::TriangleList jolt_faces;
-	jolt_faces.reserve(num_faces);
+	jolt_faces.reserve(face_count);
 
 	const Vector3* faces_begin = &new_faces[0];
-	const Vector3* faces_end = faces_begin + num_faces * 3;
+	const Vector3* faces_end = faces_begin + vertex_count;
 
 	for (const Vector3* vertex = faces_begin; vertex != faces_end; vertex += 3) {
 		const Vector3* v0 = vertex + 0;
@@ -415,7 +412,7 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 		vformat(
 			"Failed to create concave polygon shape with vertex count '{}'. "
 			"Jolt returned the following error: '{}'.",
-			num_vertices,
+			vertex_count,
 			shape_result.GetError()
 		)
 	);
@@ -426,7 +423,7 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltConcavePolygonShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	faces.clear();
 	backface_collision = false;
 }
@@ -456,12 +453,12 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND(maybe_depth.get_type() != Variant::INT);
 
 	const PackedFloat32Array new_heights = maybe_heights;
-	const int new_width = maybe_width;
-	const int new_depth = maybe_depth;
+	const int32_t new_width = maybe_width;
+	const int32_t new_depth = maybe_depth;
 
-	const auto num_heights = (int)new_heights.size();
+	const auto height_count = (int32_t)new_heights.size();
 
-	if (num_heights == 0) {
+	if (height_count == 0) {
 		return;
 	}
 
@@ -474,13 +471,13 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	}
 
 	ERR_FAIL_COND_MSG(
-		num_heights != new_width * new_depth,
+		height_count != new_width * new_depth,
 		vformat(
 			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
 			"Expected height count to equal width multiplied by depth.",
 			new_width,
 			new_depth,
-			num_heights
+			height_count
 		)
 	);
 
@@ -491,7 +488,7 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 			"Height maps with differing width and depth are not supported by Godot Jolt.",
 			new_width,
 			new_depth,
-			num_heights
+			height_count
 		)
 	);
 
@@ -505,12 +502,12 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 			"Jolt.",
 			new_width,
 			new_depth,
-			num_heights
+			height_count
 		)
 	);
 
-	const int width_tiles = new_width - 1;
-	const int depth_tiles = new_depth - 1;
+	const int32_t width_tiles = new_width - 1;
+	const int32_t depth_tiles = new_depth - 1;
 
 	const float half_width_tiles = (float)width_tiles / 2.0f;
 	const float half_depth_tiles = (float)depth_tiles / 2.0f;
@@ -531,7 +528,7 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 			"Jolt returned the following error: '{}'.",
 			new_width,
 			new_depth,
-			num_heights,
+			height_count,
 			shape_result.GetError()
 		)
 	);
@@ -543,7 +540,7 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltHeightMapShape3D::clear_data() {
-	JoltShape3D::clear_data();
+	jolt_ref = nullptr;
 	heights.clear();
 	width = 0;
 	depth = 0;

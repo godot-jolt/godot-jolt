@@ -43,11 +43,11 @@ void jolt_trace(const char* p_format, ...) {
 
 bool jolt_assert(const char* p_expr, const char* p_msg, const char* p_file, uint32_t p_line) {
 	ERR_PRINT(vformat(
-		"Assertion ({}) failed at '{}:{}' with message '{}'",
+		"Assertion '{}' failed with message '{}' at '{}:{}'",
 		p_expr,
+		p_msg != nullptr ? p_msg : "",
 		p_file,
-		p_line,
-		p_msg != nullptr ? p_msg : ""
+		p_line
 	));
 
 	CRASH_NOW();
@@ -75,7 +75,7 @@ void JoltPhysicsServer3D::init_statics() {
 	job_system = new JPH::JobSystemThreadPool(
 		GDJOLT_MAX_PHYSICS_JOBS,
 		GDJOLT_MAX_PHYSICS_BARRIERS,
-		(int)std::thread::hardware_concurrency() - 1
+		(int32_t)std::thread::hardware_concurrency() - 1
 	);
 
 	group_filter = new JoltGroupFilter();
@@ -551,7 +551,7 @@ void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int64_t p_shape_
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	body->remove_shape((int)p_shape_idx);
+	body->remove_shape((int32_t)p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_body_clear_shapes([[maybe_unused]] const RID& p_body) {
@@ -632,7 +632,7 @@ void JoltPhysicsServer3D::_body_set_collision_priority(
 	[[maybe_unused]] const RID& p_body,
 	double p_priority
 ) {
-	if (p_priority != 1.0) {
+	if (!Math::is_equal_approx(p_priority, 1.0)) {
 		WARN_PRINT(
 			"Collision priority is not supported by Godot Jolt. "
 			"Any value will be treated as a value of 1."
