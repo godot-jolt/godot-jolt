@@ -25,7 +25,7 @@ endif()
 
 GodotJoltExternalLibrary_Add(mimalloc "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/mimalloc.git
-	GIT_COMMIT 91ba1f374da66e624841f53f6659da3a8f8f93ea
+	GIT_COMMIT 28cf67e5b64c704cad993c71f29a24e781bee544
 	LANGUAGE C
 	OUTPUT_NAME ${output_name}
 	INCLUDE_DIRECTORIES
