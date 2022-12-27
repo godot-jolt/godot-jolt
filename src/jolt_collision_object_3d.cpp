@@ -231,7 +231,7 @@ void JoltCollisionObject3D::add_shape(
 	bool p_lock
 ) {
 	shapes.push_back({p_shape, p_transform, p_disabled});
-	p_shape->set_owner(this);
+	p_shape->add_owner(this);
 	rebuild_shape(p_lock);
 }
 
@@ -245,8 +245,19 @@ void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
 void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	shapes[p_index]->set_owner(nullptr);
+	shapes[p_index]->remove_owner(this);
 	shapes.remove_at(p_index);
+	rebuild_shape(p_lock);
+}
+
+void JoltCollisionObject3D::remove_shapes(bool p_lock) {
+	const int shape_count = shapes.size();
+
+	for (int i = shape_count - 1; i >= 0; --i) {
+		shapes[i]->remove_owner(this);
+		shapes.remove_at(i);
+	}
+
 	rebuild_shape(p_lock);
 }
 

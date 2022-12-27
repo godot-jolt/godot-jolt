@@ -10,9 +10,11 @@ public:
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
-	virtual JoltCollisionObject3D* get_owner() const { return owner; }
+	void add_owner(JoltCollisionObject3D* p_owner);
 
-	virtual void set_owner(JoltCollisionObject3D* p_owner) { owner = p_owner; }
+	void remove_owner(JoltCollisionObject3D* p_owner);
+
+	void remove_self(bool p_lock = true);
 
 	virtual Variant get_data() const = 0;
 
@@ -48,9 +50,9 @@ public:
 protected:
 	RID rid;
 
-	JoltCollisionObject3D* owner = nullptr;
-
 	JPH::ShapeRefC jolt_ref;
+
+	HashMap<JoltCollisionObject3D*, int> ref_count_by_owner;
 };
 
 class JoltSphereShape3D final : public JoltShape3D {

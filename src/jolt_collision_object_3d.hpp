@@ -60,6 +60,8 @@ public:
 
 	void remove_shape(int32_t p_index, bool p_lock = true);
 
+	void remove_shapes(bool p_lock = true);
+
 	const Vector<JoltShapeInstance3D>& get_shapes() const { return shapes; }
 
 	int32_t get_shape_count() const { return shapes.size(); }

@@ -1424,22 +1424,13 @@ int64_t JoltPhysicsServer3D::_joint_get_solver_priority(const RID& p_joint) cons
 void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
 	if (shape_owner.owns(p_rid)) {
 		JoltShape3D* shape = shape_owner.get_or_null(p_rid);
-
-		if (JoltCollisionObject3D* owner = shape->get_owner()) {
-			owner->remove_shape(shape);
-		}
-
+		shape->remove_self();
 		shape_owner.free(p_rid);
 		memdelete(shape);
 	} else if (body_owner.owns(p_rid)) {
 		JoltBody3D* body = body_owner.get_or_null(p_rid);
-
 		body->set_space(nullptr);
-
-		while (body->get_shape_count() > 0) {
-			body->remove_shape(0);
-		}
-
+		body->remove_shapes();
 		body_owner.free(p_rid);
 		memdelete(body);
 	} else if (joint_owner.owns(p_rid)) {
@@ -1449,6 +1440,7 @@ void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
 	} else if (area_owner.owns(p_rid)) {
 		JoltArea3D* area = area_owner.get_or_null(p_rid);
 		area->set_space(nullptr);
+		area->remove_shapes();
 		area_owner.free(p_rid);
 		memdelete(area);
 	} else if (space_owner.owns(p_rid)) {
