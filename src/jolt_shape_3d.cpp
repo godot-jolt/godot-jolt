@@ -6,6 +6,12 @@
 #include "utility_functions.hpp"
 #include "variant.hpp"
 
+namespace {
+
+constexpr float GDJOLT_CONVEX_RADIUS = 0.0f;
+
+} // namespace
+
 JoltShape3D::~JoltShape3D() = default;
 
 void JoltShape3D::add_owner(JoltCollisionObject3D* p_owner) {
@@ -84,6 +90,8 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 	const JPH::ShapeRefC& p_shape,
 	const Transform3D& p_transform
 ) {
+	ERR_FAIL_NULL_D(p_shape);
+
 	JPH::ShapeRefC shape = p_shape;
 	Transform3D transform = p_transform;
 
@@ -160,26 +168,40 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 
 	const float new_radius = p_data;
 
-	const JPH::SphereShapeSettings shape_settings(new_radius);
-	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
+	// letting these remain invalid.
+	if (new_radius <= 0.0f) {
+		return;
+	}
 
-	ERR_FAIL_COND_MSG(
-		shape_result.HasError(),
-		vformat(
-			"Failed to create sphere shape with radius '{}'. "
-			"Jolt returned the following error: '{}'.",
-			new_radius,
-			shape_result.GetError()
-		)
-	);
-
-	jolt_ref = shape_result.Get();
 	radius = new_radius;
 }
 
 void JoltSphereShape3D::clear_data() {
-	jolt_ref = nullptr;
 	radius = 0.0f;
+}
+
+JPH::ShapeRefC JoltSphereShape3D::try_build(uint64_t p_user_data) const {
+	if (!is_valid()) {
+		return {};
+	}
+
+	JPH::SphereShapeSettings shape_settings(radius);
+	shape_settings.mUserData = (JPH::uint64)p_user_data;
+
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to build sphere shape with radius '{}'. "
+			"Jolt returned the following error: '{}'.",
+			radius,
+			shape_result.GetError()
+		)
+	);
+
+	return shape_result.Get();
 }
 
 Variant JoltBoxShape3D::get_data() const {
@@ -192,27 +214,43 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND(p_data.get_type() != Variant::VECTOR3);
 
 	const Vector3 new_half_extents = p_data;
+	const float shortest_axis = new_half_extents[new_half_extents.min_axis_index()];
 
-	const JPH::BoxShapeSettings shape_settings(to_jolt(new_half_extents));
-	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
+	// letting these remain invalid. We also treat any extents smaller than or equal to the convex
+	// radius as zero-sized, otherwise Jolt will report an error.
+	if (shortest_axis <= GDJOLT_CONVEX_RADIUS) {
+		return;
+	}
 
-	ERR_FAIL_COND_MSG(
-		shape_result.HasError(),
-		vformat(
-			"Failed to create box shape with half extents '{}'. "
-			"Jolt returned the following error: '{}'.",
-			new_half_extents,
-			shape_result.GetError()
-		)
-	);
-
-	jolt_ref = shape_result.Get();
 	half_extents = new_half_extents;
 }
 
 void JoltBoxShape3D::clear_data() {
-	jolt_ref = nullptr;
 	half_extents.zero();
+}
+
+JPH::ShapeRefC JoltBoxShape3D::try_build(uint64_t p_user_data) const {
+	if (!is_valid()) {
+		return {};
+	}
+
+	JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), GDJOLT_CONVEX_RADIUS);
+	shape_settings.mUserData = (JPH::uint64)p_user_data;
+
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to build box shape with half extents '{}'. "
+			"Jolt returned the following error: '{}'.",
+			half_extents,
+			shape_result.GetError()
+		)
+	);
+
+	return shape_result.Get();
 }
 
 Variant JoltCapsuleShape3D::get_data() const {
@@ -238,32 +276,58 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	const float new_height = maybe_height;
 	const float new_radius = maybe_radius;
 
-	const float half_height = new_height / 2.0f;
-	const float clamped_height = max(half_height - new_radius, CMP_EPSILON);
+	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
+	// letting these remain invalid.
+	if (new_height <= 0.0f || new_radius <= 0.0f) {
+		return;
+	}
 
-	const JPH::CapsuleShapeSettings shape_settings(clamped_height, new_radius);
-	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+	const float half_height = new_height / 2.0f;
 
 	ERR_FAIL_COND_MSG(
-		shape_result.HasError(),
+		half_height < new_radius,
 		vformat(
-			"Failed to create capsule shape with height '{}' and radius '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to set shape data for capsule shape with height '{}' and radius '{}'. "
+			"Half height must be equal to or greater than radius.",
 			new_height,
-			new_radius,
-			shape_result.GetError()
+			new_radius
 		)
 	);
 
-	jolt_ref = shape_result.Get();
 	height = new_height;
 	radius = new_radius;
 }
 
 void JoltCapsuleShape3D::clear_data() {
-	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
+}
+
+JPH::ShapeRefC JoltCapsuleShape3D::try_build(uint64_t p_user_data) const {
+	if (!is_valid()) {
+		return {};
+	}
+
+	const float half_height = height / 2.0f;
+	const float clamped_height = max(half_height - radius, CMP_EPSILON);
+
+	JPH::CapsuleShapeSettings shape_settings(clamped_height, radius);
+	shape_settings.mUserData = (JPH::uint64)p_user_data;
+
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to build capsule shape with height '{}' and radius '{}'. "
+			"Jolt returned the following error: '{}'.",
+			height,
+			radius,
+			shape_result.GetError()
+		)
+	);
+
+	return shape_result.Get();
 }
 
 Variant JoltCylinderShape3D::get_data() const {
@@ -289,29 +353,46 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 	const float new_height = maybe_height;
 	const float new_radius = maybe_radius;
 
-	const JPH::CylinderShapeSettings shape_settings(new_height / 2.0f, new_radius);
-	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
+	// letting these remain invalid. We also treat any extents smaller than the convex radius as
+	// zero-sized, otherwise Jolt will report an error.
+	if (new_height < GDJOLT_CONVEX_RADIUS || new_radius < GDJOLT_CONVEX_RADIUS) {
+		return;
+	}
 
-	ERR_FAIL_COND_MSG(
-		shape_result.HasError(),
-		vformat(
-			"Failed to create cylinder shape with height '{}' and radius '{}'. "
-			"Jolt returned the following error: '{}'.",
-			new_height,
-			new_radius,
-			shape_result.GetError()
-		)
-	);
-
-	jolt_ref = shape_result.Get();
 	height = new_height;
 	radius = new_radius;
 }
 
 void JoltCylinderShape3D::clear_data() {
-	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
+}
+
+JPH::ShapeRefC JoltCylinderShape3D::try_build(uint64_t p_user_data) const {
+	if (!is_valid()) {
+		return {};
+	}
+
+	const float half_height = height / 2.0f;
+
+	JPH::CylinderShapeSettings shape_settings(half_height, radius, GDJOLT_CONVEX_RADIUS);
+	shape_settings.mUserData = (JPH::uint64)p_user_data;
+
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to build cylinder shape with height '{}' and radius '{}'. "
+			"Jolt returned the following error: '{}'.",
+			height,
+			radius,
+			shape_result.GetError()
+		)
+	);
+
+	return shape_result.Get();
 }
 
 Variant JoltConvexPolygonShape3D::get_data() const {
@@ -326,40 +407,52 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	PackedVector3Array new_vertices = p_data;
 	const int64_t vertex_count = new_vertices.size();
 
-	if (vertex_count == 0) {
+	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
+	// letting these remain invalid.
+	if (vertex_count < 3) {
 		return;
 	}
 
-	JPH::Array<JPH::Vec3> jolt_vertices;
-	jolt_vertices.reserve((size_t)vertex_count);
+	vertices = std::move(new_vertices);
+}
 
-	const Vector3* vertices_begin = &new_vertices[0];
+void JoltConvexPolygonShape3D::clear_data() {
+	vertices.clear();
+}
+
+JPH::ShapeRefC JoltConvexPolygonShape3D::try_build(uint64_t p_user_data) const {
+	if (!is_valid()) {
+		return {};
+	}
+
+	const auto vertex_count = (size_t)vertices.size();
+
+	JPH::Array<JPH::Vec3> jolt_vertices;
+	jolt_vertices.reserve(vertex_count);
+
+	const Vector3* vertices_begin = &vertices[0];
 	const Vector3* vertices_end = vertices_begin + vertex_count;
 
 	for (const Vector3* vertex = vertices_begin; vertex != vertices_end; ++vertex) {
 		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
 	}
 
-	const JPH::ConvexHullShapeSettings shape_settings(jolt_vertices);
+	JPH::ConvexHullShapeSettings shape_settings(jolt_vertices, GDJOLT_CONVEX_RADIUS);
+	shape_settings.mUserData = (JPH::uint64)p_user_data;
+
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
-	ERR_FAIL_COND_MSG(
+	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to create convex polygon shape with vertex count '{}'. "
+			"Failed to build convex polygon shape with vertex count '{}'. "
 			"Jolt returned the following error: '{}'.",
 			vertex_count,
 			shape_result.GetError()
 		)
 	);
 
-	jolt_ref = shape_result.Get();
-	vertices = std::move(new_vertices);
-}
-
-void JoltConvexPolygonShape3D::clear_data() {
-	jolt_ref = nullptr;
-	vertices.clear();
+	return shape_result.Get();
 }
 
 Variant JoltConcavePolygonShape3D::get_data() const {
@@ -386,11 +479,18 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	const bool new_backface_collision = maybe_backface_collision;
 
 	const auto vertex_count = (size_t)new_faces.size();
+
+	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
+	// letting these remain invalid.
+	if (vertex_count == 0) {
+		return;
+	}
+
 	const size_t excess_vertex_count = vertex_count % 3;
 
 	ERR_FAIL_COND_MSG(
 		excess_vertex_count != 0,
-		"Failed to create concave polygon shape with vertex count '{}'. "
+		"Failed to set shape data for concave polygon shape with vertex count '{}'. "
 		"Expected a vertex count divisible by 3."
 	);
 
@@ -400,10 +500,27 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 		return;
 	}
 
+	faces = std::move(new_faces);
+	backface_collision = new_backface_collision;
+}
+
+void JoltConcavePolygonShape3D::clear_data() {
+	faces.clear();
+	backface_collision = false;
+}
+
+JPH::ShapeRefC JoltConcavePolygonShape3D::try_build(uint64_t p_user_data) const {
+	if (!is_valid()) {
+		return {};
+	}
+
+	const auto vertex_count = (size_t)faces.size();
+	const size_t face_count = vertex_count / 3;
+
 	JPH::TriangleList jolt_faces;
 	jolt_faces.reserve(face_count);
 
-	const Vector3* faces_begin = &new_faces[0];
+	const Vector3* faces_begin = &faces[0];
 	const Vector3* faces_end = faces_begin + vertex_count;
 
 	for (const Vector3* vertex = faces_begin; vertex != faces_end; vertex += 3) {
@@ -417,7 +534,7 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 			JPH::Float3(v0->x, v0->y, v0->z)
 		);
 
-		if (new_backface_collision) {
+		if (backface_collision) {
 			jolt_faces.emplace_back(
 				JPH::Float3(v0->x, v0->y, v0->z),
 				JPH::Float3(v1->x, v1->y, v1->z),
@@ -426,28 +543,22 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 		}
 	}
 
-	const JPH::MeshShapeSettings shape_settings(jolt_faces);
+	JPH::MeshShapeSettings shape_settings(jolt_faces);
+	shape_settings.mUserData = (JPH::uint64)p_user_data;
+
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
-	ERR_FAIL_COND_MSG(
+	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to create concave polygon shape with vertex count '{}'. "
+			"Failed to build concave polygon shape with vertex count '{}'. "
 			"Jolt returned the following error: '{}'.",
 			vertex_count,
 			shape_result.GetError()
 		)
 	);
 
-	jolt_ref = shape_result.Get();
-	faces = std::move(new_faces);
-	backface_collision = new_backface_collision;
-}
-
-void JoltConcavePolygonShape3D::clear_data() {
-	jolt_ref = nullptr;
-	faces.clear();
-	backface_collision = false;
+	return shape_result.Get();
 }
 
 Variant JoltHeightMapShape3D::get_data() const {
@@ -486,17 +597,17 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 
 	// HACK(mihe): A height map shape will have a width or depth of 2 while it's transitioning from
 	// its default state. Since Jolt doesn't support non-square height maps, and it's unlikely that
-	// anyone would actually want a height map of such small dimensions, we silently ignore any such
-	// request in order to not display an error every single time we create a shape of this type.
-	if (new_width == 2 || new_depth == 2) {
+	// anyone would actually want a height map of such small dimensions, we silently let this remain
+	// invalid in order to not display an error every single time we create a shape of this type.
+	if (new_width <= 2 || new_depth <= 2) {
 		return;
 	}
 
 	ERR_FAIL_COND_MSG(
 		height_count != new_width * new_depth,
 		vformat(
-			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
-			"Expected height count to equal width multiplied by depth.",
+			"Failed to set shape data for height map shape with width '{}', depth '{}' and height "
+			"count '{}'. Height count must be equal to width multiplied by depth.",
 			new_width,
 			new_depth,
 			height_count
@@ -506,8 +617,9 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND_MSG(
 		new_width != new_depth,
 		vformat(
-			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
-			"Height maps with differing width and depth are not supported by Godot Jolt.",
+			"Failed to set shape data for height map shape with width '{}', depth '{}' and height "
+			"count '{}'. Height maps with differing width and depth are not supported by Godot "
+			"Jolt.",
 			new_width,
 			new_depth,
 			height_count
@@ -519,51 +631,59 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND_MSG(
 		!is_power_of_2(sample_count),
 		vformat(
-			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
-			"Height maps with a width/depth that is not a power of two are not supported by Godot "
-			"Jolt.",
+			"Failed to set shape data for height map shape with width '{}', depth '{}' and height "
+			"count '{}'. Height maps with a width/depth that is not a power of two are not "
+			"supported by Godot Jolt.",
 			new_width,
 			new_depth,
 			height_count
 		)
 	);
 
-	const int32_t width_tiles = new_width - 1;
-	const int32_t depth_tiles = new_depth - 1;
-
-	const float half_width_tiles = (float)width_tiles / 2.0f;
-	const float half_depth_tiles = (float)depth_tiles / 2.0f;
-
-	const JPH::HeightFieldShapeSettings shape_settings(
-		new_heights.ptr(),
-		JPH::Vec3(-half_width_tiles, 0, -half_depth_tiles),
-		JPH::Vec3::sReplicate(1.0f),
-		sample_count
-	);
-
-	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
-
-	ERR_FAIL_COND_MSG(
-		shape_result.HasError(),
-		vformat(
-			"Failed to create height map shape with width '{}', depth '{}' and height count '{}'. "
-			"Jolt returned the following error: '{}'.",
-			new_width,
-			new_depth,
-			height_count,
-			shape_result.GetError()
-		)
-	);
-
-	jolt_ref = shape_result.Get();
 	heights = new_heights;
 	width = new_width;
 	depth = new_depth;
 }
 
 void JoltHeightMapShape3D::clear_data() {
-	jolt_ref = nullptr;
 	heights.clear();
 	width = 0;
 	depth = 0;
+}
+
+JPH::ShapeRefC JoltHeightMapShape3D::try_build(uint64_t p_user_data) const {
+	if (!is_valid()) {
+		return {};
+	}
+
+	const int32_t width_tiles = width - 1;
+	const int32_t depth_tiles = depth - 1;
+
+	const float half_width_tiles = (float)width_tiles / 2.0f;
+	const float half_depth_tiles = (float)depth_tiles / 2.0f;
+
+	JPH::HeightFieldShapeSettings shape_settings(
+		heights.ptr(),
+		JPH::Vec3(-half_width_tiles, 0, -half_depth_tiles),
+		JPH::Vec3::sReplicate(1.0f),
+		(JPH::uint32)width
+	);
+
+	shape_settings.mUserData = (JPH::uint64)p_user_data;
+
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to build height map shape with width '{}', depth '{}' and height count '{}'. "
+			"Jolt returned the following error: '{}'.",
+			width,
+			depth,
+			heights.size(),
+			shape_result.GetError()
+		)
+	);
+
+	return shape_result.Get();
 }
