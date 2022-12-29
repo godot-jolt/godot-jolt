@@ -4,6 +4,11 @@ class JoltShape3D;
 
 class JoltShapeInstance3D {
 public:
+	struct Built {
+		const JoltShapeInstance3D* shape = nullptr;
+		JPH::ShapeRefC jolt_ref;
+	};
+
 	JoltShapeInstance3D() = default;
 
 	JoltShapeInstance3D(JoltShape3D* p_shape, const Transform3D& p_transform, bool p_disabled)
@@ -38,6 +43,19 @@ public:
 	friend bool operator==(JoltShape3D* p_lhs, const JoltShapeInstance3D& p_rhs) {
 		return p_lhs == p_rhs.shape;
 	}
+
+	static bool try_build(
+		const JoltShapeInstance3D& p_shape,
+		uint64_t p_user_data,
+		Built& p_built_shape
+	);
+
+	static void try_build(
+		const Vector<JoltShapeInstance3D>& p_shapes,
+		Vector<Built>& p_built_shapes
+	);
+
+	static JPH::ShapeRefC build_compound(const Vector<Built>& p_built_shapes);
 
 private:
 	Transform3D transform;

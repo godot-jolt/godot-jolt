@@ -128,73 +128,33 @@ JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(bool p_lock
 }
 
 JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
-	auto is_shape_eligible = [](const JoltShapeInstance3D& p_shape) {
-		return p_shape.is_enabled() && p_shape->is_valid();
-	};
+	// TODO(mihe): This could greatly benefit from some kind of small/inlined vector, since I assume
+	// most bodies will only ever have a handful of shapes
+	Vector<JoltShapeInstance3D::Built> built_shapes;
+	JoltShapeInstance3D::try_build(shapes, built_shapes);
 
-	int32_t eligible_shape_count = 0;
+	const int built_shape_count = built_shapes.size();
 
-	for (const JoltShapeInstance3D& shape_instance : shapes) {
-		if (is_shape_eligible(shape_instance)) {
-			++eligible_shape_count;
-		}
-	}
-
-	if (eligible_shape_count == 0) {
+	if (built_shape_count == 0) {
 		return {};
 	}
 
-	if (eligible_shape_count == 1) {
-		for (const JoltShapeInstance3D& shape_instance : shapes) {
-			if (!is_shape_eligible(shape_instance)) {
-				continue;
-			}
+	JPH::ShapeRefC result;
 
-			JPH::ShapeRefC shape = shape_instance->get_jolt_ref();
-
-			const Transform3D& transform = shape_instance.get_transform();
-
-			shape = JoltShape3D::with_transform(shape, transform);
-
-			if (has_custom_center_of_mass()) {
-				shape = JoltShape3D::with_center_of_mass(shape, get_center_of_mass_custom());
-			}
-
-			return shape;
-		}
+	if (built_shape_count == 1) {
+		const JoltShapeInstance3D::Built& built_shape = built_shapes[0];
+		const JoltShapeInstance3D& shape = *built_shape.shape;
+		const JPH::ShapeRefC& jolt_ref = built_shape.jolt_ref;
+		result = JoltShape3D::with_transform(jolt_ref, shape.get_transform());
+	} else {
+		result = JoltShapeInstance3D::build_compound(built_shapes);
 	}
-
-	JPH::StaticCompoundShapeSettings shape_settings;
-
-	for (const JoltShapeInstance3D& shape_instance : shapes) {
-		if (is_shape_eligible(shape_instance)) {
-			shape_settings.AddShape(
-				to_jolt(shape_instance.get_transform().origin),
-				to_jolt(shape_instance.get_transform().basis),
-				shape_instance->get_jolt_ref()
-			);
-		}
-	}
-
-	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
-
-	ERR_FAIL_COND_D_MSG(
-		shape_result.HasError(),
-		vformat(
-			"Failed to create compound shape with sub-shape count '{}'. "
-			"Jolt returned the following error: '{}'.",
-			shapes.size(),
-			shape_result.GetError()
-		)
-	);
-
-	JPH::ShapeRefC shape = shape_result.Get();
 
 	if (has_custom_center_of_mass()) {
-		shape = JoltShape3D::with_center_of_mass(shape, get_center_of_mass_custom());
+		result = JoltShape3D::with_center_of_mass(result, get_center_of_mass_custom());
 	}
 
-	return shape;
+	return result;
 }
 
 void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
