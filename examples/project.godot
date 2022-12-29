@@ -19,6 +19,10 @@ config/features=PackedStringArray("4.0")
 window/size/viewport_width=1600
 window/size/viewport_height=900
 
+[filesystem]
+
+import/blender/enabled=false
+
 [physics]
 
 3d/physics_engine="JoltPhysics3D"
