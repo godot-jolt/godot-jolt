@@ -1,4 +1,5 @@
 #include "jolt_physics_direct_body_state_3d.hpp"
+#include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_physics_server_3d.hpp"
 #include "jolt_physics_server_factory_3d.hpp"
 
@@ -14,6 +15,7 @@ void on_initialize(ModuleInitializationLevel p_level) {
 	}
 
 	ClassDB::register_class<JoltPhysicsDirectBodyState3D>();
+	ClassDB::register_class<JoltPhysicsDirectSpaceState3D>();
 	ClassDB::register_class<JoltPhysicsServer3D>();
 	ClassDB::register_class<JoltPhysicsServerFactory3D>();
 
