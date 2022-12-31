@@ -4,6 +4,7 @@ class JoltArea3D;
 class JoltBody3D;
 class JoltCollisionObject3D;
 class JoltJoint3D;
+class JoltPhysicsDirectSpaceState3D;
 
 class JoltSpace3D final {
 public:
@@ -31,7 +32,9 @@ public:
 
 	const JPH::BodyLockInterface& get_body_lock_iface(bool p_locked = true) const;
 
-	PhysicsDirectSpaceState3D* get_direct_state() const;
+	const JPH::NarrowPhaseQuery& get_narrow_phase_query(bool p_locked = true) const;
+
+	JoltPhysicsDirectSpaceState3D* get_direct_state();
 
 	void set_default_area(JoltArea3D* p_area) { area = p_area; }
 
@@ -68,7 +71,7 @@ private:
 
 	JPH::GroupFilter* group_filter = nullptr;
 
-	PhysicsDirectSpaceState3D* direct_state = nullptr;
+	JoltPhysicsDirectSpaceState3D* direct_state = nullptr;
 
 	JoltArea3D* area = nullptr;
 

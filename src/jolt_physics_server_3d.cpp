@@ -5,6 +5,7 @@
 #include "jolt_body_3d.hpp"
 #include "jolt_group_filter.hpp"
 #include "jolt_joint_3d.hpp"
+#include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
 #include "variant.hpp"

@@ -7,6 +7,7 @@
 #include "jolt_joint_3d.hpp"
 #include "jolt_layer_mapper.hpp"
 #include "jolt_object_layer.hpp"
+#include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_temp_allocator.hpp"
 #include "variant.hpp"
@@ -39,6 +40,10 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group
 }
 
 JoltSpace3D::~JoltSpace3D() {
+	if (direct_state != nullptr) {
+		memdelete(direct_state);
+	}
+
 	delete physics_system;
 	delete layer_mapper;
 	delete temp_allocator;
@@ -101,7 +106,19 @@ const JPH::BodyLockInterface& JoltSpace3D::get_body_lock_iface(bool p_locked) co
 	}
 }
 
-PhysicsDirectSpaceState3D* JoltSpace3D::get_direct_state() const {
+const JPH::NarrowPhaseQuery& JoltSpace3D::get_narrow_phase_query(bool p_locked) const {
+	if (p_locked) {
+		return physics_system->GetNarrowPhaseQuery();
+	} else {
+		return physics_system->GetNarrowPhaseQueryNoLock();
+	}
+}
+
+JoltPhysicsDirectSpaceState3D* JoltSpace3D::get_direct_state() {
+	if (!direct_state) {
+		direct_state = memnew(JoltPhysicsDirectSpaceState3D(this));
+	}
+
 	return direct_state;
 }
 
