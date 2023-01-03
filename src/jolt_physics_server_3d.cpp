@@ -4,6 +4,7 @@
 #include "jolt_area_3d.hpp"
 #include "jolt_body_3d.hpp"
 #include "jolt_group_filter.hpp"
+#include "jolt_hinge_joint_3d.hpp"
 #include "jolt_joint_3d.hpp"
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_shape_3d.hpp"
@@ -1256,13 +1257,32 @@ Vector3 JoltPhysicsServer3D::_pin_joint_get_local_b(const RID& p_joint) const {
 }
 
 void JoltPhysicsServer3D::_joint_make_hinge(
-	[[maybe_unused]] const RID& p_joint,
-	[[maybe_unused]] const RID& p_body_a,
-	[[maybe_unused]] const Transform3D& p_hinge_a,
-	[[maybe_unused]] const RID& p_body_b,
-	[[maybe_unused]] const Transform3D& p_hinge_b
+	const RID& p_joint,
+	const RID& p_body_a,
+	const Transform3D& p_hinge_a,
+	const RID& p_body_b,
+	const Transform3D& p_hinge_b
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltJoint3D* old_joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(old_joint);
+
+	JoltBody3D* body_a = body_owner.get_or_null(p_body_a);
+	ERR_FAIL_NULL(body_a);
+
+	JoltBody3D* body_b = body_owner.get_or_null(p_body_b);
+	ERR_FAIL_COND(body_a == body_b);
+
+	JoltSpace3D* space = body_a->get_space();
+	ERR_FAIL_NULL(space);
+
+	JoltJoint3D* new_joint = body_b != nullptr
+		? memnew(JoltHingeJoint3D(space, *body_a, *body_b, p_hinge_a, p_hinge_b))
+		: memnew(JoltHingeJoint3D(space, *body_a, p_hinge_a, p_hinge_b));
+
+	new_joint->set_rid(old_joint->get_rid());
+
+	memdelete(old_joint);
+	joint_owner.replace(p_joint, new_joint);
 }
 
 void JoltPhysicsServer3D::_joint_make_hinge_simple(
@@ -1274,37 +1294,58 @@ void JoltPhysicsServer3D::_joint_make_hinge_simple(
 	[[maybe_unused]] const Vector3& p_pivot_b,
 	[[maybe_unused]] const Vector3& p_axis_b
 ) {
-	ERR_FAIL_NOT_IMPL();
+	// HACK(mihe): This method doesn't seem to be used anywhere within Godot, and isn't exposed in
+	// the bindings, so this will be unsupported until anyone actually needs it
+	ERR_FAIL_MSG("Simple hinge joints are not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_hinge_joint_set_param(
-	[[maybe_unused]] const RID& p_joint,
-	[[maybe_unused]] HingeJointParam p_param,
-	[[maybe_unused]] double p_value
+	const RID& p_joint,
+	HingeJointParam p_param,
+	double p_value
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
+	auto* hinge_joint = static_cast<JoltHingeJoint3D*>(joint);
+
+	return hinge_joint->set_param(p_param, p_value);
 }
 
-double JoltPhysicsServer3D::_hinge_joint_get_param(
-	[[maybe_unused]] const RID& p_joint,
-	[[maybe_unused]] HingeJointParam p_param
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+double JoltPhysicsServer3D::_hinge_joint_get_param(const RID& p_joint, HingeJointParam p_param)
+	const {
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
+	auto* hinge_joint = static_cast<JoltHingeJoint3D*>(joint);
+
+	return hinge_joint->get_param(p_param);
 }
 
 void JoltPhysicsServer3D::_hinge_joint_set_flag(
-	[[maybe_unused]] const RID& p_joint,
-	[[maybe_unused]] HingeJointFlag p_flag,
-	[[maybe_unused]] bool p_enabled
+	const RID& p_joint,
+	HingeJointFlag p_flag,
+	bool p_enabled
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
+	auto* hinge_joint = static_cast<JoltHingeJoint3D*>(joint);
+
+	return hinge_joint->set_flag(p_flag, p_enabled);
 }
 
-bool JoltPhysicsServer3D::_hinge_joint_get_flag(
-	[[maybe_unused]] const RID& p_joint,
-	[[maybe_unused]] HingeJointFlag p_flag
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+bool JoltPhysicsServer3D::_hinge_joint_get_flag(const RID& p_joint, HingeJointFlag p_flag) const {
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
+	auto* hinge_joint = static_cast<JoltHingeJoint3D*>(joint);
+
+	return hinge_joint->get_flag(p_flag);
 }
 
 void JoltPhysicsServer3D::_joint_make_slider(
