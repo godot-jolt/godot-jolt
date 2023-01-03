@@ -34,18 +34,15 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 	JPH::Body* jolt_body_b = body_access.get_body(1);
 	ERR_FAIL_NULL(jolt_body_b);
 
-	const JPH::Shape* jolt_shape_a = jolt_body_a->GetShape();
-	ERR_FAIL_NULL(jolt_shape_a);
-
-	const JPH::Shape* jolt_shape_b = jolt_body_b->GetShape();
-	ERR_FAIL_NULL(jolt_shape_b);
+	const JPH::Shape& jolt_shape_a = *jolt_body_a->GetShape();
+	const JPH::Shape& jolt_shape_b = *jolt_body_b->GetShape();
 
 	JPH::HingeConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPoint1 = to_jolt(p_hinge_a.origin) - jolt_shape_a->GetCenterOfMass();
+	constraint_settings.mPoint1 = to_jolt(p_hinge_a.origin) - jolt_shape_a.GetCenterOfMass();
 	constraint_settings.mHingeAxis1 = to_jolt(-p_hinge_a.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mNormalAxis1 = to_jolt(p_hinge_a.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mPoint2 = to_jolt(p_hinge_b.origin) - jolt_shape_b->GetCenterOfMass();
+	constraint_settings.mPoint2 = to_jolt(p_hinge_b.origin) - jolt_shape_b.GetCenterOfMass();
 	constraint_settings.mHingeAxis2 = to_jolt(-p_hinge_b.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mNormalAxis2 = to_jolt(p_hinge_b.basis.get_column(Vector3::AXIS_X));
 
@@ -66,13 +63,11 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 	ERR_FAIL_COND(!body_access.is_valid());
 
 	JPH::Body& jolt_body_a = body_access.get_body();
-
-	const JPH::Shape* jolt_shape_a = jolt_body_a.GetShape();
-	ERR_FAIL_NULL(jolt_shape_a);
+	const JPH::Shape& jolt_shape_a = *jolt_body_a.GetShape();
 
 	JPH::HingeConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPoint1 = to_jolt(p_hinge_a.origin) - jolt_shape_a->GetCenterOfMass();
+	constraint_settings.mPoint1 = to_jolt(p_hinge_a.origin) - jolt_shape_a.GetCenterOfMass();
 	constraint_settings.mHingeAxis1 = to_jolt(-p_hinge_a.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mNormalAxis1 = to_jolt(p_hinge_a.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPoint2 = to_jolt(p_hinge_b.origin);
