@@ -37,3 +37,15 @@ template<typename TElement, int32_t TSize>
 constexpr int32_t count_of([[maybe_unused]] TElement (&p_array)[TSize]) {
 	return TSize;
 }
+
+inline double calculate_physics_step() {
+	// TODO(mihe): Replace these constants with the appropriate singleton calls once
+	// godotengine/godot-cpp#889 is fixed
+	const int32_t ticks_per_second = 60; // Engine::get_physics_ticks_per_second()
+	const double time_scale = 1.0; // Engine::get_time_scale()
+
+	const double step = 1.0 / ticks_per_second;
+	const double step_scaled = step * time_scale;
+
+	return step_scaled;
+}
