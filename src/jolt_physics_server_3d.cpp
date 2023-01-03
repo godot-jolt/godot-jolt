@@ -7,6 +7,7 @@
 #include "jolt_hinge_joint_3d.hpp"
 #include "jolt_joint_3d.hpp"
 #include "jolt_physics_direct_space_state_3d.hpp"
+#include "jolt_pin_joint_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
 #include "variant.hpp"
@@ -1177,7 +1178,10 @@ void JoltPhysicsServer3D::_joint_make_pin(
 	JoltSpace3D* space = body_a->get_space();
 	ERR_FAIL_NULL(space);
 
-	JoltJoint3D* new_joint = memnew(JoltPinJoint3D(space, body_a, body_b, p_local_a, p_local_b));
+	JoltJoint3D* new_joint = body_b != nullptr
+		? memnew(JoltPinJoint3D(space, body_a, body_b, p_local_a, p_local_b))
+		: memnew(JoltPinJoint3D(space, body_a, p_local_a, p_local_b));
+
 	new_joint->set_rid(old_joint->get_rid());
 
 	memdelete(old_joint);
@@ -1209,17 +1213,13 @@ double JoltPhysicsServer3D::_pin_joint_get_param(const RID& p_joint, PinJointPar
 }
 
 void JoltPhysicsServer3D::_pin_joint_set_local_a(const RID& p_joint, const Vector3& p_local_a) {
-	JoltJoint3D* old_joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL(old_joint);
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
 
-	ERR_FAIL_COND(old_joint->get_type() != JOINT_TYPE_PIN);
-	auto* old_pin_joint = static_cast<JoltPinJoint3D*>(old_joint);
+	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_PIN);
+	auto* pin_joint = static_cast<JoltPinJoint3D*>(joint);
 
-	JoltJoint3D* new_joint = old_pin_joint->with_local_a(p_local_a);
-	new_joint->set_rid(old_joint->get_rid());
-
-	memdelete(old_joint);
-	joint_owner.replace(p_joint, new_joint);
+	pin_joint->set_local_a(p_local_a);
 }
 
 Vector3 JoltPhysicsServer3D::_pin_joint_get_local_a(const RID& p_joint) const {
@@ -1233,17 +1233,13 @@ Vector3 JoltPhysicsServer3D::_pin_joint_get_local_a(const RID& p_joint) const {
 }
 
 void JoltPhysicsServer3D::_pin_joint_set_local_b(const RID& p_joint, const Vector3& p_local_b) {
-	JoltJoint3D* old_joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL(old_joint);
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
 
-	ERR_FAIL_COND(old_joint->get_type() != JOINT_TYPE_PIN);
-	auto* old_pin_joint = static_cast<JoltPinJoint3D*>(old_joint);
+	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_PIN);
+	auto* pin_joint = static_cast<JoltPinJoint3D*>(joint);
 
-	JoltJoint3D* new_joint = old_pin_joint->with_local_b(p_local_b);
-	new_joint->set_rid(old_joint->get_rid());
-
-	memdelete(old_joint);
-	joint_owner.replace(p_joint, new_joint);
+	pin_joint->set_local_b(p_local_b);
 }
 
 Vector3 JoltPhysicsServer3D::_pin_joint_get_local_b(const RID& p_joint) const {
