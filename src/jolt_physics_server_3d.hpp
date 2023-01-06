@@ -543,6 +543,16 @@ public:
 
 	int64_t _get_process_info(PhysicsServer3D::ProcessInfo p_process_info) override;
 
+	JoltSpace3D* get_space(const RID& p_rid) const { return space_owner.get_or_null(p_rid); }
+
+	JoltBody3D* get_body(const RID& p_rid) const { return body_owner.get_or_null(p_rid); }
+
+	JoltArea3D* get_area(const RID& p_rid) const { return area_owner.get_or_null(p_rid); }
+
+	JoltShape3D* get_shape(const RID& p_rid) const { return shape_owner.get_or_null(p_rid); }
+
+	JoltJoint3D* get_joint(const RID& p_rid) const { return joint_owner.get_or_null(p_rid); }
+
 private:
 	inline static int32_t server_count;
 
