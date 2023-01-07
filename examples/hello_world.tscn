@@ -35,6 +35,8 @@ shadow_enabled = true
 transform = Transform3D(-0.707107, -0.40558, 0.579228, 0, 0.819152, 0.573576, -0.707107, 0.40558, -0.579228, 10, 12, -10)
 current = true
 
+[node name="DebugGeometry" type="JoltDebugGeometry3D" parent="."]
+
 [node name="Sphere" parent="." instance=ExtResource("1_y4gfj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13, 0)
 

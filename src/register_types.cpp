@@ -1,3 +1,4 @@
+#include "jolt_debug_geometry_3d.hpp"
 #include "jolt_physics_direct_body_state_3d.hpp"
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_physics_server_3d.hpp"
@@ -5,38 +6,47 @@
 
 namespace {
 
-constexpr ModuleInitializationLevel GDJOLT_INIT_LEVEL = MODULE_INITIALIZATION_LEVEL_SERVERS;
-
 JoltPhysicsServerFactory3D* server_factory = nullptr;
 
 void on_initialize(ModuleInitializationLevel p_level) {
-	if (p_level != GDJOLT_INIT_LEVEL) {
-		return;
+	switch (p_level) {
+		case MODULE_INITIALIZATION_LEVEL_CORE: {
+		} break;
+		case MODULE_INITIALIZATION_LEVEL_SERVERS: {
+			ClassDB::register_class<JoltPhysicsDirectBodyState3D>();
+			ClassDB::register_class<JoltPhysicsDirectSpaceState3D>();
+			ClassDB::register_class<JoltPhysicsServer3D>();
+			ClassDB::register_class<JoltPhysicsServerFactory3D>();
+
+			server_factory = memnew(JoltPhysicsServerFactory3D);
+
+			PhysicsServer3DManager::get_singleton()->register_server(
+				"JoltPhysics3D",
+				Callable(server_factory, "create_server")
+			);
+		} break;
+		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			ClassDB::register_class<JoltDebugGeometry3D>();
+		} break;
+		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
+		} break;
 	}
-
-	ClassDB::register_class<JoltPhysicsDirectBodyState3D>();
-	ClassDB::register_class<JoltPhysicsDirectSpaceState3D>();
-	ClassDB::register_class<JoltPhysicsServer3D>();
-	ClassDB::register_class<JoltPhysicsServerFactory3D>();
-
-	if (server_factory == nullptr) {
-		server_factory = memnew(JoltPhysicsServerFactory3D);
-	}
-
-	PhysicsServer3DManager::get_singleton()->register_server(
-		"JoltPhysics3D",
-		Callable(server_factory, "create_server")
-	);
 }
 
 void on_terminate(ModuleInitializationLevel p_level) {
-	if (p_level != GDJOLT_INIT_LEVEL) {
-		return;
-	}
-
-	if (server_factory != nullptr) {
-		memdelete(server_factory);
-		server_factory = nullptr;
+	switch (p_level) {
+		case MODULE_INITIALIZATION_LEVEL_CORE: {
+		} break;
+		case MODULE_INITIALIZATION_LEVEL_SERVERS: {
+			if (server_factory != nullptr) {
+				memdelete(server_factory);
+				server_factory = nullptr;
+			}
+		} break;
+		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+		} break;
+		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
+		} break;
 	}
 }
 
@@ -54,7 +64,7 @@ GDExtensionBool GDE_EXPORT godot_jolt_main(
 	init_obj.register_initializer(&on_initialize);
 	init_obj.register_terminator(&on_terminate);
 
-	init_obj.set_minimum_library_initialization_level(GDJOLT_INIT_LEVEL);
+	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SERVERS);
 
 	return init_obj.init();
 }
