@@ -17,64 +17,9 @@ namespace {
 constexpr int32_t GDJOLT_MAX_PHYSICS_JOBS = 2048;
 constexpr int32_t GDJOLT_MAX_PHYSICS_BARRIERS = 8;
 
-void* jolt_alloc(size_t p_size) {
-	return mi_malloc(p_size);
-}
-
-void jolt_free(void* p_mem) {
-	mi_free(p_mem);
-}
-
-void* jolt_aligned_alloc(size_t p_size, size_t p_alignment) {
-	return mi_aligned_alloc(p_alignment, p_size);
-}
-
-void jolt_aligned_free(void* p_mem) {
-	mi_free(p_mem);
-}
-
-void jolt_trace(const char* p_format, ...) {
-	va_list args; // NOLINT(cppcoreguidelines-init-variables)
-	va_start(args, p_format);
-	char buffer[1024] = {'\0'};
-	vsnprintf(buffer, sizeof(buffer), p_format, args);
-	va_end(args);
-	UtilityFunctions::print_verbose(buffer);
-}
-
-#ifdef JPH_ENABLE_ASSERTS
-
-bool jolt_assert(const char* p_expr, const char* p_msg, const char* p_file, uint32_t p_line) {
-	ERR_PRINT(vformat(
-		"Assertion '{}' failed with message '{}' at '{}:{}'",
-		p_expr,
-		p_msg != nullptr ? p_msg : "",
-		p_file,
-		p_line
-	));
-
-	CRASH_NOW();
-
-	return false;
-}
-
-#endif // JPH_ENABLE_ASSERTS
-
 } // anonymous namespace
 
 void JoltPhysicsServer3D::init_statics() {
-	JPH::Allocate = &jolt_alloc;
-	JPH::Free = &jolt_free;
-	JPH::AlignedAllocate = &jolt_aligned_alloc;
-	JPH::AlignedFree = &jolt_aligned_free;
-	JPH::Trace = &jolt_trace;
-
-	JPH_IF_ENABLE_ASSERTS(JPH::AssertFailed = jolt_assert;)
-
-	JPH::Factory::sInstance = new JPH::Factory();
-
-	JPH::RegisterTypes();
-
 	job_system = new JPH::JobSystemThreadPool(
 		GDJOLT_MAX_PHYSICS_JOBS,
 		GDJOLT_MAX_PHYSICS_BARRIERS,
@@ -89,21 +34,6 @@ void JoltPhysicsServer3D::finish_statics() {
 
 	delete job_system;
 	job_system = nullptr;
-
-	// HACK(mihe): We don't want this to destruct at DLL exit since we won't have any allocators
-	// assigned at that point, so we free it explicitly here instead
-	JPH::PhysicsMaterial::sDefault = nullptr;
-
-	delete JPH::Factory::sInstance;
-	JPH::Factory::sInstance = nullptr;
-
-	JPH_IF_ENABLE_ASSERTS(JPH::AssertFailed = nullptr;)
-
-	JPH::Allocate = nullptr;
-	JPH::Free = nullptr;
-	JPH::AlignedAllocate = nullptr;
-	JPH::AlignedFree = nullptr;
-	JPH::Trace = nullptr;
 }
 
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
