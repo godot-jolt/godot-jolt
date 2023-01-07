@@ -112,7 +112,11 @@ JoltDebugGeometry3D::~JoltDebugGeometry3D() = default;
 void JoltDebugGeometry3D::_process([[maybe_unused]] double p_delta) {
 #ifdef JPH_DEBUG_RENDERER
 	auto* physics_server = dynamic_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-	ERR_FAIL_NULL(physics_server);
+
+	if (physics_server == nullptr) {
+		ERR_PRINT_ONCE("Failed to retrieve Jolt-based physics server.");
+		return;
+	}
 
 	JoltSpace3D* space = physics_server->get_space(get_world_3d()->get_space());
 	ERR_FAIL_NULL(space);
