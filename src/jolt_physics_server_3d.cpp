@@ -3,6 +3,7 @@
 #include "error_macros.hpp"
 #include "jolt_area_3d.hpp"
 #include "jolt_body_3d.hpp"
+#include "jolt_cone_twist_joint_3d.hpp"
 #include "jolt_group_filter.hpp"
 #include "jolt_hinge_joint_3d.hpp"
 #include "jolt_joint_3d.hpp"
@@ -1300,28 +1301,59 @@ double JoltPhysicsServer3D::_slider_joint_get_param(
 }
 
 void JoltPhysicsServer3D::_joint_make_cone_twist(
-	[[maybe_unused]] const RID& p_joint,
-	[[maybe_unused]] const RID& p_body_a,
-	[[maybe_unused]] const Transform3D& p_local_ref_a,
-	[[maybe_unused]] const RID& p_body_b,
-	[[maybe_unused]] const Transform3D& p_local_ref_b
+	const RID& p_joint,
+	const RID& p_body_a,
+	const Transform3D& p_local_ref_a,
+	const RID& p_body_b,
+	const Transform3D& p_local_ref_b
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltJoint3D* old_joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(old_joint);
+
+	JoltBody3D* body_a = body_owner.get_or_null(p_body_a);
+	ERR_FAIL_NULL(body_a);
+
+	JoltBody3D* body_b = body_owner.get_or_null(p_body_b);
+	ERR_FAIL_COND(body_a == body_b);
+
+	JoltSpace3D* space = body_a->get_space();
+	ERR_FAIL_NULL(space);
+
+	JoltJoint3D* new_joint = body_b != nullptr
+		? memnew(JoltConeTwistJoint3D(space, *body_a, *body_b, p_local_ref_a, p_local_ref_b))
+		: memnew(JoltConeTwistJoint3D(space, *body_a, p_local_ref_a, p_local_ref_b));
+
+	new_joint->set_rid(old_joint->get_rid());
+
+	memdelete(old_joint);
+	joint_owner.replace(p_joint, new_joint);
 }
 
 void JoltPhysicsServer3D::_cone_twist_joint_set_param(
-	[[maybe_unused]] const RID& p_joint,
-	[[maybe_unused]] ConeTwistJointParam p_param,
-	[[maybe_unused]] double p_value
+	const RID& p_joint,
+	ConeTwistJointParam p_param,
+	double p_value
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_CONE_TWIST);
+	auto* cone_twist_joint = static_cast<JoltConeTwistJoint3D*>(joint);
+
+	return cone_twist_joint->set_param(p_param, p_value);
 }
 
 double JoltPhysicsServer3D::_cone_twist_joint_get_param(
-	[[maybe_unused]] const RID& p_joint,
-	[[maybe_unused]] ConeTwistJointParam p_param
+	const RID& p_joint,
+	ConeTwistJointParam p_param
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_CONE_TWIST);
+	auto* cone_twist_joint = static_cast<JoltConeTwistJoint3D*>(joint);
+
+	return cone_twist_joint->get_param(p_param);
 }
 
 void JoltPhysicsServer3D::_joint_make_generic_6dof(
