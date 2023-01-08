@@ -159,11 +159,11 @@ void JoltConeTwistJoint3D::spans_changed() {
 	if (half_twist_span >= basically_zero && half_twist_span <= basically_pi) {
 		const float half_twist_span_clamped = clamp((float)half_twist_span, 0.0f, JPH::JPH_PI);
 
-		jolt_constraint->SetTwistMinAngle((float)-half_twist_span_clamped);
-		jolt_constraint->SetTwistMaxAngle((float)half_twist_span_clamped);
+		jolt_constraint->SetTwistMinAngle(-half_twist_span_clamped);
+		jolt_constraint->SetTwistMaxAngle(half_twist_span_clamped);
 	} else {
-		jolt_constraint->SetTwistMinAngle((float)-JPH::JPH_PI);
-		jolt_constraint->SetTwistMaxAngle((float)JPH::JPH_PI);
+		jolt_constraint->SetTwistMinAngle(-JPH::JPH_PI);
+		jolt_constraint->SetTwistMaxAngle(JPH::JPH_PI);
 	}
 
 	const double half_swing_span = swing_span / 2.0;
@@ -179,7 +179,7 @@ void JoltConeTwistJoint3D::spans_changed() {
 
 		// HACK(mihe): As far as I can tell this emulates the behavior of Godot Physics, where the
 		// twist axis becomes unbounded if the swing span is a nonsensical value
-		jolt_constraint->SetTwistMinAngle((float)-JPH::JPH_PI);
-		jolt_constraint->SetTwistMaxAngle((float)JPH::JPH_PI);
+		jolt_constraint->SetTwistMinAngle(-JPH::JPH_PI);
+		jolt_constraint->SetTwistMaxAngle(JPH::JPH_PI);
 	}
 }
