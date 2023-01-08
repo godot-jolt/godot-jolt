@@ -129,11 +129,11 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_UPPER: {
 			limit_upper = p_value;
-			angular_limits_changed();
+			limits_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_LOWER: {
 			limit_lower = p_value;
-			angular_limits_changed();
+			limits_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
 			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_JOINT_DEFAULT_LIMIT_BIAS)) {
@@ -201,7 +201,7 @@ void JoltHingeJoint3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_e
 	switch (p_flag) {
 		case PhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT: {
 			use_limits = p_enabled;
-			angular_limits_changed();
+			limits_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_FLAG_ENABLE_MOTOR: {
 			jolt_hinge->SetMotorState(
@@ -214,7 +214,7 @@ void JoltHingeJoint3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_e
 	}
 }
 
-void JoltHingeJoint3D::angular_limits_changed() {
+void JoltHingeJoint3D::limits_changed() {
 	auto* jolt_hinge = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_hinge);
 

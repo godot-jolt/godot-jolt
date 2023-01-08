@@ -55,7 +55,7 @@ public:
 	void set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled);
 
 private:
-	void angular_limits_changed();
+	void limits_changed();
 
 	double limit_lower = 0.0;
 
