@@ -5,6 +5,7 @@
 #include "conversion.hpp"
 #include "error_macros.hpp"
 #include "jolt_space_3d.hpp"
+#include "utility_functions.hpp"
 
 namespace {
 
@@ -40,6 +41,24 @@ private:
 
 	Vertices vertices;
 };
+
+JoltDebugRenderer* JoltDebugRenderer::acquire() {
+	if (ref_count++ == 0) {
+		singleton = new JoltDebugRenderer();
+	}
+
+	return singleton;
+}
+
+void JoltDebugRenderer::release(JoltDebugRenderer*& p_ptr) {
+	ERR_FAIL_NULL(p_ptr);
+
+	if (--ref_count == 0) {
+		delete_safely(singleton);
+	}
+
+	p_ptr = nullptr;
+}
 
 void JoltDebugRenderer::draw(
 	const JoltSpace3D& p_space,
