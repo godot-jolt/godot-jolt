@@ -84,19 +84,22 @@ func generate():
 		for x in range(resolution):
 			heights[z * resolution + x] = noise_gen.get_noise_2d(x, z)
 
-	var min_height: float = +INF
-	var max_height: float = -INF
+	var min_height := +INF as float
+	var max_height := -INF as float
 
 	for height in heights:
 		min_height = min(min_height, height)
 		max_height = max(max_height, height)
 
+	var size := (resolution - 1) as float
+	var extent := size / 2.0
+
 	for z in range(resolution):
 		for x in range(resolution):
 			var i := z * resolution + x
-			var fy := smoothstep(min_height, max_height, heights[i])
-			var fx: float = 1 - (abs((x as float) / resolution - 0.5) * 2)
-			var fz: float = 1 - (abs((z as float) / resolution - 0.5) * 2)
+			var fy := remap(heights[i], min_height, max_height, 0, 1)
+			var fx := 1.0 - abs(remap(x / size, 0, 1, -1, 1)) as float
+			var fz := 1.0 - abs(remap(z / size, 0, 1, -1, 1)) as float
 			heights[i] = fy * fx * fz * amplitude
 
 	height_map_shape.map_width = resolution
@@ -104,7 +107,7 @@ func generate():
 	height_map_shape.map_data = heights
 
 	var plane_mesh := PlaneMesh.new()
-	plane_mesh.size = Vector2i(resolution - 1, resolution - 1)
+	plane_mesh.size = Vector2i(size, size)
 	plane_mesh.subdivide_width = resolution - 2
 	plane_mesh.subdivide_depth = resolution - 2
 
@@ -116,15 +119,11 @@ func generate():
 	var vertices := PackedVector3Array()
 	vertices.resize(vertex_count)
 
-	var extent := resolution / 2.0
-
 	for n in range(vertex_count):
 		var i := plane_indices[n]
 		var v := plane_vertices[i]
-		var fx := (v.x + extent) / resolution
-		var fz := (v.z + extent) / resolution
-		var ix: int = max(1, ceil(fx * resolution)) - 1
-		var iz: int = max(1, ceil(fz * resolution)) - 1
+		var ix := round(v.x + extent) as int
+		var iz := round(v.z + extent) as int
 		var vy := heights[iz * resolution + ix]
 		vertices[n] = Vector3(v.x, vy, v.z)
 
