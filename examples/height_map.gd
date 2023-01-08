@@ -107,7 +107,7 @@ func generate():
 	height_map_shape.map_data = heights
 
 	var plane_mesh := PlaneMesh.new()
-	plane_mesh.size = Vector2i(size, size)
+	plane_mesh.size = Vector2i(size as int, size as int)
 	plane_mesh.subdivide_width = resolution - 2
 	plane_mesh.subdivide_depth = resolution - 2
 
