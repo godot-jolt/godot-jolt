@@ -148,7 +148,7 @@ void JoltConeTwistJoint3D::spans_changed() {
 	ERR_FAIL_NULL(jolt_constraint);
 
 	constexpr double basically_zero = -CMP_EPSILON;
-	constexpr double basically_pi = JPH::JPH_PI + CMP_EPSILON;
+	constexpr double basically_pi = Math_PI + CMP_EPSILON;
 
 	const double half_twist_span = twist_span / 2.0;
 
