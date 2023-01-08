@@ -1,7 +1,5 @@
 #include "jolt_space_3d.hpp"
 
-#include "conversion.hpp"
-#include "error_macros.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_joint_3d.hpp"
@@ -10,8 +8,6 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_temp_allocator.hpp"
-#include "utility_functions.hpp"
-#include "variant.hpp"
 
 namespace {
 

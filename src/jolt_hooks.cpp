@@ -1,8 +1,5 @@
 #include "jolt_hooks.hpp"
 
-#include "utility_functions.hpp"
-#include "variant.hpp"
-
 void* jolt_alloc(size_t p_size) {
 	return mi_malloc(p_size);
 }

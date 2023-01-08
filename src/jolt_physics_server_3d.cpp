@@ -1,6 +1,5 @@
 #include "jolt_physics_server_3d.hpp"
 
-#include "error_macros.hpp"
 #include "jolt_area_3d.hpp"
 #include "jolt_body_3d.hpp"
 #include "jolt_cone_twist_joint_3d.hpp"
@@ -11,7 +10,6 @@
 #include "jolt_pin_joint_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
-#include "utility_functions.hpp"
 
 namespace {
 

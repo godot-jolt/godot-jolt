@@ -1,7 +1,5 @@
 #include "jolt_debug_geometry_3d.hpp"
 
-#include "bind.hpp"
-#include "error_macros.hpp"
 #include "jolt_debug_renderer.hpp"
 #include "jolt_physics_server_3d.hpp"
 #include "jolt_space_3d.hpp"

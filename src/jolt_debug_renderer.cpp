@@ -2,10 +2,7 @@
 
 #ifdef JPH_DEBUG_RENDERER
 
-#include "conversion.hpp"
-#include "error_macros.hpp"
 #include "jolt_space_3d.hpp"
-#include "utility_functions.hpp"
 
 namespace {
 

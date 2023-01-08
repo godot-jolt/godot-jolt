@@ -1,7 +1,5 @@
 #pragma once
 
-#include "utility_functions.hpp"
-
 class JoltTempAllocator final : public JPH::TempAllocator {
 public:
 	explicit JoltTempAllocator(size_t p_capacity)

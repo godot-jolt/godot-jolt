@@ -1,10 +1,6 @@
 #include "jolt_shape_3d.hpp"
 
-#include "conversion.hpp"
-#include "error_macros.hpp"
 #include "jolt_collision_object_3d.hpp"
-#include "utility_functions.hpp"
-#include "variant.hpp"
 
 namespace {
 

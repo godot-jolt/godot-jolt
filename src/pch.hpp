@@ -98,4 +98,9 @@ using namespace godot;
 #pragma warning(pop)
 #endif // _MSC_VER
 
+#include "bind.hpp"
+#include "conversion.hpp"
+#include "error_macros.hpp"
+#include "utility_functions.hpp"
+#include "variant.hpp"
 #include "wrapped.hpp"

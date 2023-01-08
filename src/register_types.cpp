@@ -4,7 +4,6 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_physics_server_3d.hpp"
 #include "jolt_physics_server_factory_3d.hpp"
-#include "utility_functions.hpp"
 
 namespace {
 

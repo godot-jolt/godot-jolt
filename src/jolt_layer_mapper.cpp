@@ -1,8 +1,5 @@
 #include "jolt_layer_mapper.hpp"
 
-#include "error_macros.hpp"
-#include "variant.hpp"
-
 JoltLayerMapper::JoltLayerMapper() {
 	mappings[GDJOLT_OBJECT_LAYER_NONE] = JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_NONE);
 	mappings[GDJOLT_OBJECT_LAYER_STATIC] = JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_STATIC);
