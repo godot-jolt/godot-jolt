@@ -93,9 +93,9 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 	}
 
 	const Vector3 scale_squared(
-		transform.basis[Vector3::AXIS_X].length_squared(),
-		transform.basis[Vector3::AXIS_Y].length_squared(),
-		transform.basis[Vector3::AXIS_Z].length_squared()
+		transform.basis.get_column(Vector3::AXIS_X).length_squared(),
+		transform.basis.get_column(Vector3::AXIS_Y).length_squared(),
+		transform.basis.get_column(Vector3::AXIS_Z).length_squared()
 	);
 
 	if (scale_squared != Vector3(1.0f, 1.0f, 1.0f)) {
