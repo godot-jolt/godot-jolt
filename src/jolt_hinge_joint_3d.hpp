@@ -21,27 +21,6 @@ public:
 		bool p_lock = true
 	);
 
-	JoltHingeJoint3D(
-		JoltSpace3D* p_space,
-		const JoltBody3D& p_body_a,
-		const JoltBody3D& p_body_b,
-		const Vector3& p_pivot_a,
-		const Vector3& p_axis_a,
-		const Vector3& p_pivot_b,
-		const Vector3& p_axis_b,
-		bool p_lock = true
-	);
-
-	JoltHingeJoint3D(
-		JoltSpace3D* p_space,
-		const JoltBody3D& p_body_a,
-		const Vector3& p_pivot_a,
-		const Vector3& p_axis_a,
-		const Vector3& p_pivot_b,
-		const Vector3& p_axis_b,
-		bool p_lock = true
-	);
-
 	PhysicsServer3D::JointType get_type() const override {
 		return PhysicsServer3D::JOINT_TYPE_HINGE;
 	}
