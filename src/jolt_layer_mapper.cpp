@@ -42,7 +42,7 @@ bool JoltLayerMapper::can_layers_collide(JPH::ObjectLayer p_layer1, JPH::ObjectL
 			return p_layer2 != GDJOLT_OBJECT_LAYER_NONE;
 		}
 		default: {
-			ERR_FAIL_V_MSG(false, vformat("Unhandled object layer: '{}'", p_layer1));
+			ERR_FAIL_D_MSG(vformat("Unhandled object layer: '{}'", p_layer1));
 		}
 	}
 }
@@ -59,7 +59,7 @@ bool JoltLayerMapper::can_layers_collide(JPH::ObjectLayer p_layer1, JPH::BroadPh
 			return p_layer2 != JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_NONE);
 		}
 		default: {
-			ERR_FAIL_V_MSG(false, vformat("Unhandled object layer: '{}'", p_layer1));
+			ERR_FAIL_D_MSG(vformat("Unhandled object layer: '{}'", p_layer1));
 		}
 	}
 }
