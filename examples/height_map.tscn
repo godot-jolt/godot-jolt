@@ -23,8 +23,8 @@ albedo_color = Color(0.2, 0.2, 0.2, 1)
 script = ExtResource("1_28suo")
 collision_shape = NodePath("Shape")
 mesh_instance = NodePath("Mesh")
-height = 4.0
-seed = 209
+amplitude = 4.0
+noise_seed = 209
 
 [node name="Shape" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
