@@ -35,10 +35,7 @@ void JoltShape3D::remove_self(bool p_lock) {
 	}
 }
 
-JPH::ShapeRefC JoltShape3D::with_scale(
-	[[maybe_unused]] const JPH::ShapeRefC& p_shape,
-	[[maybe_unused]] const Vector3& p_scale
-) {
+JPH::ShapeRefC JoltShape3D::with_scale(const JPH::ShapeRefC& p_shape, const Vector3& p_scale) {
 	ERR_FAIL_NULL_D(p_shape);
 
 	const JPH::ScaledShapeSettings shape_settings(p_shape, to_jolt(p_scale));

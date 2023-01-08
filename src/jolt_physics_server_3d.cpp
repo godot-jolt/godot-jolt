@@ -606,7 +606,7 @@ Variant JoltPhysicsServer3D::_body_get_param(const RID& p_body, BodyParameter p_
 	return body->get_param(p_param);
 }
 
-void JoltPhysicsServer3D::_body_reset_mass_properties([[maybe_unused]] const RID& p_body) {
+void JoltPhysicsServer3D::_body_reset_mass_properties(const RID& p_body) {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
