@@ -257,7 +257,7 @@ To also automatically fix any linting errors it might encounter:
 [gen]: https://cmake.org/cmake/help/v3.22/manual/cmake-generators.7.html
 [prs]: https://cmake.org/cmake/help/v3.22/manual/cmake-presets.7.html
 [mvs]: https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio
-[vsc]: https://github.com/microsoft/vscode-cmake-tools
+[vsc]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools
 [nnj]: https://ninja-build.org/
 [uvb]: https://en.wikipedia.org/wiki/Universal_binary
 [clf]: https://releases.llvm.org/14.0.0/tools/clang/docs/ClangFormat.html
