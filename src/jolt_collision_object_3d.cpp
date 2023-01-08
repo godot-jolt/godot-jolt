@@ -7,7 +7,6 @@
 #include "jolt_object_layer.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
-#include "variant.hpp"
 
 JoltCollisionObject3D::~JoltCollisionObject3D() = default;
 
