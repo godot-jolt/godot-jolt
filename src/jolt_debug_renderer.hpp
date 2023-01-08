@@ -2,6 +2,8 @@
 
 #ifdef JPH_DEBUG_RENDERER
 
+#include "utility_functions.hpp"
+
 class JoltSpace3D;
 
 class JoltDebugRenderer final : public JPH::DebugRenderer {
@@ -42,8 +44,7 @@ public:
 		ERR_FAIL_NULL(p_ptr);
 
 		if (--ref_count == 0) {
-			delete singleton;
-			singleton = nullptr;
+			delete_safely(singleton);
 		}
 
 		p_ptr = nullptr;

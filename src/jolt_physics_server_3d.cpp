@@ -11,6 +11,7 @@
 #include "jolt_pin_joint_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
+#include "utility_functions.hpp"
 
 namespace {
 
@@ -31,9 +32,7 @@ void JoltPhysicsServer3D::init_statics() {
 
 void JoltPhysicsServer3D::finish_statics() {
 	group_filter = nullptr;
-
-	delete job_system;
-	job_system = nullptr;
+	delete_safely(job_system);
 }
 
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
@@ -1084,7 +1083,7 @@ void JoltPhysicsServer3D::_joint_clear(const RID& p_joint) {
 		JoltJoint3D* empty_joint = memnew(JoltJoint3D);
 		empty_joint->set_rid(joint->get_rid());
 
-		memdelete(joint);
+		memdelete_safely(joint);
 		joint_owner.replace(p_joint, empty_joint);
 	}
 }
@@ -1114,7 +1113,7 @@ void JoltPhysicsServer3D::_joint_make_pin(
 
 	new_joint->set_rid(old_joint->get_rid());
 
-	memdelete(old_joint);
+	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
 }
 
@@ -1207,7 +1206,7 @@ void JoltPhysicsServer3D::_joint_make_hinge(
 
 	new_joint->set_rid(old_joint->get_rid());
 
-	memdelete(old_joint);
+	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
 }
 
@@ -1324,7 +1323,7 @@ void JoltPhysicsServer3D::_joint_make_cone_twist(
 
 	new_joint->set_rid(old_joint->get_rid());
 
-	memdelete(old_joint);
+	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
 }
 
@@ -1425,28 +1424,28 @@ void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
 		JoltShape3D* shape = shape_owner.get_or_null(p_rid);
 		shape->remove_self();
 		shape_owner.free(p_rid);
-		memdelete(shape);
+		memdelete_safely(shape);
 	} else if (body_owner.owns(p_rid)) {
 		JoltBody3D* body = body_owner.get_or_null(p_rid);
 		body->set_space(nullptr);
 		body->remove_shapes();
 		body_owner.free(p_rid);
-		memdelete(body);
+		memdelete_safely(body);
 	} else if (joint_owner.owns(p_rid)) {
 		JoltJoint3D* joint = joint_owner.get_or_null(p_rid);
 		joint_owner.free(p_rid);
-		memdelete(joint);
+		memdelete_safely(joint);
 	} else if (area_owner.owns(p_rid)) {
 		JoltArea3D* area = area_owner.get_or_null(p_rid);
 		area->set_space(nullptr);
 		area->remove_shapes();
 		area_owner.free(p_rid);
-		memdelete(area);
+		memdelete_safely(area);
 	} else if (space_owner.owns(p_rid)) {
 		JoltSpace3D* space = space_owner.get_or_null(p_rid);
 		space_set_active(p_rid, false);
 		space_owner.free(p_rid);
-		memdelete(space);
+		memdelete_safely(space);
 	} else {
 		ERR_FAIL_MSG("Invalid ID.");
 	}
@@ -1495,10 +1494,7 @@ void JoltPhysicsServer3D::_end_sync() {
 }
 
 void JoltPhysicsServer3D::_finish() {
-	if (job_system != nullptr) {
-		delete job_system;
-		job_system = nullptr;
-	}
+	delete_safely(job_system);
 
 	if (--server_count == 0) {
 		finish_statics();

@@ -9,10 +9,7 @@
 #include "variant.hpp"
 
 JoltBody3D::~JoltBody3D() {
-	if (direct_state) {
-		memdelete(direct_state);
-		direct_state = nullptr;
-	}
+	memdelete_safely(direct_state);
 }
 
 Variant JoltBody3D::get_state(PhysicsServer3D::BodyState p_state) {

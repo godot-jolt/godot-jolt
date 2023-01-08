@@ -4,6 +4,7 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_physics_server_3d.hpp"
 #include "jolt_physics_server_factory_3d.hpp"
+#include "utility_functions.hpp"
 
 namespace {
 
@@ -41,11 +42,7 @@ void on_terminate(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_SERVERS: {
-			if (server_factory != nullptr) {
-				memdelete(server_factory);
-				server_factory = nullptr;
-			}
-
+			memdelete_safely(server_factory);
 			deinitialize_jolt_hooks();
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {

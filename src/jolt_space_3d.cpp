@@ -10,6 +10,7 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_temp_allocator.hpp"
+#include "utility_functions.hpp"
 #include "variant.hpp"
 
 namespace {
@@ -40,13 +41,10 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group
 }
 
 JoltSpace3D::~JoltSpace3D() {
-	if (direct_state != nullptr) {
-		memdelete(direct_state);
-	}
-
-	delete physics_system;
-	delete layer_mapper;
-	delete temp_allocator;
+	memdelete_safely(direct_state);
+	delete_safely(physics_system);
+	delete_safely(layer_mapper);
+	delete_safely(temp_allocator);
 }
 
 void JoltSpace3D::step(float p_step) {
