@@ -48,13 +48,13 @@ JoltSpace3D::~JoltSpace3D() {
 }
 
 void JoltSpace3D::step(float p_step) {
-	lock();
+	locked = true;
 
 	// TODO(mihe): Integrate forces/velocities
 
 	physics_system->Update(p_step, 1, 1, temp_allocator, job_system);
 
-	unlock();
+	locked = false;
 }
 
 void JoltSpace3D::call_queries() {
