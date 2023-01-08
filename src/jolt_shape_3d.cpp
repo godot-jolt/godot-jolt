@@ -1,10 +1,6 @@
 #include "jolt_shape_3d.hpp"
 
-#include "conversion.hpp"
-#include "error_macros.hpp"
 #include "jolt_collision_object_3d.hpp"
-#include "utility_functions.hpp"
-#include "variant.hpp"
 
 namespace {
 
@@ -35,10 +31,7 @@ void JoltShape3D::remove_self(bool p_lock) {
 	}
 }
 
-JPH::ShapeRefC JoltShape3D::with_scale(
-	[[maybe_unused]] const JPH::ShapeRefC& p_shape,
-	[[maybe_unused]] const Vector3& p_scale
-) {
+JPH::ShapeRefC JoltShape3D::with_scale(const JPH::ShapeRefC& p_shape, const Vector3& p_scale) {
 	ERR_FAIL_NULL_D(p_shape);
 
 	const JPH::ScaledShapeSettings shape_settings(p_shape, to_jolt(p_scale));
@@ -100,9 +93,9 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 	}
 
 	const Vector3 scale_squared(
-		transform.basis[Vector3::AXIS_X].length_squared(),
-		transform.basis[Vector3::AXIS_Y].length_squared(),
-		transform.basis[Vector3::AXIS_Z].length_squared()
+		transform.basis.get_column(Vector3::AXIS_X).length_squared(),
+		transform.basis.get_column(Vector3::AXIS_Y).length_squared(),
+		transform.basis.get_column(Vector3::AXIS_Z).length_squared()
 	);
 
 	if (scale_squared != Vector3(1.0f, 1.0f, 1.0f)) {
@@ -254,10 +247,10 @@ JPH::ShapeRefC JoltBoxShape3D::try_build(uint64_t p_user_data) const {
 }
 
 Variant JoltCapsuleShape3D::get_data() const {
-	Dictionary dict;
-	dict["height"] = height;
-	dict["radius"] = radius;
-	return dict;
+	Dictionary data;
+	data["height"] = height;
+	data["radius"] = radius;
+	return data;
 }
 
 void JoltCapsuleShape3D::set_data(const Variant& p_data) {
@@ -265,12 +258,12 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
-	const Dictionary dict = p_data;
+	const Dictionary data = p_data;
 
-	const Variant maybe_height = dict.get("height", {});
+	const Variant maybe_height = data.get("height", {});
 	ERR_FAIL_COND(maybe_height.get_type() != Variant::FLOAT);
 
-	const Variant maybe_radius = dict.get("radius", {});
+	const Variant maybe_radius = data.get("radius", {});
 	ERR_FAIL_COND(maybe_radius.get_type() != Variant::FLOAT);
 
 	const float new_height = maybe_height;
@@ -331,10 +324,10 @@ JPH::ShapeRefC JoltCapsuleShape3D::try_build(uint64_t p_user_data) const {
 }
 
 Variant JoltCylinderShape3D::get_data() const {
-	Dictionary dict;
-	dict["height"] = height;
-	dict["radius"] = radius;
-	return dict;
+	Dictionary data;
+	data["height"] = height;
+	data["radius"] = radius;
+	return data;
 }
 
 void JoltCylinderShape3D::set_data(const Variant& p_data) {
@@ -342,12 +335,12 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
-	const Dictionary dict = p_data;
+	const Dictionary data = p_data;
 
-	const Variant maybe_height = dict.get("height", {});
+	const Variant maybe_height = data.get("height", {});
 	ERR_FAIL_COND(maybe_height.get_type() != Variant::FLOAT);
 
-	const Variant maybe_radius = dict.get("radius", {});
+	const Variant maybe_radius = data.get("radius", {});
 	ERR_FAIL_COND(maybe_radius.get_type() != Variant::FLOAT);
 
 	const float new_height = maybe_height;
@@ -456,10 +449,10 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::try_build(uint64_t p_user_data) const {
 }
 
 Variant JoltConcavePolygonShape3D::get_data() const {
-	Dictionary dict;
-	dict["faces"] = faces;
-	dict["backface_collision"] = backface_collision;
-	return dict;
+	Dictionary data;
+	data["faces"] = faces;
+	data["backface_collision"] = backface_collision;
+	return data;
 }
 
 void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
@@ -467,12 +460,12 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
-	const Dictionary dict = p_data;
+	const Dictionary data = p_data;
 
-	const Variant maybe_faces = dict.get("faces", {});
+	const Variant maybe_faces = data.get("faces", {});
 	ERR_FAIL_COND(maybe_faces.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 
-	const Variant maybe_backface_collision = dict.get("backface_collision", {});
+	const Variant maybe_backface_collision = data.get("backface_collision", {});
 	ERR_FAIL_COND(maybe_backface_collision.get_type() != Variant::BOOL);
 
 	PackedVector3Array new_faces = maybe_faces;
@@ -562,11 +555,11 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::try_build(uint64_t p_user_data) const 
 }
 
 Variant JoltHeightMapShape3D::get_data() const {
-	Dictionary dict;
-	dict["width"] = width;
-	dict["depth"] = depth;
-	dict["heights"] = heights;
-	return dict;
+	Dictionary data;
+	data["width"] = width;
+	data["depth"] = depth;
+	data["heights"] = heights;
+	return data;
 }
 
 void JoltHeightMapShape3D::set_data(const Variant& p_data) {
@@ -574,15 +567,15 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
-	const Dictionary dict = p_data;
+	const Dictionary data = p_data;
 
-	const Variant maybe_heights = dict.get("heights", {});
+	const Variant maybe_heights = data.get("heights", {});
 	ERR_FAIL_COND(maybe_heights.get_type() != Variant::PACKED_FLOAT32_ARRAY);
 
-	const Variant maybe_width = dict.get("width", {});
+	const Variant maybe_width = data.get("width", {});
 	ERR_FAIL_COND(maybe_width.get_type() != Variant::INT);
 
-	const Variant maybe_depth = dict.get("depth", {});
+	const Variant maybe_depth = data.get("depth", {});
 	ERR_FAIL_COND(maybe_depth.get_type() != Variant::INT);
 
 	const PackedFloat32Array new_heights = maybe_heights;

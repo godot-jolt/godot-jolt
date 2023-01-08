@@ -348,7 +348,8 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 	# annoying linker errors when an external project gets updated mid-build.
 	string(MAKE_C_IDENTIFIER ${library_name} library_name_identifier)
 	string(TOUPPER ${library_name_identifier} library_name_identifier)
-	list(APPEND compile_definitions GDJOLT_EXTERNAL_${library_name_identifier}=${arg_GIT_COMMIT})
+	string(SUBSTRING ${arg_GIT_COMMIT} 0 10 short_commit)
+	list(APPEND compile_definitions GDJOLT_EXTERNAL_${library_name_identifier}=${short_commit})
 
 	escape_separator(compile_definitions compile_definitions_)
 	list(APPEND target_properties INTERFACE_COMPILE_DEFINITIONS "${compile_definitions_}")

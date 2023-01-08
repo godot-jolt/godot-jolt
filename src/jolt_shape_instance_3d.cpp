@@ -1,9 +1,6 @@
 #include "jolt_shape_instance_3d.hpp"
 
-#include "conversion.hpp"
-#include "error_macros.hpp"
 #include "jolt_shape_3d.hpp"
-#include "variant.hpp"
 
 bool JoltShapeInstance3D::try_build(
 	const JoltShapeInstance3D& p_shape,

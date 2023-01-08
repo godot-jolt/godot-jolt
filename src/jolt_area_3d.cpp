@@ -1,7 +1,5 @@
 #include "jolt_area_3d.hpp"
 
-#include "error_macros.hpp"
-
 Variant JoltArea3D::get_param(PhysicsServer3D::AreaParameter p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::AREA_PARAM_GRAVITY: {

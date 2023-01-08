@@ -1,7 +1,5 @@
 #include "jolt_space_3d.hpp"
 
-#include "conversion.hpp"
-#include "error_macros.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_joint_3d.hpp"
@@ -10,7 +8,6 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_temp_allocator.hpp"
-#include "variant.hpp"
 
 namespace {
 
@@ -40,23 +37,20 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group
 }
 
 JoltSpace3D::~JoltSpace3D() {
-	if (direct_state != nullptr) {
-		memdelete(direct_state);
-	}
-
-	delete physics_system;
-	delete layer_mapper;
-	delete temp_allocator;
+	memdelete_safely(direct_state);
+	delete_safely(physics_system);
+	delete_safely(layer_mapper);
+	delete_safely(temp_allocator);
 }
 
 void JoltSpace3D::step(float p_step) {
-	lock();
+	locked = true;
 
 	// TODO(mihe): Integrate forces/velocities
 
 	physics_system->Update(p_step, 1, 1, temp_allocator, job_system);
 
-	unlock();
+	locked = false;
 }
 
 void JoltSpace3D::call_queries() {

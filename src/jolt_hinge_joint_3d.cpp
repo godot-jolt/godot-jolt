@@ -1,11 +1,7 @@
 #include "jolt_hinge_joint_3d.hpp"
 
-#include "conversion.hpp"
-#include "error_macros.hpp"
 #include "jolt_body_3d.hpp"
 #include "jolt_body_access_3d.hpp"
-#include "utility_functions.hpp"
-#include "variant.hpp"
 
 namespace {
 
@@ -80,8 +76,8 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 }
 
 double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) {
-	auto* jolt_hinge = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL_D(jolt_hinge);
+	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
+	ERR_FAIL_NULL_D(jolt_constraint);
 
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
@@ -103,7 +99,7 @@ double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) {
 			return GDJOLT_HINGE_JOINT_DEFAULT_RELAXATION;
 		}
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_TARGET_VELOCITY: {
-			return jolt_hinge->GetTargetAngularVelocity();
+			return jolt_constraint->GetTargetAngularVelocity();
 		}
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_MAX_IMPULSE: {
 			return motor_max_impulse;
@@ -115,8 +111,8 @@ double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) {
 }
 
 void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, double p_value) {
-	auto* jolt_hinge = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL(jolt_hinge);
+	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
+	ERR_FAIL_NULL(jolt_constraint);
 
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
@@ -129,11 +125,11 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_UPPER: {
 			limit_upper = p_value;
-			angular_limits_changed();
+			limits_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_LOWER: {
 			limit_lower = p_value;
-			angular_limits_changed();
+			limits_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
 			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_JOINT_DEFAULT_LIMIT_BIAS)) {
@@ -160,14 +156,14 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_TARGET_VELOCITY: {
-			jolt_hinge->SetTargetAngularVelocity((float)p_value);
+			jolt_constraint->SetTargetAngularVelocity((float)p_value);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_MAX_IMPULSE: {
 			motor_max_impulse = p_value;
 
 			const double max_torque = motor_max_impulse / calculate_physics_step();
 
-			JPH::MotorSettings& motor_settings = jolt_hinge->GetMotorSettings();
+			JPH::MotorSettings& motor_settings = jolt_constraint->GetMotorSettings();
 			motor_settings.mMinTorqueLimit = (float)-max_torque;
 			motor_settings.mMaxTorqueLimit = (float)+max_torque;
 		} break;
@@ -178,15 +174,15 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 }
 
 bool JoltHingeJoint3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) {
-	auto* jolt_hinge = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL_D(jolt_hinge);
+	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
+	ERR_FAIL_NULL_D(jolt_constraint);
 
 	switch (p_flag) {
 		case PhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT: {
 			return use_limits;
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_FLAG_ENABLE_MOTOR: {
-			return jolt_hinge->GetMotorState() != JPH::EMotorState::Off;
+			return jolt_constraint->GetMotorState() != JPH::EMotorState::Off;
 		} break;
 		default: {
 			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint flag: '{}'", p_flag));
@@ -195,16 +191,16 @@ bool JoltHingeJoint3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) {
 }
 
 void JoltHingeJoint3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled) {
-	auto* jolt_hinge = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL(jolt_hinge);
+	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
+	ERR_FAIL_NULL(jolt_constraint);
 
 	switch (p_flag) {
 		case PhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT: {
 			use_limits = p_enabled;
-			angular_limits_changed();
+			limits_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_FLAG_ENABLE_MOTOR: {
-			jolt_hinge->SetMotorState(
+			jolt_constraint->SetMotorState(
 				p_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
 			);
 		} break;
@@ -214,13 +210,13 @@ void JoltHingeJoint3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_e
 	}
 }
 
-void JoltHingeJoint3D::angular_limits_changed() {
-	auto* jolt_hinge = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL(jolt_hinge);
+void JoltHingeJoint3D::limits_changed() {
+	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
+	ERR_FAIL_NULL(jolt_constraint);
 
 	if (use_limits) {
-		jolt_hinge->SetLimits((float)limit_lower, (float)limit_upper);
+		jolt_constraint->SetLimits((float)limit_lower, (float)limit_upper);
 	} else {
-		jolt_hinge->SetLimits(-JPH::JPH_PI, JPH::JPH_PI);
+		jolt_constraint->SetLimits(-JPH::JPH_PI, JPH::JPH_PI);
 	}
 }

@@ -1,7 +1,5 @@
 #include "jolt_hooks.hpp"
 
-#include "variant.hpp"
-
 void* jolt_alloc(size_t p_size) {
 	return mi_malloc(p_size);
 }
@@ -61,6 +59,5 @@ void initialize_jolt_hooks() {
 }
 
 void deinitialize_jolt_hooks() {
-	delete JPH::Factory::sInstance;
-	JPH::Factory::sInstance = nullptr;
+	delete_safely(JPH::Factory::sInstance);
 }

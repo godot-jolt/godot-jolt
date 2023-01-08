@@ -18,10 +18,6 @@ public:
 
 	bool is_locked() const { return locked; }
 
-	void lock() { locked = true; }
-
-	void unlock() { locked = false; }
-
 	RID get_rid() const { return rid; }
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }

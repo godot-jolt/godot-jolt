@@ -38,6 +38,22 @@ constexpr int32_t count_of([[maybe_unused]] TElement (&p_array)[TSize]) {
 	return TSize;
 }
 
+template<typename TType>
+constexpr void delete_safely(TType*& p_ptr) {
+	if (p_ptr != nullptr) {
+		delete p_ptr;
+		p_ptr = nullptr;
+	}
+}
+
+template<typename TType>
+constexpr void memdelete_safely(TType*& p_ptr) {
+	if (p_ptr != nullptr) {
+		memdelete(p_ptr);
+		p_ptr = nullptr;
+	}
+}
+
 inline double calculate_physics_step() {
 	// TODO(mihe): Replace these constants with the appropriate singleton calls once
 	// godotengine/godot-cpp#889 is fixed

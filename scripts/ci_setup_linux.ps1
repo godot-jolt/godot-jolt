@@ -1,5 +1,8 @@
 #!/usr/bin/env pwsh
 
+#Requires -PSEdition Core
+#Requires -Version 7.2
+
 param (
 	[Parameter(Mandatory = $true, HelpMessage = "Toolchain to use")]
 	[ValidateSet("gcc", "llvm")]
@@ -12,7 +15,8 @@ param (
 	$Version
 )
 
-. $PSScriptRoot/_common.ps1
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 
 function Set-DefaultCommand($Name, $Path) {
 	Write-Output "Displaying alternatives to '$Name' pre install..."

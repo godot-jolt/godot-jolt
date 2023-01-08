@@ -18,7 +18,7 @@ Prerequisites:
 - Python 3.8 or newer
 - Visual Studio 2022 (with the "Desktop development with C++" workload)
 - (Optional) Visual Studio's [clang-cl][ccl] component
-  - If you wish to compile with LLVM/clang-cl instead of Visual C++.
+  - If you wish to compile with LLVM/clang-cl instead of Visual C++
 
 ⚠️ These commands will build binaries for 64-bit systems. If you instead wish to build binaries for
 32-bit systems then replace `x64` with `x86`.
@@ -49,8 +49,9 @@ Prerequisites:
 
 - CMake 3.22 or newer
 - Python 3.8 or newer
+- GCC 11 or newer
 - (Optional) Clang 14.0.0 or newer
-- (Optional) GCC 11 or newer
+  - If you wish to compile with LLVM/Clang instead of GCC
 
 ⚠️ These commands will build binaries for 64-bit systems. If you instead wish to build binaries for
 32-bit systems then replace `x64` with `x86`.

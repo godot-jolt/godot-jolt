@@ -1,18 +1,11 @@
 #include "jolt_body_3d.hpp"
 
-#include "conversion.hpp"
-#include "error_macros.hpp"
 #include "jolt_body_access_3d.hpp"
 #include "jolt_physics_direct_body_state_3d.hpp"
 #include "jolt_space_3d.hpp"
-#include "utility_functions.hpp"
-#include "variant.hpp"
 
 JoltBody3D::~JoltBody3D() {
-	if (direct_state) {
-		memdelete(direct_state);
-		direct_state = nullptr;
-	}
+	memdelete_safely(direct_state);
 }
 
 Variant JoltBody3D::get_state(PhysicsServer3D::BodyState p_state) {

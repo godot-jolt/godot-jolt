@@ -41,11 +41,7 @@ void on_terminate(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_SERVERS: {
-			if (server_factory != nullptr) {
-				memdelete(server_factory);
-				server_factory = nullptr;
-			}
-
+			memdelete_safely(server_factory);
 			deinitialize_jolt_hooks();
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {

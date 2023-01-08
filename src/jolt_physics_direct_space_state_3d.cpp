@@ -1,7 +1,5 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 
-#include "conversion.hpp"
-#include "error_macros.hpp"
 #include "jolt_body_access_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
@@ -130,8 +128,8 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	auto* object = reinterpret_cast<JoltCollisionObject3D*>(body.GetUserData());
 	const auto object_id = (uint64_t)object->get_instance_id();
 
-	const JPH::Shape* shape = body.GetShape();
-	const auto shape_idx = (int)shape->GetSubShapeUserData(subshape_id);
+	const JPH::Shape& shape = *body.GetShape();
+	const auto shape_idx = (int)shape.GetSubShapeUserData(subshape_id);
 
 	p_result->position = to_godot(position);
 	p_result->normal = to_godot(normal);

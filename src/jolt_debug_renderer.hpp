@@ -30,24 +30,9 @@ public:
 		JPH::BodyManager::EShapeColor color_scheme = JPH::BodyManager::EShapeColor::ShapeTypeColor;
 	};
 
-	static JoltDebugRenderer* acquire() {
-		if (ref_count++ == 0) {
-			singleton = new JoltDebugRenderer();
-		}
+	static JoltDebugRenderer* acquire();
 
-		return singleton;
-	}
-
-	static void release(JoltDebugRenderer*& p_ptr) {
-		ERR_FAIL_NULL(p_ptr);
-
-		if (--ref_count == 0) {
-			delete singleton;
-			singleton = nullptr;
-		}
-
-		p_ptr = nullptr;
-	}
+	static void release(JoltDebugRenderer*& p_ptr);
 
 	void draw(const JoltSpace3D& p_space, const Camera3D& p_camera, const DrawSettings& p_settings);
 
