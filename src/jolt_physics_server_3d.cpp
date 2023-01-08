@@ -17,7 +17,7 @@ namespace {
 constexpr int32_t GDJOLT_MAX_PHYSICS_JOBS = 2048;
 constexpr int32_t GDJOLT_MAX_PHYSICS_BARRIERS = 8;
 
-} // anonymous namespace
+} // namespace
 
 void JoltPhysicsServer3D::init_statics() {
 	job_system = new JPH::JobSystemThreadPool(
