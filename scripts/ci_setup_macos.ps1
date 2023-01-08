@@ -1,5 +1,8 @@
 #!/usr/bin/env pwsh
 
+#Requires -PSEdition Core
+#Requires -Version 7.2
+
 param (
 	[Parameter(Mandatory = $true, HelpMessage = "Version of Xcode")]
 	[ValidatePattern("^\d+\.\d+$")]
@@ -7,7 +10,8 @@ param (
 	$Version
 )
 
-. $PSScriptRoot/_common.ps1
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 
 Write-Output "Setting Xcode $Version as the default..."
 

@@ -1,5 +1,8 @@
 #!/usr/bin/env pwsh
 
+#Requires -PSEdition Core
+#Requires -Version 7.2
+
 param (
 	[Parameter(Mandatory = $true, HelpMessage = "Path to directory with source files")]
 	[ValidateNotNullOrEmpty()]
@@ -16,7 +19,8 @@ param (
 	$Fix = $false
 )
 
-. $PSScriptRoot/_common.ps1
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 
 $SourceFiles = Get-ChildItem -Recurse -Path $SourcePath -Include "*.cpp"
 

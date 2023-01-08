@@ -1,5 +1,8 @@
 #!/usr/bin/env pwsh
 
+#Requires -PSEdition Core
+#Requires -Version 7.2
+
 param (
 	[Parameter(Mandatory = $true, HelpMessage = "Version of Visual Studio")]
 	[ValidatePattern("^\d+(\.\d+)?$")]
@@ -12,7 +15,8 @@ param (
 	$Arch
 )
 
-. $PSScriptRoot/_common.ps1
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 
 filter ConvertTo-Hashtable {
 	begin { $Result = @{} }
