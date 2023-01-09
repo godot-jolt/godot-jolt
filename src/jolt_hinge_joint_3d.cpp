@@ -215,7 +215,29 @@ void JoltHingeJoint3D::limits_changed() {
 	ERR_FAIL_NULL(jolt_constraint);
 
 	if (use_limits) {
-		jolt_constraint->SetLimits((float)limit_lower, (float)limit_upper);
+		constexpr double basically_pos_zero = CMP_EPSILON;
+		constexpr double basically_neg_zero = -CMP_EPSILON;
+		constexpr double basically_pos_pi = Math_PI + CMP_EPSILON;
+		constexpr double basically_neg_pi = -Math_PI - CMP_EPSILON;
+
+		if (limit_lower < basically_neg_pi || limit_lower > basically_pos_zero) {
+			WARN_PRINT(
+				"Hinge joint lower limits less than -180º or greater than 0º are not supported by "
+				"Godot Jolt. Values outside this range will be clamped."
+			);
+		}
+
+		if (limit_upper < basically_neg_zero || limit_upper > basically_pos_pi) {
+			WARN_PRINT(
+				"Hinge joint upper limits less than 0º or greater than 180º are not supported by "
+				"Godot Jolt. Values outside this range will be clamped."
+			);
+		}
+
+		const float limit_lower_clamped = clamp((float)limit_lower, -JPH::JPH_PI, 0.0f);
+		const float limit_upper_clamped = clamp((float)limit_upper, 0.0f, JPH::JPH_PI);
+
+		jolt_constraint->SetLimits(limit_lower_clamped, limit_upper_clamped);
 	} else {
 		jolt_constraint->SetLimits(-JPH::JPH_PI, JPH::JPH_PI);
 	}
