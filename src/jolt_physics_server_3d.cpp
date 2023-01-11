@@ -1417,6 +1417,19 @@ int64_t JoltPhysicsServer3D::_joint_get_solver_priority(const RID& p_joint) cons
 	return joint->get_solver_priority();
 }
 
+void JoltPhysicsServer3D::_joint_disable_collisions_between_bodies(
+	[[maybe_unused]] const RID& p_joint,
+	[[maybe_unused]] bool p_disable
+) {
+	ERR_FAIL_NOT_IMPL();
+}
+
+bool JoltPhysicsServer3D::_joint_is_disabled_collisions_between_bodies(
+	[[maybe_unused]] const RID& p_joint
+) const {
+	ERR_FAIL_D_NOT_IMPL();
+}
+
 void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
 	if (shape_owner.owns(p_rid)) {
 		JoltShape3D* shape = shape_owner.get_or_null(p_rid);

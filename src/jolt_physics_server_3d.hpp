@@ -523,6 +523,10 @@ public:
 
 	int64_t _joint_get_solver_priority(const RID& p_joint) const override;
 
+	void _joint_disable_collisions_between_bodies(const RID& p_joint, bool p_disable) override;
+
+	bool _joint_is_disabled_collisions_between_bodies(const RID& p_joint) const override;
+
 	void _free_rid(const RID& p_rid) override;
 
 	void _set_active(bool p_active) override;
