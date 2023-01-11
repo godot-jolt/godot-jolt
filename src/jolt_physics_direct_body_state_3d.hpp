@@ -82,7 +82,7 @@ public:
 
 	Vector3 _get_contact_local_normal(int64_t p_contact_idx) const override;
 
-	double _get_contact_impulse(int64_t p_contact_idx) const override;
+	Vector3 _get_contact_impulse(int64_t p_contact_idx) const override;
 
 	int64_t _get_contact_local_shape(int64_t p_contact_idx) const override;
 

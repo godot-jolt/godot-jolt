@@ -168,7 +168,7 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_contact_local_normal(
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-double JoltPhysicsDirectBodyState3D::_get_contact_impulse([[maybe_unused]] int64_t p_contact_idx
+Vector3 JoltPhysicsDirectBodyState3D::_get_contact_impulse([[maybe_unused]] int64_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
