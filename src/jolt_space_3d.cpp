@@ -1,5 +1,7 @@
 #include "jolt_space_3d.hpp"
 
+#include "jolt_body_3d.hpp"
+#include "jolt_body_access_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_joint_3d.hpp"
@@ -46,7 +48,7 @@ JoltSpace3D::~JoltSpace3D() {
 void JoltSpace3D::step(float p_step) {
 	locked = true;
 
-	// TODO(mihe): Integrate forces/velocities
+	integrate_forces();
 
 	physics_system->Update(p_step, 1, 1, temp_allocator, job_system);
 
@@ -236,6 +238,22 @@ void JoltSpace3D::add_joint(JoltJoint3D* p_joint) {
 
 void JoltSpace3D::remove_joint(JoltJoint3D* p_joint) {
 	physics_system->RemoveConstraint(p_joint->get_jolt_ref());
+}
+
+void JoltSpace3D::integrate_forces(bool p_lock) {
+	JPH::BodyIDVector body_ids;
+	physics_system->GetBodies(body_ids);
+
+	const auto body_count = (int32_t)body_ids.size();
+	JoltMultiBodyAccessWrite3D body_access(*this, body_ids.data(), body_count, p_lock);
+
+	for (int32_t i = 0; i < body_count; ++i) {
+		if (const JPH::Body* body = body_access.get_body(i)) {
+			if (!body->IsStatic() && !body->IsSensor()) {
+				reinterpret_cast<JoltBody3D*>(body->GetUserData())->integrate_forces(false);
+			}
+		}
+	}
 }
 
 void JoltSpace3D::update_gravity() {

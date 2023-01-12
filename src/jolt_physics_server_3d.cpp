@@ -628,48 +628,54 @@ Variant JoltPhysicsServer3D::_body_get_state(const RID& p_body, BodyState p_stat
 	return body->get_state(p_state);
 }
 
-void JoltPhysicsServer3D::_body_apply_central_impulse(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Vector3& p_impulse
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_body_apply_central_impulse(const RID& p_body, const Vector3& p_impulse) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->apply_central_impulse(p_impulse);
 }
 
 void JoltPhysicsServer3D::_body_apply_impulse(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Vector3& p_impulse,
-	[[maybe_unused]] const Vector3& p_position
+	const RID& p_body,
+	const Vector3& p_impulse,
+	const Vector3& p_position
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->apply_impulse(p_impulse, p_position);
 }
 
-void JoltPhysicsServer3D::_body_apply_torque_impulse(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Vector3& p_impulse
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_body_apply_torque_impulse(const RID& p_body, const Vector3& p_impulse) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->apply_torque_impulse(p_impulse);
 }
 
-void JoltPhysicsServer3D::_body_apply_central_force(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Vector3& p_force
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_body_apply_central_force(const RID& p_body, const Vector3& p_force) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->apply_central_force(p_force);
 }
 
 void JoltPhysicsServer3D::_body_apply_force(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Vector3& p_force,
-	[[maybe_unused]] const Vector3& p_position
+	const RID& p_body,
+	const Vector3& p_force,
+	const Vector3& p_position
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->apply_force(p_force, p_position);
 }
 
-void JoltPhysicsServer3D::_body_apply_torque(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Vector3& p_torque
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_body_apply_torque(const RID& p_body, const Vector3& p_torque) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->apply_torque(p_torque);
 }
 
 void JoltPhysicsServer3D::_body_add_constant_central_force(

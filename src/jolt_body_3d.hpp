@@ -51,22 +51,33 @@ public:
 
 	void reset_mass_properties(bool p_lock = true);
 
-	void add_constant_central_force(const Vector3& p_force) { constant_force += p_force; }
+	void apply_force(const Vector3& p_force, const Vector3& p_position, bool p_lock = true);
 
-	void add_constant_force(const Vector3& p_force, const Vector3& p_position = Vector3()) {
-		constant_force += p_force;
-		constant_torque += (p_position - get_center_of_mass()).cross(p_force);
-	}
+	void apply_central_force(const Vector3& p_force, bool p_lock = true);
 
-	void add_constant_torque(const Vector3& p_torque) { constant_torque += p_torque; }
+	void apply_impulse(const Vector3& p_impulse, const Vector3& p_position, bool p_lock = true);
 
-	Vector3 get_constant_force() const { return constant_force; }
+	void apply_central_impulse(const Vector3& p_impulse, bool p_lock = true);
 
-	void set_constant_force(const Vector3& p_force) { constant_force = p_force; }
+	void apply_torque(const Vector3& p_torque, bool p_lock = true);
 
-	Vector3 get_constant_torque() const { return constant_torque; }
+	void apply_torque_impulse(const Vector3& p_impulse, bool p_lock = true);
 
-	void set_constant_torque(const Vector3& p_torque) { constant_torque = p_torque; }
+	void add_constant_central_force(const Vector3& p_force);
+
+	void add_constant_force(const Vector3& p_force, const Vector3& p_position, bool p_lock = true);
+
+	void add_constant_torque(const Vector3& p_torque);
+
+	Vector3 get_constant_force() const;
+
+	void set_constant_force(const Vector3& p_force);
+
+	Vector3 get_constant_torque() const;
+
+	void set_constant_torque(const Vector3& p_torque);
+
+	void integrate_forces(bool p_lock = true);
 
 	void call_queries() override;
 
