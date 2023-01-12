@@ -84,6 +84,48 @@ void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p
 	);
 }
 
+Basis JoltCollisionObject3D::get_basis(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
+	ERR_FAIL_COND_D(!body_access.is_valid());
+
+	const JPH::Body& body = body_access.get_body();
+
+	return to_godot(body.GetRotation());
+}
+
+void JoltCollisionObject3D::set_basis(const Basis& p_basis, bool p_lock) {
+	if (!space) {
+		initial_transform.basis = p_basis;
+		return;
+	}
+
+	space->get_body_iface(p_lock)
+		.SetRotation(jolt_id, to_jolt(p_basis), JPH::EActivation::DontActivate);
+}
+
+Vector3 JoltCollisionObject3D::get_position(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
+	ERR_FAIL_COND_D(!body_access.is_valid());
+
+	const JPH::Body& body = body_access.get_body();
+
+	return to_godot(body.GetPosition());
+}
+
+void JoltCollisionObject3D::set_position(const Vector3& p_position, bool p_lock) {
+	if (!space) {
+		initial_transform.origin = p_position;
+		return;
+	}
+
+	space->get_body_iface(p_lock)
+		.SetPosition(jolt_id, to_jolt(p_position), JPH::EActivation::DontActivate);
+}
+
 Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 

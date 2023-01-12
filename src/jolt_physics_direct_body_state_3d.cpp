@@ -77,69 +77,75 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_velocity_at_local_position(
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-void JoltPhysicsDirectBodyState3D::_apply_central_impulse([[maybe_unused]] const Vector3& p_impulse
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_apply_central_impulse(const Vector3& p_impulse) {
+	ERR_FAIL_NULL(body);
+	return body->apply_central_impulse(p_impulse, false);
 }
 
 void JoltPhysicsDirectBodyState3D::_apply_impulse(
-	[[maybe_unused]] const Vector3& p_impulse,
-	[[maybe_unused]] const Vector3& p_position
+	const Vector3& p_impulse,
+	const Vector3& p_position
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_NULL(body);
+	return body->apply_impulse(p_impulse, p_position, false);
 }
 
-void JoltPhysicsDirectBodyState3D::_apply_torque_impulse([[maybe_unused]] const Vector3& p_impulse
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_apply_torque_impulse(const Vector3& p_impulse) {
+	ERR_FAIL_NULL(body);
+	return body->apply_torque_impulse(p_impulse, false);
 }
 
-void JoltPhysicsDirectBodyState3D::_apply_central_force([[maybe_unused]] const Vector3& p_force) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_apply_central_force(const Vector3& p_force) {
+	ERR_FAIL_NULL(body);
+	return body->apply_central_force(p_force, false);
 }
 
-void JoltPhysicsDirectBodyState3D::_apply_force(
-	[[maybe_unused]] const Vector3& p_force,
-	[[maybe_unused]] const Vector3& p_position
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_apply_force(const Vector3& p_force, const Vector3& p_position) {
+	ERR_FAIL_NULL(body);
+	return body->apply_force(p_force, p_position, false);
 }
 
-void JoltPhysicsDirectBodyState3D::_apply_torque([[maybe_unused]] const Vector3& p_torque) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_apply_torque(const Vector3& p_torque) {
+	ERR_FAIL_NULL(body);
+	return body->apply_torque(p_torque, false);
 }
 
-void JoltPhysicsDirectBodyState3D::_add_constant_central_force(
-	[[maybe_unused]] const Vector3& p_force
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_add_constant_central_force(const Vector3& p_force) {
+	ERR_FAIL_NULL(body);
+	return body->add_constant_central_force(p_force);
 }
 
 void JoltPhysicsDirectBodyState3D::_add_constant_force(
-	[[maybe_unused]] const Vector3& p_force,
-	[[maybe_unused]] const Vector3& p_position
+	const Vector3& p_force,
+	const Vector3& p_position
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_NULL(body);
+	return body->add_constant_force(p_force, p_position, false);
 }
 
-void JoltPhysicsDirectBodyState3D::_add_constant_torque([[maybe_unused]] const Vector3& p_torque) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_add_constant_torque(const Vector3& p_torque) {
+	ERR_FAIL_NULL(body);
+	return body->add_constant_torque(p_torque);
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_constant_force() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_constant_force();
 }
 
-void JoltPhysicsDirectBodyState3D::_set_constant_force([[maybe_unused]] const Vector3& p_force) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_set_constant_force(const Vector3& p_force) {
+	ERR_FAIL_NULL(body);
+	return body->set_constant_force(p_force);
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_constant_torque() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_constant_torque();
 }
 
-void JoltPhysicsDirectBodyState3D::_set_constant_torque([[maybe_unused]] const Vector3& p_torque) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_set_constant_torque(const Vector3& p_torque) {
+	ERR_FAIL_NULL(body);
+	return body->set_constant_torque(p_torque);
 }
 
 bool JoltPhysicsDirectBodyState3D::_is_sleeping() const {
@@ -219,7 +225,7 @@ double JoltPhysicsDirectBodyState3D::_get_step() const {
 }
 
 void JoltPhysicsDirectBodyState3D::_integrate_forces() {
-	ERR_FAIL_NOT_IMPL();
+	ERR_PRINT("Manual force integration is not supported by Godot Jolt.");
 }
 
 PhysicsDirectSpaceState3D* JoltPhysicsDirectBodyState3D::_get_space_state() {

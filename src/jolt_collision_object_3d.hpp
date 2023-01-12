@@ -39,6 +39,14 @@ public:
 
 	void set_transform(const Transform3D& p_transform, bool p_lock = true);
 
+	Basis get_basis(bool p_lock = true) const;
+
+	void set_basis(const Basis& p_basis, bool p_lock = true);
+
+	Vector3 get_position(bool p_lock = true) const;
+
+	void set_position(const Vector3& p_position, bool p_lock = true);
+
 	Vector3 get_center_of_mass(bool p_lock = true) const;
 
 	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;

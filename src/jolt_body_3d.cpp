@@ -245,6 +245,130 @@ void JoltBody3D::reset_mass_properties(bool p_lock) {
 	mass_properties_changed(p_lock);
 }
 
+void JoltBody3D::apply_force(const Vector3& p_force, const Vector3& p_position, bool p_lock) {
+	ERR_FAIL_NULL(space);
+
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	set_sleep_state(false, false);
+
+	JPH::Body& body = body_access.get_body();
+
+	body.AddForce(to_jolt(p_force), body.GetCenterOfMassPosition() + to_jolt(p_position));
+}
+
+void JoltBody3D::apply_central_force(const Vector3& p_force, bool p_lock) {
+	ERR_FAIL_NULL(space);
+
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	set_sleep_state(false, false);
+
+	body_access.get_body().AddForce(to_jolt(p_force));
+}
+
+void JoltBody3D::apply_impulse(const Vector3& p_impulse, const Vector3& p_position, bool p_lock) {
+	ERR_FAIL_NULL(space);
+
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	set_sleep_state(false, false);
+
+	JPH::Body& body = body_access.get_body();
+
+	body.AddImpulse(to_jolt(p_impulse), body.GetCenterOfMassPosition() + to_jolt(p_position));
+}
+
+void JoltBody3D::apply_central_impulse(const Vector3& p_impulse, bool p_lock) {
+	ERR_FAIL_NULL(space);
+
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	set_sleep_state(false, false);
+
+	body_access.get_body().AddImpulse(to_jolt(p_impulse));
+}
+
+void JoltBody3D::apply_torque(const Vector3& p_torque, bool p_lock) {
+	ERR_FAIL_NULL(space);
+
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	set_sleep_state(false, false);
+
+	body_access.get_body().AddTorque(to_jolt(p_torque));
+}
+
+void JoltBody3D::apply_torque_impulse(const Vector3& p_impulse, bool p_lock) {
+	ERR_FAIL_NULL(space);
+
+	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	set_sleep_state(false, false);
+
+	body_access.get_body().AddAngularImpulse(to_jolt(p_impulse));
+}
+
+void JoltBody3D::add_constant_central_force(const Vector3& p_force) {
+	constant_force += p_force;
+}
+
+void JoltBody3D::add_constant_force(
+	const Vector3& p_force,
+	const Vector3& p_position,
+	bool p_lock
+) {
+	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
+	ERR_FAIL_COND(!body_access.is_valid());
+
+	const Vector3 center_of_mass = get_center_of_mass(false);
+	const Vector3 body_position = get_position(false);
+	const Vector3 center_of_mass_relative = center_of_mass - body_position;
+
+	constant_force += p_force;
+	constant_torque += (p_position - center_of_mass_relative).cross(p_force);
+}
+
+void JoltBody3D::add_constant_torque(const Vector3& p_torque) {
+	constant_torque += p_torque;
+}
+
+Vector3 JoltBody3D::get_constant_force() const {
+	return constant_force;
+}
+
+void JoltBody3D::set_constant_force(const Vector3& p_force) {
+	constant_force = p_force;
+}
+
+Vector3 JoltBody3D::get_constant_torque() const {
+	return constant_torque;
+}
+
+void JoltBody3D::set_constant_torque(const Vector3& p_torque) {
+	constant_torque = p_torque;
+}
+
+void JoltBody3D::integrate_forces(bool p_lock) {
+	ERR_FAIL_COND(mode == PhysicsServer3D::BODY_MODE_STATIC);
+
+	if (constant_force != Vector3() || constant_torque != Vector3()) {
+		const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
+		ERR_FAIL_COND(!body_access.is_valid());
+
+		set_sleep_state(false, false);
+
+		body_access.get_body().AddForce(to_jolt(constant_force));
+		body_access.get_body().AddTorque(to_jolt(constant_torque));
+	}
+}
+
 void JoltBody3D::call_queries() {
 	// TODO(mihe): Call force integration callback
 

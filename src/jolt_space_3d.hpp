@@ -55,6 +55,8 @@ public:
 	void remove_joint(JoltJoint3D* p_joint);
 
 private:
+	void integrate_forces(bool p_lock = true);
+
 	void update_gravity();
 
 	RID rid;
