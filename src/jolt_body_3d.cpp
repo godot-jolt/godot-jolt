@@ -370,7 +370,10 @@ void JoltBody3D::integrate_forces(bool p_lock) {
 }
 
 void JoltBody3D::call_queries() {
-	// TODO(mihe): Call force integration callback
+	if (force_integration_callback.is_valid()) {
+		const Array arguments = Array::make(get_direct_state(), force_integration_userdata);
+		force_integration_callback.callv(arguments);
+	}
 
 	if (body_state_callback.is_valid()) {
 		body_state_callback.callv(Array::make(get_direct_state()));
