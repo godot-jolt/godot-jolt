@@ -808,14 +808,14 @@ double JoltPhysicsServer3D::_body_get_contacts_reported_depth_threshold(
 
 void JoltPhysicsServer3D::_body_set_omit_force_integration(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] bool p_enable
+	bool p_enable
 ) {
-	ERR_FAIL_NOT_IMPL();
+	ERR_FAIL_COND_MSG(p_enable, "Custom integrators are not supported by Godot Jolt.");
 }
 
 bool JoltPhysicsServer3D::_body_is_omitting_force_integration([[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	return false;
 }
 
 void JoltPhysicsServer3D::_body_set_state_sync_callback(
@@ -829,11 +829,14 @@ void JoltPhysicsServer3D::_body_set_state_sync_callback(
 }
 
 void JoltPhysicsServer3D::_body_set_force_integration_callback(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Callable& p_callable,
-	[[maybe_unused]] const Variant& p_userdata
+	const RID& p_body,
+	const Callable& p_callable,
+	const Variant& p_userdata
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_force_integration_callback(p_callable, p_userdata);
 }
 
 void JoltPhysicsServer3D::_body_set_ray_pickable(const RID& p_body, bool p_enable) {

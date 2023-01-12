@@ -19,6 +19,13 @@ public:
 
 	void set_state_sync_callback(const Callable& p_callback);
 
+	bool has_force_integration_callback() const { return force_integration_callback.is_valid(); }
+
+	void set_force_integration_callback(const Callable& p_callback, const Variant& p_userdata) {
+		force_integration_callback = p_callback;
+		force_integration_userdata = p_userdata;
+	}
+
 	bool get_initial_sleep_state() const override { return initial_sleep_state; }
 
 	bool get_sleep_state(bool p_lock = true) const;
@@ -161,6 +168,10 @@ private:
 	Vector3 constant_torque;
 
 	Callable body_state_callback;
+
+	Callable force_integration_callback;
+
+	Variant force_integration_userdata;
 
 	JoltPhysicsDirectBodyState3D* direct_state = nullptr;
 };
