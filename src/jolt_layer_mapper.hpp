@@ -20,9 +20,9 @@ public:
 	const char* GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer) const override;
 #endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
 
-	bool ShouldCollide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer p_layer2) const;
+	bool ShouldCollide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer p_layer2) const override;
 
-	bool ShouldCollide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) const;
+	bool ShouldCollide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) const override;
 
 	static JPH::ObjectLayer to_object_layer(JPH::EMotionType p_motion_type);
 
