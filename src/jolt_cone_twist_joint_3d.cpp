@@ -1,7 +1,7 @@
 #include "jolt_cone_twist_joint_3d.hpp"
 
 #include "jolt_body_3d.hpp"
-#include "jolt_body_access_3d.hpp"
+#include "jolt_space_3d.hpp"
 
 namespace {
 
@@ -21,13 +21,13 @@ JoltConeTwistJoint3D::JoltConeTwistJoint3D(
 )
 	: JoltJoint3D(p_space) {
 	const JPH::BodyID body_ids[] = {p_body_a.get_jolt_id(), p_body_b.get_jolt_id()};
-	const JoltMultiBodyAccessWrite3D body_access(*space, body_ids, count_of(body_ids), p_lock);
+	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, count_of(body_ids), p_lock);
 
-	JPH::Body* jolt_body_a = body_access.get_body(0);
-	ERR_FAIL_NULL(jolt_body_a);
+	const JoltWritableBody3D jolt_body_a = bodies[0];
+	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	JPH::Body* jolt_body_b = body_access.get_body(1);
-	ERR_FAIL_NULL(jolt_body_b);
+	const JoltWritableBody3D jolt_body_b = bodies[1];
+	ERR_FAIL_COND(jolt_body_b.is_invalid());
 
 	const JPH::Shape& jolt_shape_a = *jolt_body_a->GetShape();
 	const JPH::Shape& jolt_shape_b = *jolt_body_b->GetShape();
@@ -54,11 +54,10 @@ JoltConeTwistJoint3D::JoltConeTwistJoint3D(
 	bool p_lock
 )
 	: JoltJoint3D(p_space) {
-	const JoltBodyAccessWrite3D body_access(*space, p_body_a.get_jolt_id(), p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D jolt_body_a = space->write_body(p_body_a, p_lock);
+	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	JPH::Body& jolt_body_a = body_access.get_body();
-	const JPH::Shape& jolt_shape_a = *jolt_body_a.GetShape();
+	const JPH::Shape& jolt_shape_a = *jolt_body_a->GetShape();
 
 	JPH::SwingTwistConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
@@ -69,7 +68,7 @@ JoltConeTwistJoint3D::JoltConeTwistJoint3D(
 	constraint_settings.mTwistAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPlaneAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_Z));
 
-	jolt_ref = constraint_settings.Create(jolt_body_a, JPH::Body::sFixedToWorld);
+	jolt_ref = constraint_settings.Create(*jolt_body_a, JPH::Body::sFixedToWorld);
 
 	space->add_joint(this);
 }

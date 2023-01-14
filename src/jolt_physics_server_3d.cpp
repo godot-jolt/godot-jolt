@@ -186,10 +186,6 @@ double JoltPhysicsServer3D::_space_get_param(
 PhysicsDirectSpaceState3D* JoltPhysicsServer3D::_space_get_direct_state(const RID& p_space) {
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
-	ERR_FAIL_COND_D_MSG(
-		!doing_sync || space->is_locked(),
-		"Space state is inaccessible right now, wait for iteration or physics process notification."
-	);
 
 	return space->get_direct_state();
 }
@@ -1491,10 +1487,6 @@ void JoltPhysicsServer3D::_step(double p_step) {
 	}
 }
 
-void JoltPhysicsServer3D::_sync() {
-	doing_sync = true;
-}
-
 void JoltPhysicsServer3D::_flush_queries() {
 	if (!active) {
 		return;
@@ -1507,10 +1499,6 @@ void JoltPhysicsServer3D::_flush_queries() {
 	}
 
 	flushing_queries = false;
-}
-
-void JoltPhysicsServer3D::_end_sync() {
-	doing_sync = false;
 }
 
 void JoltPhysicsServer3D::_finish() {

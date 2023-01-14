@@ -1,6 +1,5 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 
-#include "jolt_body_access_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_object_layer.hpp"
@@ -118,17 +117,16 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const JPH::BodyID& body_id = collector.mHit.mBodyID;
 	const JPH::SubShapeID& subshape_id = collector.mHit.mSubShapeID2;
 
-	const JoltBodyAccessRead3D body_access(*space, body_id, false);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(body_id, false);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	const JPH::Body& body = body_access.get_body();
 	const JPH::Vec3 position = ray.GetPointOnRay(collector.mHit.mFraction);
-	const JPH::Vec3 normal = body.GetWorldSpaceSurfaceNormal(subshape_id, position);
+	const JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(subshape_id, position);
 
-	auto* object = reinterpret_cast<JoltCollisionObject3D*>(body.GetUserData());
+	auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
 	const auto object_id = (uint64_t)object->get_instance_id();
 
-	const JPH::Shape& shape = *body.GetShape();
+	const JPH::Shape& shape = *body->GetShape();
 	const auto shape_idx = (int)shape.GetSubShapeUserData(subshape_id);
 
 	p_result->position = to_godot(position);

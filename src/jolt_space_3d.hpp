@@ -1,5 +1,7 @@
 #pragma once
 
+#include "jolt_body_accessor_3d.hpp"
+
 class JoltArea3D;
 class JoltBody3D;
 class JoltCollisionObject3D;
@@ -16,8 +18,6 @@ public:
 
 	void call_queries();
 
-	bool is_locked() const { return locked; }
-
 	RID get_rid() const { return rid; }
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
@@ -32,6 +32,26 @@ public:
 
 	const JPH::NarrowPhaseQuery& get_narrow_phase_query(bool p_locked = true) const;
 
+	JoltReadableBody3D read_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
+
+	JoltReadableBody3D read_body(const JoltBody3D& p_body, bool p_lock = true) const;
+
+	JoltWritableBody3D write_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
+
+	JoltWritableBody3D write_body(const JoltBody3D& p_body, bool p_lock = true) const;
+
+	JoltReadableBodies3D read_bodies(
+		const JPH::BodyID* p_body_ids,
+		int p_body_count,
+		bool p_lock = true
+	) const;
+
+	JoltWritableBodies3D write_bodies(
+		const JPH::BodyID* p_body_ids,
+		int p_body_count,
+		bool p_lock = true
+	) const;
+
 	JoltPhysicsDirectSpaceState3D* get_direct_state();
 
 	void set_default_area(JoltArea3D* p_area) { area = p_area; }
@@ -42,13 +62,13 @@ public:
 
 	void set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value);
 
-	void create_object(JoltCollisionObject3D* p_object);
+	void create_object(JoltCollisionObject3D* p_object, bool p_lock = true);
 
-	void add_object(JoltCollisionObject3D* p_object);
+	void add_object(JoltCollisionObject3D* p_object, bool p_lock = true);
 
-	void remove_object(JoltCollisionObject3D* p_object);
+	void remove_object(JoltCollisionObject3D* p_object, bool p_lock = true);
 
-	void destroy_object(JoltCollisionObject3D* p_object);
+	void destroy_object(JoltCollisionObject3D* p_object, bool p_lock = true);
 
 	void add_joint(JoltJoint3D* p_joint);
 
@@ -71,6 +91,8 @@ private:
 
 	JPH::GroupFilter* group_filter = nullptr;
 
+	JoltBodyWriter3D body_accessor;
+
 	JoltPhysicsDirectSpaceState3D* direct_state = nullptr;
 
 	JoltArea3D* area = nullptr;
@@ -78,6 +100,4 @@ private:
 	Vector3 gravity_vector = Vector3(0, -1, 0);
 
 	float gravity = 9.81f;
-
-	bool locked = false;
 };

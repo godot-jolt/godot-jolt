@@ -1,6 +1,5 @@
 #include "jolt_collision_object_3d.hpp"
 
-#include "jolt_body_access_3d.hpp"
 #include "jolt_layer_mapper.hpp"
 #include "jolt_object_layer.hpp"
 #include "jolt_shape_3d.hpp"
@@ -38,9 +37,10 @@ void JoltCollisionObject3D::set_collision_layer(uint32_t p_layer, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
-	body_access.get_body().GetCollisionGroup().SetGroupID(p_layer);
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
+
+	body->GetCollisionGroup().SetGroupID(p_layer);
 }
 
 void JoltCollisionObject3D::set_collision_mask(uint32_t p_mask, bool p_lock) {
@@ -54,20 +54,19 @@ void JoltCollisionObject3D::set_collision_mask(uint32_t p_mask, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
-	body_access.get_body().GetCollisionGroup().SetSubGroupID(p_mask);
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
+
+	body->GetCollisionGroup().SetSubGroupID(p_mask);
 }
 
 Transform3D JoltCollisionObject3D::get_transform(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	const JPH::Body& body = body_access.get_body();
-
-	return {to_godot(body.GetRotation()), to_godot(body.GetPosition())};
+	return {to_godot(body->GetRotation()), to_godot(body->GetPosition())};
 }
 
 void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p_lock) {
@@ -87,12 +86,10 @@ void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p
 Basis JoltCollisionObject3D::get_basis(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	const JPH::Body& body = body_access.get_body();
-
-	return to_godot(body.GetRotation());
+	return to_godot(body->GetRotation());
 }
 
 void JoltCollisionObject3D::set_basis(const Basis& p_basis, bool p_lock) {
@@ -108,12 +105,10 @@ void JoltCollisionObject3D::set_basis(const Basis& p_basis, bool p_lock) {
 Vector3 JoltCollisionObject3D::get_position(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	const JPH::Body& body = body_access.get_body();
-
-	return to_godot(body.GetPosition());
+	return to_godot(body->GetPosition());
 }
 
 void JoltCollisionObject3D::set_position(const Vector3& p_position, bool p_lock) {
@@ -129,10 +124,10 @@ void JoltCollisionObject3D::set_position(const Vector3& p_position, bool p_lock)
 Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	return to_godot(body_access.get_body().GetCenterOfMassPosition());
+	return to_godot(body->GetCenterOfMassPosition());
 }
 
 JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(const JPH::Shape& p_shape
@@ -159,11 +154,10 @@ JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(const JPH::
 }
 
 JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(bool p_lock) const {
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	const JPH::Body& body = body_access.get_body();
-	return calculate_mass_properties(*body.GetShape());
+	return calculate_mass_properties(*body->GetShape());
 }
 
 JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
@@ -202,8 +196,8 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	JPH::ShapeRefC shape = try_build_shape();
 
@@ -213,7 +207,7 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 		shape = new JPH::SphereShape(1.0f);
 		body_iface.SetObjectLayer(jolt_id, GDJOLT_OBJECT_LAYER_NONE);
 	} else {
-		const JPH::EMotionType motion_type = body_access.get_body().GetMotionType();
+		const JPH::EMotionType motion_type = body->GetMotionType();
 		const JPH::ObjectLayer object_layer = JoltLayerMapper::to_object_layer(motion_type);
 		body_iface.SetObjectLayer(jolt_id, object_layer);
 	}
