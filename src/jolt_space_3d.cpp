@@ -33,8 +33,8 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group
 		GDJOLT_MAX_BODY_PAIRS,
 		GDJOLT_MAX_CONTACT_CONSTRAINTS,
 		*layer_mapper,
-		&JoltLayerMapper::can_layers_collide,
-		&JoltLayerMapper::can_layers_collide
+		*layer_mapper,
+		*layer_mapper
 	);
 }
 
