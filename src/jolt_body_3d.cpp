@@ -1,6 +1,5 @@
 #include "jolt_body_3d.hpp"
 
-#include "jolt_body_access_3d.hpp"
 #include "jolt_physics_direct_body_state_3d.hpp"
 #include "jolt_space_3d.hpp"
 
@@ -137,10 +136,10 @@ void JoltBody3D::set_state_sync_callback(const Callable& p_callback) {
 bool JoltBody3D::get_sleep_state(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	return !body_access.get_body().IsActive();
+	return !body->IsActive();
 }
 
 void JoltBody3D::set_sleep_state(bool p_enabled, bool p_lock) {
@@ -167,10 +166,10 @@ void JoltBody3D::set_can_sleep(bool p_enabled, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
-	body_access.get_body().SetAllowSleeping(allowed_sleep);
+	body->SetAllowSleeping(allowed_sleep);
 }
 
 Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
@@ -180,19 +179,19 @@ Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 		return {};
 	}
 
-	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	return to_godot(body_access.get_body().GetInverseInertia().GetQuaternion());
+	return to_godot(body->GetInverseInertia().GetQuaternion());
 }
 
 Vector3 JoltBody3D::get_linear_velocity(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	return to_godot(body_access.get_body().GetMotionPropertiesUnchecked()->GetLinearVelocity());
+	return to_godot(body->GetMotionPropertiesUnchecked()->GetLinearVelocity());
 }
 
 void JoltBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
@@ -201,21 +200,19 @@ void JoltBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
-	body_access.get_body().GetMotionPropertiesUnchecked()->SetLinearVelocityClamped(
-		to_jolt(p_velocity)
-	);
+	body->GetMotionPropertiesUnchecked()->SetLinearVelocityClamped(to_jolt(p_velocity));
 }
 
 Vector3 JoltBody3D::get_angular_velocity(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND_D(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
-	return to_godot(body_access.get_body().GetMotionPropertiesUnchecked()->GetAngularVelocity());
+	return to_godot(body->GetMotionPropertiesUnchecked()->GetAngularVelocity());
 }
 
 void JoltBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
@@ -224,12 +221,10 @@ void JoltBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
-	body_access.get_body().GetMotionPropertiesUnchecked()->SetAngularVelocityClamped(
-		to_jolt(p_velocity)
-	);
+	body->GetMotionPropertiesUnchecked()->SetAngularVelocityClamped(to_jolt(p_velocity));
 }
 
 void JoltBody3D::set_center_of_mass_custom(const Vector3& p_center_of_mass, bool p_lock) {
@@ -248,71 +243,67 @@ void JoltBody3D::reset_mass_properties(bool p_lock) {
 void JoltBody3D::apply_force(const Vector3& p_force, const Vector3& p_position, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	set_sleep_state(false, false);
 
-	JPH::Body& body = body_access.get_body();
-
-	body.AddForce(to_jolt(p_force), body.GetCenterOfMassPosition() + to_jolt(p_position));
+	body->AddForce(to_jolt(p_force), body->GetCenterOfMassPosition() + to_jolt(p_position));
 }
 
 void JoltBody3D::apply_central_force(const Vector3& p_force, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	set_sleep_state(false, false);
 
-	body_access.get_body().AddForce(to_jolt(p_force));
+	body->AddForce(to_jolt(p_force));
 }
 
 void JoltBody3D::apply_impulse(const Vector3& p_impulse, const Vector3& p_position, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	set_sleep_state(false, false);
 
-	JPH::Body& body = body_access.get_body();
-
-	body.AddImpulse(to_jolt(p_impulse), body.GetCenterOfMassPosition() + to_jolt(p_position));
+	body->AddImpulse(to_jolt(p_impulse), body->GetCenterOfMassPosition() + to_jolt(p_position));
 }
 
 void JoltBody3D::apply_central_impulse(const Vector3& p_impulse, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	set_sleep_state(false, false);
 
-	body_access.get_body().AddImpulse(to_jolt(p_impulse));
+	body->AddImpulse(to_jolt(p_impulse));
 }
 
 void JoltBody3D::apply_torque(const Vector3& p_torque, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	set_sleep_state(false, false);
 
-	body_access.get_body().AddTorque(to_jolt(p_torque));
+	body->AddTorque(to_jolt(p_torque));
 }
 
 void JoltBody3D::apply_torque_impulse(const Vector3& p_impulse, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	set_sleep_state(false, false);
 
-	body_access.get_body().AddAngularImpulse(to_jolt(p_impulse));
+	body->AddAngularImpulse(to_jolt(p_impulse));
 }
 
 void JoltBody3D::add_constant_central_force(const Vector3& p_force) {
@@ -324,8 +315,8 @@ void JoltBody3D::add_constant_force(
 	const Vector3& p_position,
 	bool p_lock
 ) {
-	const JoltBodyAccessRead3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	const Vector3 center_of_mass = get_center_of_mass(false);
 	const Vector3 body_position = get_position(false);
@@ -359,13 +350,13 @@ void JoltBody3D::integrate_forces(bool p_lock) {
 	ERR_FAIL_COND(mode == PhysicsServer3D::BODY_MODE_STATIC);
 
 	if (constant_force != Vector3() || constant_torque != Vector3()) {
-		const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-		ERR_FAIL_COND(!body_access.is_valid());
+		const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+		ERR_FAIL_COND(body.is_invalid());
 
 		set_sleep_state(false, false);
 
-		body_access.get_body().AddForce(to_jolt(constant_force));
-		body_access.get_body().AddTorque(to_jolt(constant_torque));
+		body->AddForce(to_jolt(constant_force));
+		body->AddTorque(to_jolt(constant_torque));
 	}
 }
 
@@ -425,24 +416,22 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 		} break;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	if (!get_sleep_state(false) && motion_type == JPH::EMotionType::Static) {
 		set_sleep_state(true, false);
 	}
 
-	JPH::Body& body = body_access.get_body();
-
-	body.SetMotionType(motion_type);
+	body->SetMotionType(motion_type);
 
 	if (get_sleep_state(false) && motion_type != JPH::EMotionType::Static) {
 		set_sleep_state(false, false);
 	}
 
 	if (motion_type == JPH::EMotionType::Kinematic) {
-		body.SetLinearVelocity(JPH::Vec3::sZero());
-		body.SetAngularVelocity(JPH::Vec3::sZero());
+		body->SetLinearVelocity(JPH::Vec3::sZero());
+		body->SetAngularVelocity(JPH::Vec3::sZero());
 	}
 }
 
@@ -497,10 +486,10 @@ void JoltBody3D::set_bounce(float p_bounce, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
-	body_access.get_body().SetRestitution(bounce);
+	body->SetRestitution(bounce);
 }
 
 void JoltBody3D::set_friction(float p_friction, bool p_lock) {
@@ -523,10 +512,10 @@ void JoltBody3D::set_friction(float p_friction, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
-	body_access.get_body().SetFriction(friction);
+	body->SetFriction(friction);
 }
 
 void JoltBody3D::set_gravity_scale(float p_scale, bool p_lock) {
@@ -540,10 +529,10 @@ void JoltBody3D::set_gravity_scale(float p_scale, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
-	body_access.get_body().GetMotionPropertiesUnchecked()->SetGravityFactor(p_scale);
+	body->GetMotionPropertiesUnchecked()->SetGravityFactor(p_scale);
 }
 
 void JoltBody3D::set_linear_damp(float p_damp, bool p_lock) {
@@ -566,10 +555,10 @@ void JoltBody3D::set_linear_damp(float p_damp, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
-	body_access.get_body().GetMotionPropertiesUnchecked()->SetLinearDamping(linear_damp);
+	body->GetMotionPropertiesUnchecked()->SetLinearDamping(linear_damp);
 }
 
 void JoltBody3D::set_angular_damp(float p_damp, bool p_lock) {
@@ -592,10 +581,10 @@ void JoltBody3D::set_angular_damp(float p_damp, bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
-	body_access.get_body().GetMotionPropertiesUnchecked()->SetAngularDamping(angular_damp);
+	body->GetMotionPropertiesUnchecked()->SetAngularDamping(angular_damp);
 }
 
 void JoltBody3D::shapes_changed(bool p_lock) {
@@ -607,9 +596,9 @@ void JoltBody3D::mass_properties_changed(bool p_lock) {
 		return;
 	}
 
-	const JoltBodyAccessWrite3D body_access(*space, jolt_id, p_lock);
-	ERR_FAIL_COND(!body_access.is_valid());
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
 
 	const JPH::MassProperties mass_properties = calculate_mass_properties(false);
-	body_access.get_body().GetMotionPropertiesUnchecked()->SetMassProperties(mass_properties);
+	body->GetMotionPropertiesUnchecked()->SetMassProperties(mass_properties);
 }

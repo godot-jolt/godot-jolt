@@ -1,7 +1,6 @@
 #include "jolt_space_3d.hpp"
 
 #include "jolt_body_3d.hpp"
-#include "jolt_body_access_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_joint_3d.hpp"
@@ -26,7 +25,8 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group
 	, temp_allocator(new JoltTempAllocator(GDJOLT_TEMP_CAPACITY))
 	, layer_mapper(new JoltLayerMapper())
 	, physics_system(new JPH::PhysicsSystem())
-	, group_filter(p_group_filter) {
+	, group_filter(p_group_filter)
+	, body_accessor(this) {
 	physics_system->Init(
 		GDJOLT_MAX_BODIES,
 		GDJOLT_BODY_MUTEX_COUNT,
@@ -46,56 +46,55 @@ JoltSpace3D::~JoltSpace3D() {
 }
 
 void JoltSpace3D::step(float p_step) {
-	locked = true;
-
 	integrate_forces();
 
 	physics_system->Update(p_step, 1, 1, temp_allocator, job_system);
-
-	locked = false;
 }
 
 void JoltSpace3D::call_queries() {
-	JPH::BodyIDVector body_ids;
-	physics_system->GetActiveBodies(body_ids);
+	body_accessor.acquire_active();
 
-	{
-		const JPH::BodyLockInterface& lock_iface = physics_system->GetBodyLockInterface();
-		const JPH::BodyLockMultiRead lock(lock_iface, body_ids.data(), (int32_t)body_ids.size());
+	const int32_t body_count = body_accessor.get_count();
 
-		// TODO(mihe): Is the separation of bodies and areas here important? Maybe merge into a
-		// single loop?
-
-		for (int32_t i = 0; i < (int32_t)body_ids.size(); ++i) {
-			if (const JPH::Body* body = lock.GetBody(i)) {
-				if (!body->IsStatic() && !body->IsSensor()) {
-					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
-					object->call_queries();
-				}
-			}
-		}
-
-		for (int32_t i = 0; i < (int32_t)body_ids.size(); ++i) {
-			if (const JPH::Body* body = lock.GetBody(i)) {
-				if (!body->IsStatic() && body->IsSensor()) {
-					auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
-					object->call_queries();
-				}
+	for (int32_t i = 0; i < body_count; ++i) {
+		if (const JPH::Body* body = body_accessor.try_get(i)) {
+			if (!body->IsStatic() && !body->IsSensor()) {
+				auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
+				object->call_queries();
 			}
 		}
 	}
+
+	for (int32_t i = 0; i < body_count; ++i) {
+		if (const JPH::Body* body = body_accessor.try_get(i)) {
+			if (!body->IsStatic() && body->IsSensor()) {
+				auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
+				object->call_queries();
+			}
+		}
+	}
+
+	body_accessor.release();
 }
 
 JPH::BodyInterface& JoltSpace3D::get_body_iface(bool p_locked) {
-	return p_locked ? physics_system->GetBodyInterface() : physics_system->GetBodyInterfaceNoLock();
+	if (p_locked && body_accessor.not_acquired()) {
+		return physics_system->GetBodyInterface();
+	} else {
+		return physics_system->GetBodyInterfaceNoLock();
+	}
 }
 
 const JPH::BodyInterface& JoltSpace3D::get_body_iface(bool p_locked) const {
-	return p_locked ? physics_system->GetBodyInterface() : physics_system->GetBodyInterfaceNoLock();
+	if (p_locked && body_accessor.not_acquired()) {
+		return physics_system->GetBodyInterface();
+	} else {
+		return physics_system->GetBodyInterfaceNoLock();
+	}
 }
 
 const JPH::BodyLockInterface& JoltSpace3D::get_body_lock_iface(bool p_locked) const {
-	if (p_locked) {
+	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetBodyLockInterface();
 	} else {
 		return physics_system->GetBodyLockInterfaceNoLock();
@@ -103,11 +102,43 @@ const JPH::BodyLockInterface& JoltSpace3D::get_body_lock_iface(bool p_locked) co
 }
 
 const JPH::NarrowPhaseQuery& JoltSpace3D::get_narrow_phase_query(bool p_locked) const {
-	if (p_locked) {
+	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetNarrowPhaseQuery();
 	} else {
 		return physics_system->GetNarrowPhaseQueryNoLock();
 	}
+}
+
+JoltReadableBody3D JoltSpace3D::read_body(const JPH::BodyID& p_body_id, bool p_lock) const {
+	return {*this, p_body_id, p_lock};
+}
+
+JoltReadableBody3D JoltSpace3D::read_body(const JoltBody3D& p_body, bool p_lock) const {
+	return read_body(p_body.get_jolt_id(), p_lock);
+}
+
+JoltWritableBody3D JoltSpace3D::write_body(const JPH::BodyID& p_body_id, bool p_lock) const {
+	return {*this, p_body_id, p_lock};
+}
+
+JoltWritableBody3D JoltSpace3D::write_body(const JoltBody3D& p_body, bool p_lock) const {
+	return write_body(p_body.get_jolt_id(), p_lock);
+}
+
+JoltReadableBodies3D JoltSpace3D::read_bodies(
+	const JPH::BodyID* p_body_ids,
+	int p_body_count,
+	bool p_lock
+) const {
+	return {*this, p_body_ids, p_body_count, p_lock};
+}
+
+JoltWritableBodies3D JoltSpace3D::write_bodies(
+	const JPH::BodyID* p_body_ids,
+	int p_body_count,
+	bool p_lock
+) const {
+	return {*this, p_body_ids, p_body_count, p_lock};
 }
 
 JoltPhysicsDirectSpaceState3D* JoltSpace3D::get_direct_state() {
@@ -148,7 +179,7 @@ void JoltSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Varian
 	}
 }
 
-void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
+void JoltSpace3D::create_object(JoltCollisionObject3D* p_object, bool p_lock) {
 	const PhysicsServer3D::BodyMode body_mode = p_object->get_mode();
 
 	JPH::EMotionType motion_type = {};
@@ -202,7 +233,7 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 	settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
 	settings.mMassPropertiesOverride = p_object->calculate_mass_properties(*settings.GetShape());
 
-	JPH::Body* body = physics_system->GetBodyInterface().CreateBody(settings);
+	JPH::Body* body = get_body_iface(p_lock).CreateBody(settings);
 
 	body->SetCollisionGroup(JPH::CollisionGroup(
 		group_filter,
@@ -215,20 +246,20 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object) {
 	p_object->set_jolt_id(body->GetID());
 }
 
-void JoltSpace3D::add_object(JoltCollisionObject3D* p_object) {
-	physics_system->GetBodyInterface().AddBody(
+void JoltSpace3D::add_object(JoltCollisionObject3D* p_object, bool p_lock) {
+	get_body_iface(p_lock).AddBody(
 		p_object->get_jolt_id(),
 		p_object->get_initial_sleep_state() ? JPH::EActivation::DontActivate
 											: JPH::EActivation::Activate
 	);
 }
 
-void JoltSpace3D::remove_object(JoltCollisionObject3D* p_object) {
-	physics_system->GetBodyInterface().RemoveBody(p_object->get_jolt_id());
+void JoltSpace3D::remove_object(JoltCollisionObject3D* p_object, bool p_lock) {
+	get_body_iface(p_lock).RemoveBody(p_object->get_jolt_id());
 }
 
-void JoltSpace3D::destroy_object(JoltCollisionObject3D* p_object) {
-	physics_system->GetBodyInterface().DestroyBody(p_object->get_jolt_id());
+void JoltSpace3D::destroy_object(JoltCollisionObject3D* p_object, bool p_lock) {
+	get_body_iface(p_lock).DestroyBody(p_object->get_jolt_id());
 	p_object->set_jolt_id({});
 }
 
@@ -241,19 +272,19 @@ void JoltSpace3D::remove_joint(JoltJoint3D* p_joint) {
 }
 
 void JoltSpace3D::integrate_forces(bool p_lock) {
-	JPH::BodyIDVector body_ids;
-	physics_system->GetBodies(body_ids);
+	body_accessor.acquire_all(p_lock);
 
-	const auto body_count = (int32_t)body_ids.size();
-	JoltMultiBodyAccessWrite3D body_access(*this, body_ids.data(), body_count, p_lock);
+	const int32_t body_count = body_accessor.get_count();
 
 	for (int32_t i = 0; i < body_count; ++i) {
-		if (const JPH::Body* body = body_access.get_body(i)) {
+		if (const JPH::Body* body = body_accessor.try_get(i)) {
 			if (!body->IsStatic() && !body->IsSensor()) {
 				reinterpret_cast<JoltBody3D*>(body->GetUserData())->integrate_forces(false);
 			}
 		}
 	}
+
+	body_accessor.release();
 }
 
 void JoltSpace3D::update_gravity() {

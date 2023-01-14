@@ -535,11 +535,11 @@ public:
 
 	void _step(double p_step) override;
 
-	void _sync() override;
+	void _sync() override { }
 
 	void _flush_queries() override;
 
-	void _end_sync() override;
+	void _end_sync() override { }
 
 	void _finish() override;
 
@@ -565,8 +565,6 @@ private:
 	inline static JPH::Ref<JPH::GroupFilter> group_filter;
 
 	bool active = true;
-
-	bool doing_sync = false;
 
 	bool flushing_queries = false;
 
