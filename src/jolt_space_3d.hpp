@@ -6,6 +6,7 @@ class JoltArea3D;
 class JoltBody3D;
 class JoltCollisionObject3D;
 class JoltJoint3D;
+class JoltLayerMapper;
 class JoltPhysicsDirectSpaceState3D;
 
 class JoltSpace3D final {
@@ -85,7 +86,7 @@ private:
 
 	JPH::TempAllocator* temp_allocator = nullptr;
 
-	JPH::BroadPhaseLayerInterface* layer_mapper = nullptr;
+	JoltLayerMapper* layer_mapper = nullptr;
 
 	JPH::PhysicsSystem* physics_system = nullptr;
 

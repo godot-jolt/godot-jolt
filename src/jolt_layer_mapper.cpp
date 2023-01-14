@@ -27,7 +27,7 @@ const char* JoltLayerMapper::GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer
 
 #endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
 
-bool JoltLayerMapper::can_layers_collide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer p_layer2) {
+bool JoltLayerMapper::ShouldCollide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer p_layer2) const {
 	switch (p_layer1) {
 		case GDJOLT_OBJECT_LAYER_NONE: {
 			return false;
@@ -44,7 +44,8 @@ bool JoltLayerMapper::can_layers_collide(JPH::ObjectLayer p_layer1, JPH::ObjectL
 	}
 }
 
-bool JoltLayerMapper::can_layers_collide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) {
+bool JoltLayerMapper::ShouldCollide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2)
+	const {
 	switch (p_layer1) {
 		case GDJOLT_OBJECT_LAYER_NONE: {
 			return false;
