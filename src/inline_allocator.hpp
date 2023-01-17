@@ -1,7 +1,7 @@
 #pragma once
 
 template<typename TType, size_t TCapacity, typename TOriginalType = TType>
-class InlineAllocator final : private std::allocator<TType> {
+class InlineAllocator : private std::allocator<TType> {
 	using Fallback = std::allocator<TType>;
 
 	static constexpr size_t BUFFER_COUNT = TCapacity;
