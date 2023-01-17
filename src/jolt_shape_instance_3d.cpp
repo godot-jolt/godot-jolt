@@ -23,32 +23,29 @@ bool JoltShapeInstance3D::try_build(
 	return true;
 }
 
-void JoltShapeInstance3D::try_build(
-	const Vector<JoltShapeInstance3D>& p_shapes,
-	Vector<Built>& p_built_shapes
+int32_t JoltShapeInstance3D::try_build(
+	const JoltShapeInstance3D* p_shapes,
+	int32_t p_count,
+	Built* p_built_shapes
 ) {
-	p_built_shapes.clear();
-	p_built_shapes.resize(p_shapes.size());
-
-	Built* built_shapes_begin = p_built_shapes.ptrw();
+	Built* built_shapes_begin = p_built_shapes;
 	Built* built_shapes_end = built_shapes_begin;
 
-	for (int shape_idx = 0; shape_idx < p_shapes.size(); ++shape_idx) {
+	for (int32_t i = 0; i < p_count; ++i) {
 		Built built_shape;
-		if (try_build(p_shapes[shape_idx], (uint64_t)shape_idx, built_shape)) {
+		if (try_build(p_shapes[i], (uint64_t)i, built_shape)) {
 			*built_shapes_end++ = std::move(built_shape);
 		}
 	}
 
-	const auto built_shape_count = int(built_shapes_end - built_shapes_begin);
-
-	p_built_shapes.resize(built_shape_count);
+	return int32_t(built_shapes_end - built_shapes_begin);
 }
 
-JPH::ShapeRefC JoltShapeInstance3D::build_compound(const Vector<Built>& p_built_shapes) {
+JPH::ShapeRefC JoltShapeInstance3D::build_compound(const Built* p_built_shapes, int32_t p_count) {
 	JPH::StaticCompoundShapeSettings shape_settings;
 
-	for (const Built& built_shape : p_built_shapes) {
+	for (int32_t i = 0; i < p_count; ++i) {
+		const Built& built_shape = p_built_shapes[i];
 		const JoltShapeInstance3D& shape = *built_shape.shape;
 		const JPH::ShapeRefC& jolt_ref = built_shape.jolt_ref;
 
@@ -66,7 +63,7 @@ JPH::ShapeRefC JoltShapeInstance3D::build_compound(const Vector<Built>& p_built_
 		vformat(
 			"Failed to create compound shape with sub-shape count '{}'. "
 			"Jolt returned the following error: '{}'.",
-			p_built_shapes.size(),
+			p_count,
 			shape_result.GetError()
 		)
 	);

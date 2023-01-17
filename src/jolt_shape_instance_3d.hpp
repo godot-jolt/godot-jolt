@@ -50,12 +50,13 @@ public:
 		Built& p_built_shape
 	);
 
-	static void try_build(
-		const Vector<JoltShapeInstance3D>& p_shapes,
-		Vector<Built>& p_built_shapes
+	static int32_t try_build(
+		const JoltShapeInstance3D* p_shapes,
+		int32_t p_count,
+		Built* p_built_shapes
 	);
 
-	static JPH::ShapeRefC build_compound(const Vector<Built>& p_built_shapes);
+	static JPH::ShapeRefC build_compound(const Built* p_built_shapes, int32_t p_count);
 
 private:
 	Transform3D transform;

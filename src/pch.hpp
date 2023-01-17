@@ -35,10 +35,7 @@
 #include <godot_cpp/core/math.hpp>
 #include <godot_cpp/core/memory.hpp>
 #include <godot_cpp/core/object.hpp>
-#include <godot_cpp/templates/hash_map.hpp>
-#include <godot_cpp/templates/hash_set.hpp>
-#include <godot_cpp/templates/rid_owner.hpp>
-#include <godot_cpp/templates/vector.hpp>
+#include <godot_cpp/templates/hashfuncs.hpp>
 #include <godot_cpp/variant/builtin_types.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/variant.hpp>
@@ -83,12 +80,17 @@
 #include <fmt/format.h>
 #include <mimalloc.h>
 
+#include <algorithm>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <thread>
+#include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
+#include <vector>
 
 using namespace godot;
 
@@ -99,6 +101,11 @@ using namespace godot;
 #include "bind.hpp"
 #include "conversion.hpp"
 #include "error_macros.hpp"
+#include "hash_map.hpp"
+#include "hash_set.hpp"
+#include "inline_vector.hpp"
+#include "local_vector.hpp"
+#include "rid_owner.hpp"
 #include "utility_functions.hpp"
 #include "variant.hpp"
 #include "wrapped.hpp"

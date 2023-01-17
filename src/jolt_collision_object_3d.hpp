@@ -70,7 +70,7 @@ public:
 
 	void remove_shapes(bool p_lock = true);
 
-	const Vector<JoltShapeInstance3D>& get_shapes() const { return shapes; }
+	const LocalVector<JoltShapeInstance3D>& get_shapes() const { return shapes; }
 
 	int32_t get_shape_count() const { return shapes.size(); }
 
@@ -133,7 +133,7 @@ protected:
 
 	uint32_t collision_mask = 1;
 
-	Vector<JoltShapeInstance3D> shapes;
+	LocalVector<JoltShapeInstance3D> shapes;
 
 	bool ray_pickable = false;
 

@@ -161,12 +161,15 @@ JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(bool p_lock
 }
 
 JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
-	// TODO(mihe): This could greatly benefit from some kind of small/inlined vector, since I assume
-	// most bodies will only ever have a handful of shapes
-	Vector<JoltShapeInstance3D::Built> built_shapes;
-	JoltShapeInstance3D::try_build(shapes, built_shapes);
+	const int32_t shape_count = shapes.size();
 
-	const int built_shape_count = built_shapes.size();
+	InlineVector<JoltShapeInstance3D::Built, 16> built_shapes;
+	built_shapes.resize(shape_count);
+
+	const int built_shape_count =
+		JoltShapeInstance3D::try_build(shapes.ptr(), shape_count, built_shapes.ptr());
+
+	built_shapes.resize(built_shape_count);
 
 	if (built_shape_count == 0) {
 		return {};
@@ -180,7 +183,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 		const JPH::ShapeRefC& jolt_ref = built_shape.jolt_ref;
 		result = JoltShape3D::with_transform(jolt_ref, shape.get_transform());
 	} else {
-		result = JoltShapeInstance3D::build_compound(built_shapes);
+		result = JoltShapeInstance3D::build_compound(built_shapes.ptr(), built_shape_count);
 	}
 
 	if (has_custom_center_of_mass()) {
@@ -277,7 +280,7 @@ void JoltCollisionObject3D::set_shape_transform(
 		return;
 	}
 
-	shapes.write[(int32_t)p_index].set_transform(p_transform);
+	shapes[(int32_t)p_index].set_transform(p_transform);
 
 	rebuild_shape(p_lock);
 }
@@ -291,7 +294,7 @@ void JoltCollisionObject3D::set_shape_disabled(int64_t p_index, bool p_disabled,
 		return;
 	}
 
-	shapes.write[(int32_t)p_index].set_disabled(p_disabled);
+	shapes[(int32_t)p_index].set_disabled(p_disabled);
 
 	rebuild_shape(p_lock);
 }
