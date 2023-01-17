@@ -6,31 +6,31 @@
 
 namespace {
 
-static constexpr double GDJOLT_SLIDER_LIN_LIMIT_SOFTNESS = 1.0;
-static constexpr double GDJOLT_SLIDER_LIN_LIMIT_RESTITUTION = 0.7;
-static constexpr double GDJOLT_SLIDER_LIN_LIMIT_DAMPING = 1.0;
+constexpr double GDJOLT_SLIDER_LIN_LIMIT_SOFTNESS = 1.0;
+constexpr double GDJOLT_SLIDER_LIN_LIMIT_RESTITUTION = 0.7;
+constexpr double GDJOLT_SLIDER_LIN_LIMIT_DAMPING = 1.0;
 
-static constexpr double GDJOLT_SLIDER_LIN_MOTION_SOFTNESS = 1.0;
-static constexpr double GDJOLT_SLIDER_LIN_MOTION_RESTITUTION = 0.7;
-static constexpr double GDJOLT_SLIDER_LIN_MOTION_DAMPING = 0.0;
+constexpr double GDJOLT_SLIDER_LIN_MOTION_SOFTNESS = 1.0;
+constexpr double GDJOLT_SLIDER_LIN_MOTION_RESTITUTION = 0.7;
+constexpr double GDJOLT_SLIDER_LIN_MOTION_DAMPING = 0.0;
 
-static constexpr double GDJOLT_SLIDER_LIN_ORTHO_SOFTNESS = 1.0;
-static constexpr double GDJOLT_SLIDER_LIN_ORTHO_RESTITUTION = 0.7;
-static constexpr double GDJOLT_SLIDER_LIN_ORTHO_DAMPING = 1.0;
+constexpr double GDJOLT_SLIDER_LIN_ORTHO_SOFTNESS = 1.0;
+constexpr double GDJOLT_SLIDER_LIN_ORTHO_RESTITUTION = 0.7;
+constexpr double GDJOLT_SLIDER_LIN_ORTHO_DAMPING = 1.0;
 
-static constexpr double GDJOLT_SLIDER_ANG_LIMIT_UPPER = 0.0;
-static constexpr double GDJOLT_SLIDER_ANG_LIMIT_LOWER = 0.0;
-static constexpr double GDJOLT_SLIDER_ANG_LIMIT_SOFTNESS = 1.0;
-static constexpr double GDJOLT_SLIDER_ANG_LIMIT_RESTITUTION = 0.7;
-static constexpr double GDJOLT_SLIDER_ANG_LIMIT_DAMPING = 0.0;
+constexpr double GDJOLT_SLIDER_ANG_LIMIT_UPPER = 0.0;
+constexpr double GDJOLT_SLIDER_ANG_LIMIT_LOWER = 0.0;
+constexpr double GDJOLT_SLIDER_ANG_LIMIT_SOFTNESS = 1.0;
+constexpr double GDJOLT_SLIDER_ANG_LIMIT_RESTITUTION = 0.7;
+constexpr double GDJOLT_SLIDER_ANG_LIMIT_DAMPING = 0.0;
 
-static constexpr double GDJOLT_SLIDER_ANG_MOTION_SOFTNESS = 1.0;
-static constexpr double GDJOLT_SLIDER_ANG_MOTION_RESTITUTION = 0.7;
-static constexpr double GDJOLT_SLIDER_ANG_MOTION_DAMPING = 1.0;
+constexpr double GDJOLT_SLIDER_ANG_MOTION_SOFTNESS = 1.0;
+constexpr double GDJOLT_SLIDER_ANG_MOTION_RESTITUTION = 0.7;
+constexpr double GDJOLT_SLIDER_ANG_MOTION_DAMPING = 1.0;
 
-static constexpr double GDJOLT_SLIDER_ANG_ORTHO_SOFTNESS = 1.0;
-static constexpr double GDJOLT_SLIDER_ANG_ORTHO_RESTITUTION = 0.7;
-static constexpr double GDJOLT_SLIDER_ANG_ORTHO_DAMPING = 1.0;
+constexpr double GDJOLT_SLIDER_ANG_ORTHO_SOFTNESS = 1.0;
+constexpr double GDJOLT_SLIDER_ANG_ORTHO_RESTITUTION = 0.7;
+constexpr double GDJOLT_SLIDER_ANG_ORTHO_DAMPING = 1.0;
 
 } // namespace
 
