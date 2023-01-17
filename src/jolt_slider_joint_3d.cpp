@@ -176,9 +176,6 @@ double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) {
 }
 
 void JoltSliderJoint3D::set_param(PhysicsServer3D::SliderJointParam p_param, double p_value) {
-	auto* jolt_constraint = static_cast<JPH::SliderConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL(jolt_constraint);
-
 	switch (p_param) {
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_UPPER: {
 			limit_upper = p_value;
