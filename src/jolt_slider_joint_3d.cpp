@@ -60,10 +60,10 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	constraint_settings.mAutoDetectPoint = false;
 	constraint_settings.mPoint1 = to_jolt(p_local_ref_a.origin) - jolt_shape_a.GetCenterOfMass();
 	constraint_settings.mSliderAxis1 = to_jolt(p_local_ref_a.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mNormalAxis1 = to_jolt(p_local_ref_a.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis1 = to_jolt(-p_local_ref_a.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mPoint2 = to_jolt(p_local_ref_b.origin) - jolt_shape_b.GetCenterOfMass();
 	constraint_settings.mSliderAxis2 = to_jolt(p_local_ref_b.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mNormalAxis2 = to_jolt(p_local_ref_b.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_Z));
 
 	jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
 
@@ -88,10 +88,10 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	constraint_settings.mAutoDetectPoint = false;
 	constraint_settings.mPoint1 = to_jolt(p_local_ref_a.origin) - jolt_shape_a.GetCenterOfMass();
 	constraint_settings.mSliderAxis1 = to_jolt(p_local_ref_a.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mNormalAxis1 = to_jolt(p_local_ref_a.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis1 = to_jolt(-p_local_ref_a.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mPoint2 = to_jolt(p_local_ref_b.origin);
 	constraint_settings.mSliderAxis2 = to_jolt(p_local_ref_b.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mNormalAxis2 = to_jolt(p_local_ref_b.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_Z));
 
 	jolt_ref = constraint_settings.Create(*jolt_body_a, JPH::Body::sFixedToWorld);
 
