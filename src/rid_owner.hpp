@@ -3,6 +3,7 @@
 #include "variant.hpp"
 
 template<typename TResource>
+// NOLINTNEXTLINE(readability-identifier-naming)
 class RID_PtrOwner {
 public:
 	RID_PtrOwner() = default;
