@@ -5,6 +5,8 @@
 #include "jolt_physics_server_3d.hpp"
 #include "jolt_physics_server_factory_3d.hpp"
 
+#include <mimalloc-new-delete.h>
+
 namespace {
 
 JoltPhysicsServerFactory3D* server_factory = nullptr;
