@@ -11,7 +11,7 @@ class InlineVector final : public LocalVector<TElement, InlineAllocator<TElement
 public:
 	InlineVector() { Base::reserve(TCapacity); }
 
-	InlineVector(int32_t p_capacity) {
+	explicit InlineVector(int32_t p_capacity) {
 		const int32_t capacity = max(p_capacity, TCapacity);
 		Base::reserve(capacity);
 	}

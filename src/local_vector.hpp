@@ -12,7 +12,7 @@ public:
 
 	LocalVector() = default;
 
-	LocalVector(int32_t p_capacity) { storage.reserve(p_capacity); }
+	explicit LocalVector(int32_t p_capacity) { storage.reserve(p_capacity); }
 
 	LocalVector(std::initializer_list<TElement> p_list)
 		: storage(p_list) { }
