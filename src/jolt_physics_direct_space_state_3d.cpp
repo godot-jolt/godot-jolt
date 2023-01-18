@@ -20,11 +20,13 @@ class JoltQueryObjectLayerFilter3D : public JPH::ObjectLayerFilter {
 class JoltQueryBodyFilter3D : public JPH::BodyFilter {
 public:
 	JoltQueryBodyFilter3D(
+		JoltPhysicsDirectSpaceState3D* p_space_state,
 		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas
 	)
-		: collision_mask(p_collision_mask)
+		: space_state(p_space_state)
+		, collision_mask(p_collision_mask)
 		, collide_with_bodies(p_collide_with_bodies)
 		, collide_with_areas(p_collide_with_areas)
 		, collision_group(
@@ -42,10 +44,18 @@ public:
 			return false;
 		}
 
+		auto* object = reinterpret_cast<JoltCollisionObject3D*>(p_body.GetUserData());
+
+		if (space_state->is_body_excluded_from_query(object->get_rid())) {
+			return false;
+		}
+
 		return collision_group.CanCollide(p_body.GetCollisionGroup());
 	}
 
 private:
+	JoltPhysicsDirectSpaceState3D* space_state = nullptr;
+
 	uint32_t collision_mask = 0;
 
 	bool collide_with_bodies = false;
@@ -103,6 +113,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 		JoltQueryBroadPhaseLayerFilter3D(),
 		JoltQueryObjectLayerFilter3D(),
 		JoltQueryBodyFilter3D(
+			this,
 			(uint32_t)p_collision_mask,
 			p_collide_with_bodies,
 			p_collide_with_areas
