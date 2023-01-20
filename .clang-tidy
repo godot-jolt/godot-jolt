@@ -166,7 +166,7 @@ Checks: >
   readability-delete-null-pointer,
   readability-duplicate-include,
   -readability-else-after-return,
-  readability-function-cognitive-complexity,
+  -readability-function-cognitive-complexity,
   -readability-function-size,
   -readability-identifier-length,
   readability-identifier-naming,
