@@ -202,7 +202,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 		case 7: /* G6DOF_JOINT_LINEAR_SPRING_STIFFNESS */ {
 			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_SPRING_STIFFNESS)) {
 				WARN_PRINT(
-					"Generic 6DOF joint spring stiffness is not supported by Godot Jolt. "
+					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
 				);
 			}
@@ -210,7 +210,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 		case 8: /* G6DOF_JOINT_LINEAR_SPRING_DAMPING */ {
 			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_SPRING_DAMPING)) {
 				WARN_PRINT(
-					"Generic 6DOF joint spring damping is not supported by Godot Jolt. "
+					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
 				);
 			}
@@ -218,7 +218,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 		case 9: /* G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT */ {
 			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_SPRING_EQUILIBRIUM_POINT)) {
 				WARN_PRINT(
-					"Generic 6DOF joint spring equilibrium point is not supported by Godot Jolt. "
+					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
 				);
 			}
@@ -288,7 +288,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 		case 19: /* G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS */ {
 			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_SPRING_STIFFNESS)) {
 				WARN_PRINT(
-					"Generic 6DOF joint spring stiffness is not supported by Godot Jolt. "
+					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
 				);
 			}
@@ -296,7 +296,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 		case 20: /* G6DOF_JOINT_ANGULAR_SPRING_DAMPING */ {
 			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_SPRING_DAMPING)) {
 				WARN_PRINT(
-					"Generic 6DOF joint spring damping is not supported by Godot Jolt. "
+					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
 				);
 			}
@@ -304,7 +304,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 		case 21: /* G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT */ {
 			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_SPRING_EQUILIBRIUM_POINT)) {
 				WARN_PRINT(
-					"Generic 6DOF joint spring equilibrium point is not supported by Godot Jolt. "
+					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
 				);
 			}
