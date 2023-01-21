@@ -67,7 +67,7 @@ double JoltGeneric6DOFJoint3D::get_param(
 	const int32_t linear_axis = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t angular_axis = AXES_ANGULAR + (int32_t)p_axis;
 
-	switch ((int)p_param) {
+	switch ((int32_t)p_param) {
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LOWER_LIMIT: {
 			return limit_lower[linear_axis];
 		}
@@ -152,7 +152,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 	const int32_t lin_axis = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t ang_axis = AXES_ANGULAR + (int32_t)p_axis;
 
-	switch ((int)p_param) {
+	switch ((int32_t)p_param) {
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LOWER_LIMIT: {
 			limit_lower[lin_axis] = p_value;
 			rebuild(p_lock);
@@ -325,7 +325,7 @@ bool JoltGeneric6DOFJoint3D::get_flag(
 	const int32_t linear_axis = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t angular_axis = AXES_ANGULAR + (int32_t)p_axis;
 
-	switch ((int)p_flag) {
+	switch ((int32_t)p_flag) {
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT: {
 			return use_limits[linear_axis];
 		}
@@ -362,7 +362,7 @@ void JoltGeneric6DOFJoint3D::set_flag(
 	const int32_t linear_axis = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t angular_axis = AXES_ANGULAR + (int32_t)p_axis;
 
-	switch ((int)p_flag) {
+	switch ((int32_t)p_flag) {
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT: {
 			use_limits[linear_axis] = p_enabled;
 			rebuild(p_lock);
