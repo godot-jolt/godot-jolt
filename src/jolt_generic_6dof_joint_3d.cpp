@@ -452,7 +452,7 @@ void JoltGeneric6DOFJoint3D::rebuild(bool p_lock) {
 		const double upper = limit_upper[axis];
 
 		if (lower > upper) {
-			// HACK(mihe): This seems to emulates the behavior of Godot Physics, where if the limits
+			// HACK(mihe): This seems to emulate the behavior of Godot Physics, where if the limits
 			// result in a negative span then the axis becomes unbounded.
 			constraint_settings.MakeFreeAxis((JoltAxis)axis);
 		} else {
