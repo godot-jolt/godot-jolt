@@ -418,10 +418,10 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::try_build(uint64_t p_user_data) const {
 		return {};
 	}
 
-	const auto vertex_count = (size_t)vertices.size();
+	const auto vertex_count = (int32_t)vertices.size();
 
 	JPH::Array<JPH::Vec3> jolt_vertices;
-	jolt_vertices.reserve(vertex_count);
+	jolt_vertices.reserve((size_t)vertex_count);
 
 	const Vector3* vertices_begin = &vertices[0];
 	const Vector3* vertices_end = vertices_begin + vertex_count;
@@ -507,11 +507,11 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::try_build(uint64_t p_user_data) const 
 		return {};
 	}
 
-	const auto vertex_count = (size_t)faces.size();
-	const size_t face_count = vertex_count / 3;
+	const auto vertex_count = (int32_t)faces.size();
+	const int32_t face_count = vertex_count / 3;
 
 	JPH::TriangleList jolt_faces;
-	jolt_faces.reserve(face_count);
+	jolt_faces.reserve((size_t)face_count);
 
 	const Vector3* faces_begin = &faces[0];
 	const Vector3* faces_end = faces_begin + vertex_count;
