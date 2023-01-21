@@ -79,7 +79,6 @@
 #include <Jolt/Renderer/DebugRenderer.h>
 #endif // JPH_DEBUG_RENDERER
 
-#include <fmt/format.h>
 #include <mimalloc.h>
 
 #include <algorithm>
@@ -109,5 +108,4 @@ using namespace godot;
 #include "local_vector.hpp"
 #include "rid_owner.hpp"
 #include "utility_functions.hpp"
-#include "variant.hpp"
 #include "wrapped.hpp"

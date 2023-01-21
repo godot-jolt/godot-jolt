@@ -196,7 +196,7 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object, bool p_lock) {
 			motion_type = JPH::EMotionType::Dynamic;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body mode: '{}'", body_mode));
+			ERR_FAIL_MSG(vformat("Unhandled body mode: '%d'", body_mode));
 		} break;
 	}
 

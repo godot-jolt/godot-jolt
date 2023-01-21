@@ -25,7 +25,7 @@ Variant JoltBody3D::get_state(PhysicsServer3D::BodyState p_state) {
 			return can_sleep();
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled body state: '{}'", p_state));
+			ERR_FAIL_D_MSG(vformat("Unhandled body state: '%d'", p_state));
 		}
 	}
 }
@@ -48,7 +48,7 @@ void JoltBody3D::set_state(PhysicsServer3D::BodyState p_state, const Variant& p_
 			set_can_sleep(p_value);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body state: '{}'", p_state));
+			ERR_FAIL_MSG(vformat("Unhandled body state: '%d'", p_state));
 		} break;
 	}
 }
@@ -86,7 +86,7 @@ Variant JoltBody3D::get_param(PhysicsServer3D::BodyParameter p_param) const {
 			return get_angular_damp();
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled body parameter: '{}'", p_param));
+			ERR_FAIL_D_MSG(vformat("Unhandled body parameter: '%d'", p_param));
 		}
 	}
 }
@@ -124,7 +124,7 @@ void JoltBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const Variant
 			set_angular_damp(p_value);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body parameter: '{}'", p_param));
+			ERR_FAIL_MSG(vformat("Unhandled body parameter: '%d'", p_param));
 		} break;
 	}
 }
@@ -412,7 +412,7 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 			motion_type = JPH::EMotionType::Dynamic;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body mode: '{}'", p_mode));
+			ERR_FAIL_MSG(vformat("Unhandled body mode: '%d'", p_mode));
 		} break;
 	}
 

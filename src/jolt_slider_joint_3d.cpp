@@ -170,7 +170,7 @@ double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) {
 			return GDJOLT_SLIDER_ANG_ORTHO_DAMPING;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint parameter: '{}'", p_param));
+			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
 		}
 	}
 }
@@ -348,7 +348,7 @@ void JoltSliderJoint3D::set_param(PhysicsServer3D::SliderJointParam p_param, dou
 			}
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled hinge joint parameter: '{}'", p_param));
+			ERR_FAIL_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
 		} break;
 	}
 }

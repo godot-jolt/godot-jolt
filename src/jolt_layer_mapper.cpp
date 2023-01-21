@@ -39,7 +39,7 @@ bool JoltLayerMapper::ShouldCollide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer 
 			return p_layer2 != GDJOLT_OBJECT_LAYER_NONE;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled object layer: '{}'", p_layer1));
+			ERR_FAIL_D_MSG(vformat("Unhandled object layer: '%d'", p_layer1));
 		}
 	}
 }
@@ -57,7 +57,7 @@ bool JoltLayerMapper::ShouldCollide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLa
 			return p_layer2 != JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_NONE);
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled object layer: '{}'", p_layer1));
+			ERR_FAIL_D_MSG(vformat("Unhandled object layer: '%d'", p_layer1));
 		}
 	}
 }
@@ -72,7 +72,7 @@ JPH::ObjectLayer JoltLayerMapper::to_object_layer(JPH::EMotionType p_motion_type
 			return GDJOLT_OBJECT_LAYER_MOVING;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled motion type: '{}'", (int32_t)p_motion_type));
+			ERR_FAIL_D_MSG(vformat("Unhandled motion type: '%d'", (int32_t)p_motion_type));
 		}
 	}
 }

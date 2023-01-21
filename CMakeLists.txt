@@ -13,7 +13,6 @@ project(godot-jolt
 include(GodotJoltSetup)
 include(GodotJoltExternalGodotCpp)
 include(GodotJoltExternalJolt)
-include(GodotJoltExternalFmt)
 include(GodotJoltExternalMimalloc)
 
 set(source_dir ${CMAKE_CURRENT_LIST_DIR}/src)
@@ -28,7 +27,6 @@ add_library(godot-jolt::godot-jolt ALIAS godot-jolt)
 target_link_libraries(godot-jolt
 	godot-jolt::godot-cpp
 	godot-jolt::jolt
-	godot-jolt::fmt
 	godot-jolt::mimalloc
 )
 

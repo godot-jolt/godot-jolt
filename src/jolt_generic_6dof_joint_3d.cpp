@@ -135,7 +135,7 @@ double JoltGeneric6DOFJoint3D::get_param(
 			return GDJOLT_G6DOF_ANG_SPRING_EQUILIBRIUM_POINT;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled 6DOF joint parameter: '{}'", p_param));
+			ERR_FAIL_D_MSG(vformat("Unhandled 6DOF joint parameter: '%d'", p_param));
 		}
 	}
 }
@@ -310,7 +310,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled 6DOF joint parameter: '{}'", p_param));
+			ERR_FAIL_MSG(vformat("Unhandled 6DOF joint parameter: '%d'", p_param));
 		} break;
 	}
 }
@@ -345,7 +345,7 @@ bool JoltGeneric6DOFJoint3D::get_flag(
 			return motor_enabled[axis_lin];
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled 6DOF joint flag: '{}'", p_flag));
+			ERR_FAIL_D_MSG(vformat("Unhandled 6DOF joint flag: '%d'", p_flag));
 		}
 	}
 }
@@ -404,7 +404,7 @@ void JoltGeneric6DOFJoint3D::set_flag(
 			);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled 6DOF joint flag: '{}'", p_flag));
+			ERR_FAIL_MSG(vformat("Unhandled 6DOF joint flag: '%d'", p_flag));
 		} break;
 	}
 }
