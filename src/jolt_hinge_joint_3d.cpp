@@ -104,7 +104,7 @@ double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) {
 			return motor_max_impulse;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint parameter: '{}'", p_param));
+			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
 		}
 	}
 }
@@ -167,7 +167,7 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 			motor_settings.mMaxTorqueLimit = (float)+max_torque;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled hinge joint parameter: '{}'", p_param));
+			ERR_FAIL_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
 		} break;
 	}
 }
@@ -184,7 +184,7 @@ bool JoltHingeJoint3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) {
 			return jolt_constraint->GetMotorState() != JPH::EMotorState::Off;
 		} break;
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint flag: '{}'", p_flag));
+			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint flag: '%d'", p_flag));
 		} break;
 	}
 }
@@ -204,7 +204,7 @@ void JoltHingeJoint3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_e
 			);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled hinge joint flag: '{}'", p_flag));
+			ERR_FAIL_MSG(vformat("Unhandled hinge joint flag: '%d'", p_flag));
 		} break;
 	}
 }

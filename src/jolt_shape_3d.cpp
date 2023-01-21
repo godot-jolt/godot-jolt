@@ -40,10 +40,10 @@ JPH::ShapeRefC JoltShape3D::with_scale(const JPH::ShapeRefC& p_shape, const Vect
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to scale shape with scale '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to scale shape with scale '%v'. "
+			"Jolt returned the following error: '%s'.",
 			p_scale,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 
@@ -68,11 +68,11 @@ JPH::ShapeRefC JoltShape3D::with_basis_origin(
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to offset shape with basis '{}' and origin '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to offset shape with basis '%s' and origin '%v'. "
+			"Jolt returned the following error: '%s'.",
 			p_basis,
 			p_origin,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 
@@ -124,10 +124,10 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to offset center of mass with offset '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to offset center of mass with offset '%v'. "
+			"Jolt returned the following error: '%s'.",
 			p_offset,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 
@@ -187,10 +187,10 @@ JPH::ShapeRefC JoltSphereShape3D::try_build(uint64_t p_user_data) const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build sphere shape with radius '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to build sphere shape with radius '%f'. "
+			"Jolt returned the following error: '%s'.",
 			radius,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 
@@ -236,10 +236,10 @@ JPH::ShapeRefC JoltBoxShape3D::try_build(uint64_t p_user_data) const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build box shape with half extents '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to build box shape with half extents '%v'. "
+			"Jolt returned the following error: '%s'.",
 			half_extents,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 
@@ -280,7 +280,7 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND_MSG(
 		half_height < new_radius,
 		vformat(
-			"Failed to set shape data for capsule shape with height '{}' and radius '{}'. "
+			"Failed to set shape data for capsule shape with height '%f' and radius '%f'. "
 			"Half height must be equal to or greater than radius.",
 			new_height,
 			new_radius
@@ -312,11 +312,11 @@ JPH::ShapeRefC JoltCapsuleShape3D::try_build(uint64_t p_user_data) const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build capsule shape with height '{}' and radius '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to build capsule shape with height '%f' and radius '%f'. "
+			"Jolt returned the following error: '%s'.",
 			height,
 			radius,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 
@@ -377,11 +377,11 @@ JPH::ShapeRefC JoltCylinderShape3D::try_build(uint64_t p_user_data) const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build cylinder shape with height '{}' and radius '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to build cylinder shape with height '%f' and radius '%f'. "
+			"Jolt returned the following error: '%s'.",
 			height,
 			radius,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 
@@ -438,10 +438,10 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::try_build(uint64_t p_user_data) const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build convex polygon shape with vertex count '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to build convex polygon shape with vertex count '%d'. "
+			"Jolt returned the following error: '%s'.",
 			vertex_count,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 
@@ -544,10 +544,10 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::try_build(uint64_t p_user_data) const 
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build concave polygon shape with vertex count '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to build concave polygon shape with vertex count '%d'. "
+			"Jolt returned the following error: '%s'.",
 			vertex_count,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 
@@ -599,8 +599,8 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND_MSG(
 		height_count != new_width * new_depth,
 		vformat(
-			"Failed to set shape data for height map shape with width '{}', depth '{}' and height "
-			"count '{}'. Height count must be equal to width multiplied by depth.",
+			"Failed to set shape data for height map shape with width '%d', depth '%d' and height "
+			"count '%d'. Height count must be equal to width multiplied by depth.",
 			new_width,
 			new_depth,
 			height_count
@@ -610,8 +610,8 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND_MSG(
 		new_width != new_depth,
 		vformat(
-			"Failed to set shape data for height map shape with width '{}', depth '{}' and height "
-			"count '{}'. Height maps with differing width and depth are not supported by Godot "
+			"Failed to set shape data for height map shape with width '%d', depth '%d' and height "
+			"count '%d'. Height maps with differing width and depth are not supported by Godot "
 			"Jolt.",
 			new_width,
 			new_depth,
@@ -624,8 +624,8 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	ERR_FAIL_COND_MSG(
 		!is_power_of_2(sample_count),
 		vformat(
-			"Failed to set shape data for height map shape with width '{}', depth '{}' and height "
-			"count '{}'. Height maps with a width/depth that is not a power of two are not "
+			"Failed to set shape data for height map shape with width '%d', depth '%d' and height "
+			"count '%d'. Height maps with a width/depth that is not a power of two are not "
 			"supported by Godot Jolt.",
 			new_width,
 			new_depth,
@@ -669,12 +669,12 @@ JPH::ShapeRefC JoltHeightMapShape3D::try_build(uint64_t p_user_data) const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build height map shape with width '{}', depth '{}' and height count '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to build height map shape with width '%d', depth '%d' and height count '%d'. "
+			"Jolt returned the following error: '%s'.",
 			width,
 			depth,
 			heights.size(),
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 

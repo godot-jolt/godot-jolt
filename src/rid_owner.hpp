@@ -1,7 +1,5 @@
 #pragma once
 
-#include "variant.hpp"
-
 template<typename TResource>
 // NOLINTNEXTLINE(readability-identifier-naming)
 class RID_PtrOwner {
@@ -14,7 +12,7 @@ public:
 
 	~RID_PtrOwner() {
 		if (ptr_by_id.size() > 0) {
-			ERR_PRINT(vformat("{} RIDs were leaked.", ptr_by_id.size()));
+			ERR_PRINT(vformat("%d RIDs were leaked.", ptr_by_id.size()));
 		}
 	}
 

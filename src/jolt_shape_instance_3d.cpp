@@ -61,10 +61,10 @@ JPH::ShapeRefC JoltShapeInstance3D::build_compound(const Built* p_built_shapes, 
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to create compound shape with sub-shape count '{}'. "
-			"Jolt returned the following error: '{}'.",
+			"Failed to create compound shape with sub-shape count '%d'. "
+			"Jolt returned the following error: '%s'.",
 			p_count,
-			shape_result.GetError()
+			shape_result.GetError().c_str()
 		)
 	);
 

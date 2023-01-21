@@ -94,7 +94,7 @@ double JoltConeTwistJoint3D::get_param(PhysicsServer3D::ConeTwistJointParam p_pa
 			return GDJOLT_CONE_TWIST_JOINT_DEFAULT_RELAXATION;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled cone twist joint parameter: '{}'", p_param));
+			ERR_FAIL_D_MSG(vformat("Unhandled cone twist joint parameter: '%d'", p_param));
 		}
 	}
 }
@@ -137,7 +137,7 @@ void JoltConeTwistJoint3D::set_param(PhysicsServer3D::ConeTwistJointParam p_para
 			}
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled cone twist joint parameter: '{}'", p_param));
+			ERR_FAIL_MSG(vformat("Unhandled cone twist joint parameter: '%d'", p_param));
 		} break;
 	}
 }

@@ -109,5 +109,4 @@ using namespace godot;
 #include "local_vector.hpp"
 #include "rid_owner.hpp"
 #include "utility_functions.hpp"
-#include "variant.hpp"
 #include "wrapped.hpp"
