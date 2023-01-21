@@ -64,8 +64,8 @@ double JoltGeneric6DOFJoint3D::get_param(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisParam p_param
 ) {
-	const int32_t linear_axis = AXES_LINEAR + p_axis;
-	const int32_t angular_axis = AXES_ANGULAR + p_axis;
+	const int32_t linear_axis = AXES_LINEAR + (int32_t)p_axis;
+	const int32_t angular_axis = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int)p_param) {
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LOWER_LIMIT: {
@@ -149,8 +149,8 @@ void JoltGeneric6DOFJoint3D::set_param(
 	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
-	const int32_t lin_axis = AXES_LINEAR + p_axis;
-	const int32_t ang_axis = AXES_ANGULAR + p_axis;
+	const int32_t lin_axis = AXES_LINEAR + (int32_t)p_axis;
+	const int32_t ang_axis = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int)p_param) {
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LOWER_LIMIT: {
@@ -322,8 +322,8 @@ bool JoltGeneric6DOFJoint3D::get_flag(
 	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL_D(jolt_constraint);
 
-	const int32_t linear_axis = AXES_LINEAR + p_axis;
-	const int32_t angular_axis = AXES_ANGULAR + p_axis;
+	const int32_t linear_axis = AXES_LINEAR + (int32_t)p_axis;
+	const int32_t angular_axis = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int)p_flag) {
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT: {
@@ -359,8 +359,8 @@ void JoltGeneric6DOFJoint3D::set_flag(
 	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
-	const int32_t linear_axis = AXES_LINEAR + p_axis;
-	const int32_t angular_axis = AXES_ANGULAR + p_axis;
+	const int32_t linear_axis = AXES_LINEAR + (int32_t)p_axis;
+	const int32_t angular_axis = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int)p_flag) {
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT: {
