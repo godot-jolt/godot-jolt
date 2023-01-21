@@ -506,7 +506,7 @@ void JoltGeneric6DOFJoint3D::rebuild(bool p_lock) {
 		ERR_FAIL_COND(jolt_body_a.is_invalid());
 
 		const JoltWritableBody3D jolt_body_b = bodies[1];
-		ERR_FAIL_COND(jolt_body_a.is_invalid());
+		ERR_FAIL_COND(jolt_body_b.is_invalid());
 
 		jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
 	} else {
