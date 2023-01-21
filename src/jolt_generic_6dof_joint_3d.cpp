@@ -64,15 +64,15 @@ double JoltGeneric6DOFJoint3D::get_param(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisParam p_param
 ) {
-	const int32_t linear_axis = AXES_LINEAR + (int32_t)p_axis;
-	const int32_t angular_axis = AXES_ANGULAR + (int32_t)p_axis;
+	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
+	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_param) {
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LOWER_LIMIT: {
-			return limit_lower[linear_axis];
+			return limit_lower[axis_lin];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_UPPER_LIMIT: {
-			return limit_upper[linear_axis];
+			return limit_upper[axis_lin];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SOFTNESS: {
 			return GDJOLT_G6DOF_LIN_LIMIT_SOFTNESS;
@@ -84,10 +84,10 @@ double JoltGeneric6DOFJoint3D::get_param(
 			return GDJOLT_G6DOF_LIN_DAMPING;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_MOTOR_TARGET_VELOCITY: {
-			return motor_velocity[linear_axis];
+			return motor_velocity[axis_lin];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_MOTOR_FORCE_LIMIT: {
-			return motor_limit[linear_axis];
+			return motor_limit[axis_lin];
 		}
 		case 7: /* G6DOF_JOINT_LINEAR_SPRING_STIFFNESS */ {
 			return GDJOLT_G6DOF_LIN_SPRING_STIFFNESS;
@@ -99,10 +99,10 @@ double JoltGeneric6DOFJoint3D::get_param(
 			return GDJOLT_G6DOF_LIN_SPRING_EQUILIBRIUM_POINT;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LOWER_LIMIT: {
-			return limit_lower[angular_axis];
+			return limit_lower[axis_ang];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_UPPER_LIMIT: {
-			return limit_upper[angular_axis];
+			return limit_upper[axis_ang];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LIMIT_SOFTNESS: {
 			return GDJOLT_G6DOF_ANG_LIMIT_SOFTNESS;
@@ -120,10 +120,10 @@ double JoltGeneric6DOFJoint3D::get_param(
 			return GDJOLT_G6DOF_ANG_ERP;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_TARGET_VELOCITY: {
-			return motor_velocity[angular_axis];
+			return motor_velocity[axis_ang];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_FORCE_LIMIT: {
-			return motor_limit[angular_axis];
+			return motor_limit[axis_ang];
 		}
 		case 19: /* G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS */ {
 			return GDJOLT_G6DOF_ANG_SPRING_STIFFNESS;
@@ -149,16 +149,16 @@ void JoltGeneric6DOFJoint3D::set_param(
 	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
-	const int32_t lin_axis = AXES_LINEAR + (int32_t)p_axis;
-	const int32_t ang_axis = AXES_ANGULAR + (int32_t)p_axis;
+	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
+	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_param) {
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LOWER_LIMIT: {
-			limit_lower[lin_axis] = p_value;
+			limit_lower[axis_lin] = p_value;
 			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_UPPER_LIMIT: {
-			limit_upper[lin_axis] = p_value;
+			limit_upper[axis_lin] = p_value;
 			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SOFTNESS: {
@@ -186,7 +186,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_MOTOR_TARGET_VELOCITY: {
-			motor_velocity[lin_axis] = p_value;
+			motor_velocity[axis_lin] = p_value;
 
 			jolt_constraint->SetTargetVelocityCS(
 				{(float)motor_velocity[AXIS_LINEAR_X],
@@ -195,9 +195,9 @@ void JoltGeneric6DOFJoint3D::set_param(
 			);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_MOTOR_FORCE_LIMIT: {
-			motor_limit[lin_axis] = p_value;
+			motor_limit[axis_lin] = p_value;
 
-			jolt_constraint->GetMotorSettings((JoltAxis)lin_axis).SetForceLimit((float)p_value);
+			jolt_constraint->GetMotorSettings((JoltAxis)axis_lin).SetForceLimit((float)p_value);
 		} break;
 		case 7: /* G6DOF_JOINT_LINEAR_SPRING_STIFFNESS */ {
 			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_SPRING_STIFFNESS)) {
@@ -224,11 +224,11 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LOWER_LIMIT: {
-			limit_lower[ang_axis] = p_value;
+			limit_lower[axis_ang] = p_value;
 			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_UPPER_LIMIT: {
-			limit_upper[ang_axis] = p_value;
+			limit_upper[axis_ang] = p_value;
 			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LIMIT_SOFTNESS: {
@@ -272,7 +272,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_TARGET_VELOCITY: {
-			motor_velocity[ang_axis] = p_value;
+			motor_velocity[axis_ang] = p_value;
 
 			jolt_constraint->SetTargetAngularVelocityCS(
 				{(float)motor_velocity[AXIS_ANGULAR_X],
@@ -281,9 +281,9 @@ void JoltGeneric6DOFJoint3D::set_param(
 			);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_FORCE_LIMIT: {
-			motor_limit[ang_axis] = p_value;
+			motor_limit[axis_ang] = p_value;
 
-			jolt_constraint->GetMotorSettings((JoltAxis)ang_axis).SetTorqueLimit((float)p_value);
+			jolt_constraint->GetMotorSettings((JoltAxis)axis_ang).SetTorqueLimit((float)p_value);
 		} break;
 		case 19: /* G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS */ {
 			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_SPRING_STIFFNESS)) {
@@ -322,15 +322,15 @@ bool JoltGeneric6DOFJoint3D::get_flag(
 	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL_D(jolt_constraint);
 
-	const int32_t linear_axis = AXES_LINEAR + (int32_t)p_axis;
-	const int32_t angular_axis = AXES_ANGULAR + (int32_t)p_axis;
+	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
+	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_flag) {
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT: {
-			return use_limits[linear_axis];
+			return use_limits[axis_lin];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_LIMIT: {
-			return use_limits[angular_axis];
+			return use_limits[axis_ang];
 		}
 		case 2: /* G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING */ {
 			return false;
@@ -339,10 +339,10 @@ bool JoltGeneric6DOFJoint3D::get_flag(
 			return false;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_MOTOR: {
-			return motor_enabled[angular_axis];
+			return motor_enabled[axis_ang];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_MOTOR: {
-			return motor_enabled[linear_axis];
+			return motor_enabled[axis_lin];
 		}
 		default: {
 			ERR_FAIL_D_MSG(vformat("Unhandled 6DOF joint flag: '{}'", p_flag));
@@ -359,16 +359,16 @@ void JoltGeneric6DOFJoint3D::set_flag(
 	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
-	const int32_t linear_axis = AXES_LINEAR + (int32_t)p_axis;
-	const int32_t angular_axis = AXES_ANGULAR + (int32_t)p_axis;
+	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
+	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_flag) {
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT: {
-			use_limits[linear_axis] = p_enabled;
+			use_limits[axis_lin] = p_enabled;
 			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_LIMIT: {
-			use_limits[angular_axis] = p_enabled;
+			use_limits[axis_ang] = p_enabled;
 			rebuild(p_lock);
 		} break;
 		case 2: /* G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING */ {
@@ -388,18 +388,18 @@ void JoltGeneric6DOFJoint3D::set_flag(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_MOTOR: {
-			motor_enabled[angular_axis] = p_enabled;
+			motor_enabled[axis_ang] = p_enabled;
 
 			jolt_constraint->SetMotorState(
-				(JoltAxis)angular_axis,
+				(JoltAxis)axis_ang,
 				p_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
 			);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_MOTOR: {
-			motor_enabled[linear_axis] = p_enabled;
+			motor_enabled[axis_lin] = p_enabled;
 
 			jolt_constraint->SetMotorState(
-				(JoltAxis)linear_axis,
+				(JoltAxis)axis_lin,
 				p_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
 			);
 		} break;
