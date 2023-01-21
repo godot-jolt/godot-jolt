@@ -439,7 +439,6 @@ void JoltGeneric6DOFJoint3D::rebuild(bool p_lock) {
 	}
 
 	JPH::SixDOFConstraintSettings constraint_settings;
-	constraint_settings.mSpace = JPH::EConstraintSpace::WorldSpace;
 
 	float ref_shift[AXIS_COUNT] = {};
 
@@ -486,6 +485,7 @@ void JoltGeneric6DOFJoint3D::rebuild(bool p_lock) {
 	const Vector3 shifted_origin = world_ref.xform(linear_shift);
 	const Basis shifted_basis = world_ref.basis.rotated(angular_shift);
 
+	constraint_settings.mSpace = JPH::EConstraintSpace::WorldSpace;
 	constraint_settings.mPosition1 = to_jolt(shifted_origin);
 	constraint_settings.mAxisX1 = to_jolt(world_ref.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mAxisY1 = to_jolt(world_ref.basis.get_column(Vector3::AXIS_Y));
