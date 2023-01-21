@@ -79,7 +79,6 @@
 #include <Jolt/Renderer/DebugRenderer.h>
 #endif // JPH_DEBUG_RENDERER
 
-#include <fmt/format.h>
 #include <mimalloc.h>
 
 #include <algorithm>
