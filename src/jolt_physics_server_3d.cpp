@@ -362,7 +362,7 @@ void JoltPhysicsServer3D::_area_set_monitor_callback(
 	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
-	area->set_monitor_callback(p_callback.is_valid() ? p_callback : Callable());
+	area->set_monitor_callback(p_callback);
 }
 
 void JoltPhysicsServer3D::_area_set_area_monitor_callback(
@@ -372,7 +372,7 @@ void JoltPhysicsServer3D::_area_set_area_monitor_callback(
 	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
-	area->set_area_monitor_callback(p_callback.is_valid() ? p_callback : Callable());
+	area->set_area_monitor_callback(p_callback);
 }
 
 void JoltPhysicsServer3D::_area_set_ray_pickable(
