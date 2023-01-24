@@ -18,11 +18,11 @@ class HashMap {
 		}
 	};
 
-	using Storage = std::unordered_map<TKey, TValue, Hasher, Comparator>;
+	using Implementation = std::unordered_map<TKey, TValue, Hasher, Comparator>;
 
 public:
-	using Iterator = typename Storage::iterator;
-	using ConstIterator = typename Storage::const_iterator;
+	using Iterator = typename Implementation::iterator;
+	using ConstIterator = typename Implementation::const_iterator;
 
 	HashMap() = default;
 
@@ -85,5 +85,5 @@ public:
 	_FORCE_INLINE_ const TValue& operator[](const TKey& p_key) const { return storage.at(p_key); }
 
 private:
-	Storage storage;
+	Implementation storage;
 };
