@@ -11,21 +11,21 @@ constexpr float GDJOLT_CONVEX_RADIUS = 0.0f;
 JoltShape3D::~JoltShape3D() = default;
 
 void JoltShape3D::add_owner(JoltCollisionObject3D* p_owner) {
-	ref_count_by_owner[p_owner]++;
+	ref_counts_by_owner[p_owner]++;
 }
 
 void JoltShape3D::remove_owner(JoltCollisionObject3D* p_owner) {
-	if (--ref_count_by_owner[p_owner] <= 0) {
-		ref_count_by_owner.erase(p_owner);
+	if (--ref_counts_by_owner[p_owner] <= 0) {
+		ref_counts_by_owner.erase(p_owner);
 	}
 }
 
 void JoltShape3D::remove_self(bool p_lock) {
 	// `remove_owner` will be called when we `remove_shape`, so we need to copy the map since the
 	// iterator would be invalidated from underneath us
-	const auto ref_count_by_owner_copy = ref_count_by_owner;
+	const auto ref_counts_by_owner_copy = ref_counts_by_owner;
 
-	for (const auto& [owner, ref_count] : ref_count_by_owner_copy) {
+	for (const auto& [owner, ref_count] : ref_counts_by_owner_copy) {
 		for (int32_t i = 0; i < ref_count; ++i) {
 			owner->remove_shape(this, p_lock);
 		}

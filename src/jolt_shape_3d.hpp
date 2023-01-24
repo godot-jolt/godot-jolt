@@ -50,7 +50,7 @@ public:
 protected:
 	RID rid;
 
-	HashMap<JoltCollisionObject3D*, int32_t> ref_count_by_owner;
+	HashMap<JoltCollisionObject3D*, int32_t> ref_counts_by_owner;
 };
 
 class JoltSphereShape3D final : public JoltShape3D {
