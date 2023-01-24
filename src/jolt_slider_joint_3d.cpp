@@ -36,14 +36,14 @@ constexpr double GDJOLT_SLIDER_ANG_ORTHO_DAMPING = 1.0;
 
 JoltSliderJoint3D::JoltSliderJoint3D(
 	JoltSpace3D* p_space,
-	const JoltBody3D& p_body_a,
-	const JoltBody3D& p_body_b,
+	JoltBody3D* p_body_a,
+	JoltBody3D* p_body_b,
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space) {
-	const JPH::BodyID body_ids[] = {p_body_a.get_jolt_id(), p_body_b.get_jolt_id()};
+	: JoltJoint3D(p_space, p_body_a, p_body_b) {
+	const JPH::BodyID body_ids[] = {body_a->get_jolt_id(), body_b->get_jolt_id()};
 	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, count_of(body_ids), p_lock);
 
 	const JoltWritableBody3D jolt_body_a = bodies[0];
@@ -72,13 +72,13 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 
 JoltSliderJoint3D::JoltSliderJoint3D(
 	JoltSpace3D* p_space,
-	const JoltBody3D& p_body_a,
+	JoltBody3D* p_body_a,
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space) {
-	const JoltWritableBody3D jolt_body_a = space->write_body(p_body_a, p_lock);
+	: JoltJoint3D(p_space, p_body_a) {
+	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
 	const JPH::Shape& jolt_shape_a = *jolt_body_a->GetShape();

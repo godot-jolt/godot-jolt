@@ -6,8 +6,8 @@ class JoltHingeJoint3D final : public JoltJoint3D {
 public:
 	JoltHingeJoint3D(
 		JoltSpace3D* p_space,
-		const JoltBody3D& p_body_a,
-		const JoltBody3D& p_body_b,
+		JoltBody3D* p_body_a,
+		JoltBody3D* p_body_b,
 		const Transform3D& p_hinge_a,
 		const Transform3D& p_hinge_b,
 		bool p_lock = true
@@ -15,7 +15,7 @@ public:
 
 	JoltHingeJoint3D(
 		JoltSpace3D* p_space,
-		const JoltBody3D& p_body_a,
+		JoltBody3D* p_body_a,
 		const Transform3D& p_hinge_a,
 		const Transform3D& p_hinge_b,
 		bool p_lock = true

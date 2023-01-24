@@ -9,8 +9,8 @@ class JoltPinJoint3D final : public JoltJoint3D {
 public:
 	JoltPinJoint3D(
 		JoltSpace3D* p_space,
-		const JoltBody3D* p_body_a,
-		const JoltBody3D* p_body_b,
+		JoltBody3D* p_body_a,
+		JoltBody3D* p_body_b,
 		const Vector3& p_local_a,
 		const Vector3& p_local_b,
 		bool p_lock = true
@@ -18,7 +18,7 @@ public:
 
 	JoltPinJoint3D(
 		JoltSpace3D* p_space,
-		const JoltBody3D* p_body_a,
+		JoltBody3D* p_body_a,
 		const Vector3& p_local_a,
 		const Vector3& p_local_b,
 		bool p_lock = true
@@ -39,10 +39,6 @@ public:
 	void set_param(PhysicsServer3D::PinJointParam p_param, double p_value);
 
 private:
-	const JoltBody3D* body_a = nullptr;
-
-	const JoltBody3D* body_b = nullptr;
-
 	Vector3 local_a;
 
 	Vector3 local_b;

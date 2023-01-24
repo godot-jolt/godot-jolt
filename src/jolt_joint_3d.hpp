@@ -7,7 +7,7 @@ class JoltJoint3D {
 public:
 	JoltJoint3D() = default;
 
-	explicit JoltJoint3D(JoltSpace3D* p_space);
+	JoltJoint3D(JoltSpace3D* p_space, JoltBody3D* p_body_a, JoltBody3D* p_body_b = nullptr);
 
 	virtual ~JoltJoint3D();
 
@@ -25,10 +25,20 @@ public:
 
 	void set_solver_priority(int64_t p_priority);
 
+	bool is_collision_disabled() const { return collision_disabled; }
+
+	void set_collision_disabled(bool p_disabled);
+
 protected:
 	RID rid;
 
 	JoltSpace3D* space = nullptr;
 
+	JoltBody3D* body_a = nullptr;
+
+	JoltBody3D* body_b = nullptr;
+
 	JPH::Ref<JPH::Constraint> jolt_ref;
+
+	bool collision_disabled = false;
 };

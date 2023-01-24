@@ -20,8 +20,8 @@ class JoltGeneric6DOFJoint3D final : public JoltJoint3D {
 public:
 	JoltGeneric6DOFJoint3D(
 		JoltSpace3D* p_space,
-		const JoltBody3D* p_body_a,
-		const JoltBody3D* p_body_b,
+		JoltBody3D* p_body_a,
+		JoltBody3D* p_body_b,
 		const Transform3D& p_local_ref_a,
 		const Transform3D& p_local_ref_b,
 		bool p_lock = true
@@ -29,7 +29,7 @@ public:
 
 	JoltGeneric6DOFJoint3D(
 		JoltSpace3D* p_space,
-		const JoltBody3D* p_body_a,
+		JoltBody3D* p_body_a,
 		const Transform3D& p_local_ref_a,
 		const Transform3D& p_local_ref_b,
 		bool p_lock = true
@@ -63,10 +63,6 @@ private:
 	bool use_limits[AXIS_COUNT] = {};
 
 	bool motor_enabled[AXIS_COUNT] = {};
-
-	const JoltBody3D* body_a = nullptr;
-
-	const JoltBody3D* body_b = nullptr;
 
 	double limit_lower[AXIS_COUNT] = {};
 

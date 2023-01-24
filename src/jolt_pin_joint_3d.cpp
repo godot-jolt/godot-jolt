@@ -13,15 +13,13 @@ constexpr double GDJOLT_PIN_JOINT_DEFAULT_IMPULSE_CLAMP = 0.0;
 
 JoltPinJoint3D::JoltPinJoint3D(
 	JoltSpace3D* p_space,
-	const JoltBody3D* p_body_a,
-	const JoltBody3D* p_body_b,
+	JoltBody3D* p_body_a,
+	JoltBody3D* p_body_b,
 	const Vector3& p_local_a,
 	const Vector3& p_local_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space)
-	, body_a(p_body_a)
-	, body_b(p_body_b)
+	: JoltJoint3D(p_space, p_body_a, p_body_b)
 	, local_a(p_local_a)
 	, local_b(p_local_b) {
 	const JPH::BodyID body_ids[] = {body_a->get_jolt_id(), body_b->get_jolt_id()};
@@ -48,13 +46,12 @@ JoltPinJoint3D::JoltPinJoint3D(
 
 JoltPinJoint3D::JoltPinJoint3D(
 	JoltSpace3D* p_space,
-	const JoltBody3D* p_body_a,
+	JoltBody3D* p_body_a,
 	const Vector3& p_local_a,
 	const Vector3& p_local_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space)
-	, body_a(p_body_a)
+	: JoltJoint3D(p_space, p_body_a)
 	, local_a(p_local_a)
 	, local_b(p_local_b) {
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);

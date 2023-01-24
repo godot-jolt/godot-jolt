@@ -1120,6 +1120,7 @@ void JoltPhysicsServer3D::_joint_make_pin(
 		: memnew(JoltPinJoint3D(space, body_a, p_local_a, p_local_b));
 
 	new_joint->set_rid(old_joint->get_rid());
+	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
@@ -1209,10 +1210,11 @@ void JoltPhysicsServer3D::_joint_make_hinge(
 	ERR_FAIL_NULL(space);
 
 	JoltJoint3D* new_joint = body_b != nullptr
-		? memnew(JoltHingeJoint3D(space, *body_a, *body_b, p_hinge_a, p_hinge_b))
-		: memnew(JoltHingeJoint3D(space, *body_a, p_hinge_a, p_hinge_b));
+		? memnew(JoltHingeJoint3D(space, body_a, body_b, p_hinge_a, p_hinge_b))
+		: memnew(JoltHingeJoint3D(space, body_a, p_hinge_a, p_hinge_b));
 
 	new_joint->set_rid(old_joint->get_rid());
+	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
@@ -1301,10 +1303,11 @@ void JoltPhysicsServer3D::_joint_make_slider(
 	ERR_FAIL_NULL(space);
 
 	JoltJoint3D* new_joint = body_b != nullptr
-		? memnew(JoltSliderJoint3D(space, *body_a, *body_b, p_local_ref_a, p_local_ref_b))
-		: memnew(JoltSliderJoint3D(space, *body_a, p_local_ref_a, p_local_ref_b));
+		? memnew(JoltSliderJoint3D(space, body_a, body_b, p_local_ref_a, p_local_ref_b))
+		: memnew(JoltSliderJoint3D(space, body_a, p_local_ref_a, p_local_ref_b));
 
 	new_joint->set_rid(old_joint->get_rid());
+	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
@@ -1355,10 +1358,11 @@ void JoltPhysicsServer3D::_joint_make_cone_twist(
 	ERR_FAIL_NULL(space);
 
 	JoltJoint3D* new_joint = body_b != nullptr
-		? memnew(JoltConeTwistJoint3D(space, *body_a, *body_b, p_local_ref_a, p_local_ref_b))
-		: memnew(JoltConeTwistJoint3D(space, *body_a, p_local_ref_a, p_local_ref_b));
+		? memnew(JoltConeTwistJoint3D(space, body_a, body_b, p_local_ref_a, p_local_ref_b))
+		: memnew(JoltConeTwistJoint3D(space, body_a, p_local_ref_a, p_local_ref_b));
 
 	new_joint->set_rid(old_joint->get_rid());
+	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
@@ -1415,6 +1419,7 @@ void JoltPhysicsServer3D::_joint_make_generic_6dof(
 		: memnew(JoltGeneric6DOFJoint3D(space, body_a, p_local_ref_a, p_local_ref_b));
 
 	new_joint->set_rid(old_joint->get_rid());
+	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
@@ -1500,16 +1505,20 @@ int64_t JoltPhysicsServer3D::_joint_get_solver_priority(const RID& p_joint) cons
 }
 
 void JoltPhysicsServer3D::_joint_disable_collisions_between_bodies(
-	[[maybe_unused]] const RID& p_joint,
-	[[maybe_unused]] bool p_disable
+	const RID& p_joint,
+	bool p_disable
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	joint->set_collision_disabled(p_disable);
 }
 
-bool JoltPhysicsServer3D::_joint_is_disabled_collisions_between_bodies(
-	[[maybe_unused]] const RID& p_joint
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+bool JoltPhysicsServer3D::_joint_is_disabled_collisions_between_bodies(const RID& p_joint) const {
+	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	return joint->is_collision_disabled();
 }
 
 void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
