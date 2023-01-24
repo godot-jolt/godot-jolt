@@ -251,7 +251,7 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 	# Figure out whether we should pass `--verbose` to the build command or not. Note that this uses
 	# the configure-time log level since there's no way to retrieve verbosity at build-time.
 
-	if (log_level STREQUAL VERBOSE)
+	if(log_level STREQUAL VERBOSE)
 		set(verbose_arg --verbose)
 	else()
 		set(verbose_arg "")
