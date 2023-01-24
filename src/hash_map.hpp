@@ -82,7 +82,7 @@ public:
 
 	_FORCE_INLINE_ TValue& operator[](const TKey& p_key) { return storage[p_key]; }
 
-	_FORCE_INLINE_ const TValue& operator[](const TKey& p_key) const { return storage[p_key]; }
+	_FORCE_INLINE_ const TValue& operator[](const TKey& p_key) const { return storage.at(p_key); }
 
 private:
 	Storage storage;
