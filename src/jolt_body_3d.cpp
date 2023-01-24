@@ -130,10 +130,6 @@ void JoltBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const Variant
 	}
 }
 
-void JoltBody3D::set_state_sync_callback(const Callable& p_callback) {
-	body_state_callback = p_callback;
-}
-
 bool JoltBody3D::get_sleep_state(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
