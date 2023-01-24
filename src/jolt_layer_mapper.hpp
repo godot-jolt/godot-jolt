@@ -1,20 +1,32 @@
 #pragma once
 
 #include "jolt_broad_phase_layer.hpp"
-#include "jolt_object_layer.hpp"
 
 class JoltLayerMapper final
 	: public JPH::BroadPhaseLayerInterface
 	, public JPH::ObjectLayerPairFilter
 	, public JPH::ObjectVsBroadPhaseLayerFilter {
-public:
-	JoltLayerMapper();
+	using Mutex = std::shared_mutex;
+	using MutexLockRead = std::shared_lock<Mutex>;
+	using MutexLockWrite = std::unique_lock<Mutex>;
 
+public:
+	JPH::ObjectLayer to_object_layer(
+		JoltBroadPhaseLayer p_broad_phase_layer,
+		uint32_t p_collision_layer,
+		uint32_t p_collision_mask
+	);
+
+	JPH::ObjectLayer to_object_layer(
+		JPH::EMotionType p_motion_type,
+		uint32_t p_collision_layer,
+		uint32_t p_collision_mask
+	);
+
+private:
 	uint32_t GetNumBroadPhaseLayers() const override { return GDJOLT_BROAD_PHASE_LAYER_COUNT; }
 
-	JPH::BroadPhaseLayer GetBroadPhaseLayer(JPH::ObjectLayer p_layer) const override {
-		return mappings[p_layer];
-	}
+	JPH::BroadPhaseLayer GetBroadPhaseLayer(JPH::ObjectLayer p_layer) const override;
 
 #if defined(JPH_EXTERNAL_PROFILE) || defined(JPH_PROFILE_ENABLED)
 	const char* GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer) const override;
@@ -24,8 +36,13 @@ public:
 
 	bool ShouldCollide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) const override;
 
-	static JPH::ObjectLayer to_object_layer(JPH::EMotionType p_motion_type);
+	bool ShouldCollide(JPH::BroadPhaseLayer p_layer1, JPH::BroadPhaseLayer p_layer2) const;
 
-private:
-	JPH::BroadPhaseLayer mappings[GDJOLT_OBJECT_LAYER_COUNT] = {};
+	JPH::ObjectLayer next_object_layer = 0;
+
+	HashMap<uint64_t, JPH::ObjectLayer> layers_by_collision;
+
+	HashMap<JPH::ObjectLayer, uint64_t> collisions_by_layer;
+
+	mutable Mutex collisions_mutex;
 };

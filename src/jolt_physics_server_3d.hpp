@@ -562,8 +562,6 @@ private:
 
 	inline static JPH::JobSystem* job_system;
 
-	inline static JPH::Ref<JPH::GroupFilter> group_filter;
-
 	bool active = true;
 
 	bool flushing_queries = false;

@@ -3,9 +3,9 @@
 #include "jolt_body_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
+#include "jolt_group_filter_rid.hpp"
 #include "jolt_joint_3d.hpp"
 #include "jolt_layer_mapper.hpp"
-#include "jolt_object_layer.hpp"
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_temp_allocator.hpp"
@@ -20,12 +20,11 @@ constexpr uint32_t GDJOLT_MAX_CONTACT_CONSTRAINTS = 8192;
 
 } // namespace
 
-JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group_filter)
+JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	: job_system(p_job_system)
 	, temp_allocator(new JoltTempAllocator(GDJOLT_TEMP_CAPACITY))
 	, layer_mapper(new JoltLayerMapper())
 	, physics_system(new JPH::PhysicsSystem())
-	, group_filter(p_group_filter)
 	, body_accessor(this) {
 	physics_system->Init(
 		GDJOLT_MAX_BODIES,
@@ -107,6 +106,14 @@ const JPH::NarrowPhaseQuery& JoltSpace3D::get_narrow_phase_query(bool p_locked) 
 	} else {
 		return physics_system->GetNarrowPhaseQueryNoLock();
 	}
+}
+
+JPH::ObjectLayer JoltSpace3D::map_to_object_layer(
+	JPH::EMotionType p_motion_type,
+	uint32_t p_collision_layer,
+	uint32_t p_collision_mask
+) {
+	return layer_mapper->to_object_layer(p_motion_type, p_collision_layer, p_collision_mask);
 }
 
 JoltReadableBody3D JoltSpace3D::read_body(const JPH::BodyID& p_body_id, bool p_lock) const {
@@ -201,11 +208,15 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object, bool p_lock) {
 	}
 
 	JPH::ShapeRefC shape = p_object->try_build_shape();
-	JPH::ObjectLayer object_layer = JoltLayerMapper::to_object_layer(motion_type);
+	JPH::ObjectLayer object_layer = map_to_object_layer(
+		motion_type,
+		p_object->get_collision_layer(),
+		p_object->get_collision_mask()
+	);
 
 	if (shape == nullptr) {
 		shape = new JPH::SphereShape(1.0f);
-		object_layer = GDJOLT_OBJECT_LAYER_NONE;
+		object_layer = 0;
 	}
 
 	const Transform3D& transform = p_object->get_initial_transform();
@@ -235,13 +246,19 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object, bool p_lock) {
 
 	JPH::Body* body = get_body_iface(p_lock).CreateBody(settings);
 
-	body->SetCollisionGroup(JPH::CollisionGroup(
-		group_filter,
-		p_object->get_collision_layer(),
-		p_object->get_collision_mask()
-	));
-
 	body->SetUserData(reinterpret_cast<JPH::uint64>(p_object));
+
+	if (!p_object->is_area()) {
+		// HACK(mihe): Since group filters don't grant us access to user data we are instead forced
+		// abuse the collision group to carry the upper and lower bits of our RID, which we can then
+		// access and rebuild in our group filter for bodies that make use of collision exceptions.
+
+		JPH::CollisionGroup::GroupID group_id = 0;
+		JPH::CollisionGroup::SubGroupID sub_group_id = 0;
+		JoltGroupFilterRID::encode_rid(p_object->get_rid(), group_id, sub_group_id);
+
+		body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
+	}
 
 	p_object->set_jolt_id(body->GetID());
 }

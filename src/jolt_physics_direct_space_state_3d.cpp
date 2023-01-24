@@ -2,7 +2,6 @@
 
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
-#include "jolt_object_layer.hpp"
 #include "jolt_space_3d.hpp"
 
 class JoltQueryBroadPhaseLayerFilter3D : public JPH::BroadPhaseLayerFilter {
@@ -12,9 +11,7 @@ class JoltQueryBroadPhaseLayerFilter3D : public JPH::BroadPhaseLayerFilter {
 };
 
 class JoltQueryObjectLayerFilter3D : public JPH::ObjectLayerFilter {
-	bool ShouldCollide(JPH::ObjectLayer p_layer) const override {
-		return p_layer != JPH::ObjectLayer(GDJOLT_OBJECT_LAYER_NONE);
-	}
+	bool ShouldCollide(JPH::ObjectLayer p_layer) const override { return p_layer != 0; }
 };
 
 class JoltQueryBodyFilter3D : public JPH::BodyFilter {

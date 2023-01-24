@@ -1,7 +1,6 @@
 #include "jolt_collision_object_3d.hpp"
 
 #include "jolt_layer_mapper.hpp"
-#include "jolt_object_layer.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
 
@@ -208,10 +207,14 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 
 	if (shape == nullptr) {
 		shape = new JPH::SphereShape(1.0f);
-		body_iface.SetObjectLayer(jolt_id, GDJOLT_OBJECT_LAYER_NONE);
+		body_iface.SetObjectLayer(jolt_id, 0);
 	} else {
-		const JPH::EMotionType motion_type = body->GetMotionType();
-		const JPH::ObjectLayer object_layer = JoltLayerMapper::to_object_layer(motion_type);
+		const JPH::ObjectLayer object_layer = space->map_to_object_layer(
+			body->GetMotionType(),
+			get_collision_layer(),
+			get_collision_mask()
+		);
+
 		body_iface.SetObjectLayer(jolt_id, object_layer);
 	}
 

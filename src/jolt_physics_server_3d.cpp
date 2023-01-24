@@ -4,7 +4,6 @@
 #include "jolt_body_3d.hpp"
 #include "jolt_cone_twist_joint_3d.hpp"
 #include "jolt_generic_6dof_joint_3d.hpp"
-#include "jolt_group_filter.hpp"
 #include "jolt_hinge_joint_3d.hpp"
 #include "jolt_joint_3d.hpp"
 #include "jolt_physics_direct_space_state_3d.hpp"
@@ -26,12 +25,9 @@ void JoltPhysicsServer3D::init_statics() {
 		GDJOLT_MAX_PHYSICS_BARRIERS,
 		(int32_t)std::thread::hardware_concurrency() - 1
 	);
-
-	group_filter = new JoltGroupFilter();
 }
 
 void JoltPhysicsServer3D::finish_statics() {
-	group_filter = nullptr;
 	delete_safely(job_system);
 }
 
@@ -139,7 +135,7 @@ double JoltPhysicsServer3D::_shape_get_custom_solver_bias([[maybe_unused]] const
 }
 
 RID JoltPhysicsServer3D::_space_create() {
-	JoltSpace3D* space = memnew(JoltSpace3D(job_system, group_filter));
+	JoltSpace3D* space = memnew(JoltSpace3D(job_system));
 	RID rid = space_owner.make_rid(space);
 	space->set_rid(rid);
 
@@ -760,23 +756,30 @@ bool JoltPhysicsServer3D::_body_is_axis_locked(
 }
 
 void JoltPhysicsServer3D::_body_add_collision_exception(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const RID& p_excepted_body
+	const RID& p_body,
+	const RID& p_excepted_body
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->add_collision_exception(p_excepted_body);
 }
 
 void JoltPhysicsServer3D::_body_remove_collision_exception(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const RID& p_excepted_body
+	const RID& p_body,
+	const RID& p_excepted_body
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->remove_collision_exception(p_excepted_body);
 }
 
-TypedArray<RID> JoltPhysicsServer3D::_body_get_collision_exceptions(
-	[[maybe_unused]] const RID& p_body
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+TypedArray<RID> JoltPhysicsServer3D::_body_get_collision_exceptions(const RID& p_body) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_collision_exceptions();
 }
 
 void JoltPhysicsServer3D::_body_set_max_contacts_reported(

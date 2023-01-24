@@ -11,7 +11,7 @@ class JoltPhysicsDirectSpaceState3D;
 
 class JoltSpace3D final {
 public:
-	JoltSpace3D(JPH::JobSystem* p_job_system, JPH::GroupFilter* p_group_filter);
+	explicit JoltSpace3D(JPH::JobSystem* p_job_system);
 
 	~JoltSpace3D();
 
@@ -32,6 +32,12 @@ public:
 	const JPH::BodyLockInterface& get_body_lock_iface(bool p_locked = true) const;
 
 	const JPH::NarrowPhaseQuery& get_narrow_phase_query(bool p_locked = true) const;
+
+	JPH::ObjectLayer map_to_object_layer(
+		JPH::EMotionType p_motion_type,
+		uint32_t p_collision_layer,
+		uint32_t p_collision_mask
+	);
 
 	JoltReadableBody3D read_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
 
@@ -89,8 +95,6 @@ private:
 	JoltLayerMapper* layer_mapper = nullptr;
 
 	JPH::PhysicsSystem* physics_system = nullptr;
-
-	JPH::GroupFilter* group_filter = nullptr;
 
 	JoltBodyWriter3D body_accessor;
 

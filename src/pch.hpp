@@ -86,6 +86,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <mutex>
+#include <shared_mutex>
 #include <thread>
 #include <type_traits>
 #include <unordered_map>

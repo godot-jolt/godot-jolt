@@ -1,5 +1,6 @@
 #include "jolt_body_3d.hpp"
 
+#include "jolt_group_filter_rid.hpp"
 #include "jolt_physics_direct_body_state_3d.hpp"
 #include "jolt_space_3d.hpp"
 
@@ -344,6 +345,77 @@ Vector3 JoltBody3D::get_constant_torque() const {
 
 void JoltBody3D::set_constant_torque(const Vector3& p_torque) {
 	constant_torque = p_torque;
+}
+
+void JoltBody3D::add_collision_exception(const RID& p_excepted_body, bool p_lock) {
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
+
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+	auto* group_filter = const_cast<JoltGroupFilterRID*>(
+		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter())
+	);
+
+	if (group_filter == nullptr) {
+		group_filter = new JoltGroupFilterRID();
+		body->GetCollisionGroup().SetGroupFilter(group_filter);
+	}
+
+	group_filter->add_exception(p_excepted_body);
+}
+
+void JoltBody3D::remove_collision_exception(const RID& p_excepted_body, bool p_lock) {
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
+
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+	auto* group_filter = const_cast<JoltGroupFilterRID*>(
+		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter())
+	);
+
+	if (group_filter == nullptr) {
+		return;
+	}
+
+	group_filter->remove_exception(p_excepted_body);
+
+	if (group_filter->get_exception_count() == 0) {
+		body->GetCollisionGroup().SetGroupFilter(nullptr);
+		group_filter = nullptr;
+	}
+}
+
+bool JoltBody3D::has_collision_exception(const RID& p_excepted_body, bool p_lock) const {
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	const auto* group_filter =
+		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter());
+
+	return group_filter != nullptr && group_filter->has_exception(p_excepted_body);
+}
+
+TypedArray<RID> JoltBody3D::get_collision_exceptions(bool p_lock) const {
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	const auto* group_filter =
+		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter());
+
+	if (group_filter == nullptr) {
+		return {};
+	}
+
+	const RID* exceptions = group_filter->get_exceptions();
+	const int32_t exception_count = group_filter->get_exception_count();
+
+	TypedArray<RID> result;
+
+	for (auto i = 0; i < exception_count; ++i) {
+		result.push_back(exceptions[i]);
+	}
+
+	return result;
 }
 
 void JoltBody3D::integrate_forces(bool p_lock) {

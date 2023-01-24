@@ -84,6 +84,14 @@ public:
 
 	void set_constant_torque(const Vector3& p_torque);
 
+	void add_collision_exception(const RID& p_excepted_body, bool p_lock = true);
+
+	void remove_collision_exception(const RID& p_excepted_body, bool p_lock = true);
+
+	bool has_collision_exception(const RID& p_excepted_body, bool p_lock = true) const;
+
+	TypedArray<RID> get_collision_exceptions(bool p_lock = true) const;
+
 	void integrate_forces(bool p_lock = true);
 
 	void call_queries() override;
