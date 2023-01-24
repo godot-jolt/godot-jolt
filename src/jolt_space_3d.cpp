@@ -214,7 +214,10 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object, bool p_lock) {
 	);
 
 	if (shape == nullptr) {
+		// Use a fallback shape instead
 		shape = new JPH::SphereShape(1.0f);
+
+		// Place it in object (and broad phase) layer 0, which will make it collide with nothing
 		object_layer = 0;
 	}
 

@@ -206,7 +206,10 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 	JPH::BodyInterface& body_iface = space->get_body_iface(false);
 
 	if (shape == nullptr) {
+		// Use a fallback shape instead
 		shape = new JPH::SphereShape(1.0f);
+
+		// Place it in object (and broad phase) layer 0, which will make it collide with nothing
 		body_iface.SetObjectLayer(jolt_id, 0);
 	} else {
 		const JPH::ObjectLayer object_layer = space->map_to_object_layer(
