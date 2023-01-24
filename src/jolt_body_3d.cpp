@@ -435,7 +435,8 @@ void JoltBody3D::call_queries() {
 	}
 
 	if (body_state_callback.is_valid()) {
-		body_state_callback.callv(Array::make(get_direct_state()));
+		const Array arguments = Array::make(get_direct_state());
+		body_state_callback.callv(arguments);
 	}
 }
 
