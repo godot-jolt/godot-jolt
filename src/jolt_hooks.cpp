@@ -17,7 +17,8 @@ void jolt_aligned_free(void* p_mem) {
 }
 
 void jolt_trace(const char* p_format, ...) {
-	va_list args; // NOLINT(cppcoreguidelines-init-variables)
+	// NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+	va_list args;
 	va_start(args, p_format);
 	char buffer[1024] = {'\0'};
 	vsnprintf(buffer, sizeof(buffer), p_format, args);
