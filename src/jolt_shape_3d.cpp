@@ -21,7 +21,8 @@ void JoltShape3D::remove_owner(JoltCollisionObject3D* p_owner) {
 }
 
 void JoltShape3D::remove_self(bool p_lock) {
-	// TODO(mihe): Is this necessary? Are iterators invalidated when erasing?
+	// `remove_owner` will be called when we `remove_shape`, so we need to copy the map since the
+	// iterator would be invalidated from underneath us
 	const auto ref_count_by_owner_copy = ref_count_by_owner;
 
 	for (const auto& [owner, ref_count] : ref_count_by_owner_copy) {
