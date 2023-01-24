@@ -10,25 +10,25 @@ JoltBodyAccessor3D::JoltBodyAccessor3D(const JoltSpace3D* p_space)
 JoltBodyAccessor3D::~JoltBodyAccessor3D() = default;
 
 void JoltBodyAccessor3D::acquire(const JPH::BodyID* p_ids, int32_t p_id_count, bool p_lock) {
-	lock_iface = &space->get_body_lock_iface(p_lock);
+	lock_iface = &space->get_lock_iface(p_lock);
 	ids.assign(p_ids, p_ids + p_id_count);
 	acquire_internal(p_ids, p_id_count);
 }
 
 void JoltBodyAccessor3D::acquire(const JPH::BodyID& p_id, bool p_lock) {
-	lock_iface = &space->get_body_lock_iface(p_lock);
+	lock_iface = &space->get_lock_iface(p_lock);
 	ids.assign(1, p_id);
 	acquire_internal(&p_id, 1);
 }
 
 void JoltBodyAccessor3D::acquire_active(bool p_lock) {
-	lock_iface = &space->get_body_lock_iface(p_lock);
+	lock_iface = &space->get_lock_iface(p_lock);
 	space->get_physics_system()->GetActiveBodies(ids);
 	acquire_internal(ids.data(), (int32_t)ids.size());
 }
 
 void JoltBodyAccessor3D::acquire_all(bool p_lock) {
-	lock_iface = &space->get_body_lock_iface(p_lock);
+	lock_iface = &space->get_lock_iface(p_lock);
 	space->get_physics_system()->GetBodies(ids);
 	acquire_internal(ids.data(), (int32_t)ids.size());
 }

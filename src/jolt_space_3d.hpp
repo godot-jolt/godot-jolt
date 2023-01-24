@@ -29,7 +29,7 @@ public:
 
 	const JPH::BodyInterface& get_body_iface(bool p_locked = true) const;
 
-	const JPH::BodyLockInterface& get_body_lock_iface(bool p_locked = true) const;
+	const JPH::BodyLockInterface& get_lock_iface(bool p_locked = true) const;
 
 	const JPH::NarrowPhaseQuery& get_narrow_phase_query(bool p_locked = true) const;
 

@@ -91,7 +91,7 @@ const JPH::BodyInterface& JoltSpace3D::get_body_iface(bool p_locked) const {
 	}
 }
 
-const JPH::BodyLockInterface& JoltSpace3D::get_body_lock_iface(bool p_locked) const {
+const JPH::BodyLockInterface& JoltSpace3D::get_lock_iface(bool p_locked) const {
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetBodyLockInterface();
 	} else {
