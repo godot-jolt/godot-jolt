@@ -4,48 +4,36 @@ extends StaticBody3D
 
 @export
 var collision_shape := NodePath():
-	get:
-		return collision_shape
 	set(value):
 		collision_shape = value
 		properties_changed()
 
 @export
 var mesh_instance := NodePath():
-	get:
-		return mesh_instance
 	set(value):
 		mesh_instance = value
 		properties_changed()
 
 @export_range(4, 64, 1, "or_greater")
 var resolution: int = 16:
-	get:
-		return resolution
 	set(value):
 		resolution = value
 		properties_changed()
 
 @export_range(0.1, 10.0, 0.1, "or_greater")
 var amplitude: float = 1.0:
-	get:
-		return amplitude
 	set(value):
 		amplitude = value
 		properties_changed()
 
 @export
 var noise_seed: int = 0:
-	get:
-		return noise_seed
 	set(value):
 		noise_seed = value
 		properties_changed()
 
 @export
 var noise_frequency: float = 0.2:
-	get:
-		return noise_frequency
 	set(value):
 		noise_frequency = value
 		properties_changed()
