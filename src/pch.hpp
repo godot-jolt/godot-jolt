@@ -35,6 +35,7 @@
 #include <godot_cpp/core/math.hpp>
 #include <godot_cpp/core/memory.hpp>
 #include <godot_cpp/core/object.hpp>
+#include <godot_cpp/godot.hpp>
 #include <godot_cpp/templates/hashfuncs.hpp>
 #include <godot_cpp/variant/builtin_types.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
