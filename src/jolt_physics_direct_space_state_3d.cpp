@@ -92,7 +92,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const JPH::Vec3 to = to_jolt(p_to);
 	const JPH::Vec3 vector = to - from;
 
-	const JPH::NarrowPhaseQuery& query = space->get_narrow_phase_query(false);
+	const JPH::NarrowPhaseQuery& query = space->get_narrow_phase_query();
 
 	const JPH::RRayCast ray(from, vector);
 
@@ -125,7 +125,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const JPH::BodyID& body_id = collector.mHit.mBodyID;
 	const JPH::SubShapeID& subshape_id = collector.mHit.mSubShapeID2;
 
-	const JoltReadableBody3D body = space->read_body(body_id, false);
+	const JoltReadableBody3D body = space->read_body(body_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	const JPH::Vec3 position = ray.GetPointOnRay(collector.mHit.mFraction);
