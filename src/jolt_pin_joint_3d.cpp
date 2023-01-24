@@ -5,9 +5,9 @@
 
 namespace {
 
-constexpr double GDJOLT_PIN_JOINT_DEFAULT_BIAS = 0.3;
-constexpr double GDJOLT_PIN_JOINT_DEFAULT_DAMPING = 1.0;
-constexpr double GDJOLT_PIN_JOINT_DEFAULT_IMPULSE_CLAMP = 0.0;
+constexpr double GDJOLT_PIN_BIAS = 0.3;
+constexpr double GDJOLT_PIN_DAMPING = 1.0;
+constexpr double GDJOLT_PIN_IMPULSE_CLAMP = 0.0;
 
 } // namespace
 
@@ -110,13 +110,13 @@ void JoltPinJoint3D::set_local_b(const Vector3& p_local_b, bool p_lock) {
 double JoltPinJoint3D::get_param(PhysicsServer3D::PinJointParam p_param) {
 	switch (p_param) {
 		case PhysicsServer3D::PIN_JOINT_BIAS: {
-			return GDJOLT_PIN_JOINT_DEFAULT_BIAS;
+			return GDJOLT_PIN_BIAS;
 		}
 		case PhysicsServer3D::PIN_JOINT_DAMPING: {
-			return GDJOLT_PIN_JOINT_DEFAULT_DAMPING;
+			return GDJOLT_PIN_DAMPING;
 		}
 		case PhysicsServer3D::PIN_JOINT_IMPULSE_CLAMP: {
-			return GDJOLT_PIN_JOINT_DEFAULT_IMPULSE_CLAMP;
+			return GDJOLT_PIN_IMPULSE_CLAMP;
 		}
 		default: {
 			ERR_FAIL_D_MSG(vformat("Unhandled pin joint parameter: '%d'", p_param));
@@ -127,7 +127,7 @@ double JoltPinJoint3D::get_param(PhysicsServer3D::PinJointParam p_param) {
 void JoltPinJoint3D::set_param(PhysicsServer3D::PinJointParam p_param, double p_value) {
 	switch (p_param) {
 		case PhysicsServer3D::PIN_JOINT_BIAS: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_PIN_JOINT_DEFAULT_BIAS)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_PIN_BIAS)) {
 				WARN_PRINT(
 					"Pin joint bias is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -135,7 +135,7 @@ void JoltPinJoint3D::set_param(PhysicsServer3D::PinJointParam p_param, double p_
 			}
 		} break;
 		case PhysicsServer3D::PIN_JOINT_DAMPING: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_PIN_JOINT_DEFAULT_DAMPING)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_PIN_DAMPING)) {
 				WARN_PRINT(
 					"Pin joint damping is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -143,7 +143,7 @@ void JoltPinJoint3D::set_param(PhysicsServer3D::PinJointParam p_param, double p_
 			}
 		} break;
 		case PhysicsServer3D::PIN_JOINT_IMPULSE_CLAMP: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_PIN_JOINT_DEFAULT_IMPULSE_CLAMP)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_PIN_IMPULSE_CLAMP)) {
 				WARN_PRINT(
 					"Pin joint impulse clamp is not supported by Godot Jolt. "
 					"Any such value will be ignored."
