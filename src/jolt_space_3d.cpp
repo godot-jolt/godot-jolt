@@ -174,11 +174,11 @@ void JoltSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Varian
 	switch (p_param) {
 		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
 			gravity = p_value;
-			update_gravity();
+			gravity_changed();
 		} break;
 		case PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR: {
 			gravity_vector = p_value;
-			update_gravity();
+			gravity_changed();
 		} break;
 		default: {
 			ERR_FAIL_NOT_IMPL();
@@ -304,6 +304,6 @@ void JoltSpace3D::integrate_forces(bool p_lock) {
 	body_accessor.release();
 }
 
-void JoltSpace3D::update_gravity() {
+void JoltSpace3D::gravity_changed() {
 	physics_system->SetGravity(to_jolt(gravity_vector * gravity));
 }

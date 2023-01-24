@@ -84,7 +84,7 @@ public:
 private:
 	void integrate_forces(bool p_lock = true);
 
-	void update_gravity();
+	void gravity_changed();
 
 	RID rid;
 
