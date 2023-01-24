@@ -1,5 +1,6 @@
 #include "jolt_space_3d.hpp"
 
+#include "jolt_area_3d.hpp"
 #include "jolt_body_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
@@ -58,8 +59,7 @@ void JoltSpace3D::call_queries() {
 	for (int32_t i = 0; i < body_count; ++i) {
 		if (const JPH::Body* body = body_accessor.try_get(i)) {
 			if (!body->IsStatic() && !body->IsSensor()) {
-				auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
-				object->call_queries();
+				reinterpret_cast<JoltBody3D*>(body->GetUserData())->call_queries();
 			}
 		}
 	}
@@ -67,8 +67,7 @@ void JoltSpace3D::call_queries() {
 	for (int32_t i = 0; i < body_count; ++i) {
 		if (const JPH::Body* body = body_accessor.try_get(i)) {
 			if (!body->IsStatic() && body->IsSensor()) {
-				auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
-				object->call_queries();
+				reinterpret_cast<JoltArea3D*>(body->GetUserData())->call_queries();
 			}
 		}
 	}
