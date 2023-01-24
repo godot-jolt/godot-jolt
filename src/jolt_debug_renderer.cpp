@@ -34,7 +34,7 @@ public:
 	}
 
 private:
-	int ref_count = 0;
+	int32_t ref_count = 0;
 
 	Vertices vertices;
 };

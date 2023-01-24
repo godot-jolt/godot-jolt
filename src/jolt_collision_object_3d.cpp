@@ -165,7 +165,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 	InlineVector<JoltShapeInstance3D::Built, 16> built_shapes;
 	built_shapes.resize(shape_count);
 
-	const int built_shape_count =
+	const int32_t built_shape_count =
 		JoltShapeInstance3D::try_build(shapes.ptr(), shape_count, built_shapes.ptr());
 
 	built_shapes.resize(built_shape_count);
@@ -250,9 +250,9 @@ void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
 }
 
 void JoltCollisionObject3D::remove_shapes(bool p_lock) {
-	const int shape_count = shapes.size();
+	const int32_t shape_count = shapes.size();
 
-	for (int i = shape_count - 1; i >= 0; --i) {
+	for (int32_t i = shape_count - 1; i >= 0; --i) {
 		shapes[i]->remove_owner(this);
 		shapes.remove_at(i);
 	}

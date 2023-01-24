@@ -133,7 +133,7 @@ JoltWritableBody3D JoltSpace3D::write_body(const JoltBody3D& p_body, bool p_lock
 
 JoltReadableBodies3D JoltSpace3D::read_bodies(
 	const JPH::BodyID* p_body_ids,
-	int p_body_count,
+	int32_t p_body_count,
 	bool p_lock
 ) const {
 	return {*this, p_body_ids, p_body_count, p_lock};
@@ -141,7 +141,7 @@ JoltReadableBodies3D JoltSpace3D::read_bodies(
 
 JoltWritableBodies3D JoltSpace3D::write_bodies(
 	const JPH::BodyID* p_body_ids,
-	int p_body_count,
+	int32_t p_body_count,
 	bool p_lock
 ) const {
 	return {*this, p_body_ids, p_body_count, p_lock};

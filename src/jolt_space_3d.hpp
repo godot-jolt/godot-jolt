@@ -49,13 +49,13 @@ public:
 
 	JoltReadableBodies3D read_bodies(
 		const JPH::BodyID* p_body_ids,
-		int p_body_count,
+		int32_t p_body_count,
 		bool p_lock = true
 	) const;
 
 	JoltWritableBodies3D write_bodies(
 		const JPH::BodyID* p_body_ids,
-		int p_body_count,
+		int32_t p_body_count,
 		bool p_lock = true
 	) const;
 

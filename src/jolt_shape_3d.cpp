@@ -25,7 +25,7 @@ void JoltShape3D::remove_self(bool p_lock) {
 	const auto ref_count_by_owner_copy = ref_count_by_owner;
 
 	for (const auto& [owner, ref_count] : ref_count_by_owner_copy) {
-		for (int i = 0; i < ref_count; ++i) {
+		for (int32_t i = 0; i < ref_count; ++i) {
 			owner->remove_shape(this, p_lock);
 		}
 	}
