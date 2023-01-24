@@ -6,8 +6,8 @@ class JoltSliderJoint3D final : public JoltJoint3D {
 public:
 	JoltSliderJoint3D(
 		JoltSpace3D* p_space,
-		const JoltBody3D& p_body_a,
-		const JoltBody3D& p_body_b,
+		JoltBody3D* p_body_a,
+		JoltBody3D* p_body_b,
 		const Transform3D& p_local_ref_a,
 		const Transform3D& p_local_ref_b,
 		bool p_lock = true
@@ -15,7 +15,7 @@ public:
 
 	JoltSliderJoint3D(
 		JoltSpace3D* p_space,
-		const JoltBody3D& p_body_a,
+		JoltBody3D* p_body_a,
 		const Transform3D& p_local_ref_a,
 		const Transform3D& p_local_ref_b,
 		bool p_lock = true

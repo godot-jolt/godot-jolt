@@ -27,32 +27,29 @@ constexpr double GDJOLT_G6DOF_ANG_SPRING_EQUILIBRIUM_POINT = 0.0;
 
 JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D(
 	JoltSpace3D* p_space,
-	const JoltBody3D* p_body_a,
-	const JoltBody3D* p_body_b,
+	JoltBody3D* p_body_a,
+	JoltBody3D* p_body_b,
 	const Transform3D& p_local_ref_a,
 	[[maybe_unused]] const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space)
-	, body_a(p_body_a)
-	, body_b(p_body_b) {
+	: JoltJoint3D(p_space, p_body_a, p_body_b) {
 	const JPH::BodyID body_ids[] = {body_a->get_jolt_id(), body_b->get_jolt_id()};
 	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, count_of(body_ids), p_lock);
 
-	world_ref = p_body_a->get_transform(false) * p_local_ref_a;
+	world_ref = body_a->get_transform(false) * p_local_ref_a;
 
 	rebuild(false);
 }
 
 JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D(
 	JoltSpace3D* p_space,
-	const JoltBody3D* p_body_a,
+	JoltBody3D* p_body_a,
 	[[maybe_unused]] const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space)
-	, body_a(p_body_a)
+	: JoltJoint3D(p_space, p_body_a)
 	, world_ref(p_local_ref_b) {
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
