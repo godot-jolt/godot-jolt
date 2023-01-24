@@ -9,7 +9,7 @@ void jolt_free(void* p_mem) {
 }
 
 void* jolt_aligned_alloc(size_t p_size, size_t p_alignment) {
-	return mi_aligned_alloc(p_alignment, p_size);
+	return mi_malloc_aligned(p_size, p_alignment);
 }
 
 void jolt_aligned_free(void* p_mem) {
