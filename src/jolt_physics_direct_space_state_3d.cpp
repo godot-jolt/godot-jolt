@@ -4,17 +4,17 @@
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_space_3d.hpp"
 
-class JoltQueryBroadPhaseLayerFilter3D : public JPH::BroadPhaseLayerFilter {
+class JoltQueryBroadPhaseLayerFilter3D final : public JPH::BroadPhaseLayerFilter {
 	bool ShouldCollide(JPH::BroadPhaseLayer p_layer) const override {
 		return p_layer != JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_NONE);
 	}
 };
 
-class JoltQueryObjectLayerFilter3D : public JPH::ObjectLayerFilter {
+class JoltQueryObjectLayerFilter3D final : public JPH::ObjectLayerFilter {
 	bool ShouldCollide(JPH::ObjectLayer p_layer) const override { return p_layer != 0; }
 };
 
-class JoltQueryBodyFilter3D : public JPH::BodyFilter {
+class JoltQueryBodyFilter3D final : public JPH::BodyFilter {
 public:
 	JoltQueryBodyFilter3D(
 		JoltPhysicsDirectSpaceState3D* p_space_state,
@@ -62,7 +62,7 @@ private:
 	JPH::CollisionGroup collision_group;
 };
 
-class JoltQueryShapeFilter3D : public JPH::ShapeFilter {
+class JoltQueryShapeFilter3D final : public JPH::ShapeFilter {
 	bool ShouldCollide([[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id_2) const override {
 		return true;
 	}
