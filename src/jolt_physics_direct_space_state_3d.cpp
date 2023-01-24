@@ -4,17 +4,17 @@
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_space_3d.hpp"
 
-class JoltQueryBroadPhaseLayerFilter3D : public JPH::BroadPhaseLayerFilter {
+class JoltQueryBroadPhaseLayerFilter3D final : public JPH::BroadPhaseLayerFilter {
 	bool ShouldCollide(JPH::BroadPhaseLayer p_layer) const override {
 		return p_layer != JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_NONE);
 	}
 };
 
-class JoltQueryObjectLayerFilter3D : public JPH::ObjectLayerFilter {
+class JoltQueryObjectLayerFilter3D final : public JPH::ObjectLayerFilter {
 	bool ShouldCollide(JPH::ObjectLayer p_layer) const override { return p_layer != 0; }
 };
 
-class JoltQueryBodyFilter3D : public JPH::BodyFilter {
+class JoltQueryBodyFilter3D final : public JPH::BodyFilter {
 public:
 	JoltQueryBodyFilter3D(
 		JoltPhysicsDirectSpaceState3D* p_space_state,
@@ -62,7 +62,7 @@ private:
 	JPH::CollisionGroup collision_group;
 };
 
-class JoltQueryShapeFilter3D : public JPH::ShapeFilter {
+class JoltQueryShapeFilter3D final : public JPH::ShapeFilter {
 	bool ShouldCollide([[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id_2) const override {
 		return true;
 	}
@@ -92,7 +92,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const JPH::Vec3 to = to_jolt(p_to);
 	const JPH::Vec3 vector = to - from;
 
-	const JPH::NarrowPhaseQuery& query = space->get_narrow_phase_query(false);
+	const JPH::NarrowPhaseQuery& query = space->get_narrow_phase_query();
 
 	const JPH::RRayCast ray(from, vector);
 
@@ -125,7 +125,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const JPH::BodyID& body_id = collector.mHit.mBodyID;
 	const JPH::SubShapeID& subshape_id = collector.mHit.mSubShapeID2;
 
-	const JoltReadableBody3D body = space->read_body(body_id, false);
+	const JoltReadableBody3D body = space->read_body(body_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	const JPH::Vec3 position = ray.GetPointOnRay(collector.mHit.mFraction);
@@ -135,7 +135,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const auto object_id = (uint64_t)object->get_instance_id();
 
 	const JPH::Shape& shape = *body->GetShape();
-	const auto shape_idx = (int)shape.GetSubShapeUserData(subshape_id);
+	const auto shape_idx = (int32_t)shape.GetSubShapeUserData(subshape_id);
 
 	p_result->position = to_godot(position);
 	p_result->normal = to_godot(normal);

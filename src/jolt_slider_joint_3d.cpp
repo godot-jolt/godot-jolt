@@ -170,7 +170,7 @@ double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) {
 			return GDJOLT_SLIDER_ANG_ORTHO_DAMPING;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
+			ERR_FAIL_D_MSG(vformat("Unhandled slider joint parameter: '%d'", p_param));
 		}
 	}
 }
@@ -348,7 +348,7 @@ void JoltSliderJoint3D::set_param(PhysicsServer3D::SliderJointParam p_param, dou
 			}
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
+			ERR_FAIL_MSG(vformat("Unhandled slider joint parameter: '%d'", p_param));
 		} break;
 	}
 }
@@ -362,14 +362,14 @@ void JoltSliderJoint3D::limits_changed() {
 
 	if (limit_lower > basically_pos_zero) {
 		WARN_PRINT(
-			"Slider joint lower distances greater than 0º are not supported by Godot Jolt. "
+			"Slider joint lower distances greater than 0 are not supported by Godot Jolt. "
 			"Values outside this range will be clamped."
 		);
 	}
 
 	if (limit_upper < basically_neg_zero) {
 		WARN_PRINT(
-			"Slider joint upper distances less than 0º are not supported by Godot Jolt. "
+			"Slider joint upper distances less than 0 are not supported by Godot Jolt. "
 			"Values outside this range will be clamped."
 		);
 	}

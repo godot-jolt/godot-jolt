@@ -17,7 +17,7 @@ public:
 
 	bool has_state_sync_callback() const { return body_state_callback.is_valid(); }
 
-	void set_state_sync_callback(const Callable& p_callback);
+	void set_state_sync_callback(const Callable& p_callback) { body_state_callback = p_callback; }
 
 	bool has_force_integration_callback() const { return force_integration_callback.is_valid(); }
 

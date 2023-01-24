@@ -5,9 +5,9 @@
 
 namespace {
 
-constexpr double GDJOLT_CONE_TWIST_JOINT_DEFAULT_BIAS = 0.3;
-constexpr double GDJOLT_CONE_TWIST_JOINT_DEFAULT_SOFTNESS = 0.8;
-constexpr double GDJOLT_CONE_TWIST_JOINT_DEFAULT_RELAXATION = 1.0;
+constexpr double GDJOLT_CONE_TWIST_BIAS = 0.3;
+constexpr double GDJOLT_CONE_TWIST_SOFTNESS = 0.8;
+constexpr double GDJOLT_CONE_TWIST_RELAXATION = 1.0;
 
 } // namespace
 
@@ -85,13 +85,13 @@ double JoltConeTwistJoint3D::get_param(PhysicsServer3D::ConeTwistJointParam p_pa
 			return twist_span;
 		}
 		case PhysicsServer3D::CONE_TWIST_JOINT_BIAS: {
-			return GDJOLT_CONE_TWIST_JOINT_DEFAULT_BIAS;
+			return GDJOLT_CONE_TWIST_BIAS;
 		}
 		case PhysicsServer3D::CONE_TWIST_JOINT_SOFTNESS: {
-			return GDJOLT_CONE_TWIST_JOINT_DEFAULT_SOFTNESS;
+			return GDJOLT_CONE_TWIST_SOFTNESS;
 		}
 		case PhysicsServer3D::CONE_TWIST_JOINT_RELAXATION: {
-			return GDJOLT_CONE_TWIST_JOINT_DEFAULT_RELAXATION;
+			return GDJOLT_CONE_TWIST_RELAXATION;
 		}
 		default: {
 			ERR_FAIL_D_MSG(vformat("Unhandled cone twist joint parameter: '%d'", p_param));
@@ -113,7 +113,7 @@ void JoltConeTwistJoint3D::set_param(PhysicsServer3D::ConeTwistJointParam p_para
 			spans_changed();
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_BIAS: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_CONE_TWIST_JOINT_DEFAULT_BIAS)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_CONE_TWIST_BIAS)) {
 				WARN_PRINT(
 					"Cone twist joint bias is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -121,7 +121,7 @@ void JoltConeTwistJoint3D::set_param(PhysicsServer3D::ConeTwistJointParam p_para
 			}
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_SOFTNESS: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_CONE_TWIST_JOINT_DEFAULT_SOFTNESS)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_CONE_TWIST_SOFTNESS)) {
 				WARN_PRINT(
 					"Cone twist joint softness is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -129,7 +129,7 @@ void JoltConeTwistJoint3D::set_param(PhysicsServer3D::ConeTwistJointParam p_para
 			}
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_RELAXATION: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_CONE_TWIST_JOINT_DEFAULT_RELAXATION)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_CONE_TWIST_RELAXATION)) {
 				WARN_PRINT(
 					"Cone twist joint relaxation is not supported by Godot Jolt. "
 					"Any such value will be ignored."

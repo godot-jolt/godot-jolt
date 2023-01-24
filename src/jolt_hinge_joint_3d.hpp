@@ -8,16 +8,16 @@ public:
 		JoltSpace3D* p_space,
 		JoltBody3D* p_body_a,
 		JoltBody3D* p_body_b,
-		const Transform3D& p_hinge_a,
-		const Transform3D& p_hinge_b,
+		const Transform3D& p_local_ref_a,
+		const Transform3D& p_local_ref_b,
 		bool p_lock = true
 	);
 
 	JoltHingeJoint3D(
 		JoltSpace3D* p_space,
 		JoltBody3D* p_body_a,
-		const Transform3D& p_hinge_a,
-		const Transform3D& p_hinge_b,
+		const Transform3D& p_local_ref_a,
+		const Transform3D& p_local_ref_b,
 		bool p_lock = true
 	);
 

@@ -5,10 +5,10 @@
 
 namespace {
 
-constexpr double GDJOLT_HINGE_JOINT_DEFAULT_BIAS = 0.3;
-constexpr double GDJOLT_HINGE_JOINT_DEFAULT_LIMIT_BIAS = 0.3;
-constexpr double GDJOLT_HINGE_JOINT_DEFAULT_SOFTNESS = 0.9;
-constexpr double GDJOLT_HINGE_JOINT_DEFAULT_RELAXATION = 1.0;
+constexpr double GDJOLT_HINGE_BIAS = 0.3;
+constexpr double GDJOLT_HINGE_LIMIT_BIAS = 0.3;
+constexpr double GDJOLT_HINGE_SOFTNESS = 0.9;
+constexpr double GDJOLT_HINGE_RELAXATION = 1.0;
 
 } // namespace
 
@@ -16,8 +16,8 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 	JoltSpace3D* p_space,
 	JoltBody3D* p_body_a,
 	JoltBody3D* p_body_b,
-	const Transform3D& p_hinge_a,
-	const Transform3D& p_hinge_b,
+	const Transform3D& p_local_ref_a,
+	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
 	: JoltJoint3D(p_space, p_body_a, p_body_b) {
@@ -35,12 +35,12 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 
 	JPH::HingeConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPoint1 = to_jolt(p_hinge_a.origin) - jolt_shape_a.GetCenterOfMass();
-	constraint_settings.mHingeAxis1 = to_jolt(-p_hinge_a.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mNormalAxis1 = to_jolt(p_hinge_a.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mPoint2 = to_jolt(p_hinge_b.origin) - jolt_shape_b.GetCenterOfMass();
-	constraint_settings.mHingeAxis2 = to_jolt(-p_hinge_b.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mNormalAxis2 = to_jolt(p_hinge_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mPoint1 = to_jolt(p_local_ref_a.origin) - jolt_shape_a.GetCenterOfMass();
+	constraint_settings.mHingeAxis1 = to_jolt(-p_local_ref_a.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis1 = to_jolt(p_local_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mPoint2 = to_jolt(p_local_ref_b.origin) - jolt_shape_b.GetCenterOfMass();
+	constraint_settings.mHingeAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis2 = to_jolt(p_local_ref_b.basis.get_column(Vector3::AXIS_X));
 
 	jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
 
@@ -50,8 +50,8 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 JoltHingeJoint3D::JoltHingeJoint3D(
 	JoltSpace3D* p_space,
 	JoltBody3D* p_body_a,
-	const Transform3D& p_hinge_a,
-	const Transform3D& p_hinge_b,
+	const Transform3D& p_local_ref_a,
+	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
 	: JoltJoint3D(p_space, p_body_a) {
@@ -62,12 +62,12 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 
 	JPH::HingeConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPoint1 = to_jolt(p_hinge_a.origin) - jolt_shape_a.GetCenterOfMass();
-	constraint_settings.mHingeAxis1 = to_jolt(-p_hinge_a.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mNormalAxis1 = to_jolt(p_hinge_a.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mPoint2 = to_jolt(p_hinge_b.origin);
-	constraint_settings.mHingeAxis2 = to_jolt(-p_hinge_b.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mNormalAxis2 = to_jolt(p_hinge_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mPoint1 = to_jolt(p_local_ref_a.origin) - jolt_shape_a.GetCenterOfMass();
+	constraint_settings.mHingeAxis1 = to_jolt(-p_local_ref_a.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis1 = to_jolt(p_local_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mPoint2 = to_jolt(p_local_ref_b.origin);
+	constraint_settings.mHingeAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis2 = to_jolt(p_local_ref_b.basis.get_column(Vector3::AXIS_X));
 
 	jolt_ref = constraint_settings.Create(*jolt_body_a, JPH::Body::sFixedToWorld);
 
@@ -80,7 +80,7 @@ double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) {
 
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
-			return GDJOLT_HINGE_JOINT_DEFAULT_BIAS;
+			return GDJOLT_HINGE_BIAS;
 		}
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_UPPER: {
 			return limit_upper;
@@ -89,13 +89,13 @@ double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) {
 			return limit_lower;
 		}
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
-			return GDJOLT_HINGE_JOINT_DEFAULT_LIMIT_BIAS;
+			return GDJOLT_HINGE_LIMIT_BIAS;
 		}
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_SOFTNESS: {
-			return GDJOLT_HINGE_JOINT_DEFAULT_SOFTNESS;
+			return GDJOLT_HINGE_SOFTNESS;
 		}
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_RELAXATION: {
-			return GDJOLT_HINGE_JOINT_DEFAULT_RELAXATION;
+			return GDJOLT_HINGE_RELAXATION;
 		}
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_TARGET_VELOCITY: {
 			return jolt_constraint->GetTargetAngularVelocity();
@@ -115,7 +115,7 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_JOINT_DEFAULT_BIAS)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_BIAS)) {
 				WARN_PRINT(
 					"Hinge joint bias is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -131,7 +131,7 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 			limits_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_JOINT_DEFAULT_LIMIT_BIAS)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_LIMIT_BIAS)) {
 				WARN_PRINT(
 					"Hinge joint bias limit is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -139,7 +139,7 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_SOFTNESS: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_JOINT_DEFAULT_SOFTNESS)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_SOFTNESS)) {
 				WARN_PRINT(
 					"Hinge joint softness is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -147,7 +147,7 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_RELAXATION: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_JOINT_DEFAULT_RELAXATION)) {
+			if (!Math::is_equal_approx(p_value, GDJOLT_HINGE_RELAXATION)) {
 				WARN_PRINT(
 					"Hinge joint relaxation is not supported by Godot Jolt. "
 					"Any such value will be ignored."

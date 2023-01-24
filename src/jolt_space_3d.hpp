@@ -29,7 +29,7 @@ public:
 
 	const JPH::BodyInterface& get_body_iface(bool p_locked = true) const;
 
-	const JPH::BodyLockInterface& get_body_lock_iface(bool p_locked = true) const;
+	const JPH::BodyLockInterface& get_lock_iface(bool p_locked = true) const;
 
 	const JPH::NarrowPhaseQuery& get_narrow_phase_query(bool p_locked = true) const;
 
@@ -49,13 +49,13 @@ public:
 
 	JoltReadableBodies3D read_bodies(
 		const JPH::BodyID* p_body_ids,
-		int p_body_count,
+		int32_t p_body_count,
 		bool p_lock = true
 	) const;
 
 	JoltWritableBodies3D write_bodies(
 		const JPH::BodyID* p_body_ids,
-		int p_body_count,
+		int32_t p_body_count,
 		bool p_lock = true
 	) const;
 
@@ -84,7 +84,7 @@ public:
 private:
 	void integrate_forces(bool p_lock = true);
 
-	void update_gravity();
+	void gravity_changed();
 
 	RID rid;
 

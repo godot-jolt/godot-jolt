@@ -4,11 +4,11 @@
 
 template<typename TElement, typename TAllocator = std::allocator<TElement>>
 class LocalVector {
-	using Storage = std::vector<TElement, TAllocator>;
+	using Implementation = std::vector<TElement, TAllocator>;
 
 public:
-	using Iterator = typename Storage::iterator;
-	using ConstIterator = typename Storage::const_iterator;
+	using Iterator = typename Implementation::iterator;
+	using ConstIterator = typename Implementation::const_iterator;
 
 	LocalVector() = default;
 
@@ -111,5 +111,5 @@ public:
 	}
 
 private:
-	Storage storage;
+	Implementation storage;
 };

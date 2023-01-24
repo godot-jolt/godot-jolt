@@ -11,21 +11,22 @@ constexpr float GDJOLT_CONVEX_RADIUS = 0.0f;
 JoltShape3D::~JoltShape3D() = default;
 
 void JoltShape3D::add_owner(JoltCollisionObject3D* p_owner) {
-	ref_count_by_owner[p_owner]++;
+	ref_counts_by_owner[p_owner]++;
 }
 
 void JoltShape3D::remove_owner(JoltCollisionObject3D* p_owner) {
-	if (--ref_count_by_owner[p_owner] <= 0) {
-		ref_count_by_owner.erase(p_owner);
+	if (--ref_counts_by_owner[p_owner] <= 0) {
+		ref_counts_by_owner.erase(p_owner);
 	}
 }
 
 void JoltShape3D::remove_self(bool p_lock) {
-	// TODO(mihe): Is this necessary? Are iterators invalidated when erasing?
-	const auto ref_count_by_owner_copy = ref_count_by_owner;
+	// `remove_owner` will be called when we `remove_shape`, so we need to copy the map since the
+	// iterator would be invalidated from underneath us
+	const auto ref_counts_by_owner_copy = ref_counts_by_owner;
 
-	for (const auto& [owner, ref_count] : ref_count_by_owner_copy) {
-		for (int i = 0; i < ref_count; ++i) {
+	for (const auto& [owner, ref_count] : ref_counts_by_owner_copy) {
+		for (int32_t i = 0; i < ref_count; ++i) {
 			owner->remove_shape(this, p_lock);
 		}
 	}
@@ -43,7 +44,7 @@ JPH::ShapeRefC JoltShape3D::with_scale(const JPH::ShapeRefC& p_shape, const Vect
 			"Failed to scale shape with scale '%v'. "
 			"Jolt returned the following error: '%s'.",
 			p_scale,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -72,7 +73,7 @@ JPH::ShapeRefC JoltShape3D::with_basis_origin(
 			"Jolt returned the following error: '%s'.",
 			p_basis,
 			p_origin,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -127,7 +128,7 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
 			"Failed to offset center of mass with offset '%v'. "
 			"Jolt returned the following error: '%s'.",
 			p_offset,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -190,7 +191,7 @@ JPH::ShapeRefC JoltSphereShape3D::try_build(uint64_t p_user_data) const {
 			"Failed to build sphere shape with radius '%f'. "
 			"Jolt returned the following error: '%s'.",
 			radius,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -239,7 +240,7 @@ JPH::ShapeRefC JoltBoxShape3D::try_build(uint64_t p_user_data) const {
 			"Failed to build box shape with half extents '%v'. "
 			"Jolt returned the following error: '%s'.",
 			half_extents,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -316,7 +317,7 @@ JPH::ShapeRefC JoltCapsuleShape3D::try_build(uint64_t p_user_data) const {
 			"Jolt returned the following error: '%s'.",
 			height,
 			radius,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -381,7 +382,7 @@ JPH::ShapeRefC JoltCylinderShape3D::try_build(uint64_t p_user_data) const {
 			"Jolt returned the following error: '%s'.",
 			height,
 			radius,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -441,7 +442,7 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::try_build(uint64_t p_user_data) const {
 			"Failed to build convex polygon shape with vertex count '%d'. "
 			"Jolt returned the following error: '%s'.",
 			vertex_count,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -547,7 +548,7 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::try_build(uint64_t p_user_data) const 
 			"Failed to build concave polygon shape with vertex count '%d'. "
 			"Jolt returned the following error: '%s'.",
 			vertex_count,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -674,7 +675,7 @@ JPH::ShapeRefC JoltHeightMapShape3D::try_build(uint64_t p_user_data) const {
 			width,
 			depth,
 			heights.size(),
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 

@@ -1,5 +1,6 @@
 #include "jolt_space_3d.hpp"
 
+#include "jolt_area_3d.hpp"
 #include "jolt_body_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
@@ -58,8 +59,7 @@ void JoltSpace3D::call_queries() {
 	for (int32_t i = 0; i < body_count; ++i) {
 		if (const JPH::Body* body = body_accessor.try_get(i)) {
 			if (!body->IsStatic() && !body->IsSensor()) {
-				auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
-				object->call_queries();
+				reinterpret_cast<JoltBody3D*>(body->GetUserData())->call_queries();
 			}
 		}
 	}
@@ -67,8 +67,7 @@ void JoltSpace3D::call_queries() {
 	for (int32_t i = 0; i < body_count; ++i) {
 		if (const JPH::Body* body = body_accessor.try_get(i)) {
 			if (!body->IsStatic() && body->IsSensor()) {
-				auto* object = reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
-				object->call_queries();
+				reinterpret_cast<JoltArea3D*>(body->GetUserData())->call_queries();
 			}
 		}
 	}
@@ -92,7 +91,7 @@ const JPH::BodyInterface& JoltSpace3D::get_body_iface(bool p_locked) const {
 	}
 }
 
-const JPH::BodyLockInterface& JoltSpace3D::get_body_lock_iface(bool p_locked) const {
+const JPH::BodyLockInterface& JoltSpace3D::get_lock_iface(bool p_locked) const {
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetBodyLockInterface();
 	} else {
@@ -134,7 +133,7 @@ JoltWritableBody3D JoltSpace3D::write_body(const JoltBody3D& p_body, bool p_lock
 
 JoltReadableBodies3D JoltSpace3D::read_bodies(
 	const JPH::BodyID* p_body_ids,
-	int p_body_count,
+	int32_t p_body_count,
 	bool p_lock
 ) const {
 	return {*this, p_body_ids, p_body_count, p_lock};
@@ -142,7 +141,7 @@ JoltReadableBodies3D JoltSpace3D::read_bodies(
 
 JoltWritableBodies3D JoltSpace3D::write_bodies(
 	const JPH::BodyID* p_body_ids,
-	int p_body_count,
+	int32_t p_body_count,
 	bool p_lock
 ) const {
 	return {*this, p_body_ids, p_body_count, p_lock};
@@ -174,11 +173,11 @@ void JoltSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Varian
 	switch (p_param) {
 		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
 			gravity = p_value;
-			update_gravity();
+			gravity_changed();
 		} break;
 		case PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR: {
 			gravity_vector = p_value;
-			update_gravity();
+			gravity_changed();
 		} break;
 		default: {
 			ERR_FAIL_NOT_IMPL();
@@ -215,7 +214,10 @@ void JoltSpace3D::create_object(JoltCollisionObject3D* p_object, bool p_lock) {
 	);
 
 	if (shape == nullptr) {
+		// Use a fallback shape instead
 		shape = new JPH::SphereShape(1.0f);
+
+		// Place it in object (and broad phase) layer 0, which will make it collide with nothing
 		object_layer = 0;
 	}
 
@@ -304,6 +306,6 @@ void JoltSpace3D::integrate_forces(bool p_lock) {
 	body_accessor.release();
 }
 
-void JoltSpace3D::update_gravity() {
+void JoltSpace3D::gravity_changed() {
 	physics_system->SetGravity(to_jolt(gravity_vector * gravity));
 }

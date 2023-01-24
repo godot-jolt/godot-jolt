@@ -39,12 +39,12 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_inverse_inertia() const {
 
 Basis JoltPhysicsDirectBodyState3D::_get_inverse_inertia_tensor() const {
 	ERR_FAIL_NULL_D(body);
-	return body->get_inverse_inertia_tensor(false);
+	return body->get_inverse_inertia_tensor();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_linear_velocity() const {
 	ERR_FAIL_NULL_D(body);
-	return body->get_linear_velocity(false);
+	return body->get_linear_velocity();
 }
 
 void JoltPhysicsDirectBodyState3D::_set_linear_velocity([[maybe_unused]] const Vector3& p_velocity
@@ -54,7 +54,7 @@ void JoltPhysicsDirectBodyState3D::_set_linear_velocity([[maybe_unused]] const V
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_angular_velocity() const {
 	ERR_FAIL_NULL_D(body);
-	return body->get_angular_velocity(false);
+	return body->get_angular_velocity();
 }
 
 void JoltPhysicsDirectBodyState3D::_set_angular_velocity([[maybe_unused]] const Vector3& p_velocity
@@ -68,7 +68,7 @@ void JoltPhysicsDirectBodyState3D::_set_transform([[maybe_unused]] const Transfo
 
 Transform3D JoltPhysicsDirectBodyState3D::_get_transform() const {
 	ERR_FAIL_NULL_D(body);
-	return body->get_transform(false);
+	return body->get_transform();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_velocity_at_local_position(
@@ -79,7 +79,7 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_velocity_at_local_position(
 
 void JoltPhysicsDirectBodyState3D::_apply_central_impulse(const Vector3& p_impulse) {
 	ERR_FAIL_NULL(body);
-	return body->apply_central_impulse(p_impulse, false);
+	return body->apply_central_impulse(p_impulse);
 }
 
 void JoltPhysicsDirectBodyState3D::_apply_impulse(
@@ -87,27 +87,27 @@ void JoltPhysicsDirectBodyState3D::_apply_impulse(
 	const Vector3& p_position
 ) {
 	ERR_FAIL_NULL(body);
-	return body->apply_impulse(p_impulse, p_position, false);
+	return body->apply_impulse(p_impulse, p_position);
 }
 
 void JoltPhysicsDirectBodyState3D::_apply_torque_impulse(const Vector3& p_impulse) {
 	ERR_FAIL_NULL(body);
-	return body->apply_torque_impulse(p_impulse, false);
+	return body->apply_torque_impulse(p_impulse);
 }
 
 void JoltPhysicsDirectBodyState3D::_apply_central_force(const Vector3& p_force) {
 	ERR_FAIL_NULL(body);
-	return body->apply_central_force(p_force, false);
+	return body->apply_central_force(p_force);
 }
 
 void JoltPhysicsDirectBodyState3D::_apply_force(const Vector3& p_force, const Vector3& p_position) {
 	ERR_FAIL_NULL(body);
-	return body->apply_force(p_force, p_position, false);
+	return body->apply_force(p_force, p_position);
 }
 
 void JoltPhysicsDirectBodyState3D::_apply_torque(const Vector3& p_torque) {
 	ERR_FAIL_NULL(body);
-	return body->apply_torque(p_torque, false);
+	return body->apply_torque(p_torque);
 }
 
 void JoltPhysicsDirectBodyState3D::_add_constant_central_force(const Vector3& p_force) {
@@ -120,7 +120,7 @@ void JoltPhysicsDirectBodyState3D::_add_constant_force(
 	const Vector3& p_position
 ) {
 	ERR_FAIL_NULL(body);
-	return body->add_constant_force(p_force, p_position, false);
+	return body->add_constant_force(p_force, p_position);
 }
 
 void JoltPhysicsDirectBodyState3D::_add_constant_torque(const Vector3& p_torque) {
@@ -150,7 +150,7 @@ void JoltPhysicsDirectBodyState3D::_set_constant_torque(const Vector3& p_torque)
 
 bool JoltPhysicsDirectBodyState3D::_is_sleeping() const {
 	ERR_FAIL_NULL_D(body);
-	return body->get_sleep_state(false);
+	return body->get_sleep_state();
 }
 
 void JoltPhysicsDirectBodyState3D::_set_sleep_state(bool p_enabled) {

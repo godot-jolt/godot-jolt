@@ -17,11 +17,11 @@ class HashSet {
 		}
 	};
 
-	using Storage = std::unordered_set<TKey, Hasher, Comparator>;
+	using Implementation = std::unordered_set<TKey, Hasher, Comparator>;
 
 public:
-	using Iterator = typename Storage::iterator;
-	using ConstIterator = typename Storage::const_iterator;
+	using Iterator = typename Implementation::iterator;
+	using ConstIterator = typename Implementation::const_iterator;
 
 	HashSet() = default;
 
@@ -62,5 +62,5 @@ public:
 	_FORCE_INLINE_ ConstIterator cend() const { return storage.cend(); }
 
 private:
-	Storage storage;
+	Implementation storage;
 };
