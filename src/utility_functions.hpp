@@ -39,7 +39,7 @@ constexpr int32_t count_of([[maybe_unused]] TElement (&p_array)[TSize]) {
 }
 
 template<typename TType>
-constexpr void delete_safely(TType*& p_ptr) {
+_FORCE_INLINE_ void delete_safely(TType*& p_ptr) {
 	if (p_ptr != nullptr) {
 		delete p_ptr;
 		p_ptr = nullptr;
@@ -47,7 +47,7 @@ constexpr void delete_safely(TType*& p_ptr) {
 }
 
 template<typename TType>
-constexpr void memdelete_safely(TType*& p_ptr) {
+_FORCE_INLINE_ void memdelete_safely(TType*& p_ptr) {
 	if (p_ptr != nullptr) {
 		memdelete(p_ptr);
 		p_ptr = nullptr;
