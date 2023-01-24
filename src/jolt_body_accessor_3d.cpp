@@ -2,8 +2,6 @@
 
 #include "jolt_space_3d.hpp"
 
-static int32_t acquired_count = 0;
-
 JoltBodyAccessor3D::JoltBodyAccessor3D(const JoltSpace3D* p_space)
 	: space(p_space) { }
 
@@ -69,13 +67,11 @@ const JPH::Body* JoltBodyReader3D::try_get() const {
 void JoltBodyReader3D::acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) {
 	mutex_mask = lock_iface->GetMutexMask(p_ids, p_id_count);
 	lock_iface->LockRead(mutex_mask);
-	acquired_count++;
 }
 
 void JoltBodyReader3D::release_internal() {
 	ERR_FAIL_COND(not_acquired());
 	lock_iface->UnlockRead(mutex_mask);
-	acquired_count--;
 }
 
 JoltBodyWriter3D::JoltBodyWriter3D(const JoltSpace3D* p_space)
@@ -99,11 +95,9 @@ JPH::Body* JoltBodyWriter3D::try_get() const {
 void JoltBodyWriter3D::acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) {
 	mutex_mask = lock_iface->GetMutexMask(p_ids, p_id_count);
 	lock_iface->LockWrite(mutex_mask);
-	acquired_count++;
 }
 
 void JoltBodyWriter3D::release_internal() {
 	ERR_FAIL_COND(not_acquired());
 	lock_iface->UnlockWrite(mutex_mask);
-	acquired_count--;
 }
