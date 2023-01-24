@@ -44,7 +44,7 @@ JPH::ShapeRefC JoltShape3D::with_scale(const JPH::ShapeRefC& p_shape, const Vect
 			"Failed to scale shape with scale '%v'. "
 			"Jolt returned the following error: '%s'.",
 			p_scale,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -73,7 +73,7 @@ JPH::ShapeRefC JoltShape3D::with_basis_origin(
 			"Jolt returned the following error: '%s'.",
 			p_basis,
 			p_origin,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -128,7 +128,7 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
 			"Failed to offset center of mass with offset '%v'. "
 			"Jolt returned the following error: '%s'.",
 			p_offset,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -191,7 +191,7 @@ JPH::ShapeRefC JoltSphereShape3D::try_build(uint64_t p_user_data) const {
 			"Failed to build sphere shape with radius '%f'. "
 			"Jolt returned the following error: '%s'.",
 			radius,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -240,7 +240,7 @@ JPH::ShapeRefC JoltBoxShape3D::try_build(uint64_t p_user_data) const {
 			"Failed to build box shape with half extents '%v'. "
 			"Jolt returned the following error: '%s'.",
 			half_extents,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -317,7 +317,7 @@ JPH::ShapeRefC JoltCapsuleShape3D::try_build(uint64_t p_user_data) const {
 			"Jolt returned the following error: '%s'.",
 			height,
 			radius,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -382,7 +382,7 @@ JPH::ShapeRefC JoltCylinderShape3D::try_build(uint64_t p_user_data) const {
 			"Jolt returned the following error: '%s'.",
 			height,
 			radius,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -442,7 +442,7 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::try_build(uint64_t p_user_data) const {
 			"Failed to build convex polygon shape with vertex count '%d'. "
 			"Jolt returned the following error: '%s'.",
 			vertex_count,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -548,7 +548,7 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::try_build(uint64_t p_user_data) const 
 			"Failed to build concave polygon shape with vertex count '%d'. "
 			"Jolt returned the following error: '%s'.",
 			vertex_count,
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
@@ -675,7 +675,7 @@ JPH::ShapeRefC JoltHeightMapShape3D::try_build(uint64_t p_user_data) const {
 			width,
 			depth,
 			heights.size(),
-			shape_result.GetError().c_str()
+			to_godot(shape_result.GetError())
 		)
 	);
 
