@@ -22,7 +22,7 @@ public:
 		Base::operator=(p_other);
 	}
 
-	InlineVector(InlineVector&& p_other) {
+	InlineVector(InlineVector&& p_other) noexcept {
 		const int32_t capacity = max(p_other.size(), TCapacity);
 		Base::reserve(capacity);
 		Base::operator=(std::move(p_other));
@@ -40,7 +40,7 @@ public:
 		return *this;
 	}
 
-	InlineVector& operator=(InlineVector&& p_other) {
+	InlineVector& operator=(InlineVector&& p_other) noexcept {
 		Base::operator=(std::move(p_other));
 		return *this;
 	}
