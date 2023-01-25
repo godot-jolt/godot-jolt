@@ -105,7 +105,7 @@ public:
 
 	JoltScopedBodyAccessor3D(const JoltScopedBodyAccessor3D& p_other) = delete;
 
-	JoltScopedBodyAccessor3D(JoltScopedBodyAccessor3D&& p_other) = default;
+	JoltScopedBodyAccessor3D(JoltScopedBodyAccessor3D&& p_other) noexcept = default;
 
 	const JoltSpace3D& get_space() const { return inner.get_space(); }
 
@@ -117,7 +117,7 @@ public:
 
 	JoltScopedBodyAccessor3D& operator=(const JoltScopedBodyAccessor3D& p_other) = delete;
 
-	JoltScopedBodyAccessor3D& operator=(JoltScopedBodyAccessor3D&& p_other) = default;
+	JoltScopedBodyAccessor3D& operator=(JoltScopedBodyAccessor3D&& p_other) noexcept = default;
 
 	decltype(auto) try_get(const JPH::BodyID& p_id) const { return inner.try_get(p_id); }
 

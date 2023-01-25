@@ -8,7 +8,7 @@ public:
 
 	RID_PtrOwner(const RID_PtrOwner& p_other) = default;
 
-	RID_PtrOwner(RID_PtrOwner&& p_other) = default;
+	RID_PtrOwner(RID_PtrOwner&& p_other) noexcept = default;
 
 	~RID_PtrOwner() {
 		if (ptrs_by_id.size() > 0) {
@@ -39,7 +39,7 @@ public:
 
 	RID_PtrOwner& operator=(const RID_PtrOwner& p_other) = default;
 
-	RID_PtrOwner& operator=(RID_PtrOwner&& p_other) = default;
+	RID_PtrOwner& operator=(RID_PtrOwner&& p_other) noexcept = default;
 
 private:
 	HashMap<int64_t, TResource*> ptrs_by_id;
