@@ -1,6 +1,6 @@
 @tool
 
-extends StaticBody3D
+class_name HeightMap3D extends StaticBody3D
 
 @export
 var collision_shape := NodePath():

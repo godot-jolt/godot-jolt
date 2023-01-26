@@ -11,8 +11,12 @@ config_version=5
 [application]
 
 config/name="godot-jolt"
-run/main_scene="res://hello_world.tscn"
+run/main_scene="res://scenes/shapes/shapes.tscn"
 config/features=PackedStringArray("4.0")
+
+[autoload]
+
+Global="*res://scenes/common/scripts/global.gd"
 
 [display]
 
@@ -29,5 +33,6 @@ import/blender/enabled=false
 
 [rendering]
 
+scaling_3d/mode=1
+scaling_3d/scale=2.0
 environment/defaults/default_clear_color=Color(0.392157, 0.584314, 0.929412, 1)
-anti_aliasing/quality/msaa=4

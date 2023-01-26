@@ -1,0 +1,78 @@
+[gd_scene load_steps=4 format=3 uid="uid://cs66uv4hw1afo"]
+
+[ext_resource type="Material" uid="uid://bd8s48i3httg2" path="res://scenes/common/materials/grey.tres" id="1_twesm"]
+[ext_resource type="Material" uid="uid://ctm5wb05otmn4" path="res://scenes/common/materials/green.tres" id="2_idrjo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wm2kd"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[node name="Pin" type="Node3D"]
+
+[node name="Joint_Upper" type="PinJoint3D" parent="."]
+node_a = NodePath("../Box_Upper")
+
+[node name="Box_Upper" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mass = 0.1
+linear_damp = 1.0
+angular_damp = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Box_Upper"]
+shape = SubResource("BoxShape3D_wm2kd")
+
+[node name="Mesh_Joint" type="CSGSphere3D" parent="Box_Upper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+radius = 0.075
+radial_segments = 24
+rings = 12
+material = ExtResource("1_twesm")
+
+[node name="Mesh_RodUpper" type="CSGCylinder3D" parent="Box_Upper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.375, 0)
+radius = 0.05
+height = 0.25
+sides = 16
+material = ExtResource("1_twesm")
+
+[node name="Mesh_Box" type="CSGBox3D" parent="Box_Upper"]
+size = Vector3(0.5, 0.5, 0.5)
+material = ExtResource("2_idrjo")
+
+[node name="Mesh_RodLower" type="CSGCylinder3D" parent="Box_Upper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.375, 0)
+radius = 0.05
+height = 0.25
+sides = 16
+material = ExtResource("1_twesm")
+
+[node name="Joint_Lower" type="PinJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+node_a = NodePath("../Box_Upper")
+node_b = NodePath("../Box_Lower")
+
+[node name="Box_Lower" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+mass = 0.1
+linear_damp = 1.0
+angular_damp = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Box_Lower"]
+shape = SubResource("BoxShape3D_wm2kd")
+
+[node name="Mesh_Joint" type="CSGSphere3D" parent="Box_Lower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+radius = 0.075
+radial_segments = 24
+rings = 12
+material = ExtResource("1_twesm")
+
+[node name="Mesh_Connector" type="CSGCylinder3D" parent="Box_Lower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.375, 0)
+radius = 0.05
+height = 0.25
+sides = 16
+material = ExtResource("1_twesm")
+
+[node name="Mesh_Box" type="CSGBox3D" parent="Box_Lower"]
+size = Vector3(0.5, 0.5, 0.5)
+material = ExtResource("2_idrjo")

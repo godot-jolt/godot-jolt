@@ -1,0 +1,80 @@
+[gd_scene load_steps=10 format=3 uid="uid://5bri33ngm2d6"]
+
+[ext_resource type="Environment" uid="uid://cgl5t5rlv6o6v" path="res://scenes/common/environments/default.tres" id="1_aom0t"]
+[ext_resource type="Script" path="res://scenes/common/scripts/free_look_camera.gd" id="2_bxs0h"]
+[ext_resource type="Material" uid="uid://3dvxsth5fn3n" path="res://scenes/common/materials/brown.tres" id="3_v06p4"]
+[ext_resource type="PackedScene" uid="uid://dsccepf6tfu5" path="res://scenes/joints/entities/hinge/hinge.tscn" id="4_n7fry"]
+[ext_resource type="PackedScene" path="res://scenes/joints/entities/slider/slider.tscn" id="5_02ote"]
+[ext_resource type="PackedScene" path="res://scenes/joints/entities/six_dof/six_dof.tscn" id="6_rodbc"]
+[ext_resource type="PackedScene" uid="uid://cs66uv4hw1afo" path="res://scenes/joints/entities/pin/pin.tscn" id="7_mihtv"]
+[ext_resource type="PackedScene" uid="uid://bhu7se0pk7ehq" path="res://scenes/joints/entities/cone_twist/cone_twist.tscn" id="8_iy535"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7618w"]
+size = Vector3(5, 1, 5)
+
+[node name="Joints" type="Node3D"]
+
+[node name="Environment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_aom0t")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.825549, -0.544985, 0.146493, 0, 0.259587, 0.96572, -0.56433, 0.797249, -0.214302, 0, 0, 0)
+light_bake_mode = 0
+shadow_enabled = true
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(-0.642788, -0.541675, 0.541675, 0, 0.707107, 0.707107, -0.766045, 0.45452, -0.45452, 4, 6, -4)
+current = true
+script = ExtResource("2_bxs0h")
+
+[node name="DebugGeometry" type="JoltDebugGeometry3D" parent="."]
+visible = false
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_7618w")
+
+[node name="Mesh" type="CSGBox3D" parent="Floor"]
+size = Vector3(5, 1, 5)
+material = ExtResource("3_v06p4")
+
+[node name="Hinge1" parent="." instance=ExtResource("4_n7fry")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 0.5, -1)
+
+[node name="Joint" parent="Hinge1" index="3"]
+motor/enable = true
+motor/target_velocity = -5.0
+motor/max_impulse = 0.2
+
+[node name="Slider" parent="." instance=ExtResource("5_02ote")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -2)
+
+[node name="Hinge2" parent="." instance=ExtResource("4_n7fry")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 0.5, -1)
+
+[node name="Joint" parent="Hinge2" index="3"]
+motor/enable = true
+motor/target_velocity = 5.0
+motor/max_impulse = 0.2
+
+[node name="ConeTwist" parent="." instance=ExtResource("8_iy535")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 3.5, 2.1)
+
+[node name="SixDOF" parent="." instance=ExtResource("6_rodbc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.70552e-08, 0.5, 2)
+
+[node name="Hinge3" parent="." instance=ExtResource("4_n7fry")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 0.5, 1)
+
+[node name="Joint" parent="Hinge3" index="3"]
+motor/enable = true
+motor/target_velocity = 5.0
+motor/max_impulse = 0.2
+
+[node name="Pin" parent="." instance=ExtResource("7_mihtv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 4, -0.6)
+
+[editable path="Hinge1"]
+[editable path="Hinge2"]
+[editable path="Hinge3"]

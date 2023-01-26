@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://wbibwda2jl66"]
+
+[ext_resource type="Material" uid="uid://bd8s48i3httg2" path="res://scenes/common/materials/grey.tres" id="1_qchgo"]
+
+[node name="Rail" type="Node3D"]
+
+[node name="Mesh_HRail" type="CSGCylinder3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 1, 0)
+radius = 0.05
+height = 4.0
+material = ExtResource("1_qchgo")
+
+[node name="Mesh_VRail_Left" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 0)
+radius = 0.05
+height = 1.0
+material = ExtResource("1_qchgo")
+
+[node name="Mesh_VRail_Right" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0)
+radius = 0.05
+height = 1.0
+material = ExtResource("1_qchgo")
+
+[node name="Ball_Left" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 0)
+radius = 0.075
+material = ExtResource("1_qchgo")
+
+[node name="Ball_Right" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+radius = 0.075
+material = ExtResource("1_qchgo")
