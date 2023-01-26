@@ -1,0 +1,105 @@
+[gd_scene load_steps=4 format=3 uid="uid://bhu7se0pk7ehq"]
+
+[ext_resource type="Material" uid="uid://ctm5wb05otmn4" path="res://scenes/common/materials/green.tres" id="1_h0ioh"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_032dx"]
+radius = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4u6ud"]
+size = Vector3(0.2, 0.2, 1)
+
+[node name="ConeTwist" type="Node3D"]
+
+[node name="Segment1" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+
+[node name="Shape_Joint1" type="CollisionShape3D" parent="Segment1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+shape = SubResource("SphereShape3D_032dx")
+
+[node name="Mesh_Joint1" type="CSGSphere3D" parent="Segment1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+radius = 0.2
+radial_segments = 24
+rings = 12
+material = ExtResource("1_h0ioh")
+
+[node name="Shape_Beam" type="CollisionShape3D" parent="Segment1"]
+shape = SubResource("BoxShape3D_4u6ud")
+
+[node name="Mesh_Beam" type="CSGBox3D" parent="Segment1"]
+size = Vector3(0.2, 0.2, 1)
+material = ExtResource("1_h0ioh")
+
+[node name="Shape_Joint2" type="CollisionShape3D" parent="Segment1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+shape = SubResource("SphereShape3D_032dx")
+
+[node name="Mesh_Joint2" type="CSGSphere3D" parent="Segment1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+radius = 0.2
+radial_segments = 24
+rings = 12
+material = ExtResource("1_h0ioh")
+
+[node name="Joint" type="ConeTwistJoint3D" parent="Segment1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+node_a = NodePath("..")
+swing_span = 0.349066
+twist_span = 0.349066
+
+[node name="Segment2" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
+
+[node name="Shape_Beam" type="CollisionShape3D" parent="Segment2"]
+shape = SubResource("BoxShape3D_4u6ud")
+
+[node name="Mesh_Beam" type="CSGBox3D" parent="Segment2"]
+size = Vector3(0.2, 0.2, 1)
+material = ExtResource("1_h0ioh")
+
+[node name="Shape_Joint" type="CollisionShape3D" parent="Segment2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
+shape = SubResource("SphereShape3D_032dx")
+
+[node name="Mesh_Joint" type="CSGSphere3D" parent="Segment2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
+radius = 0.2
+radial_segments = 24
+rings = 12
+material = ExtResource("1_h0ioh")
+
+[node name="Joint" type="ConeTwistJoint3D" parent="Segment2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+node_a = NodePath("../../Segment1")
+node_b = NodePath("..")
+swing_span = 0.349066
+twist_span = 0.349066
+
+[node name="Segment3" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+
+[node name="Shape_Beam" type="CollisionShape3D" parent="Segment3"]
+shape = SubResource("BoxShape3D_4u6ud")
+
+[node name="Mesh_Beam" type="CSGBox3D" parent="Segment3"]
+size = Vector3(0.2, 0.2, 1)
+material = ExtResource("1_h0ioh")
+
+[node name="Shape_Joint" type="CollisionShape3D" parent="Segment3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
+shape = SubResource("SphereShape3D_032dx")
+
+[node name="Mesh_Joint" type="CSGSphere3D" parent="Segment3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
+radius = 0.2
+radial_segments = 24
+rings = 12
+material = ExtResource("1_h0ioh")
+
+[node name="Joint" type="ConeTwistJoint3D" parent="Segment3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+node_a = NodePath("../../Segment2")
+node_b = NodePath("..")
+swing_span = 0.349066
+twist_span = 0.349066
