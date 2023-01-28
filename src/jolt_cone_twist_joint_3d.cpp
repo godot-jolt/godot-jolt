@@ -149,25 +149,21 @@ void JoltConeTwistJoint3D::spans_changed() {
 	constexpr double basically_zero = -CMP_EPSILON;
 	constexpr double basically_pi = Math_PI + CMP_EPSILON;
 
-	const double half_twist_span = twist_span / 2.0;
+	if (twist_span >= basically_zero && twist_span <= basically_pi) {
+		const float twist_span_clamped = clamp((float)twist_span, 0.0f, JPH::JPH_PI);
 
-	if (half_twist_span >= basically_zero && half_twist_span <= basically_pi) {
-		const float half_twist_span_clamped = clamp((float)half_twist_span, 0.0f, JPH::JPH_PI);
-
-		jolt_constraint->SetTwistMinAngle(-half_twist_span_clamped);
-		jolt_constraint->SetTwistMaxAngle(half_twist_span_clamped);
+		jolt_constraint->SetTwistMinAngle(-twist_span_clamped);
+		jolt_constraint->SetTwistMaxAngle(twist_span_clamped);
 	} else {
 		jolt_constraint->SetTwistMinAngle(-JPH::JPH_PI);
 		jolt_constraint->SetTwistMaxAngle(JPH::JPH_PI);
 	}
 
-	const double half_swing_span = swing_span / 2.0;
+	if (swing_span >= basically_zero && swing_span <= basically_pi) {
+		const float swing_span_clamped = clamp((float)swing_span, 0.0f, JPH::JPH_PI);
 
-	if (half_swing_span >= basically_zero && half_swing_span <= basically_pi) {
-		const float half_swing_span_clamped = clamp((float)half_swing_span, 0.0f, JPH::JPH_PI);
-
-		jolt_constraint->SetNormalHalfConeAngle(half_swing_span_clamped);
-		jolt_constraint->SetPlaneHalfConeAngle(half_swing_span_clamped);
+		jolt_constraint->SetNormalHalfConeAngle(swing_span_clamped);
+		jolt_constraint->SetPlaneHalfConeAngle(swing_span_clamped);
 	} else {
 		jolt_constraint->SetNormalHalfConeAngle(JPH::JPH_PI);
 		jolt_constraint->SetPlaneHalfConeAngle(JPH::JPH_PI);
