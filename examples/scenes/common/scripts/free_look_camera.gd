@@ -1,7 +1,7 @@
 class_name FreeLookCamera3D extends Camera3D
 
 @export_range(0.0, 1000.0, 0.1, "or_greater", "exp", "suffix:u/s")
-var initial_speed = 10.0
+var initial_speed := 10.0
 
 @export_range(0.0, 100.0, 0.5, "or_greater")
 var interpolation_speed := 15.0
