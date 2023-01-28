@@ -45,8 +45,8 @@ material = ExtResource("1_h0ioh")
 [node name="Joint" type="ConeTwistJoint3D" parent="Segment1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
 node_a = NodePath("..")
-swing_span = 0.349066
-twist_span = 0.349066
+swing_span = 0.174533
+twist_span = 0.174533
 
 [node name="Segment2" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
@@ -73,8 +73,8 @@ material = ExtResource("1_h0ioh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
 node_a = NodePath("../../Segment1")
 node_b = NodePath("..")
-swing_span = 0.349066
-twist_span = 0.349066
+swing_span = 0.174533
+twist_span = 0.174533
 
 [node name="Segment3" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
@@ -101,5 +101,5 @@ material = ExtResource("1_h0ioh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
 node_a = NodePath("../../Segment2")
 node_b = NodePath("..")
-swing_span = 0.349066
-twist_span = 0.349066
+swing_span = 0.174533
+twist_span = 0.174533
