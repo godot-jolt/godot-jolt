@@ -22,7 +22,9 @@ public:
 
 	virtual bool is_valid() const = 0;
 
-	virtual JPH::ShapeRefC try_build(uint64_t p_user_data) const = 0;
+	virtual JPH::ShapeRefC try_build() = 0;
+
+	JPH::ShapeRefC get_jolt_ref() const { return jolt_ref; }
 
 	static JPH::ShapeRefC with_scale(const JPH::ShapeRefC& p_shape, const Vector3& p_scale);
 
@@ -47,8 +49,12 @@ public:
 		const Vector3& p_center_of_mass
 	);
 
+	static JPH::ShapeRefC with_user_data(const JPH::ShapeRefC& p_shape, uint64_t p_user_data);
+
 protected:
 	RID rid;
+
+	JPH::ShapeRefC jolt_ref;
 
 	HashMap<JoltCollisionObject3D*, int32_t> ref_counts_by_owner;
 };
@@ -60,7 +66,7 @@ class JoltSphereShape3D final : public JoltShape3D {
 
 	bool is_valid() const override { return radius > 0; }
 
-	JPH::ShapeRefC try_build(uint64_t p_user_data) const override;
+	JPH::ShapeRefC try_build() override;
 
 private:
 	void clear_data();
@@ -76,7 +82,7 @@ public:
 
 	bool is_valid() const override { return half_extents.x > 0; }
 
-	JPH::ShapeRefC try_build(uint64_t p_user_data) const override;
+	JPH::ShapeRefC try_build() override;
 
 private:
 	void clear_data();
@@ -92,7 +98,7 @@ public:
 
 	bool is_valid() const override { return radius > 0; }
 
-	JPH::ShapeRefC try_build(uint64_t p_user_data) const override;
+	JPH::ShapeRefC try_build() override;
 
 private:
 	void clear_data();
@@ -110,7 +116,7 @@ public:
 
 	bool is_valid() const override { return radius > 0; }
 
-	JPH::ShapeRefC try_build(uint64_t p_user_data) const override;
+	JPH::ShapeRefC try_build() override;
 
 private:
 	void clear_data();
@@ -128,7 +134,7 @@ public:
 
 	bool is_valid() const override { return !vertices.is_empty(); }
 
-	JPH::ShapeRefC try_build(uint64_t p_user_data) const override;
+	JPH::ShapeRefC try_build() override;
 
 private:
 	void clear_data();
@@ -144,7 +150,7 @@ public:
 
 	bool is_valid() const override { return !faces.is_empty(); }
 
-	JPH::ShapeRefC try_build(uint64_t p_user_data) const override;
+	JPH::ShapeRefC try_build() override;
 
 private:
 	void clear_data();
@@ -162,7 +168,7 @@ public:
 
 	bool is_valid() const override { return width > 0; }
 
-	JPH::ShapeRefC try_build(uint64_t p_user_data) const override;
+	JPH::ShapeRefC try_build() override;
 
 private:
 	void clear_data();

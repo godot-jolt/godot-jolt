@@ -1,6 +1,7 @@
 #include "jolt_shape_3d.hpp"
 
 #include "jolt_collision_object_3d.hpp"
+#include "jolt_override_user_data_shape.hpp"
 
 namespace {
 
@@ -151,6 +152,24 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass(
 	return with_center_of_mass_offset(p_shape, center_of_mass_offset);
 }
 
+JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::ShapeRefC& p_shape, uint64_t p_user_data) {
+	JoltOverrideUserDataShapeSettings shape_settings(p_shape);
+	shape_settings.mUserData = (JPH::uint64)p_user_data;
+
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to override user data. "
+			"It returned the following error: '%s'.",
+			to_godot(shape_result.GetError())
+		)
+	);
+
+	return shape_result.Get();
+}
+
 Variant JoltSphereShape3D::get_data() const {
 	return radius;
 }
@@ -172,17 +191,20 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltSphereShape3D::clear_data() {
+	jolt_ref = nullptr;
 	radius = 0.0f;
 }
 
-JPH::ShapeRefC JoltSphereShape3D::try_build(uint64_t p_user_data) const {
+JPH::ShapeRefC JoltSphereShape3D::try_build() {
 	if (!is_valid()) {
 		return {};
 	}
 
-	JPH::SphereShapeSettings shape_settings(radius);
-	shape_settings.mUserData = (JPH::uint64)p_user_data;
+	if (jolt_ref != nullptr) {
+		return jolt_ref;
+	}
 
+	const JPH::SphereShapeSettings shape_settings(radius);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -195,7 +217,9 @@ JPH::ShapeRefC JoltSphereShape3D::try_build(uint64_t p_user_data) const {
 		)
 	);
 
-	return shape_result.Get();
+	jolt_ref = shape_result.Get();
+
+	return jolt_ref;
 }
 
 Variant JoltBoxShape3D::get_data() const {
@@ -221,17 +245,20 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltBoxShape3D::clear_data() {
+	jolt_ref = nullptr;
 	half_extents.zero();
 }
 
-JPH::ShapeRefC JoltBoxShape3D::try_build(uint64_t p_user_data) const {
+JPH::ShapeRefC JoltBoxShape3D::try_build() {
 	if (!is_valid()) {
 		return {};
 	}
 
-	JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), GDJOLT_CONVEX_RADIUS);
-	shape_settings.mUserData = (JPH::uint64)p_user_data;
+	if (jolt_ref != nullptr) {
+		return jolt_ref;
+	}
 
+	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), GDJOLT_CONVEX_RADIUS);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -244,7 +271,9 @@ JPH::ShapeRefC JoltBoxShape3D::try_build(uint64_t p_user_data) const {
 		)
 	);
 
-	return shape_result.Get();
+	jolt_ref = shape_result.Get();
+
+	return jolt_ref;
 }
 
 Variant JoltCapsuleShape3D::get_data() const {
@@ -293,21 +322,24 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltCapsuleShape3D::clear_data() {
+	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
 }
 
-JPH::ShapeRefC JoltCapsuleShape3D::try_build(uint64_t p_user_data) const {
+JPH::ShapeRefC JoltCapsuleShape3D::try_build() {
 	if (!is_valid()) {
 		return {};
+	}
+
+	if (jolt_ref != nullptr) {
+		return jolt_ref;
 	}
 
 	const float half_height = height / 2.0f;
 	const float clamped_height = max(half_height - radius, CMP_EPSILON);
 
-	JPH::CapsuleShapeSettings shape_settings(clamped_height, radius);
-	shape_settings.mUserData = (JPH::uint64)p_user_data;
-
+	const JPH::CapsuleShapeSettings shape_settings(clamped_height, radius);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -321,7 +353,9 @@ JPH::ShapeRefC JoltCapsuleShape3D::try_build(uint64_t p_user_data) const {
 		)
 	);
 
-	return shape_result.Get();
+	jolt_ref = shape_result.Get();
+
+	return jolt_ref;
 }
 
 Variant JoltCylinderShape3D::get_data() const {
@@ -359,20 +393,23 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltCylinderShape3D::clear_data() {
+	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
 }
 
-JPH::ShapeRefC JoltCylinderShape3D::try_build(uint64_t p_user_data) const {
+JPH::ShapeRefC JoltCylinderShape3D::try_build() {
 	if (!is_valid()) {
 		return {};
 	}
 
+	if (jolt_ref != nullptr) {
+		return jolt_ref;
+	}
+
 	const float half_height = height / 2.0f;
 
-	JPH::CylinderShapeSettings shape_settings(half_height, radius, GDJOLT_CONVEX_RADIUS);
-	shape_settings.mUserData = (JPH::uint64)p_user_data;
-
+	const JPH::CylinderShapeSettings shape_settings(half_height, radius, GDJOLT_CONVEX_RADIUS);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -386,7 +423,9 @@ JPH::ShapeRefC JoltCylinderShape3D::try_build(uint64_t p_user_data) const {
 		)
 	);
 
-	return shape_result.Get();
+	jolt_ref = shape_result.Get();
+
+	return jolt_ref;
 }
 
 Variant JoltConvexPolygonShape3D::get_data() const {
@@ -411,12 +450,17 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltConvexPolygonShape3D::clear_data() {
+	jolt_ref = nullptr;
 	vertices.clear();
 }
 
-JPH::ShapeRefC JoltConvexPolygonShape3D::try_build(uint64_t p_user_data) const {
+JPH::ShapeRefC JoltConvexPolygonShape3D::try_build() {
 	if (!is_valid()) {
 		return {};
+	}
+
+	if (jolt_ref != nullptr) {
+		return jolt_ref;
 	}
 
 	const auto vertex_count = (int32_t)vertices.size();
@@ -431,9 +475,7 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::try_build(uint64_t p_user_data) const {
 		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
 	}
 
-	JPH::ConvexHullShapeSettings shape_settings(jolt_vertices, GDJOLT_CONVEX_RADIUS);
-	shape_settings.mUserData = (JPH::uint64)p_user_data;
-
+	const JPH::ConvexHullShapeSettings shape_settings(jolt_vertices, GDJOLT_CONVEX_RADIUS);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -446,7 +488,9 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::try_build(uint64_t p_user_data) const {
 		)
 	);
 
-	return shape_result.Get();
+	jolt_ref = shape_result.Get();
+
+	return jolt_ref;
 }
 
 Variant JoltConcavePolygonShape3D::get_data() const {
@@ -499,13 +543,18 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltConcavePolygonShape3D::clear_data() {
+	jolt_ref = nullptr;
 	faces.clear();
 	backface_collision = false;
 }
 
-JPH::ShapeRefC JoltConcavePolygonShape3D::try_build(uint64_t p_user_data) const {
+JPH::ShapeRefC JoltConcavePolygonShape3D::try_build() {
 	if (!is_valid()) {
 		return {};
+	}
+
+	if (jolt_ref != nullptr) {
+		return jolt_ref;
 	}
 
 	const auto vertex_count = (int32_t)faces.size();
@@ -537,9 +586,7 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::try_build(uint64_t p_user_data) const 
 		}
 	}
 
-	JPH::MeshShapeSettings shape_settings(jolt_faces);
-	shape_settings.mUserData = (JPH::uint64)p_user_data;
-
+	const JPH::MeshShapeSettings shape_settings(jolt_faces);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -552,7 +599,9 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::try_build(uint64_t p_user_data) const 
 		)
 	);
 
-	return shape_result.Get();
+	jolt_ref = shape_result.Get();
+
+	return jolt_ref;
 }
 
 Variant JoltHeightMapShape3D::get_data() const {
@@ -640,14 +689,19 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 }
 
 void JoltHeightMapShape3D::clear_data() {
+	jolt_ref = nullptr;
 	heights.clear();
 	width = 0;
 	depth = 0;
 }
 
-JPH::ShapeRefC JoltHeightMapShape3D::try_build(uint64_t p_user_data) const {
+JPH::ShapeRefC JoltHeightMapShape3D::try_build() {
 	if (!is_valid()) {
 		return {};
+	}
+
+	if (jolt_ref != nullptr) {
+		return jolt_ref;
 	}
 
 	const int32_t width_tiles = width - 1;
@@ -656,14 +710,12 @@ JPH::ShapeRefC JoltHeightMapShape3D::try_build(uint64_t p_user_data) const {
 	const float half_width_tiles = (float)width_tiles / 2.0f;
 	const float half_depth_tiles = (float)depth_tiles / 2.0f;
 
-	JPH::HeightFieldShapeSettings shape_settings(
+	const JPH::HeightFieldShapeSettings shape_settings(
 		heights.ptr(),
 		JPH::Vec3(-half_width_tiles, 0, -half_depth_tiles),
 		JPH::Vec3::sReplicate(1.0f),
 		(JPH::uint32)width
 	);
-
-	shape_settings.mUserData = (JPH::uint64)p_user_data;
 
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
@@ -679,5 +731,7 @@ JPH::ShapeRefC JoltHeightMapShape3D::try_build(uint64_t p_user_data) const {
 		)
 	);
 
-	return shape_result.Get();
+	jolt_ref = shape_result.Get();
+
+	return jolt_ref;
 }
