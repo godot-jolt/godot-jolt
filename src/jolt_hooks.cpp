@@ -1,5 +1,7 @@
 #include "jolt_hooks.hpp"
 
+#include "jolt_override_user_data_shape.hpp"
+
 void* jolt_alloc(size_t p_size) {
 	return mi_malloc(p_size);
 }
@@ -57,6 +59,8 @@ void initialize_jolt_hooks() {
 	JPH::Factory::sInstance = new JPH::Factory();
 
 	JPH::RegisterTypes();
+
+	JoltOverrideUserDataShape::register_type();
 }
 
 void deinitialize_jolt_hooks() {

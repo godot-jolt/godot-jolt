@@ -11,11 +11,13 @@ bool JoltShapeInstance3D::try_build(
 		return false;
 	}
 
-	JPH::ShapeRefC jolt_ref = p_shape->try_build(p_user_data);
+	JPH::ShapeRefC jolt_ref = p_shape->try_build();
 
 	if (jolt_ref == nullptr) {
 		return false;
 	}
+
+	jolt_ref = JoltShape3D::with_user_data(jolt_ref, p_user_data);
 
 	p_built_shape.shape = &p_shape;
 	p_built_shape.jolt_ref = std::move(jolt_ref);
