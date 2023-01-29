@@ -33,6 +33,18 @@ void JoltShape3D::remove_self(bool p_lock) {
 	}
 }
 
+JPH::ShapeRefC JoltShape3D::try_build() {
+	if (!is_valid()) {
+		return {};
+	}
+
+	if (jolt_ref == nullptr) {
+		jolt_ref = build();
+	}
+
+	return jolt_ref;
+}
+
 JPH::ShapeRefC JoltShape3D::with_scale(const JPH::ShapeRefC& p_shape, const Vector3& p_scale) {
 	ERR_FAIL_NULL_D(p_shape);
 
@@ -175,7 +187,7 @@ Variant JoltSphereShape3D::get_data() const {
 }
 
 void JoltSphereShape3D::set_data(const Variant& p_data) {
-	clear_data();
+	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::FLOAT);
 
@@ -190,20 +202,12 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 	radius = new_radius;
 }
 
-void JoltSphereShape3D::clear_data() {
+void JoltSphereShape3D::clear() {
 	jolt_ref = nullptr;
 	radius = 0.0f;
 }
 
-JPH::ShapeRefC JoltSphereShape3D::try_build() {
-	if (!is_valid()) {
-		return {};
-	}
-
-	if (jolt_ref != nullptr) {
-		return jolt_ref;
-	}
-
+JPH::ShapeRefC JoltSphereShape3D::build() const {
 	const JPH::SphereShapeSettings shape_settings(radius);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
@@ -217,9 +221,7 @@ JPH::ShapeRefC JoltSphereShape3D::try_build() {
 		)
 	);
 
-	jolt_ref = shape_result.Get();
-
-	return jolt_ref;
+	return shape_result.Get();
 }
 
 Variant JoltBoxShape3D::get_data() const {
@@ -227,7 +229,7 @@ Variant JoltBoxShape3D::get_data() const {
 }
 
 void JoltBoxShape3D::set_data(const Variant& p_data) {
-	clear_data();
+	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::VECTOR3);
 
@@ -244,20 +246,12 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 	half_extents = new_half_extents;
 }
 
-void JoltBoxShape3D::clear_data() {
+void JoltBoxShape3D::clear() {
 	jolt_ref = nullptr;
 	half_extents.zero();
 }
 
-JPH::ShapeRefC JoltBoxShape3D::try_build() {
-	if (!is_valid()) {
-		return {};
-	}
-
-	if (jolt_ref != nullptr) {
-		return jolt_ref;
-	}
-
+JPH::ShapeRefC JoltBoxShape3D::build() const {
 	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), GDJOLT_CONVEX_RADIUS);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
@@ -271,9 +265,7 @@ JPH::ShapeRefC JoltBoxShape3D::try_build() {
 		)
 	);
 
-	jolt_ref = shape_result.Get();
-
-	return jolt_ref;
+	return shape_result.Get();
 }
 
 Variant JoltCapsuleShape3D::get_data() const {
@@ -284,7 +276,7 @@ Variant JoltCapsuleShape3D::get_data() const {
 }
 
 void JoltCapsuleShape3D::set_data(const Variant& p_data) {
-	clear_data();
+	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -321,21 +313,13 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	radius = new_radius;
 }
 
-void JoltCapsuleShape3D::clear_data() {
+void JoltCapsuleShape3D::clear() {
 	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
 }
 
-JPH::ShapeRefC JoltCapsuleShape3D::try_build() {
-	if (!is_valid()) {
-		return {};
-	}
-
-	if (jolt_ref != nullptr) {
-		return jolt_ref;
-	}
-
+JPH::ShapeRefC JoltCapsuleShape3D::build() const {
 	const float half_height = height / 2.0f;
 	const float clamped_height = max(half_height - radius, CMP_EPSILON);
 
@@ -353,9 +337,7 @@ JPH::ShapeRefC JoltCapsuleShape3D::try_build() {
 		)
 	);
 
-	jolt_ref = shape_result.Get();
-
-	return jolt_ref;
+	return shape_result.Get();
 }
 
 Variant JoltCylinderShape3D::get_data() const {
@@ -366,7 +348,7 @@ Variant JoltCylinderShape3D::get_data() const {
 }
 
 void JoltCylinderShape3D::set_data(const Variant& p_data) {
-	clear_data();
+	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -392,21 +374,13 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 	radius = new_radius;
 }
 
-void JoltCylinderShape3D::clear_data() {
+void JoltCylinderShape3D::clear() {
 	jolt_ref = nullptr;
 	height = 0.0f;
 	radius = 0.0f;
 }
 
-JPH::ShapeRefC JoltCylinderShape3D::try_build() {
-	if (!is_valid()) {
-		return {};
-	}
-
-	if (jolt_ref != nullptr) {
-		return jolt_ref;
-	}
-
+JPH::ShapeRefC JoltCylinderShape3D::build() const {
 	const float half_height = height / 2.0f;
 
 	const JPH::CylinderShapeSettings shape_settings(half_height, radius, GDJOLT_CONVEX_RADIUS);
@@ -423,9 +397,7 @@ JPH::ShapeRefC JoltCylinderShape3D::try_build() {
 		)
 	);
 
-	jolt_ref = shape_result.Get();
-
-	return jolt_ref;
+	return shape_result.Get();
 }
 
 Variant JoltConvexPolygonShape3D::get_data() const {
@@ -433,7 +405,7 @@ Variant JoltConvexPolygonShape3D::get_data() const {
 }
 
 void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
-	clear_data();
+	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 
@@ -449,20 +421,12 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	vertices = std::move(new_vertices);
 }
 
-void JoltConvexPolygonShape3D::clear_data() {
+void JoltConvexPolygonShape3D::clear() {
 	jolt_ref = nullptr;
 	vertices.clear();
 }
 
-JPH::ShapeRefC JoltConvexPolygonShape3D::try_build() {
-	if (!is_valid()) {
-		return {};
-	}
-
-	if (jolt_ref != nullptr) {
-		return jolt_ref;
-	}
-
+JPH::ShapeRefC JoltConvexPolygonShape3D::build() const {
 	const auto vertex_count = (int32_t)vertices.size();
 
 	JPH::Array<JPH::Vec3> jolt_vertices;
@@ -488,9 +452,7 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::try_build() {
 		)
 	);
 
-	jolt_ref = shape_result.Get();
-
-	return jolt_ref;
+	return shape_result.Get();
 }
 
 Variant JoltConcavePolygonShape3D::get_data() const {
@@ -501,7 +463,7 @@ Variant JoltConcavePolygonShape3D::get_data() const {
 }
 
 void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
-	clear_data();
+	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -542,21 +504,13 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	backface_collision = new_backface_collision;
 }
 
-void JoltConcavePolygonShape3D::clear_data() {
+void JoltConcavePolygonShape3D::clear() {
 	jolt_ref = nullptr;
 	faces.clear();
 	backface_collision = false;
 }
 
-JPH::ShapeRefC JoltConcavePolygonShape3D::try_build() {
-	if (!is_valid()) {
-		return {};
-	}
-
-	if (jolt_ref != nullptr) {
-		return jolt_ref;
-	}
-
+JPH::ShapeRefC JoltConcavePolygonShape3D::build() const {
 	const auto vertex_count = (int32_t)faces.size();
 	const int32_t face_count = vertex_count / 3;
 
@@ -599,9 +553,7 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::try_build() {
 		)
 	);
 
-	jolt_ref = shape_result.Get();
-
-	return jolt_ref;
+	return shape_result.Get();
 }
 
 Variant JoltHeightMapShape3D::get_data() const {
@@ -613,7 +565,7 @@ Variant JoltHeightMapShape3D::get_data() const {
 }
 
 void JoltHeightMapShape3D::set_data(const Variant& p_data) {
-	clear_data();
+	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -688,22 +640,14 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	depth = new_depth;
 }
 
-void JoltHeightMapShape3D::clear_data() {
+void JoltHeightMapShape3D::clear() {
 	jolt_ref = nullptr;
 	heights.clear();
 	width = 0;
 	depth = 0;
 }
 
-JPH::ShapeRefC JoltHeightMapShape3D::try_build() {
-	if (!is_valid()) {
-		return {};
-	}
-
-	if (jolt_ref != nullptr) {
-		return jolt_ref;
-	}
-
+JPH::ShapeRefC JoltHeightMapShape3D::build() const {
 	const int32_t width_tiles = width - 1;
 	const int32_t depth_tiles = depth - 1;
 
@@ -731,7 +675,5 @@ JPH::ShapeRefC JoltHeightMapShape3D::try_build() {
 		)
 	);
 
-	jolt_ref = shape_result.Get();
-
-	return jolt_ref;
+	return shape_result.Get();
 }
