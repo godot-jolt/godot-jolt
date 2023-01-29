@@ -22,7 +22,7 @@ public:
 
 	virtual bool is_valid() const = 0;
 
-	virtual JPH::ShapeRefC try_build() = 0;
+	JPH::ShapeRefC try_build();
 
 	JPH::ShapeRefC get_jolt_ref() const { return jolt_ref; }
 
@@ -52,6 +52,8 @@ public:
 	static JPH::ShapeRefC with_user_data(const JPH::ShapeRefC& p_shape, uint64_t p_user_data);
 
 protected:
+	virtual JPH::ShapeRefC build() const = 0;
+
 	RID rid;
 
 	JPH::ShapeRefC jolt_ref;
@@ -66,10 +68,10 @@ class JoltSphereShape3D final : public JoltShape3D {
 
 	bool is_valid() const override { return radius > 0; }
 
-	JPH::ShapeRefC try_build() override;
-
 private:
-	void clear_data();
+	void clear();
+
+	JPH::ShapeRefC build() const override;
 
 	float radius = 0.0f;
 };
@@ -82,10 +84,10 @@ public:
 
 	bool is_valid() const override { return half_extents.x > 0; }
 
-	JPH::ShapeRefC try_build() override;
-
 private:
-	void clear_data();
+	void clear();
+
+	JPH::ShapeRefC build() const override;
 
 	Vector3 half_extents;
 };
@@ -98,10 +100,10 @@ public:
 
 	bool is_valid() const override { return radius > 0; }
 
-	JPH::ShapeRefC try_build() override;
-
 private:
-	void clear_data();
+	void clear();
+
+	JPH::ShapeRefC build() const override;
 
 	float height = 0.0f;
 
@@ -116,10 +118,10 @@ public:
 
 	bool is_valid() const override { return radius > 0; }
 
-	JPH::ShapeRefC try_build() override;
-
 private:
-	void clear_data();
+	void clear();
+
+	JPH::ShapeRefC build() const override;
 
 	float height = 0.0f;
 
@@ -134,10 +136,10 @@ public:
 
 	bool is_valid() const override { return !vertices.is_empty(); }
 
-	JPH::ShapeRefC try_build() override;
-
 private:
-	void clear_data();
+	void clear();
+
+	JPH::ShapeRefC build() const override;
 
 	PackedVector3Array vertices;
 };
@@ -150,10 +152,10 @@ public:
 
 	bool is_valid() const override { return !faces.is_empty(); }
 
-	JPH::ShapeRefC try_build() override;
-
 private:
-	void clear_data();
+	void clear();
+
+	JPH::ShapeRefC build() const override;
 
 	PackedVector3Array faces;
 
@@ -168,10 +170,10 @@ public:
 
 	bool is_valid() const override { return width > 0; }
 
-	JPH::ShapeRefC try_build() override;
-
 private:
-	void clear_data();
+	void clear();
+
+	JPH::ShapeRefC build() const override;
 
 	PackedFloat32Array heights;
 
