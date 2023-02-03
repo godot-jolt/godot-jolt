@@ -2,6 +2,18 @@
 
 #include "jolt_space_3d.hpp"
 
+namespace {
+
+template<class... TTypes>
+struct VariantVisitors : TTypes... {
+	using TTypes::operator()...;
+};
+
+template<class... TTypes>
+VariantVisitors(TTypes...) -> VariantVisitors<TTypes...>;
+
+} // namespace
+
 JoltBodyAccessor3D::JoltBodyAccessor3D(const JoltSpace3D* p_space)
 	: space(p_space) { }
 
@@ -9,26 +21,44 @@ JoltBodyAccessor3D::~JoltBodyAccessor3D() = default;
 
 void JoltBodyAccessor3D::acquire(const JPH::BodyID* p_ids, int32_t p_id_count, bool p_lock) {
 	lock_iface = &space->get_lock_iface(p_lock);
-	ids.assign(p_ids, p_ids + p_id_count);
+	ids = BodyIDSpan(p_ids, p_id_count);
 	acquire_internal(p_ids, p_id_count);
 }
 
 void JoltBodyAccessor3D::acquire(const JPH::BodyID& p_id, bool p_lock) {
 	lock_iface = &space->get_lock_iface(p_lock);
-	ids.assign(1, p_id);
+	ids = p_id;
 	acquire_internal(&p_id, 1);
 }
 
 void JoltBodyAccessor3D::acquire_active(bool p_lock) {
 	lock_iface = &space->get_lock_iface(p_lock);
-	space->get_physics_system()->GetActiveBodies(ids);
-	acquire_internal(ids.data(), (int32_t)ids.size());
+
+	auto* vector = std::get_if<JPH::BodyIDVector>(&ids);
+
+	if (!vector) {
+		ids = JPH::BodyIDVector();
+		vector = std::get_if<JPH::BodyIDVector>(&ids);
+	}
+
+	space->get_physics_system()->GetActiveBodies(*vector);
+
+	acquire_internal(vector->data(), (int32_t)vector->size());
 }
 
 void JoltBodyAccessor3D::acquire_all(bool p_lock) {
 	lock_iface = &space->get_lock_iface(p_lock);
-	space->get_physics_system()->GetBodies(ids);
-	acquire_internal(ids.data(), (int32_t)ids.size());
+
+	auto* vector = std::get_if<JPH::BodyIDVector>(&ids);
+
+	if (!vector) {
+		ids = JPH::BodyIDVector();
+		vector = std::get_if<JPH::BodyIDVector>(&ids);
+	}
+
+	space->get_physics_system()->GetBodies(*vector);
+
+	acquire_internal(vector->data(), (int32_t)vector->size());
 }
 
 void JoltBodyAccessor3D::release() {
@@ -38,12 +68,43 @@ void JoltBodyAccessor3D::release() {
 
 const JPH::BodyID* JoltBodyAccessor3D::get_ids() const {
 	ERR_FAIL_COND_D(not_acquired());
-	return ids.data();
+
+	return std::visit(
+		VariantVisitors{
+			[](const JPH::BodyID& p_id) {
+				return &p_id;
+			},
+			[](const JPH::BodyIDVector& p_vector) {
+				return p_vector.data();
+			},
+			[](const BodyIDSpan& p_span) {
+				return p_span.ptr;
+			}},
+		ids
+	);
 }
 
 int32_t JoltBodyAccessor3D::get_count() const {
 	ERR_FAIL_COND_D(not_acquired());
-	return (int32_t)ids.size();
+
+	return std::visit(
+		VariantVisitors{
+			[]([[maybe_unused]] const JPH::BodyID& p_id) {
+				return 1;
+			},
+			[](const JPH::BodyIDVector& p_vector) {
+				return (int32_t)p_vector.size();
+			},
+			[](const BodyIDSpan& p_span) {
+				return p_span.count;
+			}},
+		ids
+	);
+}
+
+const JPH::BodyID& JoltBodyAccessor3D::get_at(int32_t p_index) const {
+	CRASH_BAD_INDEX(p_index, get_count());
+	return get_ids()[p_index];
 }
 
 JoltBodyReader3D::JoltBodyReader3D(const JoltSpace3D* p_space)
@@ -56,12 +117,11 @@ const JPH::Body* JoltBodyReader3D::try_get(const JPH::BodyID& p_id) const {
 
 const JPH::Body* JoltBodyReader3D::try_get(int32_t p_index) const {
 	ERR_FAIL_INDEX_D(p_index, get_count());
-	return try_get(ids[(size_t)p_index]);
+	return try_get(get_at(p_index));
 }
 
 const JPH::Body* JoltBodyReader3D::try_get() const {
-	ERR_FAIL_COND_D(get_count() < 1);
-	return try_get(ids[0]);
+	return try_get(0);
 }
 
 void JoltBodyReader3D::acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) {
@@ -84,12 +144,11 @@ JPH::Body* JoltBodyWriter3D::try_get(const JPH::BodyID& p_id) const {
 
 JPH::Body* JoltBodyWriter3D::try_get(int32_t p_index) const {
 	ERR_FAIL_INDEX_D(p_index, get_count());
-	return try_get(ids[(size_t)p_index]);
+	return try_get(get_at(p_index));
 }
 
 JPH::Body* JoltBodyWriter3D::try_get() const {
-	ERR_FAIL_COND_D(get_count() == 0);
-	return try_get(ids[0]);
+	return try_get(0);
 }
 
 void JoltBodyWriter3D::acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) {

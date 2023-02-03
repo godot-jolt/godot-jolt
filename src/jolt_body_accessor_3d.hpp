@@ -3,6 +3,16 @@
 class JoltSpace3D;
 
 class JoltBodyAccessor3D {
+	struct BodyIDSpan {
+		BodyIDSpan(const JPH::BodyID* p_ptr, int32_t p_count)
+			: ptr(p_ptr)
+			, count(p_count) { }
+
+		const JPH::BodyID* ptr;
+
+		int32_t count;
+	};
+
 public:
 	explicit JoltBodyAccessor3D(const JoltSpace3D* p_space);
 
@@ -28,6 +38,8 @@ public:
 
 	int32_t get_count() const;
 
+	const JPH::BodyID& get_at(int32_t p_index) const;
+
 protected:
 	virtual void acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) = 0;
 
@@ -37,7 +49,7 @@ protected:
 
 	const JPH::BodyLockInterface* lock_iface = nullptr;
 
-	JPH::BodyIDVector ids;
+	std::variant<JPH::BodyID, JPH::BodyIDVector, BodyIDSpan> ids;
 };
 
 class JoltBodyReader3D final : public JoltBodyAccessor3D {
@@ -95,12 +107,7 @@ public:
 		bool p_lock = true
 	)
 		: inner(&p_space) {
-		inner.acquire(&p_id, 1, p_lock);
-	}
-
-	explicit JoltScopedBodyAccessor3D(const JoltSpace3D& p_space, bool p_lock = true)
-		: inner(&p_space) {
-		inner.acquire_all(p_lock);
+		inner.acquire(p_id, p_lock);
 	}
 
 	JoltScopedBodyAccessor3D(const JoltScopedBodyAccessor3D& p_other) = delete;
@@ -109,9 +116,7 @@ public:
 
 	const JoltSpace3D& get_space() const { return inner.get_space(); }
 
-	const JPH::BodyID* get_ids() const { return inner.get_ids(); }
-
-	int32_t get_count() const { return inner.get_count(); }
+	const JPH::BodyID& get_at(int32_t p_index) const { return inner.get_at(p_index); }
 
 	~JoltScopedBodyAccessor3D() { inner.release(); }
 
@@ -164,8 +169,7 @@ public:
 		: accessor(p_space, p_ids, p_id_count, p_lock) { }
 
 	JoltAccessibleBody3D<TAccessor, TBody> operator[](int32_t p_index) const {
-		CRASH_BAD_INDEX(p_index, accessor.get_count());
-		return {accessor.get_space(), accessor.get_ids()[p_index], false};
+		return {accessor.get_space(), accessor.get_at(p_index), false};
 	}
 
 private:
