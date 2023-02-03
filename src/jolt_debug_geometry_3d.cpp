@@ -86,8 +86,11 @@ JoltDebugGeometry3D::JoltDebugGeometry3D()
 	, mesh(RenderingServer::get_singleton()->mesh_create()) {
 	set_base(mesh);
 
+	set_cast_shadows_setting(GeometryInstance3D::SHADOW_CASTING_SETTING_OFF);
+
 	default_material.instantiate();
 	default_material->set_shading_mode(StandardMaterial3D::SHADING_MODE_UNSHADED);
+	default_material->set_specular_mode(StandardMaterial3D::SPECULAR_DISABLED);
 	default_material->set_flag(StandardMaterial3D::FLAG_ALBEDO_FROM_VERTEX_COLOR, true);
 }
 
