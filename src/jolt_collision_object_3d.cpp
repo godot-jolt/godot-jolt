@@ -129,6 +129,18 @@ Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
 	return to_godot(body->GetCenterOfMassPosition());
 }
 
+Vector3 JoltCollisionObject3D::get_velocity_at_local_position(
+	const Vector3& p_position,
+	bool p_lock
+) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return to_godot(body->GetPointVelocity(body->GetWorldTransform() * to_jolt(p_position)));
+}
+
 JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(const JPH::Shape& p_shape
 ) const {
 	const float mass = get_mass();
