@@ -190,7 +190,7 @@ PhysicsDirectSpaceState3D* JoltPhysicsServer3D::_space_get_direct_state(const RI
 
 void JoltPhysicsServer3D::_space_set_debug_contacts(
 	[[maybe_unused]] const RID& p_space,
-	[[maybe_unused]] int64_t p_max_contacts
+	[[maybe_unused]] int32_t p_max_contacts
 ) {
 	ERR_FAIL_NOT_IMPL();
 }
@@ -200,7 +200,7 @@ PackedVector3Array JoltPhysicsServer3D::_space_get_contacts([[maybe_unused]] con
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-int64_t JoltPhysicsServer3D::_space_get_contact_count([[maybe_unused]] const RID& p_space) const {
+int32_t JoltPhysicsServer3D::_space_get_contact_count([[maybe_unused]] const RID& p_space) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
@@ -233,7 +233,7 @@ void JoltPhysicsServer3D::_area_add_shape(
 
 void JoltPhysicsServer3D::_area_set_shape(
 	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int64_t p_shape_idx,
+	[[maybe_unused]] int32_t p_shape_idx,
 	[[maybe_unused]] const RID& p_shape
 ) {
 	ERR_FAIL_NOT_IMPL();
@@ -241,33 +241,33 @@ void JoltPhysicsServer3D::_area_set_shape(
 
 void JoltPhysicsServer3D::_area_set_shape_transform(
 	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int64_t p_shape_idx,
+	[[maybe_unused]] int32_t p_shape_idx,
 	[[maybe_unused]] const Transform3D& p_transform
 ) {
 	ERR_FAIL_NOT_IMPL();
 }
 
-int64_t JoltPhysicsServer3D::_area_get_shape_count([[maybe_unused]] const RID& p_area) const {
+int32_t JoltPhysicsServer3D::_area_get_shape_count([[maybe_unused]] const RID& p_area) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 RID JoltPhysicsServer3D::_area_get_shape(
 	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int64_t p_shape_idx
+	[[maybe_unused]] int32_t p_shape_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 Transform3D JoltPhysicsServer3D::_area_get_shape_transform(
 	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int64_t p_shape_idx
+	[[maybe_unused]] int32_t p_shape_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 void JoltPhysicsServer3D::_area_remove_shape(
 	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int64_t p_shape_idx
+	[[maybe_unused]] int32_t p_shape_idx
 ) {
 	ERR_FAIL_NOT_IMPL();
 }
@@ -278,22 +278,22 @@ void JoltPhysicsServer3D::_area_clear_shapes([[maybe_unused]] const RID& p_area)
 
 void JoltPhysicsServer3D::_area_set_shape_disabled(
 	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int64_t p_shape_idx,
+	[[maybe_unused]] int32_t p_shape_idx,
 	[[maybe_unused]] bool p_disabled
 ) {
 	ERR_FAIL_NOT_IMPL();
 }
 
-void JoltPhysicsServer3D::_area_attach_object_instance_id(const RID& p_area, int64_t p_id) {
+void JoltPhysicsServer3D::_area_attach_object_instance_id(const RID& p_area, uint64_t p_id) {
 	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
 	area->set_instance_id(p_id);
 }
 
-int64_t JoltPhysicsServer3D::_area_get_object_instance_id(const RID& p_area) const {
+uint64_t JoltPhysicsServer3D::_area_get_object_instance_id(const RID& p_area) const {
 	JoltArea3D* area = area_owner.get_or_null(p_area);
-	ERR_FAIL_NULL_V(area, -1);
+	ERR_FAIL_NULL_D(area);
 
 	return area->get_instance_id();
 }
@@ -336,14 +336,14 @@ Transform3D JoltPhysicsServer3D::_area_get_transform([[maybe_unused]] const RID&
 
 void JoltPhysicsServer3D::_area_set_collision_mask(
 	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int64_t p_mask
+	[[maybe_unused]] uint32_t p_mask
 ) {
 	ERR_FAIL_NOT_IMPL();
 }
 
 void JoltPhysicsServer3D::_area_set_collision_layer(
 	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int64_t p_layer
+	[[maybe_unused]] uint32_t p_layer
 ) {
 	ERR_FAIL_NOT_IMPL();
 }
@@ -436,7 +436,7 @@ void JoltPhysicsServer3D::_body_add_shape(
 
 void JoltPhysicsServer3D::_body_set_shape(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_shape_idx,
+	[[maybe_unused]] int32_t p_shape_idx,
 	[[maybe_unused]] const RID& p_shape
 ) {
 	ERR_FAIL_NOT_IMPL();
@@ -444,7 +444,7 @@ void JoltPhysicsServer3D::_body_set_shape(
 
 void JoltPhysicsServer3D::_body_set_shape_transform(
 	const RID& p_body,
-	int64_t p_shape_idx,
+	int32_t p_shape_idx,
 	const Transform3D& p_transform
 ) {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
@@ -453,25 +453,25 @@ void JoltPhysicsServer3D::_body_set_shape_transform(
 	body->set_shape_transform(p_shape_idx, p_transform);
 }
 
-int64_t JoltPhysicsServer3D::_body_get_shape_count([[maybe_unused]] const RID& p_body) const {
+int32_t JoltPhysicsServer3D::_body_get_shape_count([[maybe_unused]] const RID& p_body) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 RID JoltPhysicsServer3D::_body_get_shape(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_shape_idx
+	[[maybe_unused]] int32_t p_shape_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 Transform3D JoltPhysicsServer3D::_body_get_shape_transform(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_shape_idx
+	[[maybe_unused]] int32_t p_shape_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int64_t p_shape_idx) {
+void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int32_t p_shape_idx) {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
@@ -484,7 +484,7 @@ void JoltPhysicsServer3D::_body_clear_shapes([[maybe_unused]] const RID& p_body)
 
 void JoltPhysicsServer3D::_body_set_shape_disabled(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_shape_idx,
+	[[maybe_unused]] int32_t p_shape_idx,
 	[[maybe_unused]] bool p_disabled
 ) {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
@@ -493,16 +493,16 @@ void JoltPhysicsServer3D::_body_set_shape_disabled(
 	body->set_shape_disabled(p_shape_idx, p_disabled);
 }
 
-void JoltPhysicsServer3D::_body_attach_object_instance_id(const RID& p_body, int64_t p_id) {
+void JoltPhysicsServer3D::_body_attach_object_instance_id(const RID& p_body, uint64_t p_id) {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_instance_id(p_id);
 }
 
-int64_t JoltPhysicsServer3D::_body_get_object_instance_id(const RID& p_body) const {
+uint64_t JoltPhysicsServer3D::_body_get_object_instance_id(const RID& p_body) const {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
-	ERR_FAIL_NULL_V(body, -1);
+	ERR_FAIL_NULL_D(body);
 
 	return body->get_instance_id();
 }
@@ -524,28 +524,28 @@ bool JoltPhysicsServer3D::_body_is_continuous_collision_detection_enabled(const 
 	return body->is_ccd_enabled();
 }
 
-void JoltPhysicsServer3D::_body_set_collision_layer(const RID& p_body, int64_t p_layer) {
+void JoltPhysicsServer3D::_body_set_collision_layer(const RID& p_body, uint32_t p_layer) {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	body->set_collision_layer((uint32_t)p_layer);
+	body->set_collision_layer(p_layer);
 }
 
-int64_t JoltPhysicsServer3D::_body_get_collision_layer(const RID& p_body) const {
+uint32_t JoltPhysicsServer3D::_body_get_collision_layer(const RID& p_body) const {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_collision_layer();
 }
 
-void JoltPhysicsServer3D::_body_set_collision_mask(const RID& p_body, int64_t p_mask) {
+void JoltPhysicsServer3D::_body_set_collision_mask(const RID& p_body, uint32_t p_mask) {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	body->set_collision_mask((uint32_t)p_mask);
+	body->set_collision_mask(p_mask);
 }
 
-int64_t JoltPhysicsServer3D::_body_get_collision_mask(const RID& p_body) const {
+uint32_t JoltPhysicsServer3D::_body_get_collision_mask(const RID& p_body) const {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
@@ -570,12 +570,12 @@ double JoltPhysicsServer3D::_body_get_collision_priority([[maybe_unused]] const 
 
 void JoltPhysicsServer3D::_body_set_user_flags(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_flags
+	[[maybe_unused]] uint32_t p_flags
 ) {
 	ERR_FAIL_NOT_IMPL();
 }
 
-int64_t JoltPhysicsServer3D::_body_get_user_flags([[maybe_unused]] const RID& p_body) const {
+uint32_t JoltPhysicsServer3D::_body_get_user_flags([[maybe_unused]] const RID& p_body) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
@@ -784,12 +784,12 @@ TypedArray<RID> JoltPhysicsServer3D::_body_get_collision_exceptions(const RID& p
 
 void JoltPhysicsServer3D::_body_set_max_contacts_reported(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_amount
+	[[maybe_unused]] int32_t p_amount
 ) {
 	ERR_FAIL_NOT_IMPL();
 }
 
-int64_t JoltPhysicsServer3D::_body_get_max_contacts_reported([[maybe_unused]] const RID& p_body
+int32_t JoltPhysicsServer3D::_body_get_max_contacts_reported([[maybe_unused]] const RID& p_body
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
@@ -852,7 +852,7 @@ bool JoltPhysicsServer3D::_body_test_motion(
 	[[maybe_unused]] const Transform3D& p_from,
 	[[maybe_unused]] const Vector3& p_motion,
 	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] int64_t p_max_collisions,
+	[[maybe_unused]] int32_t p_max_collisions,
 	[[maybe_unused]] bool p_collide_separation_ray,
 	[[maybe_unused]] PhysicsServer3DExtensionMotionResult* p_result
 ) const {
@@ -900,24 +900,24 @@ AABB JoltPhysicsServer3D::_soft_body_get_bounds([[maybe_unused]] const RID& p_bo
 
 void JoltPhysicsServer3D::_soft_body_set_collision_layer(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_layer
+	[[maybe_unused]] uint32_t p_layer
 ) {
 	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
-int64_t JoltPhysicsServer3D::_soft_body_get_collision_layer([[maybe_unused]] const RID& p_body
+uint32_t JoltPhysicsServer3D::_soft_body_get_collision_layer([[maybe_unused]] const RID& p_body
 ) const {
 	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_soft_body_set_collision_mask(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_mask
+	[[maybe_unused]] uint32_t p_mask
 ) {
 	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
-int64_t JoltPhysicsServer3D::_soft_body_get_collision_mask([[maybe_unused]] const RID& p_body
+uint32_t JoltPhysicsServer3D::_soft_body_get_collision_mask([[maybe_unused]] const RID& p_body
 ) const {
 	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
@@ -973,12 +973,12 @@ void JoltPhysicsServer3D::_soft_body_set_ray_pickable(
 
 void JoltPhysicsServer3D::_soft_body_set_simulation_precision(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_simulation_precision
+	[[maybe_unused]] int32_t p_simulation_precision
 ) {
 	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
 
-int64_t JoltPhysicsServer3D::_soft_body_get_simulation_precision([[maybe_unused]] const RID& p_body
+int32_t JoltPhysicsServer3D::_soft_body_get_simulation_precision([[maybe_unused]] const RID& p_body
 ) const {
 	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
@@ -1044,7 +1044,7 @@ double JoltPhysicsServer3D::_soft_body_get_drag_coefficient([[maybe_unused]] con
 
 void JoltPhysicsServer3D::_soft_body_move_point(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_point_index,
+	[[maybe_unused]] int32_t p_point_index,
 	[[maybe_unused]] const Vector3& p_global_position
 ) {
 	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
@@ -1052,7 +1052,7 @@ void JoltPhysicsServer3D::_soft_body_move_point(
 
 Vector3 JoltPhysicsServer3D::_soft_body_get_point_global_position(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_point_index
+	[[maybe_unused]] int32_t p_point_index
 ) const {
 	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
@@ -1063,7 +1063,7 @@ void JoltPhysicsServer3D::_soft_body_remove_all_pinned_points([[maybe_unused]] c
 
 void JoltPhysicsServer3D::_soft_body_pin_point(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_point_index,
+	[[maybe_unused]] int32_t p_point_index,
 	[[maybe_unused]] bool p_pin
 ) {
 	ERR_FAIL_MSG("SoftBody3D is not supported by Godot Jolt.");
@@ -1071,7 +1071,7 @@ void JoltPhysicsServer3D::_soft_body_pin_point(
 
 bool JoltPhysicsServer3D::_soft_body_is_point_pinned(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int64_t p_point_index
+	[[maybe_unused]] int32_t p_point_index
 ) const {
 	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
 }
@@ -1490,14 +1490,14 @@ PhysicsServer3D::JointType JoltPhysicsServer3D::_joint_get_type(const RID& p_joi
 	return joint->get_type();
 }
 
-void JoltPhysicsServer3D::_joint_set_solver_priority(const RID& p_joint, int64_t p_priority) {
+void JoltPhysicsServer3D::_joint_set_solver_priority(const RID& p_joint, int32_t p_priority) {
 	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL(joint);
 
 	joint->set_solver_priority(p_priority);
 }
 
-int64_t JoltPhysicsServer3D::_joint_get_solver_priority(const RID& p_joint) const {
+int32_t JoltPhysicsServer3D::_joint_get_solver_priority(const RID& p_joint) const {
 	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
@@ -1599,6 +1599,6 @@ bool JoltPhysicsServer3D::_is_flushing_queries() const {
 	return flushing_queries;
 }
 
-int64_t JoltPhysicsServer3D::_get_process_info([[maybe_unused]] ProcessInfo p_process_info) {
+int32_t JoltPhysicsServer3D::_get_process_info([[maybe_unused]] ProcessInfo p_process_info) {
 	return 0;
 }

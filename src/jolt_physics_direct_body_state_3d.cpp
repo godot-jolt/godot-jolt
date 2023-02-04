@@ -159,64 +159,64 @@ void JoltPhysicsDirectBodyState3D::_set_sleep_state(bool p_enabled) {
 	body->set_sleep_state(p_enabled);
 }
 
-int64_t JoltPhysicsDirectBodyState3D::_get_contact_count() const {
+int32_t JoltPhysicsDirectBodyState3D::_get_contact_count() const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_contact_local_position(
-	[[maybe_unused]] int64_t p_contact_idx
+	[[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_contact_local_normal(
-	[[maybe_unused]] int64_t p_contact_idx
+	[[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-Vector3 JoltPhysicsDirectBodyState3D::_get_contact_impulse([[maybe_unused]] int64_t p_contact_idx
+Vector3 JoltPhysicsDirectBodyState3D::_get_contact_impulse([[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-int64_t JoltPhysicsDirectBodyState3D::_get_contact_local_shape(
-	[[maybe_unused]] int64_t p_contact_idx
+int32_t JoltPhysicsDirectBodyState3D::_get_contact_local_shape(
+	[[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-RID JoltPhysicsDirectBodyState3D::_get_contact_collider([[maybe_unused]] int64_t p_contact_idx
+RID JoltPhysicsDirectBodyState3D::_get_contact_collider([[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_position(
-	[[maybe_unused]] int64_t p_contact_idx
+	[[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-int64_t JoltPhysicsDirectBodyState3D::_get_contact_collider_id(
-	[[maybe_unused]] int64_t p_contact_idx
+uint64_t JoltPhysicsDirectBodyState3D::_get_contact_collider_id(
+	[[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 Object* JoltPhysicsDirectBodyState3D::_get_contact_collider_object(
-	[[maybe_unused]] int64_t p_contact_idx
+	[[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-int64_t JoltPhysicsDirectBodyState3D::_get_contact_collider_shape(
-	[[maybe_unused]] int64_t p_contact_idx
+int32_t JoltPhysicsDirectBodyState3D::_get_contact_collider_shape(
+	[[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_velocity_at_position(
-	[[maybe_unused]] int64_t p_contact_idx
+	[[maybe_unused]] int32_t p_contact_idx
 ) const {
 	ERR_FAIL_D_NOT_IMPL();
 }

@@ -76,27 +76,27 @@ public:
 
 	bool _is_sleeping() const override;
 
-	int64_t _get_contact_count() const override;
+	int32_t _get_contact_count() const override;
 
-	Vector3 _get_contact_local_position(int64_t p_contact_idx) const override;
+	Vector3 _get_contact_local_position(int32_t p_contact_idx) const override;
 
-	Vector3 _get_contact_local_normal(int64_t p_contact_idx) const override;
+	Vector3 _get_contact_local_normal(int32_t p_contact_idx) const override;
 
-	Vector3 _get_contact_impulse(int64_t p_contact_idx) const override;
+	Vector3 _get_contact_impulse(int32_t p_contact_idx) const override;
 
-	int64_t _get_contact_local_shape(int64_t p_contact_idx) const override;
+	int32_t _get_contact_local_shape(int32_t p_contact_idx) const override;
 
-	RID _get_contact_collider(int64_t p_contact_idx) const override;
+	RID _get_contact_collider(int32_t p_contact_idx) const override;
 
-	Vector3 _get_contact_collider_position(int64_t p_contact_idx) const override;
+	Vector3 _get_contact_collider_position(int32_t p_contact_idx) const override;
 
-	int64_t _get_contact_collider_id(int64_t p_contact_idx) const override;
+	uint64_t _get_contact_collider_id(int32_t p_contact_idx) const override;
 
-	Object* _get_contact_collider_object(int64_t p_contact_idx) const override;
+	Object* _get_contact_collider_object(int32_t p_contact_idx) const override;
 
-	int64_t _get_contact_collider_shape(int64_t p_contact_idx) const override;
+	int32_t _get_contact_collider_shape(int32_t p_contact_idx) const override;
 
-	Vector3 _get_contact_collider_velocity_at_position(int64_t p_contact_idx) const override;
+	Vector3 _get_contact_collider_velocity_at_position(int32_t p_contact_idx) const override;
 
 	double _get_step() const override;
 

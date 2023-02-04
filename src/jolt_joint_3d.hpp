@@ -21,9 +21,9 @@ public:
 
 	JPH::Constraint* get_jolt_ref() const { return jolt_ref; }
 
-	int64_t get_solver_priority() const;
+	int32_t get_solver_priority() const;
 
-	void set_solver_priority(int64_t p_priority);
+	void set_solver_priority(int32_t p_priority);
 
 	bool is_collision_disabled() const { return collision_disabled; }
 

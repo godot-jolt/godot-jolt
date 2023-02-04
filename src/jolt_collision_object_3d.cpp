@@ -286,33 +286,33 @@ int32_t JoltCollisionObject3D::find_shape_index(JoltShape3D* p_shape) {
 }
 
 void JoltCollisionObject3D::set_shape_transform(
-	int64_t p_index,
+	int32_t p_index,
 	const Transform3D& p_transform,
 	bool p_lock
 ) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	const JoltShapeInstance3D& old_shape = shapes[(int32_t)p_index];
+	const JoltShapeInstance3D& old_shape = shapes[p_index];
 
 	if (old_shape.get_transform() == p_transform) {
 		return;
 	}
 
-	shapes[(int32_t)p_index].set_transform(p_transform);
+	shapes[p_index].set_transform(p_transform);
 
 	rebuild_shape(p_lock);
 }
 
-void JoltCollisionObject3D::set_shape_disabled(int64_t p_index, bool p_disabled, bool p_lock) {
+void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	const JoltShapeInstance3D& old_shape = shapes[(int32_t)p_index];
+	const JoltShapeInstance3D& old_shape = shapes[p_index];
 
 	if (old_shape.is_disabled() == p_disabled) {
 		return;
 	}
 
-	shapes[(int32_t)p_index].set_disabled(p_disabled);
+	shapes[p_index].set_disabled(p_disabled);
 
 	rebuild_shape(p_lock);
 }

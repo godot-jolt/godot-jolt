@@ -13,9 +13,9 @@ public:
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
-	int64_t get_instance_id() const { return instance_id; }
+	uint64_t get_instance_id() const { return instance_id; }
 
-	void set_instance_id(int64_t p_id) { instance_id = p_id; }
+	void set_instance_id(uint64_t p_id) { instance_id = p_id; }
 
 	JPH::BodyID get_jolt_id() const { return jolt_id; }
 
@@ -78,9 +78,9 @@ public:
 
 	int32_t find_shape_index(JoltShape3D* p_shape);
 
-	void set_shape_transform(int64_t p_index, const Transform3D& p_transform, bool p_lock = true);
+	void set_shape_transform(int32_t p_index, const Transform3D& p_transform, bool p_lock = true);
 
-	void set_shape_disabled(int64_t p_index, bool p_disabled, bool p_lock = true);
+	void set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock = true);
 
 	bool is_ray_pickable() const { return ray_pickable; }
 
@@ -125,7 +125,7 @@ protected:
 
 	RID rid;
 
-	int64_t instance_id = 0LL;
+	uint64_t instance_id = 0;
 
 	JPH::BodyID jolt_id;
 

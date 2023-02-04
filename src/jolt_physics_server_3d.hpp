@@ -70,11 +70,11 @@ public:
 
 	PhysicsDirectSpaceState3D* _space_get_direct_state(const RID& p_space) override;
 
-	void _space_set_debug_contacts(const RID& p_space, int64_t p_max_contacts) override;
+	void _space_set_debug_contacts(const RID& p_space, int32_t p_max_contacts) override;
 
 	PackedVector3Array _space_get_contacts(const RID& p_space) const override;
 
-	int64_t _space_get_contact_count(const RID& p_space) const override;
+	int32_t _space_get_contact_count(const RID& p_space) const override;
 
 	RID _area_create() override;
 
@@ -89,29 +89,29 @@ public:
 		bool p_disabled
 	) override;
 
-	void _area_set_shape(const RID& p_area, int64_t p_shape_idx, const RID& p_shape) override;
+	void _area_set_shape(const RID& p_area, int32_t p_shape_idx, const RID& p_shape) override;
 
 	void _area_set_shape_transform(
 		const RID& p_area,
-		int64_t p_shape_idx,
+		int32_t p_shape_idx,
 		const Transform3D& p_transform
 	) override;
 
-	void _area_set_shape_disabled(const RID& p_area, int64_t p_shape_idx, bool p_disabled) override;
+	void _area_set_shape_disabled(const RID& p_area, int32_t p_shape_idx, bool p_disabled) override;
 
-	int64_t _area_get_shape_count(const RID& p_area) const override;
+	int32_t _area_get_shape_count(const RID& p_area) const override;
 
-	RID _area_get_shape(const RID& p_area, int64_t p_shape_idx) const override;
+	RID _area_get_shape(const RID& p_area, int32_t p_shape_idx) const override;
 
-	Transform3D _area_get_shape_transform(const RID& p_area, int64_t p_shape_idx) const override;
+	Transform3D _area_get_shape_transform(const RID& p_area, int32_t p_shape_idx) const override;
 
-	void _area_remove_shape(const RID& p_area, int64_t p_shape_idx) override;
+	void _area_remove_shape(const RID& p_area, int32_t p_shape_idx) override;
 
 	void _area_clear_shapes(const RID& p_area) override;
 
-	void _area_attach_object_instance_id(const RID& p_area, int64_t p_id) override;
+	void _area_attach_object_instance_id(const RID& p_area, uint64_t p_id) override;
 
-	int64_t _area_get_object_instance_id(const RID& p_area) const override;
+	uint64_t _area_get_object_instance_id(const RID& p_area) const override;
 
 	void _area_set_param(
 		const RID& p_area,
@@ -126,9 +126,9 @@ public:
 
 	Transform3D _area_get_transform(const RID& p_area) const override;
 
-	void _area_set_collision_layer(const RID& p_area, int64_t p_layer) override;
+	void _area_set_collision_layer(const RID& p_area, uint32_t p_layer) override;
 
-	void _area_set_collision_mask(const RID& p_area, int64_t p_mask) override;
+	void _area_set_collision_mask(const RID& p_area, uint32_t p_mask) override;
 
 	void _area_set_monitorable(const RID& p_area, bool p_monitorable) override;
 
@@ -155,49 +155,49 @@ public:
 		bool p_disabled
 	) override;
 
-	void _body_set_shape(const RID& p_body, int64_t p_shape_idx, const RID& p_shape) override;
+	void _body_set_shape(const RID& p_body, int32_t p_shape_idx, const RID& p_shape) override;
 
 	void _body_set_shape_transform(
 		const RID& p_body,
-		int64_t p_shape_idx,
+		int32_t p_shape_idx,
 		const Transform3D& p_transform
 	) override;
 
-	void _body_set_shape_disabled(const RID& p_body, int64_t p_shape_idx, bool p_disabled) override;
+	void _body_set_shape_disabled(const RID& p_body, int32_t p_shape_idx, bool p_disabled) override;
 
-	int64_t _body_get_shape_count(const RID& p_body) const override;
+	int32_t _body_get_shape_count(const RID& p_body) const override;
 
-	RID _body_get_shape(const RID& p_body, int64_t p_shape_idx) const override;
+	RID _body_get_shape(const RID& p_body, int32_t p_shape_idx) const override;
 
-	Transform3D _body_get_shape_transform(const RID& p_body, int64_t p_shape_idx) const override;
+	Transform3D _body_get_shape_transform(const RID& p_body, int32_t p_shape_idx) const override;
 
-	void _body_remove_shape(const RID& p_body, int64_t p_shape_idx) override;
+	void _body_remove_shape(const RID& p_body, int32_t p_shape_idx) override;
 
 	void _body_clear_shapes(const RID& p_body) override;
 
-	void _body_attach_object_instance_id(const RID& p_body, int64_t p_id) override;
+	void _body_attach_object_instance_id(const RID& p_body, uint64_t p_id) override;
 
-	int64_t _body_get_object_instance_id(const RID& p_body) const override;
+	uint64_t _body_get_object_instance_id(const RID& p_body) const override;
 
 	void _body_set_enable_continuous_collision_detection(const RID& p_body, bool p_enable) override;
 
 	bool _body_is_continuous_collision_detection_enabled(const RID& p_body) const override;
 
-	void _body_set_collision_layer(const RID& p_body, int64_t p_layer) override;
+	void _body_set_collision_layer(const RID& p_body, uint32_t p_layer) override;
 
-	int64_t _body_get_collision_layer(const RID& p_body) const override;
+	uint32_t _body_get_collision_layer(const RID& p_body) const override;
 
-	void _body_set_collision_mask(const RID& p_body, int64_t p_mask) override;
+	void _body_set_collision_mask(const RID& p_body, uint32_t p_mask) override;
 
-	int64_t _body_get_collision_mask(const RID& p_body) const override;
+	uint32_t _body_get_collision_mask(const RID& p_body) const override;
 
 	void _body_set_collision_priority(const RID& p_body, double p_priority) override;
 
 	double _body_get_collision_priority(const RID& p_body) const override;
 
-	void _body_set_user_flags(const RID& p_body, int64_t p_flags) override;
+	void _body_set_user_flags(const RID& p_body, uint32_t p_flags) override;
 
-	int64_t _body_get_user_flags(const RID& p_body) const override;
+	uint32_t _body_get_user_flags(const RID& p_body) const override;
 
 	void _body_set_param(
 		const RID& p_body,
@@ -263,9 +263,9 @@ public:
 
 	TypedArray<RID> _body_get_collision_exceptions(const RID& p_body) const override;
 
-	void _body_set_max_contacts_reported(const RID& p_body, int64_t p_amount) override;
+	void _body_set_max_contacts_reported(const RID& p_body, int32_t p_amount) override;
 
-	int64_t _body_get_max_contacts_reported(const RID& p_body) const override;
+	int32_t _body_get_max_contacts_reported(const RID& p_body) const override;
 
 	void _body_set_contacts_reported_depth_threshold(const RID& p_body, double p_threshold)
 		override;
@@ -291,7 +291,7 @@ public:
 		const Transform3D& p_from,
 		const Vector3& p_motion,
 		double p_margin,
-		int64_t p_max_collisions,
+		int32_t p_max_collisions,
 		bool p_collide_separation_ray,
 		PhysicsServer3DExtensionMotionResult* p_result
 	) const override;
@@ -311,13 +311,13 @@ public:
 
 	void _soft_body_set_ray_pickable(const RID& p_body, bool p_enable) override;
 
-	void _soft_body_set_collision_layer(const RID& p_body, int64_t p_layer) override;
+	void _soft_body_set_collision_layer(const RID& p_body, uint32_t p_layer) override;
 
-	int64_t _soft_body_get_collision_layer(const RID& p_body) const override;
+	uint32_t _soft_body_get_collision_layer(const RID& p_body) const override;
 
-	void _soft_body_set_collision_mask(const RID& p_body, int64_t p_mask) override;
+	void _soft_body_set_collision_mask(const RID& p_body, uint32_t p_mask) override;
 
-	int64_t _soft_body_get_collision_mask(const RID& p_body) const override;
+	uint32_t _soft_body_get_collision_mask(const RID& p_body) const override;
 
 	void _soft_body_add_collision_exception(const RID& p_body, const RID& p_body_b) override;
 
@@ -336,10 +336,10 @@ public:
 
 	void _soft_body_set_transform(const RID& p_body, const Transform3D& p_transform) override;
 
-	void _soft_body_set_simulation_precision(const RID& p_body, int64_t p_simulation_precision)
+	void _soft_body_set_simulation_precision(const RID& p_body, int32_t p_simulation_precision)
 		override;
 
-	int64_t _soft_body_get_simulation_precision(const RID& p_body) const override;
+	int32_t _soft_body_get_simulation_precision(const RID& p_body) const override;
 
 	void _soft_body_set_total_mass(const RID& p_body, double p_total_mass) override;
 
@@ -369,18 +369,18 @@ public:
 
 	void _soft_body_move_point(
 		const RID& p_body,
-		int64_t p_point_index,
+		int32_t p_point_index,
 		const Vector3& p_global_position
 	) override;
 
-	Vector3 _soft_body_get_point_global_position(const RID& p_body, int64_t p_point_index)
+	Vector3 _soft_body_get_point_global_position(const RID& p_body, int32_t p_point_index)
 		const override;
 
 	void _soft_body_remove_all_pinned_points(const RID& p_body) override;
 
-	void _soft_body_pin_point(const RID& p_body, int64_t p_point_index, bool p_pin) override;
+	void _soft_body_pin_point(const RID& p_body, int32_t p_point_index, bool p_pin) override;
 
-	bool _soft_body_is_point_pinned(const RID& p_body, int64_t p_point_index) const override;
+	bool _soft_body_is_point_pinned(const RID& p_body, int32_t p_point_index) const override;
 
 	RID _joint_create() override;
 
@@ -519,9 +519,9 @@ public:
 
 	PhysicsServer3D::JointType _joint_get_type(const RID& p_joint) const override;
 
-	void _joint_set_solver_priority(const RID& p_joint, int64_t p_priority) override;
+	void _joint_set_solver_priority(const RID& p_joint, int32_t p_priority) override;
 
-	int64_t _joint_get_solver_priority(const RID& p_joint) const override;
+	int32_t _joint_get_solver_priority(const RID& p_joint) const override;
 
 	void _joint_disable_collisions_between_bodies(const RID& p_joint, bool p_disable) override;
 
@@ -545,7 +545,7 @@ public:
 
 	bool _is_flushing_queries() const override;
 
-	int64_t _get_process_info(PhysicsServer3D::ProcessInfo p_process_info) override;
+	int32_t _get_process_info(PhysicsServer3D::ProcessInfo p_process_info) override;
 
 	JoltSpace3D* get_space(const RID& p_rid) const { return space_owner.get_or_null(p_rid); }
 
