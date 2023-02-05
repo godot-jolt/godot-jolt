@@ -81,7 +81,7 @@ JoltPhysicsDirectSpaceState3D::JoltPhysicsDirectSpaceState3D(JoltSpace3D* p_spac
 bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const Vector3& p_from,
 	const Vector3& p_to,
-	int64_t p_collision_mask,
+	uint32_t p_collision_mask,
 	bool p_collide_with_bodies,
 	bool p_collide_with_areas,
 	bool p_hit_from_inside,
@@ -109,12 +109,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 		collector,
 		JoltQueryBroadPhaseLayerFilter3D(),
 		JoltQueryObjectLayerFilter3D(),
-		JoltQueryBodyFilter3D(
-			this,
-			(uint32_t)p_collision_mask,
-			p_collide_with_bodies,
-			p_collide_with_areas
-		),
+		JoltQueryBodyFilter3D(this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas),
 		JoltQueryShapeFilter3D()
 	);
 
@@ -147,27 +142,27 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	return true;
 }
 
-int64_t JoltPhysicsDirectSpaceState3D::_intersect_point(
+int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
 	[[maybe_unused]] const Vector3& p_position,
-	[[maybe_unused]] int64_t p_collision_mask,
+	[[maybe_unused]] uint32_t p_collision_mask,
 	[[maybe_unused]] bool p_collide_with_bodies,
 	[[maybe_unused]] bool p_collide_with_areas,
 	[[maybe_unused]] PhysicsServer3DExtensionShapeResult* p_results,
-	[[maybe_unused]] int64_t p_max_results
+	[[maybe_unused]] int32_t p_max_results
 ) {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-int64_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
+int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	[[maybe_unused]] const RID& p_shape_rid,
 	[[maybe_unused]] const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
 	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] int64_t p_collision_mask,
+	[[maybe_unused]] uint32_t p_collision_mask,
 	[[maybe_unused]] bool p_collide_with_bodies,
 	[[maybe_unused]] bool p_collide_with_areas,
 	[[maybe_unused]] PhysicsServer3DExtensionShapeResult* p_result_count,
-	[[maybe_unused]] int64_t p_max_results
+	[[maybe_unused]] int32_t p_max_results
 ) {
 	ERR_FAIL_D_NOT_IMPL();
 }
@@ -177,7 +172,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	[[maybe_unused]] const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
 	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] int64_t p_collision_mask,
+	[[maybe_unused]] uint32_t p_collision_mask,
 	[[maybe_unused]] bool p_collide_with_bodies,
 	[[maybe_unused]] bool p_collide_with_areas,
 	[[maybe_unused]] float* p_closest_safe,
@@ -192,11 +187,11 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	[[maybe_unused]] const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
 	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] int64_t p_collision_mask,
+	[[maybe_unused]] uint32_t p_collision_mask,
 	[[maybe_unused]] bool p_collide_with_bodies,
 	[[maybe_unused]] bool p_collide_with_areas,
 	[[maybe_unused]] void* p_results,
-	[[maybe_unused]] int64_t p_max_results,
+	[[maybe_unused]] int32_t p_max_results,
 	[[maybe_unused]] int32_t* p_result_count
 ) {
 	ERR_FAIL_D_NOT_IMPL();
@@ -207,7 +202,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	[[maybe_unused]] const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
 	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] int64_t p_collision_mask,
+	[[maybe_unused]] uint32_t p_collision_mask,
 	[[maybe_unused]] bool p_collide_with_bodies,
 	[[maybe_unused]] bool p_collide_with_areas,
 	[[maybe_unused]] PhysicsServer3DExtensionShapeRestInfo* p_rest_info

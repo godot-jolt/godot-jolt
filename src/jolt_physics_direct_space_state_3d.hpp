@@ -17,7 +17,7 @@ public:
 	bool _intersect_ray(
 		const Vector3& p_from,
 		const Vector3& p_to,
-		int64_t p_collision_mask,
+		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
 		bool p_hit_from_inside,
@@ -25,25 +25,25 @@ public:
 		PhysicsServer3DExtensionRayResult* p_result
 	) override;
 
-	int64_t _intersect_point(
+	int32_t _intersect_point(
 		const Vector3& p_position,
-		int64_t p_collision_mask,
+		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
 		PhysicsServer3DExtensionShapeResult* p_results,
-		int64_t p_max_results
+		int32_t p_max_results
 	) override;
 
-	int64_t _intersect_shape(
+	int32_t _intersect_shape(
 		const RID& p_shape_rid,
 		const Transform3D& p_transform,
 		const Vector3& p_motion,
 		double p_margin,
-		int64_t p_collision_mask,
+		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
 		PhysicsServer3DExtensionShapeResult* p_result_count,
-		int64_t p_max_results
+		int32_t p_max_results
 	) override;
 
 	bool _cast_motion(
@@ -51,7 +51,7 @@ public:
 		const Transform3D& p_transform,
 		const Vector3& p_motion,
 		double p_margin,
-		int64_t p_collision_mask,
+		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
 		float* p_closest_safe,
@@ -64,11 +64,11 @@ public:
 		const Transform3D& p_transform,
 		const Vector3& p_motion,
 		double p_margin,
-		int64_t p_collision_mask,
+		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
 		void* p_results,
-		int64_t p_max_results,
+		int32_t p_max_results,
 		int32_t* p_result_count
 	) override;
 
@@ -77,7 +77,7 @@ public:
 		const Transform3D& p_transform,
 		const Vector3& p_motion,
 		double p_margin,
-		int64_t p_collision_mask,
+		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
 		PhysicsServer3DExtensionShapeRestInfo* p_rest_info
