@@ -209,7 +209,7 @@ Checks: >
   -modernize-replace-auto-ptr,
   modernize-replace-random-shuffle,
   modernize-shrink-to-fit,
-  modernize-use-emplace,
+  -modernize-use-emplace,
   modernize-use-transparent-functors,
   performance-faster-string-find,
   performance-inefficient-algorithm,

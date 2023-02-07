@@ -38,9 +38,9 @@ public:
 
 	_FORCE_INLINE_ void clear() { storage.clear(); }
 
-	_FORCE_INLINE_ TValue& get(const TKey& p_key) { return storage[p_key]; }
+	_FORCE_INLINE_ TValue& get(const TKey& p_key) { return storage.at(p_key); }
 
-	_FORCE_INLINE_ const TValue& get(const TKey& p_key) const { return storage[p_key]; }
+	_FORCE_INLINE_ const TValue& get(const TKey& p_key) const { return storage.at(p_key); }
 
 	_FORCE_INLINE_ const TValue* getptr(const TKey& p_key) const {
 		auto iter = storage.find(p_key);
@@ -64,8 +64,43 @@ public:
 
 	_FORCE_INLINE_ void remove(ConstIterator p_iter) { storage.erase(p_iter); }
 
-	_FORCE_INLINE_ Iterator insert(const TKey& p_key, TValue p_value) {
-		return storage.insert_or_assign(p_key, std::move(p_value)).first;
+	_FORCE_INLINE_ Iterator insert(const TKey& p_key, const TValue& p_value) {
+		return emplace(p_key, p_value);
+	}
+
+	_FORCE_INLINE_ Iterator insert(const TKey& p_key, TValue&& p_value) {
+		return emplace(p_key, std::move(p_value));
+	}
+
+	_FORCE_INLINE_ Iterator insert(TKey&& p_key, const TValue& p_value) {
+		return emplace(std::move(p_key), p_value);
+	}
+
+	_FORCE_INLINE_ Iterator insert(TKey&& p_key, TValue&& p_value) {
+		return emplace(std::move(p_key), std::move(p_value));
+	}
+
+	template<typename... TArgs>
+	_FORCE_INLINE_ Iterator emplace(const TKey& p_key, TArgs&&... p_args) {
+		auto [iter, inserted] = storage.try_emplace(p_key, std::forward<TArgs>(p_args)...);
+
+		if (!inserted) {
+			iter->second = TValue(std::forward<TArgs>(p_args)...);
+		}
+
+		return iter;
+	}
+
+	template<typename... TArgs>
+	_FORCE_INLINE_ Iterator emplace(TKey&& p_key, TArgs&&... p_args) {
+		auto [iter, inserted] =
+			storage.try_emplace(std::move(p_key), std::forward<TArgs>(p_args)...);
+
+		if (!inserted) {
+			iter->second = TValue(std::forward<TArgs>(p_args)...);
+		}
+
+		return iter;
 	}
 
 	_FORCE_INLINE_ Iterator begin() { return storage.begin(); }
@@ -82,7 +117,9 @@ public:
 
 	_FORCE_INLINE_ TValue& operator[](const TKey& p_key) { return storage[p_key]; }
 
-	_FORCE_INLINE_ const TValue& operator[](const TKey& p_key) const { return storage.at(p_key); }
+	_FORCE_INLINE_ TValue& operator[](TKey&& p_key) { return storage[std::move(p_key)]; }
+
+	_FORCE_INLINE_ const TValue& operator[](const TKey& p_key) const { return get(p_key); }
 
 private:
 	Implementation storage;
