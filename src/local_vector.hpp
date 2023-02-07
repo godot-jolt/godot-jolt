@@ -52,6 +52,14 @@ public:
 		}
 	}
 
+	template<typename TCallable>
+	_FORCE_INLINE_ void erase_if(TCallable&& p_callable) {
+		auto new_end = std::remove_if(begin(), end(), std::forward<TCallable>(p_callable));
+		if (new_end != end()) {
+			storage.erase(new_end, end());
+		}
+	}
+
 	_FORCE_INLINE_ void invert() { std::reverse(begin(), end()); }
 
 	_FORCE_INLINE_ void clear() { storage.clear(); }
@@ -94,6 +102,18 @@ public:
 	_FORCE_INLINE_ int32_t find(const TElement& p_value, int32_t p_from = 0) const {
 		if (p_from < size()) {
 			auto found = std::find(begin() + p_from, end(), p_value);
+			if (found != end()) {
+				return (int32_t)std::distance(begin(), found);
+			}
+		}
+
+		return -1;
+	}
+
+	template<typename TCallable>
+	_FORCE_INLINE_ int32_t find_if(TCallable&& p_callable, int32_t p_from = 0) const {
+		if (p_from < size()) {
+			auto found = std::find_if(begin() + p_from, end(), std::forward<TCallable>(p_callable));
 			if (found != end()) {
 				return (int32_t)std::distance(begin(), found);
 			}
