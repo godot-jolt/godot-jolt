@@ -17,7 +17,14 @@ public:
 	LocalVector(std::initializer_list<TElement> p_list)
 		: storage(p_list) { }
 
-	_FORCE_INLINE_ void push_back(TElement p_value) { storage.push_back(std::move(p_value)); }
+	_FORCE_INLINE_ void push_back(const TElement& p_value) { emplace_back(p_value); }
+
+	_FORCE_INLINE_ void push_back(TElement&& p_value) { emplace_back(std::move(p_value)); }
+
+	template<typename... TArgs>
+	_FORCE_INLINE_ void emplace_back(TArgs&&... p_args) {
+		storage.emplace_back(std::forward<TArgs>(p_args)...);
+	}
 
 	_FORCE_INLINE_ void remove_at(int32_t p_index) {
 		ERR_FAIL_INDEX(p_index, size());
@@ -59,13 +66,27 @@ public:
 
 	_FORCE_INLINE_ void resize(int32_t p_size) { storage.resize((size_t)p_size); }
 
-	_FORCE_INLINE_ void insert(int32_t p_index, TElement p_value) {
-		ERR_FAIL_INDEX(p_index, size() + 1);
-
-		storage.insert(begin() + p_index, std::move(p_value));
+	_FORCE_INLINE_ void insert(int32_t p_index, const TElement& p_value) {
+		emplace(p_index, p_value);
 	}
 
-	_FORCE_INLINE_ void ordered_insert(TElement p_val) {
+	_FORCE_INLINE_ void insert(int32_t p_index, TElement&& p_value) {
+		emplace(p_index, std::move(p_value));
+	}
+
+	template<typename... TArgs>
+	_FORCE_INLINE_ void emplace(int32_t p_index, TArgs&&... p_args) {
+		ERR_FAIL_INDEX(p_index, size() + 1);
+
+		storage.emplace(begin() + p_index, std::forward<TArgs>(p_args)...);
+	}
+
+	_FORCE_INLINE_ void ordered_insert(const TElement& p_val) {
+		auto position = std::lower_bound(begin(), end(), p_val);
+		storage.insert(position, p_val);
+	}
+
+	_FORCE_INLINE_ void ordered_insert(TElement&& p_val) {
 		auto position = std::lower_bound(begin(), end(), p_val);
 		storage.insert(position, std::move(p_val));
 	}

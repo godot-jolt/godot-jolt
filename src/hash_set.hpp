@@ -47,7 +47,14 @@ public:
 
 	_FORCE_INLINE_ void remove(ConstIterator p_iter) { storage.erase(p_iter); }
 
-	_FORCE_INLINE_ Iterator insert(TKey p_key) { return storage.insert(std::move(p_key)).first; }
+	_FORCE_INLINE_ Iterator insert(const TKey& p_key) { return emplace(p_key); }
+
+	_FORCE_INLINE_ Iterator insert(TKey&& p_key) { return emplace(std::move(p_key)); }
+
+	template<typename... TArgs>
+	_FORCE_INLINE_ Iterator emplace(TArgs&&... p_args) {
+		return storage.emplace(std::forward<TArgs>(p_args)...).first;
+	}
 
 	_FORCE_INLINE_ Iterator begin() { return storage.begin(); }
 

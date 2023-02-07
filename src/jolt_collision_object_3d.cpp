@@ -244,7 +244,7 @@ void JoltCollisionObject3D::add_shape(
 	bool p_disabled,
 	bool p_lock
 ) {
-	shapes.push_back({p_shape, p_transform, p_disabled});
+	shapes.emplace_back(p_shape, p_transform, p_disabled);
 	p_shape->add_owner(this);
 	rebuild_shape(p_lock);
 }
