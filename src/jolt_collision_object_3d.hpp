@@ -51,10 +51,6 @@ public:
 
 	Vector3 get_velocity_at_position(const Vector3& p_position, bool p_lock = true) const;
 
-	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
-
-	JPH::MassProperties calculate_mass_properties(bool p_lock = true) const;
-
 	JPH::ShapeRefC try_build_shape();
 
 	void rebuild_shape(bool p_lock = true);
@@ -82,39 +78,27 @@ public:
 
 	virtual void call_queries() = 0;
 
-	virtual Vector3 get_initial_linear_velocity() const = 0;
-
-	virtual Vector3 get_initial_angular_velocity() const = 0;
-
+protected:
 	virtual bool has_custom_center_of_mass() const = 0;
 
 	virtual Vector3 get_center_of_mass_custom() const = 0;
 
 	virtual bool get_initial_sleep_state() const = 0;
 
-	virtual PhysicsServer3D::BodyMode get_mode() const = 0;
+	virtual JPH::EMotionType get_motion_type() const = 0;
 
-	virtual bool is_ccd_enabled() const = 0;
+	virtual void create_in_space(bool p_lock = true) = 0;
 
-	virtual float get_mass() const = 0;
+	JPH::BodyCreationSettings create_begin();
 
-	virtual Vector3 get_inertia() const = 0;
+	JPH::Body* create_end(const JPH::BodyCreationSettings& p_settings, bool p_lock = true);
 
-	virtual float get_bounce() const = 0;
+	void destroy_in_space(bool p_lock = true);
 
-	virtual float get_friction() const = 0;
+	void add_to_space(bool p_lock = true);
 
-	virtual float get_gravity_scale() const = 0;
+	void remove_from_space(bool p_lock = true);
 
-	virtual float get_linear_damp() const = 0;
-
-	virtual float get_angular_damp() const = 0;
-
-	virtual bool is_area() const = 0;
-
-	virtual bool can_sleep() const = 0;
-
-protected:
 	virtual void shapes_changed([[maybe_unused]] bool p_lock) { }
 
 	RID rid;

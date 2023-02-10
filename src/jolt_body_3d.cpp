@@ -656,8 +656,82 @@ void JoltBody3D::set_angular_damp(float p_damp, bool p_lock) {
 	body->GetMotionPropertiesUnchecked()->SetAngularDamping(angular_damp);
 }
 
+JPH::EMotionType JoltBody3D::get_motion_type() const {
+	switch (mode) {
+		case PhysicsServer3D::BODY_MODE_STATIC: {
+			return JPH::EMotionType::Static;
+		}
+		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
+			return JPH::EMotionType::Kinematic;
+		}
+		case PhysicsServer3D::BODY_MODE_RIGID:
+		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
+			return JPH::EMotionType::Dynamic;
+		}
+		default: {
+			ERR_FAIL_D_MSG(vformat("Unhandled body mode: '%d'", mode));
+		}
+	}
+}
+
+void JoltBody3D::create_in_space(bool p_lock) {
+	JPH::BodyCreationSettings settings = create_begin();
+
+	settings.mLinearVelocity = to_jolt(get_initial_linear_velocity());
+	settings.mAngularVelocity = to_jolt(get_initial_angular_velocity());
+	settings.mAllowDynamicOrKinematic = true;
+	settings.mMotionQuality =
+		ccd_enabled ? JPH::EMotionQuality::LinearCast : JPH::EMotionQuality::Discrete;
+	settings.mAllowSleeping = allowed_sleep;
+	settings.mFriction = friction;
+	settings.mRestitution = bounce;
+	settings.mLinearDamping = linear_damp;
+	settings.mAngularDamping = angular_damp;
+	settings.mGravityFactor = gravity_scale;
+	settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
+	settings.mMassPropertiesOverride = calculate_mass_properties(*settings.GetShape());
+
+	JPH::Body* body = create_end(settings, p_lock);
+
+	// HACK(mihe): Since group filters don't grant us access to user data we are instead forced
+	// abuse the collision group to carry the upper and lower bits of our RID, which we can then
+	// access and rebuild in our group filter for bodies that make use of collision exceptions.
+
+	JPH::CollisionGroup::GroupID group_id = 0;
+	JPH::CollisionGroup::SubGroupID sub_group_id = 0;
+	JoltGroupFilterRID::encode_rid(get_rid(), group_id, sub_group_id);
+
+	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
+}
+
 void JoltBody3D::shapes_changed(bool p_lock) {
 	mass_properties_changed(p_lock);
+}
+
+JPH::MassProperties JoltBody3D::calculate_mass_properties(const JPH::Shape& p_shape) const {
+	const bool calculate_mass = mass <= 0;
+	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
+
+	JPH::MassProperties mass_properties = p_shape.GetMassProperties();
+
+	if (calculate_mass && calculate_inertia) {
+		mass_properties.mInertia(3, 3) = 1.0f;
+	} else if (calculate_inertia) {
+		mass_properties.ScaleToMass(mass);
+		mass_properties.mInertia(3, 3) = 1.0f;
+	} else {
+		mass_properties.mMass = mass;
+		mass_properties.mInertia.SetDiagonal3(to_jolt(inertia));
+	}
+
+	return mass_properties;
+}
+
+JPH::MassProperties JoltBody3D::calculate_mass_properties(bool p_lock) const {
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return calculate_mass_properties(*body->GetShape());
 }
 
 void JoltBody3D::mass_properties_changed(bool p_lock) {

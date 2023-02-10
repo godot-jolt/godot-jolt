@@ -12,17 +12,16 @@ void JoltCollisionObject3D::set_space(JoltSpace3D* p_space) {
 	}
 
 	if (space) {
-		space->remove_object(this);
-		space->destroy_object(this);
-		space = nullptr;
-	}
-
-	if (p_space) {
-		p_space->create_object(this);
-		p_space->add_object(this);
+		remove_from_space();
+		destroy_in_space();
 	}
 
 	space = p_space;
+
+	if (space) {
+		create_in_space();
+		add_to_space();
+	}
 }
 
 void JoltCollisionObject3D::set_collision_layer(uint32_t p_layer, bool p_lock) {
@@ -139,36 +138,6 @@ Vector3 JoltCollisionObject3D::get_velocity_at_position(const Vector3& p_positio
 	return to_godot(body->GetPointVelocity(to_jolt(p_position)));
 }
 
-JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(const JPH::Shape& p_shape
-) const {
-	const float mass = get_mass();
-	const Vector3 inertia = get_inertia();
-
-	const bool calculate_mass = mass <= 0;
-	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
-
-	JPH::MassProperties mass_properties = p_shape.GetMassProperties();
-
-	if (calculate_mass && calculate_inertia) {
-		mass_properties.mInertia(3, 3) = 1.0f;
-	} else if (calculate_inertia) {
-		mass_properties.ScaleToMass(mass);
-		mass_properties.mInertia(3, 3) = 1.0f;
-	} else {
-		mass_properties.mMass = mass;
-		mass_properties.mInertia.SetDiagonal3(to_jolt(inertia));
-	}
-
-	return mass_properties;
-}
-
-JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(bool p_lock) const {
-	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return calculate_mass_properties(*body->GetShape());
-}
-
 JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
 	int32_t built_shape_count = 0;
 	const JoltShapeInstance3D* last_built_shape = nullptr;
@@ -225,26 +194,22 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
+	JPH::ObjectLayer object_layer =
+		space->map_to_object_layer(get_motion_type(), collision_layer, collision_mask);
+
 	JPH::ShapeRefC shape = try_build_shape();
 
-	JPH::BodyInterface& body_iface = space->get_body_iface(false);
-
-	if (shape == nullptr) {
+	if (!shape) {
 		// Use a fallback shape instead
 		shape = new JPH::SphereShape(1.0f);
 
 		// Place it in object (and broad phase) layer 0, which will make it collide with nothing
-		body_iface.SetObjectLayer(jolt_id, 0);
-	} else {
-		const JPH::ObjectLayer object_layer = space->map_to_object_layer(
-			body->GetMotionType(),
-			get_collision_layer(),
-			get_collision_mask()
-		);
-
-		body_iface.SetObjectLayer(jolt_id, object_layer);
+		object_layer = 0;
 	}
 
+	JPH::BodyInterface& body_iface = space->get_body_iface(false);
+
+	body_iface.SetObjectLayer(jolt_id, object_layer);
 	body_iface.SetShape(jolt_id, shape, false, JPH::EActivation::DontActivate);
 
 	shapes_changed(false);
@@ -317,4 +282,71 @@ void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled,
 	}
 
 	rebuild_shape(p_lock);
+}
+
+JPH::BodyCreationSettings JoltCollisionObject3D::create_begin() {
+	const JPH::EMotionType motion_type = get_motion_type();
+
+	JPH::ObjectLayer object_layer =
+		space->map_to_object_layer(motion_type, collision_layer, collision_mask);
+
+	JPH::ShapeRefC shape = try_build_shape();
+
+	if (!shape) {
+		// Use a fallback shape instead
+		shape = new JPH::SphereShape(1.0f);
+
+		// Place it in object (and broad phase) layer 0, which will make it collide with nothing
+		object_layer = 0;
+	}
+
+	return {
+		shape,
+		to_jolt(initial_transform.origin),
+		to_jolt(initial_transform.basis),
+		motion_type,
+		object_layer};
+}
+
+JPH::Body* JoltCollisionObject3D::create_end(
+	const JPH::BodyCreationSettings& p_settings,
+	bool p_lock
+) {
+	JPH::BodyInterface& body_iface = space->get_body_iface(p_lock);
+	JPH::Body* body = body_iface.CreateBody(p_settings);
+
+	body->SetUserData(reinterpret_cast<JPH::uint64>(this));
+
+	set_jolt_id(body->GetID());
+
+	return body;
+}
+
+void JoltCollisionObject3D::destroy_in_space(bool p_lock) {
+	if (!space) {
+		return;
+	}
+
+	space->get_body_iface(p_lock).DestroyBody(jolt_id);
+
+	set_jolt_id({});
+}
+
+void JoltCollisionObject3D::add_to_space(bool p_lock) {
+	if (!space) {
+		return;
+	}
+
+	space->get_body_iface(p_lock).AddBody(
+		jolt_id,
+		get_initial_sleep_state() ? JPH::EActivation::DontActivate : JPH::EActivation::Activate
+	);
+}
+
+void JoltCollisionObject3D::remove_from_space(bool p_lock) {
+	if (!space) {
+		return;
+	}
+
+	space->get_body_iface(p_lock).RemoveBody(jolt_id);
 }
