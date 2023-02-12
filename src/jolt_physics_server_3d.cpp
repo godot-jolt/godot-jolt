@@ -1522,32 +1522,16 @@ bool JoltPhysicsServer3D::_joint_is_disabled_collisions_between_bodies(const RID
 }
 
 void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
-	if (shape_owner.owns(p_rid)) {
-		JoltShape3D* shape = shape_owner.get_or_null(p_rid);
-		shape->remove_self();
-		shape_owner.free(p_rid);
-		memdelete_safely(shape);
-	} else if (body_owner.owns(p_rid)) {
-		JoltBody3D* body = body_owner.get_or_null(p_rid);
-		body->set_space(nullptr);
-		body->remove_shapes();
-		body_owner.free(p_rid);
-		memdelete_safely(body);
-	} else if (joint_owner.owns(p_rid)) {
-		JoltJoint3D* joint = joint_owner.get_or_null(p_rid);
-		joint_owner.free(p_rid);
-		memdelete_safely(joint);
-	} else if (area_owner.owns(p_rid)) {
-		JoltArea3D* area = area_owner.get_or_null(p_rid);
-		area->set_space(nullptr);
-		area->remove_shapes();
-		area_owner.free(p_rid);
-		memdelete_safely(area);
-	} else if (space_owner.owns(p_rid)) {
-		JoltSpace3D* space = space_owner.get_or_null(p_rid);
-		space_set_active(p_rid, false);
-		space_owner.free(p_rid);
-		memdelete_safely(space);
+	if (JoltShape3D* shape = shape_owner.get_or_null(p_rid)) {
+		free_shape(shape);
+	} else if (JoltBody3D* body = body_owner.get_or_null(p_rid)) {
+		free_body(body);
+	} else if (JoltJoint3D* joint = joint_owner.get_or_null(p_rid)) {
+		free_joint(joint);
+	} else if (JoltArea3D* area = area_owner.get_or_null(p_rid)) {
+		free_area(area);
+	} else if (JoltSpace3D* space = space_owner.get_or_null(p_rid)) {
+		free_space(space);
 	} else {
 		ERR_FAIL_MSG("Invalid ID.");
 	}
@@ -1601,4 +1585,46 @@ bool JoltPhysicsServer3D::_is_flushing_queries() const {
 
 int32_t JoltPhysicsServer3D::_get_process_info([[maybe_unused]] ProcessInfo p_process_info) {
 	return 0;
+}
+
+void JoltPhysicsServer3D::free_space(JoltSpace3D* p_space) {
+	ERR_FAIL_NULL(p_space);
+
+	free_area(p_space->get_default_area());
+	space_set_active(p_space->get_rid(), false);
+	space_owner.free(p_space->get_rid());
+	memdelete_safely(p_space);
+}
+
+void JoltPhysicsServer3D::free_area(JoltArea3D* p_area) {
+	ERR_FAIL_NULL(p_area);
+
+	p_area->set_space(nullptr);
+	p_area->remove_shapes();
+	area_owner.free(p_area->get_rid());
+	memdelete_safely(p_area);
+}
+
+void JoltPhysicsServer3D::free_body(JoltBody3D* p_body) {
+	ERR_FAIL_NULL(p_body);
+
+	p_body->set_space(nullptr);
+	p_body->remove_shapes();
+	body_owner.free(p_body->get_rid());
+	memdelete_safely(p_body);
+}
+
+void JoltPhysicsServer3D::free_shape(JoltShape3D* p_shape) {
+	ERR_FAIL_NULL(p_shape);
+
+	p_shape->remove_self();
+	shape_owner.free(p_shape->get_rid());
+	memdelete_safely(p_shape);
+}
+
+void JoltPhysicsServer3D::free_joint(JoltJoint3D* p_joint) {
+	ERR_FAIL_NULL(p_joint);
+
+	joint_owner.free(p_joint->get_rid());
+	memdelete_safely(p_joint);
 }

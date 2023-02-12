@@ -547,6 +547,16 @@ public:
 
 	int32_t _get_process_info(PhysicsServer3D::ProcessInfo p_process_info) override;
 
+	void free_space(JoltSpace3D* p_space);
+
+	void free_area(JoltArea3D* p_area);
+
+	void free_body(JoltBody3D* p_body);
+
+	void free_shape(JoltShape3D* p_shape);
+
+	void free_joint(JoltJoint3D* p_joint);
+
 	JoltSpace3D* get_space(const RID& p_rid) const { return space_owner.get_or_null(p_rid); }
 
 	JoltBody3D* get_body(const RID& p_rid) const { return body_owner.get_or_null(p_rid); }
