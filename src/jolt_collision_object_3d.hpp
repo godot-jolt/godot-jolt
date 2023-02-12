@@ -55,7 +55,7 @@ public:
 
 	JPH::MassProperties calculate_mass_properties(bool p_lock = true) const;
 
-	JPH::ShapeRefC try_build_shape() const;
+	JPH::ShapeRefC try_build_shape();
 
 	void rebuild_shape(bool p_lock = true);
 
@@ -70,13 +70,7 @@ public:
 
 	void remove_shape(int32_t p_index, bool p_lock = true);
 
-	void remove_shapes(bool p_lock = true);
-
-	const LocalVector<JoltShapeInstance3D>& get_shapes() const { return shapes; }
-
-	int32_t get_shape_count() const { return shapes.size(); }
-
-	int32_t find_shape_index(JoltShape3D* p_shape);
+	int32_t find_shape_index(uint32_t p_shape_instance_id) const;
 
 	void set_shape_transform(int32_t p_index, const Transform3D& p_transform, bool p_lock = true);
 

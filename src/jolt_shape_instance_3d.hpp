@@ -1,67 +1,61 @@
 #pragma once
 
+class JoltCollisionObject3D;
 class JoltShape3D;
 
 class JoltShapeInstance3D {
 public:
-	struct Built {
-		const JoltShapeInstance3D* shape = nullptr;
-		JPH::ShapeRefC jolt_ref;
-	};
+	JoltShapeInstance3D(
+		JoltCollisionObject3D* p_parent,
+		JoltShape3D* p_shape,
+		const Transform3D& p_transform,
+		bool p_disabled
+	);
 
-	JoltShapeInstance3D() = default;
+	JoltShapeInstance3D(const JoltShapeInstance3D& p_other) = delete;
 
-	JoltShapeInstance3D(JoltShape3D* p_shape, const Transform3D& p_transform, bool p_disabled)
-		: transform(p_transform)
-		, shape(p_shape)
-		, disabled(p_disabled) { }
+	JoltShapeInstance3D(JoltShapeInstance3D&& p_other) noexcept;
 
-	JoltShape3D* get() const { return shape; }
+	~JoltShapeInstance3D();
+
+	uint32_t get_id() const { return id; }
+
+	JoltShape3D* get_shape() const { return shape; }
+
+	JPH::ShapeRefC get_jolt_ref() const { return jolt_ref; }
 
 	const Transform3D& get_transform() const { return transform; }
 
 	void set_transform(const Transform3D& p_transform) { transform = p_transform; }
 
-	bool is_disabled() const { return disabled; }
+	bool is_built() const { return jolt_ref != nullptr; }
 
 	bool is_enabled() const { return !disabled; }
 
-	void set_disabled(bool p_disabled) { disabled = p_disabled; }
+	bool is_disabled() const { return disabled; }
 
-	JoltShape3D* operator->() const { return shape; }
+	void enable() { disabled = false; }
 
-	JoltShape3D& operator*() const { return *shape; }
+	void disable() { disabled = true; }
 
-	explicit operator JoltShape3D*() const { return shape; }
+	bool try_build();
 
-	bool operator==(const JoltShapeInstance3D& p_other) { return shape == p_other.shape; }
+	JoltShapeInstance3D& operator=(const JoltShapeInstance3D& p_other) = delete;
 
-	friend bool operator==(const JoltShapeInstance3D& p_lhs, JoltShape3D* p_rhs) {
-		return p_lhs.shape == p_rhs;
-	}
-
-	friend bool operator==(JoltShape3D* p_lhs, const JoltShapeInstance3D& p_rhs) {
-		return p_lhs == p_rhs.shape;
-	}
-
-	static bool try_build(
-		const JoltShapeInstance3D& p_shape,
-		uint64_t p_user_data,
-		Built& p_built_shape
-	);
-
-	static int32_t try_build(
-		const JoltShapeInstance3D* p_shapes,
-		int32_t p_count,
-		Built* p_built_shapes
-	);
-
-	static JPH::ShapeRefC build_compound(const Built* p_built_shapes, int32_t p_count);
+	JoltShapeInstance3D& operator=(JoltShapeInstance3D&& p_other) noexcept;
 
 private:
+	inline static uint32_t next_id = 1;
+
 	Transform3D transform;
 
+	JPH::ShapeRefC jolt_ref;
+
+	JoltCollisionObject3D* parent = nullptr;
+
 	JoltShape3D* shape = nullptr;
+
+	uint32_t id = next_id++;
 
 	bool disabled = false;
 };

@@ -1600,7 +1600,6 @@ void JoltPhysicsServer3D::free_area(JoltArea3D* p_area) {
 	ERR_FAIL_NULL(p_area);
 
 	p_area->set_space(nullptr);
-	p_area->remove_shapes();
 	area_owner.free(p_area->get_rid());
 	memdelete_safely(p_area);
 }
@@ -1609,7 +1608,6 @@ void JoltPhysicsServer3D::free_body(JoltBody3D* p_body) {
 	ERR_FAIL_NULL(p_body);
 
 	p_body->set_space(nullptr);
-	p_body->remove_shapes();
 	body_owner.free(p_body->get_rid());
 	memdelete_safely(p_body);
 }

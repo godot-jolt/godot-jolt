@@ -51,6 +51,9 @@ public:
 
 	static JPH::ShapeRefC with_user_data(const JPH::ShapeRefC& p_shape, uint64_t p_user_data);
 
+	template<typename TCallable>
+	static JPH::ShapeRefC as_compound(TCallable&& p_callable);
+
 protected:
 	virtual JPH::ShapeRefC build() const = 0;
 
@@ -181,3 +184,5 @@ private:
 
 	int32_t depth = 0;
 };
+
+#include "jolt_shape_3d.inl"

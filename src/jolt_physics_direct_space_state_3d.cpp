@@ -130,7 +130,9 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const auto object_id = (uint64_t)object->get_instance_id();
 
 	const JPH::Shape& shape = *body->GetShape();
-	const auto shape_idx = (int32_t)shape.GetSubShapeUserData(subshape_id);
+	const auto shape_instance_id = (uint32_t)shape.GetSubShapeUserData(subshape_id);
+	const int32_t shape_idx = object->find_shape_index(shape_instance_id);
+	ERR_FAIL_COND_D(shape_idx == -1);
 
 	p_result->position = to_godot(position);
 	p_result->normal = to_godot(normal);
