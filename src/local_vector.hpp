@@ -124,6 +124,11 @@ public:
 
 	_FORCE_INLINE_ void sort() { std::sort(begin(), end()); }
 
+	template<typename TComparer>
+	_FORCE_INLINE_ void sort(TComparer&& p_comparer) {
+		std::sort(begin(), end(), p_comparer);
+	}
+
 	_FORCE_INLINE_ TElement* ptr() { return storage.data(); }
 
 	_FORCE_INLINE_ const TElement* ptr() const { return storage.data(); }
