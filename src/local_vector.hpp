@@ -22,8 +22,8 @@ public:
 	_FORCE_INLINE_ void push_back(TElement&& p_value) { emplace_back(std::move(p_value)); }
 
 	template<typename... TArgs>
-	_FORCE_INLINE_ void emplace_back(TArgs&&... p_args) {
-		storage.emplace_back(std::forward<TArgs>(p_args)...);
+	_FORCE_INLINE_ TElement& emplace_back(TArgs&&... p_args) {
+		return storage.emplace_back(std::forward<TArgs>(p_args)...);
 	}
 
 	_FORCE_INLINE_ void remove_at(int32_t p_index) {
