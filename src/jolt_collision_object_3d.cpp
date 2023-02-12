@@ -171,16 +171,16 @@ JPH::MassProperties JoltCollisionObject3D::calculate_mass_properties(bool p_lock
 	return calculate_mass_properties(*body->GetShape());
 }
 
-JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
-	const int32_t shape_count = shapes.size();
+JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
+	int32_t built_shape_count = 0;
+	const JoltShapeInstance3D* last_built_shape = nullptr;
 
-	InlineVector<JoltShapeInstance3D::Built, 16> built_shapes;
-	built_shapes.resize(shape_count);
-
-	const int32_t built_shape_count =
-		JoltShapeInstance3D::try_build(shapes.ptr(), shape_count, built_shapes.ptr());
-
-	built_shapes.resize(built_shape_count);
+	for (JoltShapeInstance3D& shape : shapes) {
+		if (shape.is_enabled() && shape.try_build()) {
+			built_shape_count += 1;
+			last_built_shape = &shape;
+		}
+	}
 
 	if (built_shape_count == 0) {
 		return {};
@@ -189,12 +189,26 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() const {
 	JPH::ShapeRefC result;
 
 	if (built_shape_count == 1) {
-		const JoltShapeInstance3D::Built& built_shape = built_shapes[0];
-		const JoltShapeInstance3D& shape = *built_shape.shape;
-		const JPH::ShapeRefC& jolt_ref = built_shape.jolt_ref;
-		result = JoltShape3D::with_transform(jolt_ref, shape.get_transform());
+		result = JoltShape3D::with_transform(
+			last_built_shape->get_jolt_ref(),
+			last_built_shape->get_transform()
+		);
 	} else {
-		result = JoltShapeInstance3D::build_compound(built_shapes.ptr(), built_shape_count);
+		int32_t shape_index = 0;
+
+		result = JoltShape3D::as_compound([&](auto&& p_add_shape) {
+			if (shape_index >= shapes.size()) {
+				return false;
+			}
+
+			const JoltShapeInstance3D& shape = shapes[shape_index++];
+
+			if (shape.is_enabled() && shape.is_built()) {
+				p_add_shape(shape.get_jolt_ref(), shape.get_transform());
+			}
+
+			return true;
+		});
 	}
 
 	if (has_custom_center_of_mass()) {
@@ -244,45 +258,31 @@ void JoltCollisionObject3D::add_shape(
 	bool p_disabled,
 	bool p_lock
 ) {
-	shapes.emplace_back(p_shape, p_transform, p_disabled);
-	p_shape->add_owner(this);
+	shapes.emplace_back(this, p_shape, p_transform, p_disabled);
+
 	rebuild_shape(p_lock);
 }
 
 void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
-	const int32_t index = find_shape_index(p_shape);
-	if (index >= 0) {
-		remove_shape(index, p_lock);
-	}
+	shapes.erase_if([&](const JoltShapeInstance3D& p_instance) {
+		return p_instance.get_shape() == p_shape;
+	});
+
+	rebuild_shape(p_lock);
 }
 
 void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	shapes[p_index]->remove_owner(this);
 	shapes.remove_at(p_index);
-	rebuild_shape(p_lock);
-}
-
-void JoltCollisionObject3D::remove_shapes(bool p_lock) {
-	const int32_t shape_count = shapes.size();
-
-	for (int32_t i = shape_count - 1; i >= 0; --i) {
-		shapes[i]->remove_owner(this);
-		shapes.remove_at(i);
-	}
 
 	rebuild_shape(p_lock);
 }
 
-int32_t JoltCollisionObject3D::find_shape_index(JoltShape3D* p_shape) {
-	for (int32_t i = 0; i < shapes.size(); ++i) {
-		if (shapes[i] == p_shape) {
-			return i;
-		}
-	}
-
-	return -1;
+int32_t JoltCollisionObject3D::find_shape_index(uint32_t p_shape_instance_id) const {
+	return shapes.find_if([&](const JoltShapeInstance3D& p_shape) {
+		return p_shape.get_id() == p_shape_instance_id;
+	});
 }
 
 void JoltCollisionObject3D::set_shape_transform(
@@ -292,13 +292,13 @@ void JoltCollisionObject3D::set_shape_transform(
 ) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	const JoltShapeInstance3D& old_shape = shapes[p_index];
+	JoltShapeInstance3D& shape = shapes[p_index];
 
-	if (old_shape.get_transform() == p_transform) {
+	if (shape.get_transform() == p_transform) {
 		return;
 	}
 
-	shapes[p_index].set_transform(p_transform);
+	shape.set_transform(p_transform);
 
 	rebuild_shape(p_lock);
 }
@@ -306,13 +306,17 @@ void JoltCollisionObject3D::set_shape_transform(
 void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-	const JoltShapeInstance3D& old_shape = shapes[p_index];
+	JoltShapeInstance3D& shape = shapes[p_index];
 
-	if (old_shape.is_disabled() == p_disabled) {
+	if (shape.is_disabled() == p_disabled) {
 		return;
 	}
 
-	shapes[p_index].set_disabled(p_disabled);
+	if (p_disabled) {
+		shape.disable();
+	} else {
+		shape.enable();
+	}
 
 	rebuild_shape(p_lock);
 }
