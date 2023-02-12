@@ -22,8 +22,8 @@ public:
 	_FORCE_INLINE_ void push_back(TElement&& p_value) { emplace_back(std::move(p_value)); }
 
 	template<typename... TArgs>
-	_FORCE_INLINE_ void emplace_back(TArgs&&... p_args) {
-		storage.emplace_back(std::forward<TArgs>(p_args)...);
+	_FORCE_INLINE_ TElement& emplace_back(TArgs&&... p_args) {
+		return storage.emplace_back(std::forward<TArgs>(p_args)...);
 	}
 
 	_FORCE_INLINE_ void remove_at(int32_t p_index) {
@@ -53,11 +53,11 @@ public:
 	}
 
 	template<typename TCallable>
-	_FORCE_INLINE_ void erase_if(TCallable&& p_callable) {
-		auto new_end = std::remove_if(begin(), end(), std::forward<TCallable>(p_callable));
-		if (new_end != end()) {
-			storage.erase(new_end, end());
-		}
+	_FORCE_INLINE_ int32_t erase_if(TCallable&& p_callable) {
+		const auto new_end = std::remove_if(begin(), end(), std::forward<TCallable>(p_callable));
+		const auto count = (int32_t)std::distance(new_end, end());
+		storage.erase(new_end, end());
+		return count;
 	}
 
 	_FORCE_INLINE_ void invert() { std::reverse(begin(), end()); }
@@ -123,6 +123,11 @@ public:
 	}
 
 	_FORCE_INLINE_ void sort() { std::sort(begin(), end()); }
+
+	template<typename TComparer>
+	_FORCE_INLINE_ void sort(TComparer&& p_comparer) {
+		std::sort(begin(), end(), p_comparer);
+	}
 
 	_FORCE_INLINE_ TElement* ptr() { return storage.data(); }
 
