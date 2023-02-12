@@ -53,11 +53,11 @@ public:
 	}
 
 	template<typename TCallable>
-	_FORCE_INLINE_ void erase_if(TCallable&& p_callable) {
-		auto new_end = std::remove_if(begin(), end(), std::forward<TCallable>(p_callable));
-		if (new_end != end()) {
-			storage.erase(new_end, end());
-		}
+	_FORCE_INLINE_ int32_t erase_if(TCallable&& p_callable) {
+		const auto new_end = std::remove_if(begin(), end(), std::forward<TCallable>(p_callable));
+		const auto count = (int32_t)std::distance(new_end, end());
+		storage.erase(new_end, end());
+		return count;
 	}
 
 	_FORCE_INLINE_ void invert() { std::reverse(begin(), end()); }
