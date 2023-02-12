@@ -75,7 +75,7 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_velocity_at_local_position(
 	const Vector3& p_local_position
 ) const {
 	ERR_FAIL_NULL_D(body);
-	return body->get_velocity_at_local_position(p_local_position);
+	return body->get_velocity_at_position(body->get_position() + p_local_position);
 }
 
 void JoltPhysicsDirectBodyState3D::_apply_central_impulse(const Vector3& p_impulse) {

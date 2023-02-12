@@ -49,7 +49,7 @@ public:
 
 	Vector3 get_center_of_mass(bool p_lock = true) const;
 
-	Vector3 get_velocity_at_local_position(const Vector3& p_position, bool p_lock = true) const;
+	Vector3 get_velocity_at_position(const Vector3& p_position, bool p_lock = true) const;
 
 	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
 
