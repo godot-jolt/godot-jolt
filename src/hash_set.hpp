@@ -41,6 +41,22 @@ public:
 
 	_FORCE_INLINE_ bool erase(const TKey& p_key) { return storage.erase(p_key) != 0; }
 
+	template<typename TCallable>
+	_FORCE_INLINE_ int32_t erase_if(TCallable&& p_callable) {
+		int32_t count = 0;
+
+		for (auto iter = begin(); iter != end();) {
+			if (p_callable(*iter)) {
+				iter = storage.erase(iter);
+				count++;
+			} else {
+				iter++;
+			}
+		}
+
+		return count;
+	}
+
 	_FORCE_INLINE_ void reserve(int32_t p_capacity) { storage.reserve((size_t)p_capacity); }
 
 	_FORCE_INLINE_ Iterator find(const TKey& p_key) const { return storage.find(p_key); }
