@@ -145,6 +145,15 @@ public:
 
 	bool is_invalid() const { return body == nullptr; }
 
+	template<typename TType>
+	TType* as() const {
+		if (body != nullptr) {
+			return reinterpret_cast<TType*>(body->GetUserData());
+		} else {
+			return nullptr;
+		}
+	}
+
 	TBody* operator->() const { return body; }
 
 	TBody& operator*() const { return *body; }
