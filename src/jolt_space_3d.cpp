@@ -3,6 +3,7 @@
 #include "jolt_area_3d.hpp"
 #include "jolt_body_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
+#include "jolt_contact_listener.hpp"
 #include "jolt_group_filter_rid.hpp"
 #include "jolt_joint_3d.hpp"
 #include "jolt_layer_mapper.hpp"
@@ -24,6 +25,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	: job_system(p_job_system)
 	, temp_allocator(new JoltTempAllocator(GDJOLT_TEMP_CAPACITY))
 	, layer_mapper(new JoltLayerMapper())
+	, contact_listener(new JoltContactListener(this))
 	, physics_system(new JPH::PhysicsSystem())
 	, body_accessor(this) {
 	physics_system->Init(
@@ -35,19 +37,25 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 		*layer_mapper,
 		*layer_mapper
 	);
+
+	physics_system->SetGravity(JPH::Vec3::sZero());
+	physics_system->SetContactListener(contact_listener);
 }
 
 JoltSpace3D::~JoltSpace3D() {
 	memdelete_safely(direct_state);
 	delete_safely(physics_system);
+	delete_safely(contact_listener);
 	delete_safely(layer_mapper);
 	delete_safely(temp_allocator);
 }
 
 void JoltSpace3D::step(float p_step) {
-	integrate_forces();
+	pre_step(p_step);
 
 	physics_system->Update(p_step, 1, 1, temp_allocator, job_system);
+
+	post_step(p_step);
 }
 
 void JoltSpace3D::call_queries() {
@@ -107,11 +115,11 @@ const JPH::NarrowPhaseQuery& JoltSpace3D::get_narrow_phase_query(bool p_locked) 
 }
 
 JPH::ObjectLayer JoltSpace3D::map_to_object_layer(
-	JPH::EMotionType p_motion_type,
+	JPH::BroadPhaseLayer p_broad_phase_layer,
 	uint32_t p_collision_layer,
 	uint32_t p_collision_mask
 ) {
-	return layer_mapper->to_object_layer(p_motion_type, p_collision_layer, p_collision_mask);
+	return layer_mapper->to_object_layer(p_broad_phase_layer, p_collision_layer, p_collision_mask);
 }
 
 JoltReadableBody3D JoltSpace3D::read_body(const JPH::BodyID& p_body_id, bool p_lock) const {
@@ -154,36 +162,6 @@ JoltPhysicsDirectSpaceState3D* JoltSpace3D::get_direct_state() {
 	return direct_state;
 }
 
-Variant JoltSpace3D::get_param(PhysicsServer3D::AreaParameter p_param) const {
-	switch (p_param) {
-		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
-			return gravity;
-		}
-		case PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR: {
-			return gravity_vector;
-		}
-		default: {
-			ERR_FAIL_D_NOT_IMPL();
-		}
-	}
-}
-
-void JoltSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value) {
-	switch (p_param) {
-		case PhysicsServer3D::AREA_PARAM_GRAVITY: {
-			gravity = p_value;
-			gravity_changed();
-		} break;
-		case PhysicsServer3D::AREA_PARAM_GRAVITY_VECTOR: {
-			gravity_vector = p_value;
-			gravity_changed();
-		} break;
-		default: {
-			ERR_FAIL_NOT_IMPL();
-		} break;
-	}
-}
-
 void JoltSpace3D::add_joint(JoltJoint3D* p_joint) {
 	physics_system->AddConstraint(p_joint->get_jolt_ref());
 }
@@ -192,15 +170,21 @@ void JoltSpace3D::remove_joint(JoltJoint3D* p_joint) {
 	physics_system->RemoveConstraint(p_joint->get_jolt_ref());
 }
 
-void JoltSpace3D::integrate_forces(bool p_lock) {
-	body_accessor.acquire_all(p_lock);
+void JoltSpace3D::pre_step(float p_step) {
+	body_accessor.acquire_all(true);
+
+	contact_listener->pre_step();
 
 	const int32_t body_count = body_accessor.get_count();
 
 	for (int32_t i = 0; i < body_count; ++i) {
-		if (const JPH::Body* body = body_accessor.try_get(i)) {
-			if (!body->IsStatic() && !body->IsSensor()) {
-				reinterpret_cast<JoltBody3D*>(body->GetUserData())->integrate_forces(false);
+		if (const JPH::Body* jolt_body = body_accessor.try_get(i)) {
+			auto* object = reinterpret_cast<JoltCollisionObject3D*>(jolt_body->GetUserData());
+
+			object->pre_step(p_step);
+
+			if (object->generates_contacts()) {
+				contact_listener->listen_for(object);
 			}
 		}
 	}
@@ -208,6 +192,20 @@ void JoltSpace3D::integrate_forces(bool p_lock) {
 	body_accessor.release();
 }
 
-void JoltSpace3D::gravity_changed() {
-	physics_system->SetGravity(to_jolt(gravity_vector * gravity));
+void JoltSpace3D::post_step(float p_step) {
+	body_accessor.acquire_all(true);
+
+	contact_listener->post_step();
+
+	const int32_t body_count = body_accessor.get_count();
+
+	for (int32_t i = 0; i < body_count; ++i) {
+		if (const JPH::Body* jolt_body = body_accessor.try_get(i)) {
+			auto* object = reinterpret_cast<JoltCollisionObject3D*>(jolt_body->GetUserData());
+
+			object->post_step(p_step);
+		}
+	}
+
+	body_accessor.release();
 }

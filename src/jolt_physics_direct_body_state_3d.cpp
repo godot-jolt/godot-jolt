@@ -160,65 +160,71 @@ void JoltPhysicsDirectBodyState3D::_set_sleep_state(bool p_enabled) {
 }
 
 int32_t JoltPhysicsDirectBodyState3D::_get_contact_count() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_contact_count();
 }
 
-Vector3 JoltPhysicsDirectBodyState3D::_get_contact_local_position(
-	[[maybe_unused]] int32_t p_contact_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Vector3 JoltPhysicsDirectBodyState3D::_get_contact_local_position(int32_t p_contact_idx) const {
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return body->get_contact(p_contact_idx).position;
 }
 
-Vector3 JoltPhysicsDirectBodyState3D::_get_contact_local_normal(
-	[[maybe_unused]] int32_t p_contact_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Vector3 JoltPhysicsDirectBodyState3D::_get_contact_local_normal(int32_t p_contact_idx) const {
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return body->get_contact(p_contact_idx).normal;
 }
 
-Vector3 JoltPhysicsDirectBodyState3D::_get_contact_impulse([[maybe_unused]] int32_t p_contact_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Vector3 JoltPhysicsDirectBodyState3D::_get_contact_impulse(int32_t p_contact_idx) const {
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	const JoltBody3D::Contact& contact = body->get_contact(p_contact_idx);
+	return contact.normal * contact.impulse;
 }
 
-int32_t JoltPhysicsDirectBodyState3D::_get_contact_local_shape(
-	[[maybe_unused]] int32_t p_contact_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+int32_t JoltPhysicsDirectBodyState3D::_get_contact_local_shape(int32_t p_contact_idx) const {
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return body->get_contact(p_contact_idx).shape_index;
 }
 
-RID JoltPhysicsDirectBodyState3D::_get_contact_collider([[maybe_unused]] int32_t p_contact_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+RID JoltPhysicsDirectBodyState3D::_get_contact_collider(int32_t p_contact_idx) const {
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return body->get_contact(p_contact_idx).collider_rid;
 }
 
-Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_position(
-	[[maybe_unused]] int32_t p_contact_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_position(int32_t p_contact_idx) const {
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return body->get_contact(p_contact_idx).collider_position;
 }
 
-uint64_t JoltPhysicsDirectBodyState3D::_get_contact_collider_id(
-	[[maybe_unused]] int32_t p_contact_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+uint64_t JoltPhysicsDirectBodyState3D::_get_contact_collider_id(int32_t p_contact_idx) const {
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return body->get_contact(p_contact_idx).collider_id;
 }
 
-Object* JoltPhysicsDirectBodyState3D::_get_contact_collider_object(
-	[[maybe_unused]] int32_t p_contact_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Object* JoltPhysicsDirectBodyState3D::_get_contact_collider_object(int32_t p_contact_idx) const {
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return ObjectDB::get_instance(body->get_contact(p_contact_idx).collider_id);
 }
 
-int32_t JoltPhysicsDirectBodyState3D::_get_contact_collider_shape(
-	[[maybe_unused]] int32_t p_contact_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+int32_t JoltPhysicsDirectBodyState3D::_get_contact_collider_shape(int32_t p_contact_idx) const {
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return body->get_contact(p_contact_idx).collider_shape_index;
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_velocity_at_position(
-	[[maybe_unused]] int32_t p_contact_idx
+	int32_t p_contact_idx
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return body->get_contact(p_contact_idx).collider_velocity;
 }
 
 double JoltPhysicsDirectBodyState3D::_get_step() const {

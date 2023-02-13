@@ -55,6 +55,10 @@ public:
 
 	void rebuild_shape(bool p_lock = true);
 
+	const JPH::Shape* get_jolt_shape() { return jolt_shape; }
+
+	const JPH::Shape* get_previous_jolt_shape() { return previous_jolt_shape; }
+
 	void add_shape(
 		JoltShape3D* p_shape,
 		const Transform3D& p_transform,
@@ -78,7 +82,15 @@ public:
 
 	virtual void call_queries() = 0;
 
+	virtual void pre_step(float p_step);
+
+	virtual void post_step(float p_step);
+
+	virtual bool generates_contacts() const = 0;
+
 protected:
+	virtual JPH::BroadPhaseLayer get_broad_phase_layer() const = 0;
+
 	virtual bool has_custom_center_of_mass() const = 0;
 
 	virtual Vector3 get_center_of_mass_custom() const = 0;
@@ -99,6 +111,12 @@ protected:
 
 	void remove_from_space(bool p_lock = true);
 
+	void object_layer_changed(bool p_lock = true);
+
+	void collision_layer_changed(bool p_lock = true);
+
+	void collision_mask_changed(bool p_lock = true);
+
 	virtual void shapes_changed([[maybe_unused]] bool p_lock) { }
 
 	RID rid;
@@ -106,6 +124,10 @@ protected:
 	uint64_t instance_id = 0;
 
 	JPH::BodyID jolt_id;
+
+	JPH::ShapeRefC jolt_shape;
+
+	JPH::ShapeRefC previous_jolt_shape;
 
 	JoltSpace3D* space = nullptr;
 
