@@ -24,41 +24,17 @@ public:
 
 	void call_queries() override;
 
-	Vector3 get_initial_linear_velocity() const override { return {0, 0, 0}; }
-
-	Vector3 get_initial_angular_velocity() const override { return {0, 0, 0}; }
-
 	bool has_custom_center_of_mass() const override { return false; }
 
 	Vector3 get_center_of_mass_custom() const override { return {0, 0, 0}; }
 
 	bool get_initial_sleep_state() const override { return false; }
 
-	PhysicsServer3D::BodyMode get_mode() const override {
-		return PhysicsServer3D::BODY_MODE_KINEMATIC;
-	}
-
-	bool is_ccd_enabled() const override { return false; }
-
-	float get_mass() const override { return 1.0f; }
-
-	Vector3 get_inertia() const override { return {0, 0, 0}; }
-
-	float get_bounce() const override { return 0.0f; }
-
-	float get_friction() const override { return 1.0f; }
-
-	float get_gravity_scale() const override { return 1.0f; }
-
-	float get_linear_damp() const override { return 0.0f; }
-
-	float get_angular_damp() const override { return 0.0f; }
-
-	bool is_area() const override { return true; }
-
-	bool can_sleep() const override { return false; }
-
 private:
+	JPH::EMotionType get_motion_type() const override { return JPH::EMotionType::Kinematic; }
+
+	void create_in_space(bool p_lock = true) override;
+
 	Vector3 gravity_vector = {0, -1, 0};
 
 	float gravity = 9.81f;

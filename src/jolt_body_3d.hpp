@@ -32,15 +32,15 @@ public:
 
 	void set_sleep_state(bool p_enabled, bool p_lock = true);
 
-	bool can_sleep() const override { return allowed_sleep; }
+	bool can_sleep() const { return allowed_sleep; }
 
 	void set_can_sleep(bool p_enabled, bool p_lock = true);
 
 	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
 
-	Vector3 get_initial_linear_velocity() const override { return initial_linear_velocity; }
+	Vector3 get_initial_linear_velocity() const { return initial_linear_velocity; }
 
-	Vector3 get_initial_angular_velocity() const override { return initial_angular_velocity; }
+	Vector3 get_initial_angular_velocity() const { return initial_angular_velocity; }
 
 	Vector3 get_linear_velocity(bool p_lock = true) const;
 
@@ -98,46 +98,52 @@ public:
 
 	JoltPhysicsDirectBodyState3D* get_direct_state();
 
-	PhysicsServer3D::BodyMode get_mode() const override { return mode; }
+	PhysicsServer3D::BodyMode get_mode() const { return mode; }
 
 	void set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock = true);
 
-	bool is_ccd_enabled() const override { return ccd_enabled; }
+	bool is_ccd_enabled() const { return ccd_enabled; }
 
 	void set_ccd_enabled(bool p_enable, bool p_lock = true);
 
-	float get_mass() const override { return mass; }
+	float get_mass() const { return mass; }
 
 	void set_mass(float p_mass, bool p_lock = true);
 
-	Vector3 get_inertia() const override { return inertia; }
+	Vector3 get_inertia() const { return inertia; }
 
 	void set_inertia(const Vector3& p_inertia, bool p_lock = true);
 
-	float get_bounce() const override { return bounce; }
+	float get_bounce() const { return bounce; }
 
 	void set_bounce(float p_bounce, bool p_lock = true);
 
-	float get_friction() const override { return friction; }
+	float get_friction() const { return friction; }
 
 	void set_friction(float p_friction, bool p_lock = true);
 
-	float get_gravity_scale() const override { return gravity_scale; }
+	float get_gravity_scale() const { return gravity_scale; }
 
 	void set_gravity_scale(float p_scale, bool p_lock = true);
 
-	float get_linear_damp() const override { return linear_damp; }
+	float get_linear_damp() const { return linear_damp; }
 
 	void set_linear_damp(float p_damp, bool p_lock = true);
 
-	float get_angular_damp() const override { return angular_damp; }
+	float get_angular_damp() const { return angular_damp; }
 
 	void set_angular_damp(float p_damp, bool p_lock = true);
 
-	bool is_area() const override { return false; }
-
 private:
+	JPH::EMotionType get_motion_type() const override;
+
+	void create_in_space(bool p_lock = true) override;
+
 	void shapes_changed(bool p_lock) override;
+
+	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
+
+	JPH::MassProperties calculate_mass_properties(bool p_lock = true) const;
 
 	void mass_properties_changed(bool p_lock);
 

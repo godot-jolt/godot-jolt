@@ -43,3 +43,11 @@ void JoltArea3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant
 void JoltArea3D::call_queries() {
 	// TOOD(mihe): Call `area_monitor_callback`
 }
+
+void JoltArea3D::create_in_space(bool p_lock) {
+	JPH::BodyCreationSettings settings = create_begin();
+
+	settings.mIsSensor = true;
+
+	create_end(settings, p_lock);
+}

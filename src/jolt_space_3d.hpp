@@ -4,7 +4,6 @@
 
 class JoltArea3D;
 class JoltBody3D;
-class JoltCollisionObject3D;
 class JoltJoint3D;
 class JoltLayerMapper;
 class JoltPhysicsDirectSpaceState3D;
@@ -68,14 +67,6 @@ public:
 	Variant get_param(PhysicsServer3D::AreaParameter p_param) const;
 
 	void set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value);
-
-	void create_object(JoltCollisionObject3D* p_object, bool p_lock = true);
-
-	void add_object(JoltCollisionObject3D* p_object, bool p_lock = true);
-
-	void remove_object(JoltCollisionObject3D* p_object, bool p_lock = true);
-
-	void destroy_object(JoltCollisionObject3D* p_object, bool p_lock = true);
 
 	void add_joint(JoltJoint3D* p_joint);
 

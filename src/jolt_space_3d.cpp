@@ -3,7 +3,6 @@
 #include "jolt_area_3d.hpp"
 #include "jolt_body_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
-#include "jolt_collision_object_3d.hpp"
 #include "jolt_group_filter_rid.hpp"
 #include "jolt_joint_3d.hpp"
 #include "jolt_layer_mapper.hpp"
@@ -183,103 +182,6 @@ void JoltSpace3D::set_param(PhysicsServer3D::AreaParameter p_param, const Varian
 			ERR_FAIL_NOT_IMPL();
 		} break;
 	}
-}
-
-void JoltSpace3D::create_object(JoltCollisionObject3D* p_object, bool p_lock) {
-	const PhysicsServer3D::BodyMode body_mode = p_object->get_mode();
-
-	JPH::EMotionType motion_type = {};
-
-	switch (body_mode) {
-		case PhysicsServer3D::BODY_MODE_STATIC: {
-			motion_type = JPH::EMotionType::Static;
-		} break;
-		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
-			motion_type = JPH::EMotionType::Kinematic;
-		} break;
-		case PhysicsServer3D::BODY_MODE_RIGID:
-		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
-			motion_type = JPH::EMotionType::Dynamic;
-		} break;
-		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body mode: '%d'", body_mode));
-		} break;
-	}
-
-	JPH::ShapeRefC shape = p_object->try_build_shape();
-	JPH::ObjectLayer object_layer = map_to_object_layer(
-		motion_type,
-		p_object->get_collision_layer(),
-		p_object->get_collision_mask()
-	);
-
-	if (shape == nullptr) {
-		// Use a fallback shape instead
-		shape = new JPH::SphereShape(1.0f);
-
-		// Place it in object (and broad phase) layer 0, which will make it collide with nothing
-		object_layer = 0;
-	}
-
-	const Transform3D& transform = p_object->get_initial_transform();
-
-	JPH::BodyCreationSettings settings(
-		shape,
-		to_jolt(transform.origin),
-		to_jolt(transform.basis),
-		motion_type,
-		object_layer
-	);
-
-	settings.mLinearVelocity = to_jolt(p_object->get_initial_linear_velocity());
-	settings.mAngularVelocity = to_jolt(p_object->get_initial_angular_velocity());
-	settings.mAllowDynamicOrKinematic = true;
-	settings.mIsSensor = p_object->is_area();
-	settings.mMotionQuality = p_object->is_ccd_enabled() ? JPH::EMotionQuality::LinearCast
-														 : JPH::EMotionQuality::Discrete;
-	settings.mAllowSleeping = p_object->can_sleep();
-	settings.mFriction = p_object->get_friction();
-	settings.mRestitution = p_object->get_bounce();
-	settings.mLinearDamping = p_object->get_linear_damp();
-	settings.mAngularDamping = p_object->get_angular_damp();
-	settings.mGravityFactor = p_object->get_gravity_scale();
-	settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
-	settings.mMassPropertiesOverride = p_object->calculate_mass_properties(*settings.GetShape());
-
-	JPH::Body* body = get_body_iface(p_lock).CreateBody(settings);
-
-	body->SetUserData(reinterpret_cast<JPH::uint64>(p_object));
-
-	if (!p_object->is_area()) {
-		// HACK(mihe): Since group filters don't grant us access to user data we are instead forced
-		// abuse the collision group to carry the upper and lower bits of our RID, which we can then
-		// access and rebuild in our group filter for bodies that make use of collision exceptions.
-
-		JPH::CollisionGroup::GroupID group_id = 0;
-		JPH::CollisionGroup::SubGroupID sub_group_id = 0;
-		JoltGroupFilterRID::encode_rid(p_object->get_rid(), group_id, sub_group_id);
-
-		body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
-	}
-
-	p_object->set_jolt_id(body->GetID());
-}
-
-void JoltSpace3D::add_object(JoltCollisionObject3D* p_object, bool p_lock) {
-	get_body_iface(p_lock).AddBody(
-		p_object->get_jolt_id(),
-		p_object->get_initial_sleep_state() ? JPH::EActivation::DontActivate
-											: JPH::EActivation::Activate
-	);
-}
-
-void JoltSpace3D::remove_object(JoltCollisionObject3D* p_object, bool p_lock) {
-	get_body_iface(p_lock).RemoveBody(p_object->get_jolt_id());
-}
-
-void JoltSpace3D::destroy_object(JoltCollisionObject3D* p_object, bool p_lock) {
-	get_body_iface(p_lock).DestroyBody(p_object->get_jolt_id());
-	p_object->set_jolt_id({});
 }
 
 void JoltSpace3D::add_joint(JoltJoint3D* p_joint) {
