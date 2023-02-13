@@ -1,6 +1,37 @@
 #include "jolt_layer_mapper.hpp"
 
+#include "jolt_broad_phase_layer.hpp"
+
 namespace {
+
+template<uint8_t TSize = GDJOLT_BROAD_PHASE_LAYER_COUNT>
+class JoltBroadPhaseLayerTable {
+public:
+	constexpr JoltBroadPhaseLayerTable() {
+		enable(GDJOLT_BROAD_PHASE_LAYER_BODY_MOVING, GDJOLT_BROAD_PHASE_LAYER_BODY_STATIC);
+		enable(GDJOLT_BROAD_PHASE_LAYER_BODY_MOVING, GDJOLT_BROAD_PHASE_LAYER_BODY_MOVING);
+
+		enable(GDJOLT_BROAD_PHASE_LAYER_MONITOR, GDJOLT_BROAD_PHASE_LAYER_BODY_MOVING);
+		enable(GDJOLT_BROAD_PHASE_LAYER_MONITOR, GDJOLT_BROAD_PHASE_LAYER_AREA);
+		enable(GDJOLT_BROAD_PHASE_LAYER_MONITOR, GDJOLT_BROAD_PHASE_LAYER_AREA_MONITOR);
+
+		enable(GDJOLT_BROAD_PHASE_LAYER_AREA_MONITOR, GDJOLT_BROAD_PHASE_LAYER_BODY_MOVING);
+		enable(GDJOLT_BROAD_PHASE_LAYER_AREA_MONITOR, GDJOLT_BROAD_PHASE_LAYER_AREA);
+		enable(GDJOLT_BROAD_PHASE_LAYER_AREA_MONITOR, GDJOLT_BROAD_PHASE_LAYER_AREA_MONITOR);
+	}
+
+	constexpr void enable(uint8_t p_layer1, uint8_t p_layer2) {
+		table[p_layer1][p_layer2] = true;
+		table[p_layer2][p_layer1] = true;
+	}
+
+	constexpr bool is_enabled(uint8_t p_layer1, uint8_t p_layer2) const {
+		return table[p_layer1][p_layer2];
+	}
+
+private:
+	bool table[TSize][TSize] = {};
+};
 
 constexpr JPH::ObjectLayer encode_layers(
 	JPH::BroadPhaseLayer p_broad_phase_layer,
@@ -9,13 +40,6 @@ constexpr JPH::ObjectLayer encode_layers(
 	const auto upper_bits = uint16_t((uint8_t)p_broad_phase_layer << 13U);
 	const auto lower_bits = uint16_t(p_object_layer);
 	return JPH::ObjectLayer(upper_bits | lower_bits);
-}
-
-constexpr JPH::ObjectLayer encode_layers(
-	JoltBroadPhaseLayer p_broad_phase_layer,
-	JPH::ObjectLayer p_object_layer
-) {
-	return encode_layers(JPH::BroadPhaseLayer(p_broad_phase_layer), p_object_layer);
 }
 
 constexpr void decode_layers(
@@ -45,7 +69,7 @@ constexpr void decode_collision(
 } // namespace
 
 JPH::ObjectLayer JoltLayerMapper::to_object_layer(
-	JoltBroadPhaseLayer p_broad_phase_layer,
+	JPH::BroadPhaseLayer p_broad_phase_layer,
 	uint32_t p_collision_layer,
 	uint32_t p_collision_mask
 ) {
@@ -77,31 +101,8 @@ JPH::ObjectLayer JoltLayerMapper::to_object_layer(
 	return encode_layers(p_broad_phase_layer, object_layer);
 }
 
-JPH::ObjectLayer JoltLayerMapper::to_object_layer(
-	JPH::EMotionType p_motion_type,
-	uint32_t p_collision_layer,
-	uint32_t p_collision_mask
-) {
-	switch (p_motion_type) {
-		case JPH::EMotionType::Static: {
-			return to_object_layer(
-				GDJOLT_BROAD_PHASE_LAYER_STATIC,
-				p_collision_layer,
-				p_collision_mask
-			);
-		}
-		case JPH::EMotionType::Kinematic:
-		case JPH::EMotionType::Dynamic: {
-			return to_object_layer(
-				GDJOLT_BROAD_PHASE_LAYER_MOVING,
-				p_collision_layer,
-				p_collision_mask
-			);
-		}
-		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled motion type: '%d'", (int32_t)p_motion_type));
-		}
-	}
+uint32_t JoltLayerMapper::GetNumBroadPhaseLayers() const {
+	return GDJOLT_BROAD_PHASE_LAYER_COUNT;
 }
 
 JPH::BroadPhaseLayer JoltLayerMapper::GetBroadPhaseLayer(JPH::ObjectLayer p_layer) const {
@@ -119,11 +120,20 @@ const char* JoltLayerMapper::GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer
 		case GDJOLT_BROAD_PHASE_LAYER_NONE: {
 			return "NONE";
 		}
-		case GDJOLT_BROAD_PHASE_LAYER_STATIC: {
-			return "STATIC";
+		case GDJOLT_BROAD_PHASE_LAYER_BODY_STATIC: {
+			return "BODY_STATIC";
 		}
-		case GDJOLT_BROAD_PHASE_LAYER_MOVING: {
-			return "MOVING";
+		case GDJOLT_BROAD_PHASE_LAYER_BODY_MOVING: {
+			return "BODY_MOVING";
+		}
+		case GDJOLT_BROAD_PHASE_LAYER_AREA: {
+			return "AREA";
+		}
+		case GDJOLT_BROAD_PHASE_LAYER_MONITOR: {
+			return "MONITOR";
+		}
+		case GDJOLT_BROAD_PHASE_LAYER_AREA_MONITOR: {
+			return "AREA_MONITOR";
 		}
 		default: {
 			return "INVALID";
@@ -176,23 +186,12 @@ bool JoltLayerMapper::ShouldCollide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLa
 
 bool JoltLayerMapper::ShouldCollide(JPH::BroadPhaseLayer p_layer1, JPH::BroadPhaseLayer p_layer2)
 	const {
-	const auto layer1 = (JPH::BroadPhaseLayer::Type)p_layer1;
-	const auto layer2 = (JPH::BroadPhaseLayer::Type)p_layer2;
+	static constexpr JoltBroadPhaseLayerTable broad_phase_layer_table;
 
-	switch (layer1) {
-		case GDJOLT_BROAD_PHASE_LAYER_NONE: {
-			return false;
-		}
-		case GDJOLT_BROAD_PHASE_LAYER_STATIC: {
-			return layer2 == GDJOLT_BROAD_PHASE_LAYER_MOVING;
-		}
-		case GDJOLT_BROAD_PHASE_LAYER_MOVING: {
-			return layer2 != GDJOLT_BROAD_PHASE_LAYER_NONE;
-		}
-		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled object layer: '%d'", layer1));
-		}
-	}
+	return broad_phase_layer_table.is_enabled(
+		(JPH::BroadPhaseLayer::Type)p_layer1,
+		(JPH::BroadPhaseLayer::Type)p_layer2
+	);
 }
 
 static_assert(sizeof(JPH::ObjectLayer) == 2);

@@ -211,11 +211,18 @@ RID JoltPhysicsServer3D::_area_create() {
 	return rid;
 }
 
-void JoltPhysicsServer3D::_area_set_space(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] const RID& p_space
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_area_set_space(const RID& p_area, const RID& p_space) {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	JoltSpace3D* space = nullptr;
+
+	if (p_space.is_valid()) {
+		space = space_owner.get_or_null(p_space);
+		ERR_FAIL_NULL(space);
+	}
+
+	area->set_space(space);
 }
 
 RID JoltPhysicsServer3D::_area_get_space([[maybe_unused]] const RID& p_area) const {
@@ -223,12 +230,18 @@ RID JoltPhysicsServer3D::_area_get_space([[maybe_unused]] const RID& p_area) con
 }
 
 void JoltPhysicsServer3D::_area_add_shape(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] const RID& p_shape,
-	[[maybe_unused]] const Transform3D& p_transform,
-	[[maybe_unused]] bool p_disabled
+	const RID& p_area,
+	const RID& p_shape,
+	const Transform3D& p_transform,
+	bool p_disabled
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL(shape);
+
+	area->add_shape(shape, p_transform, p_disabled);
 }
 
 void JoltPhysicsServer3D::_area_set_shape(
@@ -240,11 +253,14 @@ void JoltPhysicsServer3D::_area_set_shape(
 }
 
 void JoltPhysicsServer3D::_area_set_shape_transform(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int32_t p_shape_idx,
-	[[maybe_unused]] const Transform3D& p_transform
+	const RID& p_area,
+	int32_t p_shape_idx,
+	const Transform3D& p_transform
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	area->set_shape_transform(p_shape_idx, p_transform);
 }
 
 int32_t JoltPhysicsServer3D::_area_get_shape_count([[maybe_unused]] const RID& p_area) const {
@@ -265,11 +281,11 @@ Transform3D JoltPhysicsServer3D::_area_get_shape_transform(
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-void JoltPhysicsServer3D::_area_remove_shape(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int32_t p_shape_idx
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_area_remove_shape(const RID& p_area, int32_t p_shape_idx) {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	area->remove_shape(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_area_clear_shapes([[maybe_unused]] const RID& p_area) {
@@ -277,11 +293,14 @@ void JoltPhysicsServer3D::_area_clear_shapes([[maybe_unused]] const RID& p_area)
 }
 
 void JoltPhysicsServer3D::_area_set_shape_disabled(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int32_t p_shape_idx,
-	[[maybe_unused]] bool p_disabled
+	const RID& p_area,
+	int32_t p_shape_idx,
+	bool p_disabled
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	area->set_shape_disabled(p_shape_idx, p_disabled);
 }
 
 void JoltPhysicsServer3D::_area_attach_object_instance_id(const RID& p_area, uint64_t p_id) {
@@ -316,36 +335,36 @@ void JoltPhysicsServer3D::_area_set_param(
 	area->set_param(p_param, p_value);
 }
 
-void JoltPhysicsServer3D::_area_set_transform(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] const Transform3D& p_transform
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_area_set_transform(const RID& p_area, const Transform3D& p_transform) {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	return area->set_transform(p_transform);
 }
 
-Variant JoltPhysicsServer3D::_area_get_param(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] AreaParameter p_param
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Variant JoltPhysicsServer3D::_area_get_param(const RID& p_area, AreaParameter p_param) const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	return area->get_param(p_param);
 }
 
 Transform3D JoltPhysicsServer3D::_area_get_transform([[maybe_unused]] const RID& p_area) const {
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-void JoltPhysicsServer3D::_area_set_collision_mask(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] uint32_t p_mask
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_area_set_collision_mask(const RID& p_area, uint32_t p_mask) {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	area->set_collision_mask(p_mask);
 }
 
-void JoltPhysicsServer3D::_area_set_collision_layer(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] uint32_t p_layer
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_area_set_collision_layer(const RID& p_area, uint32_t p_layer) {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	area->set_collision_layer(p_layer);
 }
 
 void JoltPhysicsServer3D::_area_set_monitorable(const RID& p_area, bool p_monitorable) {
@@ -362,7 +381,7 @@ void JoltPhysicsServer3D::_area_set_monitor_callback(
 	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
-	area->set_monitor_callback(p_callback);
+	area->set_body_monitor_callback(p_callback);
 }
 
 void JoltPhysicsServer3D::_area_set_area_monitor_callback(
@@ -375,11 +394,11 @@ void JoltPhysicsServer3D::_area_set_area_monitor_callback(
 	area->set_area_monitor_callback(p_callback);
 }
 
-void JoltPhysicsServer3D::_area_set_ray_pickable(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] bool p_enable
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_area_set_ray_pickable(const RID& p_area, bool p_enable) {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	area->set_ray_pickable(p_enable);
 }
 
 RID JoltPhysicsServer3D::_body_create() {
@@ -782,16 +801,18 @@ TypedArray<RID> JoltPhysicsServer3D::_body_get_collision_exceptions(const RID& p
 	return body->get_collision_exceptions();
 }
 
-void JoltPhysicsServer3D::_body_set_max_contacts_reported(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_amount
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_body_set_max_contacts_reported(const RID& p_body, int32_t p_amount) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->set_max_contacts_reported(p_amount);
 }
 
-int32_t JoltPhysicsServer3D::_body_get_max_contacts_reported([[maybe_unused]] const RID& p_body
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+int32_t JoltPhysicsServer3D::_body_get_max_contacts_reported(const RID& p_body) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_max_contacts_reported();
 }
 
 void JoltPhysicsServer3D::_body_set_contacts_reported_depth_threshold(

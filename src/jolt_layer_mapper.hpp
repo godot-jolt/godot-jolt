@@ -1,7 +1,5 @@
 #pragma once
 
-#include "jolt_broad_phase_layer.hpp"
-
 class JoltLayerMapper final
 	: public JPH::BroadPhaseLayerInterface
 	, public JPH::ObjectLayerPairFilter
@@ -12,19 +10,13 @@ class JoltLayerMapper final
 
 public:
 	JPH::ObjectLayer to_object_layer(
-		JoltBroadPhaseLayer p_broad_phase_layer,
-		uint32_t p_collision_layer,
-		uint32_t p_collision_mask
-	);
-
-	JPH::ObjectLayer to_object_layer(
-		JPH::EMotionType p_motion_type,
+		JPH::BroadPhaseLayer p_broad_phase_layer,
 		uint32_t p_collision_layer,
 		uint32_t p_collision_mask
 	);
 
 private:
-	uint32_t GetNumBroadPhaseLayers() const override { return GDJOLT_BROAD_PHASE_LAYER_COUNT; }
+	uint32_t GetNumBroadPhaseLayers() const override;
 
 	JPH::BroadPhaseLayer GetBroadPhaseLayer(JPH::ObjectLayer p_layer) const override;
 

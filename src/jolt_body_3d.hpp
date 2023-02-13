@@ -3,8 +3,34 @@
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_physics_direct_body_state_3d.hpp"
 
+class JoltArea3D;
+
 class JoltBody3D final : public JoltCollisionObject3D {
 public:
+	using DampMode = PhysicsServer3D::BodyDampMode;
+
+	struct Contact {
+		float depth = 0.0f;
+
+		float impulse = 0.0f;
+
+		int32_t shape_index = 0;
+
+		int32_t collider_shape_index = 0;
+
+		uint64_t collider_id = 0;
+
+		RID collider_rid;
+
+		Vector3 normal;
+
+		Vector3 position;
+
+		Vector3 collider_position;
+
+		Vector3 collider_velocity;
+	};
+
 	~JoltBody3D() override;
 
 	Variant get_state(PhysicsServer3D::BodyState p_state);
@@ -14,6 +40,8 @@ public:
 	Variant get_param(PhysicsServer3D::BodyParameter p_param) const;
 
 	void set_param(PhysicsServer3D::BodyParameter p_param, const Variant& p_value);
+
+	JPH::BroadPhaseLayer get_broad_phase_layer() const override;
 
 	bool has_state_sync_callback() const { return body_state_callback.is_valid(); }
 
@@ -56,6 +84,28 @@ public:
 
 	void set_center_of_mass_custom(const Vector3& p_center_of_mass, bool p_lock = true);
 
+	int32_t get_max_contacts_reported() const { return contacts.size(); }
+
+	void set_max_contacts_reported(int32_t p_count) { contacts.resize(p_count); }
+
+	int32_t get_contact_count() const { return contact_count; }
+
+	const Contact& get_contact(int32_t p_index) { return contacts[p_index]; }
+
+	bool generates_contacts() const override { return contacts.size() > 0; }
+
+	void add_contact(
+		const JoltBody3D* p_collider,
+		float p_depth,
+		int32_t p_shape_index,
+		int32_t p_collider_shape_index,
+		const Vector3& p_normal,
+		const Vector3& p_position,
+		const Vector3& p_collider_position,
+		const Vector3& p_collider_velocity,
+		float p_impulse
+	);
+
 	void reset_mass_properties(bool p_lock = true);
 
 	void apply_force(const Vector3& p_force, const Vector3& p_position, bool p_lock = true);
@@ -92,15 +142,27 @@ public:
 
 	TypedArray<RID> get_collision_exceptions(bool p_lock = true) const;
 
-	void integrate_forces(bool p_lock = true);
+	void add_area(JoltArea3D* p_area) { areas.push_back(p_area); }
+
+	void remove_area(JoltArea3D* p_area) { areas.erase(p_area); }
+
+	void integrate_forces(float p_step, bool p_lock = true);
 
 	void call_queries() override;
+
+	void pre_step(float p_step) override;
 
 	JoltPhysicsDirectBodyState3D* get_direct_state();
 
 	PhysicsServer3D::BodyMode get_mode() const { return mode; }
 
 	void set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock = true);
+
+	bool is_static() const { return mode == PhysicsServer3D::BODY_MODE_STATIC; }
+
+	bool is_kinematic() const { return mode == PhysicsServer3D::BODY_MODE_KINEMATIC; }
+
+	bool is_rigid() const { return mode == PhysicsServer3D::BODY_MODE_RIGID; }
 
 	bool is_ccd_enabled() const { return ccd_enabled; }
 
@@ -124,7 +186,7 @@ public:
 
 	float get_gravity_scale() const { return gravity_scale; }
 
-	void set_gravity_scale(float p_scale, bool p_lock = true);
+	void set_gravity_scale(float p_scale) { gravity_scale = p_scale; }
 
 	float get_linear_damp() const { return linear_damp; }
 
@@ -134,10 +196,20 @@ public:
 
 	void set_angular_damp(float p_damp, bool p_lock = true);
 
+	DampMode get_linear_damp_mode() const { return linear_damp_mode; }
+
+	void set_linear_damp_mode(DampMode p_mode) { linear_damp_mode = p_mode; }
+
+	DampMode get_angular_damp_mode() const { return angular_damp_mode; }
+
+	void set_angular_damp_mode(DampMode p_mode) { angular_damp_mode = p_mode; }
+
 private:
 	JPH::EMotionType get_motion_type() const override;
 
 	void create_in_space(bool p_lock = true) override;
+
+	void mode_changed(bool p_lock = true);
 
 	void shapes_changed(bool p_lock) override;
 
@@ -148,6 +220,10 @@ private:
 	void mass_properties_changed(bool p_lock);
 
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
+
+	DampMode linear_damp_mode = PhysicsServer3D::BODY_DAMP_MODE_COMBINE;
+
+	DampMode angular_damp_mode = PhysicsServer3D::BODY_DAMP_MODE_COMBINE;
 
 	bool ccd_enabled = false;
 
@@ -170,6 +246,12 @@ private:
 	bool allowed_sleep = true;
 
 	bool custom_center_of_mass = false;
+
+	int32_t contact_count = 0;
+
+	LocalVector<Contact> contacts;
+
+	LocalVector<JoltArea3D*> areas;
 
 	Vector3 initial_linear_velocity;
 

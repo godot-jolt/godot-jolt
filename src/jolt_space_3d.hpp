@@ -4,6 +4,7 @@
 
 class JoltArea3D;
 class JoltBody3D;
+class JoltContactListener;
 class JoltJoint3D;
 class JoltLayerMapper;
 class JoltPhysicsDirectSpaceState3D;
@@ -33,7 +34,7 @@ public:
 	const JPH::NarrowPhaseQuery& get_narrow_phase_query(bool p_locked = true) const;
 
 	JPH::ObjectLayer map_to_object_layer(
-		JPH::EMotionType p_motion_type,
+		JPH::BroadPhaseLayer p_broad_phase_layer,
 		uint32_t p_collision_layer,
 		uint32_t p_collision_mask
 	);
@@ -60,22 +61,18 @@ public:
 
 	JoltPhysicsDirectSpaceState3D* get_direct_state();
 
-	void set_default_area(JoltArea3D* p_area) { area = p_area; }
+	void set_default_area(JoltArea3D* p_area) { default_area = p_area; }
 
-	JoltArea3D* get_default_area() const { return area; }
-
-	Variant get_param(PhysicsServer3D::AreaParameter p_param) const;
-
-	void set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value);
+	JoltArea3D* get_default_area() const { return default_area; }
 
 	void add_joint(JoltJoint3D* p_joint);
 
 	void remove_joint(JoltJoint3D* p_joint);
 
 private:
-	void integrate_forces(bool p_lock = true);
+	void pre_step(float p_step);
 
-	void gravity_changed();
+	void post_step(float p_step);
 
 	RID rid;
 
@@ -85,15 +82,13 @@ private:
 
 	JoltLayerMapper* layer_mapper = nullptr;
 
+	JoltContactListener* contact_listener = nullptr;
+
 	JPH::PhysicsSystem* physics_system = nullptr;
 
 	JoltBodyWriter3D body_accessor;
 
 	JoltPhysicsDirectSpaceState3D* direct_state = nullptr;
 
-	JoltArea3D* area = nullptr;
-
-	Vector3 gravity_vector = Vector3(0, -1, 0);
-
-	float gravity = 9.81f;
+	JoltArea3D* default_area = nullptr;
 };
