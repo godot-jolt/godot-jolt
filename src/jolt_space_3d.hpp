@@ -39,6 +39,13 @@ public:
 		uint32_t p_collision_mask
 	);
 
+	void map_from_object_layer(
+		JPH::ObjectLayer p_object_layer,
+		JPH::BroadPhaseLayer& p_broad_phase_layer,
+		uint32_t& p_collision_layer,
+		uint32_t& p_collision_mask
+	) const;
+
 	JoltReadableBody3D read_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
 
 	JoltReadableBody3D read_body(const JoltBody3D& p_body, bool p_lock = true) const;

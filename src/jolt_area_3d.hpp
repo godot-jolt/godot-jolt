@@ -60,11 +60,11 @@ public:
 
 	bool has_body_monitor_callback() const { return body_monitor_callback.is_valid(); }
 
-	void set_body_monitor_callback(const Callable& p_callback, bool p_lock = true);
+	void set_body_monitor_callback(const Callable& p_callback);
 
 	bool has_area_monitor_callback() const { return area_monitor_callback.is_valid(); }
 
-	void set_area_monitor_callback(const Callable& p_callback, bool p_lock = true);
+	void set_area_monitor_callback(const Callable& p_callback);
 
 	bool is_monitoring() const {
 		return has_body_monitor_callback() || has_area_monitor_callback();
@@ -161,9 +161,9 @@ private:
 
 	void create_in_space(bool p_lock = true) override;
 
-	void body_monitoring_changed(bool p_lock = true);
+	void body_monitoring_changed();
 
-	void area_monitoring_changed(bool p_lock = true);
+	void area_monitoring_changed();
 
 	void monitorable_changed(bool p_lock = true);
 

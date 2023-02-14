@@ -15,6 +15,13 @@ public:
 		uint32_t p_collision_mask
 	);
 
+	void from_object_layer(
+		JPH::ObjectLayer p_object_layer,
+		JPH::BroadPhaseLayer& p_broad_phase_layer,
+		uint32_t& p_collision_layer,
+		uint32_t& p_collision_mask
+	) const;
+
 private:
 	uint32_t GetNumBroadPhaseLayers() const override;
 
@@ -27,8 +34,6 @@ private:
 	bool ShouldCollide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer p_layer2) const override;
 
 	bool ShouldCollide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) const override;
-
-	bool ShouldCollide(JPH::BroadPhaseLayer p_layer1, JPH::BroadPhaseLayer p_layer2) const;
 
 	JPH::ObjectLayer next_object_layer = 0;
 

@@ -135,12 +135,12 @@ void JoltBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const Variant
 JPH::BroadPhaseLayer JoltBody3D::get_broad_phase_layer() const {
 	switch (mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {
-			return JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_BODY_STATIC);
+			return JoltBroadPhaseLayer::BODY_STATIC;
 		}
 		case PhysicsServer3D::BODY_MODE_KINEMATIC:
 		case PhysicsServer3D::BODY_MODE_RIGID:
 		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
-			return JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_BODY_MOVING);
+			return JoltBroadPhaseLayer::BODY_DYNAMIC;
 		}
 		default: {
 			ERR_FAIL_D_MSG(vformat("Unhandled body mode: '%d'", mode));
