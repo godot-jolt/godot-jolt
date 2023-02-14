@@ -135,37 +135,28 @@ void JoltArea3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant
 }
 
 JPH::BroadPhaseLayer JoltArea3D::get_broad_phase_layer() const {
-	const bool monitoring = is_monitoring();
-
-	if (monitoring && monitorable) {
-		return JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_AREA_MONITOR);
-	} else if (monitoring && !monitorable) {
-		return JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_MONITOR);
-	} else if (!monitoring && monitorable) {
-		return JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_AREA);
-	} else {
-		return JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_NONE);
-	}
+	return monitorable ? JoltBroadPhaseLayer::AREA_DETECTABLE
+					   : JoltBroadPhaseLayer::AREA_UNDETECTABLE;
 }
 
-void JoltArea3D::set_body_monitor_callback(const Callable& p_callback, bool p_lock) {
+void JoltArea3D::set_body_monitor_callback(const Callable& p_callback) {
 	if (p_callback == body_monitor_callback) {
 		return;
 	}
 
 	body_monitor_callback = p_callback;
 
-	body_monitoring_changed(p_lock);
+	body_monitoring_changed();
 }
 
-void JoltArea3D::set_area_monitor_callback(const Callable& p_callback, bool p_lock) {
+void JoltArea3D::set_area_monitor_callback(const Callable& p_callback) {
 	if (p_callback == area_monitor_callback) {
 		return;
 	}
 
 	area_monitor_callback = p_callback;
 
-	area_monitoring_changed(p_lock);
+	area_monitoring_changed();
 }
 
 void JoltArea3D::set_monitorable(bool p_monitorable, bool p_lock) {
@@ -274,7 +265,7 @@ void JoltArea3D::call_queries() {
 	flush_events(areas_by_id, area_monitor_callback);
 }
 
-void JoltArea3D::body_monitoring_changed(bool p_lock) {
+void JoltArea3D::body_monitoring_changed() {
 	const bool monitoring = has_body_monitor_callback();
 
 	for (auto& [id, body] : bodies_by_id) {
@@ -286,11 +277,9 @@ void JoltArea3D::body_monitoring_changed(bool p_lock) {
 			}
 		}
 	}
-
-	object_layer_changed(p_lock);
 }
 
-void JoltArea3D::area_monitoring_changed(bool p_lock) {
+void JoltArea3D::area_monitoring_changed() {
 	const bool monitoring = has_area_monitor_callback();
 
 	for (auto& [id, area] : areas_by_id) {
@@ -302,8 +291,6 @@ void JoltArea3D::area_monitoring_changed(bool p_lock) {
 			}
 		}
 	}
-
-	object_layer_changed(p_lock);
 }
 
 void JoltArea3D::monitorable_changed(bool p_lock) {

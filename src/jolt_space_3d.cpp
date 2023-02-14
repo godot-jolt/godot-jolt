@@ -122,6 +122,20 @@ JPH::ObjectLayer JoltSpace3D::map_to_object_layer(
 	return layer_mapper->to_object_layer(p_broad_phase_layer, p_collision_layer, p_collision_mask);
 }
 
+void JoltSpace3D::map_from_object_layer(
+	JPH::ObjectLayer p_object_layer,
+	JPH::BroadPhaseLayer& p_broad_phase_layer,
+	uint32_t& p_collision_layer,
+	uint32_t& p_collision_mask
+) const {
+	layer_mapper->from_object_layer(
+		p_object_layer,
+		p_broad_phase_layer,
+		p_collision_layer,
+		p_collision_mask
+	);
+}
+
 JoltReadableBody3D JoltSpace3D::read_body(const JPH::BodyID& p_body_id, bool p_lock) const {
 	return {*this, p_body_id, p_lock};
 }

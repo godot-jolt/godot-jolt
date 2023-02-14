@@ -1,13 +1,15 @@
 #pragma once
 
-enum JoltBroadPhaseLayer : JPH::BroadPhaseLayer::Type {
-	GDJOLT_BROAD_PHASE_LAYER_NONE,
-	GDJOLT_BROAD_PHASE_LAYER_BODY_STATIC,
-	GDJOLT_BROAD_PHASE_LAYER_BODY_MOVING,
-	GDJOLT_BROAD_PHASE_LAYER_AREA,
-	GDJOLT_BROAD_PHASE_LAYER_MONITOR,
-	GDJOLT_BROAD_PHASE_LAYER_AREA_MONITOR,
-	GDJOLT_BROAD_PHASE_LAYER_COUNT
-};
+// NOLINTNEXTLINE(readability-identifier-naming)
+namespace JoltBroadPhaseLayer {
 
-static_assert(GDJOLT_BROAD_PHASE_LAYER_COUNT <= 8);
+constexpr JPH::BroadPhaseLayer BODY_STATIC(0);
+constexpr JPH::BroadPhaseLayer BODY_DYNAMIC(1);
+constexpr JPH::BroadPhaseLayer AREA_DETECTABLE(2);
+constexpr JPH::BroadPhaseLayer AREA_UNDETECTABLE(3);
+
+constexpr uint32_t COUNT = 4;
+
+static_assert(COUNT <= 8);
+
+} // namespace JoltBroadPhaseLayer

@@ -4,75 +4,76 @@
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_space_3d.hpp"
 
-class JoltQueryBroadPhaseLayerFilter3D final : public JPH::BroadPhaseLayerFilter {
-	bool ShouldCollide(JPH::BroadPhaseLayer p_layer) const override {
-		return p_layer != JPH::BroadPhaseLayer(GDJOLT_BROAD_PHASE_LAYER_NONE);
-	}
-};
-
-class JoltQueryObjectLayerFilter3D final : public JPH::ObjectLayerFilter {
-	bool ShouldCollide(JPH::ObjectLayer p_layer) const override { return p_layer != 0; }
-};
-
-class JoltQueryBodyFilter3D final : public JPH::BodyFilter {
+class JoltQueryFilter3D final
+	: public JPH::BroadPhaseLayerFilter
+	, public JPH::ObjectLayerFilter
+	, public JPH::BodyFilter {
 public:
-	JoltQueryBodyFilter3D(
-		JoltPhysicsDirectSpaceState3D* p_space_state,
+	JoltQueryFilter3D(
+		const JoltPhysicsDirectSpaceState3D& p_space_state,
 		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas
 	)
 		: space_state(p_space_state)
+		, space(space_state.get_space())
 		, collision_mask(p_collision_mask)
 		, collide_with_bodies(p_collide_with_bodies)
-		, collide_with_areas(p_collide_with_areas)
-		, collision_group(
-			  nullptr,
-			  (JPH::CollisionGroup::GroupID)0,
-			  (JPH::CollisionGroup::SubGroupID)collision_mask
-		  ) { }
+		, collide_with_areas(p_collide_with_areas) { }
+
+	bool ShouldCollide(JPH::BroadPhaseLayer p_broad_phase_layer) const override {
+		const auto broad_phase_layer = (JPH::BroadPhaseLayer::Type)p_broad_phase_layer;
+
+		switch (broad_phase_layer) {
+			case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::BODY_STATIC:
+			case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::BODY_DYNAMIC: {
+				return collide_with_bodies;
+			} break;
+			case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::AREA_DETECTABLE:
+			case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::AREA_UNDETECTABLE: {
+				return collide_with_areas;
+			} break;
+			default: {
+				ERR_FAIL_D_MSG(vformat("Unhandled broad phase layer: '%d'", broad_phase_layer));
+			}
+		}
+	}
+
+	bool ShouldCollide(JPH::ObjectLayer p_object_layer) const override {
+		JPH::BroadPhaseLayer object_broad_phase_layer = {};
+		uint32_t object_collision_layer = 0;
+		uint32_t object_collision_mask = 0;
+
+		space.map_from_object_layer(
+			p_object_layer,
+			object_broad_phase_layer,
+			object_collision_layer,
+			object_collision_mask
+		);
+
+		return (collision_mask & object_collision_layer) != 0;
+	}
+
+	bool ShouldCollide([[maybe_unused]] const JPH::BodyID& p_body_id) const override {
+		return true;
+	}
 
 	bool ShouldCollideLocked(const JPH::Body& p_body) const override {
-		if (!collide_with_bodies && !p_body.IsSensor()) {
-			return false;
-		}
-
-		if (!collide_with_areas && p_body.IsSensor()) {
-			return false;
-		}
-
-		auto* object = reinterpret_cast<JoltCollisionObject3D*>(p_body.GetUserData());
-
-		if (space_state->is_body_excluded_from_query(object->get_rid())) {
-			return false;
-		}
-
-		return collision_group.CanCollide(p_body.GetCollisionGroup());
+		return !space_state.is_body_excluded_from_query(
+			reinterpret_cast<JoltCollisionObject3D*>(p_body.GetUserData())->get_rid()
+		);
 	}
 
 private:
-	JoltPhysicsDirectSpaceState3D* space_state = nullptr;
+	const JoltPhysicsDirectSpaceState3D& space_state;
+
+	const JoltSpace3D& space;
 
 	uint32_t collision_mask = 0;
 
 	bool collide_with_bodies = false;
 
 	bool collide_with_areas = false;
-
-	JPH::CollisionGroup collision_group;
-};
-
-class JoltQueryShapeFilter3D final : public JPH::ShapeFilter {
-	bool ShouldCollide([[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id_2) const override {
-		return true;
-	}
-
-	bool ShouldCollide(
-		[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id_1,
-		[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id_2
-	) const override {
-		return true;
-	}
 };
 
 JoltPhysicsDirectSpaceState3D::JoltPhysicsDirectSpaceState3D(JoltSpace3D* p_space)
@@ -88,12 +89,14 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	bool p_hit_back_faces,
 	PhysicsServer3DExtensionRayResult* p_result
 ) {
+	const JPH::NarrowPhaseQuery& query = space->get_narrow_phase_query();
+
+	const JoltQueryFilter3D
+		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
+
 	const JPH::Vec3 from = to_jolt(p_from);
 	const JPH::Vec3 to = to_jolt(p_to);
 	const JPH::Vec3 vector = to - from;
-
-	const JPH::NarrowPhaseQuery& query = space->get_narrow_phase_query();
-
 	const JPH::RRayCast ray(from, vector);
 
 	JPH::RayCastSettings settings;
@@ -103,15 +106,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 
 	JPH::ClosestHitCollisionCollector<JPH::CastRayCollector> collector;
 
-	query.CastRay(
-		ray,
-		settings,
-		collector,
-		JoltQueryBroadPhaseLayerFilter3D(),
-		JoltQueryObjectLayerFilter3D(),
-		JoltQueryBodyFilter3D(this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas),
-		JoltQueryShapeFilter3D()
-	);
+	query.CastRay(ray, settings, collector, query_filter, query_filter, query_filter);
 
 	if (!collector.HadHit()) {
 		return false;

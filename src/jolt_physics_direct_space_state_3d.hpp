@@ -86,6 +86,8 @@ public:
 	Vector3 _get_closest_point_to_object_volume(const RID& p_object, const Vector3& p_point)
 		const override;
 
+	JoltSpace3D& get_space() const { return *space; }
+
 private:
 	JoltSpace3D* space = nullptr;
 };

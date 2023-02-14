@@ -191,7 +191,7 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 		// Use a fallback shape instead
 		jolt_shape = new JPH::SphereShape(1.0f);
 
-		// Place it in object (and broad phase) layer 0, which will make it collide with nothing
+		// Place it in object layer 0, which will make it collide with nothing
 		object_layer = 0;
 	}
 
@@ -282,7 +282,7 @@ JPH::BodyCreationSettings JoltCollisionObject3D::create_begin() {
 		// Use a fallback shape instead
 		jolt_shape = new JPH::SphereShape(1.0f);
 
-		// Place it in object (and broad phase) layer 0, which will make it collide with nothing
+		// Place it in object layer 0, which will make it collide with nothing
 		object_layer = 0;
 	}
 
