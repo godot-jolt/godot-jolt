@@ -1,5 +1,6 @@
 #pragma once
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace JoltBroadPhaseLayer {
 
 constexpr JPH::BroadPhaseLayer BODY_STATIC(0);
