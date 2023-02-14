@@ -38,9 +38,17 @@ public:
 
 	_FORCE_INLINE_ void clear() { storage.clear(); }
 
-	_FORCE_INLINE_ TValue& get(const TKey& p_key) { return storage.at(p_key); }
+	_FORCE_INLINE_ TValue& get(const TKey& p_key) {
+		auto iter = storage.find(p_key);
+		CRASH_COND(iter == end());
+		return iter->second;
+	}
 
-	_FORCE_INLINE_ const TValue& get(const TKey& p_key) const { return storage.at(p_key); }
+	_FORCE_INLINE_ const TValue& get(const TKey& p_key) const {
+		auto iter = storage.find(p_key);
+		CRASH_COND(iter == end());
+		return iter->second;
+	}
 
 	_FORCE_INLINE_ const TValue* getptr(const TKey& p_key) const {
 		auto iter = storage.find(p_key);

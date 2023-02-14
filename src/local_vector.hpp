@@ -145,9 +145,13 @@ public:
 
 	_FORCE_INLINE_ ConstIterator cend() const { return storage.cend(); }
 
-	_FORCE_INLINE_ TElement& operator[](int32_t p_index) { return storage[(size_t)p_index]; }
+	_FORCE_INLINE_ TElement& operator[](int32_t p_index) {
+		CRASH_BAD_INDEX(p_index, size());
+		return storage[(size_t)p_index];
+	}
 
 	_FORCE_INLINE_ const TElement& operator[](int32_t p_index) const {
+		CRASH_BAD_INDEX(p_index, size());
 		return storage[(size_t)p_index];
 	}
 
