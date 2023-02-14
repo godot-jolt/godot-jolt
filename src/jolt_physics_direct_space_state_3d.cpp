@@ -54,6 +54,10 @@ public:
 		return (collision_mask & object_collision_layer) != 0;
 	}
 
+	bool ShouldCollide([[maybe_unused]] const JPH::BodyID& p_body_id) const override {
+		return true;
+	}
+
 	bool ShouldCollideLocked(const JPH::Body& p_body) const override {
 		return !space_state.is_body_excluded_from_query(
 			reinterpret_cast<JoltCollisionObject3D*>(p_body.GetUserData())->get_rid()
