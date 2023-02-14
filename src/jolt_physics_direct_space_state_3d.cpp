@@ -39,7 +39,7 @@ public:
 		}
 	}
 
-	bool ShouldCollide(JPH::ObjectLayer p_object_layer) const {
+	bool ShouldCollide(JPH::ObjectLayer p_object_layer) const override {
 		JPH::BroadPhaseLayer object_broad_phase_layer = {};
 		uint32_t object_collision_layer = 0;
 		uint32_t object_collision_mask = 0;
