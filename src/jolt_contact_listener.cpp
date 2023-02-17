@@ -14,75 +14,6 @@ JPH::SubShapeIDPair pair_contact(
 	return {p_body1.GetID(), p_manifold.mSubShapeID1, p_body2.GetID(), p_manifold.mSubShapeID2};
 }
 
-float calculate_contact_impulse(
-	const JPH::Body& p_body1,
-	const JPH::Body& p_body2,
-	const JPH::Vec3Arg p_contact_point,
-	const JPH::Vec3Arg p_contact_normal
-) {
-	// HACK(mihe): According to Jolt's documentation, the constraint solver hasn't run when the
-	// contacts are added, which means we have no way of getting this impulse through Jolt, so we
-	// have to calculate it ourselves instead.
-	//
-	// I frankly don't know if these calculations are correct within this context. They don't take
-	// friction into account, so there's at the very least some room for improvement. I suspect
-	// there's also some time component missing. If you can see a better way of doing this, please
-	// make it known.
-	//
-	// Courtesy of: research.ncl.ac.uk/game/mastersdegree/gametechnologies/physicstutorials
-
-	const float restitution = max(p_body1.GetRestitution(), p_body2.GetRestitution());
-
-	const JPH::Vec3 contact_from_com1 = p_contact_point - p_body1.GetCenterOfMassPosition();
-	const JPH::Vec3 contact_from_com2 = p_contact_point - p_body2.GetCenterOfMassPosition();
-
-	const JPH::MotionProperties& motion1 = *p_body1.GetMotionPropertiesUnchecked();
-	const JPH::MotionProperties& motion2 = *p_body2.GetMotionPropertiesUnchecked();
-
-	const JPH::Vec3 angular_velocity1 = motion1.GetAngularVelocity().Cross(contact_from_com1);
-	const JPH::Vec3 angular_velocity2 = motion2.GetAngularVelocity().Cross(contact_from_com2);
-
-	const JPH::Vec3 contact_velocity1 = motion1.GetLinearVelocity() + angular_velocity1;
-	const JPH::Vec3 contact_velocity2 = motion2.GetLinearVelocity() + angular_velocity2;
-
-	const JPH::Vec3 relative_velocity = contact_velocity2 - contact_velocity1;
-
-	const float impulse_force = relative_velocity.Dot(p_contact_normal);
-
-	const bool is_dynamic1 = p_body1.IsDynamic();
-	const bool is_dynamic2 = p_body2.IsDynamic();
-
-	const float inverse_mass1 = is_dynamic1 ? motion1.GetInverseMassUnchecked() : 0.0f;
-	const float inverse_mass2 = is_dynamic2 ? motion2.GetInverseMassUnchecked() : 0.0f;
-
-	const float total_mass = inverse_mass1 + inverse_mass2;
-
-	JPH::Vec3 inertia1 = JPH::Vec3::sZero();
-	JPH::Vec3 inertia2 = JPH::Vec3::sZero();
-
-	// clang-format off
-
-	if (is_dynamic1) {
-		inertia1 = motion1.MultiplyWorldSpaceInverseInertiaByVector(
-			p_body1.GetRotation(),
-			contact_from_com1.Cross(p_contact_normal)
-		).Cross(contact_from_com1);
-	}
-
-	if (is_dynamic2) {
-		inertia2 = motion2.MultiplyWorldSpaceInverseInertiaByVector(
-			p_body2.GetRotation(),
-			contact_from_com2.Cross(p_contact_normal)
-		).Cross(contact_from_com2);
-	}
-
-	// clang-format on
-
-	const float angular_effect = (inertia1 + inertia2).Dot(p_contact_normal);
-
-	return ((1.0f + restitution) * impulse_force) / (total_mass + angular_effect);
-}
-
 } // namespace
 
 void JoltContactListener::listen_for(JoltCollisionObject3D* p_object) {
@@ -104,7 +35,7 @@ void JoltContactListener::OnContactAdded(
 	const JPH::Body& p_body1,
 	const JPH::Body& p_body2,
 	const JPH::ContactManifold& p_manifold,
-	[[maybe_unused]] JPH::ContactSettings& p_settings
+	JPH::ContactSettings& p_settings
 ) {
 	if (!is_listening_for(p_body1) && !is_listening_for(p_body2)) {
 		return;
@@ -118,7 +49,7 @@ void JoltContactListener::OnContactAdded(
 		area_enters.insert(shape_pair);
 		area_overlaps.insert(shape_pair);
 	} else {
-		update_contacts(p_body1, p_body2, p_manifold);
+		update_contacts(p_body1, p_body2, p_manifold, p_settings);
 	}
 }
 
@@ -126,7 +57,7 @@ void JoltContactListener::OnContactPersisted(
 	const JPH::Body& p_body1,
 	const JPH::Body& p_body2,
 	const JPH::ContactManifold& p_manifold,
-	[[maybe_unused]] JPH::ContactSettings& p_settings
+	JPH::ContactSettings& p_settings
 ) {
 	if (p_body1.IsSensor() || p_body2.IsSensor()) {
 		return;
@@ -136,7 +67,7 @@ void JoltContactListener::OnContactPersisted(
 		return;
 	}
 
-	update_contacts(p_body1, p_body2, p_manifold);
+	update_contacts(p_body1, p_body2, p_manifold, p_settings);
 }
 
 void JoltContactListener::OnContactRemoved(const JPH::SubShapeIDPair& p_shape_pair) {
@@ -156,7 +87,8 @@ bool JoltContactListener::is_listening_for(const JPH::Body& p_body) {
 void JoltContactListener::update_contacts(
 	const JPH::Body& p_body1,
 	const JPH::Body& p_body2,
-	const JPH::ContactManifold& p_manifold
+	const JPH::ContactManifold& p_manifold,
+	JPH::ContactSettings& p_settings
 ) {
 	const JPH::SubShapeIDPair shape_pair = pair_contact(p_body1, p_body2, p_manifold);
 
@@ -164,37 +96,56 @@ void JoltContactListener::update_contacts(
 
 	Manifold& manifold = manifolds_by_shape_pair[shape_pair];
 
-	manifold.contacts1.reserve((int32_t)p_manifold.mRelativeContactPointsOn1.size());
-	manifold.contacts2.reserve((int32_t)p_manifold.mRelativeContactPointsOn2.size());
+	const JPH::uint contact_count = p_manifold.mRelativeContactPointsOn1.size();
+
+	manifold.contacts1.reserve((int32_t)contact_count);
+	manifold.contacts2.reserve((int32_t)contact_count);
 	manifold.depth = p_manifold.mPenetrationDepth;
 
 	const JPH::Vec3 body_position1 = p_body1.GetPosition();
 	const JPH::Vec3 body_position2 = p_body2.GetPosition();
 
-	for (const JPH::Vec3& relative_point : p_manifold.mRelativeContactPointsOn1) {
-		Contact& contact = manifold.contacts1.emplace_back();
+	JPH::Vec3 linear_velocity1;
+	JPH::Vec3 linear_velocity2;
+	JPH::Vec3 angular_velocity1;
+	JPH::Vec3 angular_velocity2;
+	JPH::ContactImpulses impulses;
 
-		const JPH::Vec3 world_normal = -p_manifold.mWorldSpaceNormal;
-		const JPH::Vec3 world_point = p_manifold.mBaseOffset + relative_point;
+	JPH::EstimateCollisionResponse(
+		p_body1,
+		p_body2,
+		p_manifold,
+		linear_velocity1,
+		angular_velocity1,
+		linear_velocity2,
+		angular_velocity2,
+		impulses,
+		p_settings.mCombinedRestitution
+	);
 
-		contact.normal = world_normal;
-		contact.point_self = world_point - body_position1;
-		contact.point_other = world_point - body_position2;
-		contact.velocity_other = p_body2.GetPointVelocity(world_point);
-		contact.impulse = calculate_contact_impulse(p_body1, p_body2, world_point, world_normal);
-	}
+	for (JPH::uint i = 0; i < contact_count; ++i) {
+		Contact& contact1 = manifold.contacts1.emplace_back();
+		Contact& contact2 = manifold.contacts2.emplace_back();
 
-	for (const JPH::Vec3& relative_point : p_manifold.mRelativeContactPointsOn2) {
-		Contact& contact = manifold.contacts2.emplace_back();
+		const JPH::Vec3& relative_point1 = p_manifold.mRelativeContactPointsOn1[i];
+		const JPH::Vec3& relative_point2 = p_manifold.mRelativeContactPointsOn2[i];
 
-		const JPH::Vec3 world_normal = p_manifold.mWorldSpaceNormal;
-		const JPH::Vec3 world_point = p_manifold.mBaseOffset + relative_point;
+		const JPH::Vec3 world_point1 = p_manifold.mBaseOffset + relative_point1;
+		const JPH::Vec3 world_point2 = p_manifold.mBaseOffset + relative_point2;
 
-		contact.normal = world_normal;
-		contact.point_self = world_point - body_position2;
-		contact.point_other = world_point - body_position1;
-		contact.velocity_other = p_body1.GetPointVelocity(world_point);
-		contact.impulse = calculate_contact_impulse(p_body2, p_body1, world_point, world_normal);
+		const float impulse = impulses[i];
+
+		contact1.normal = -p_manifold.mWorldSpaceNormal;
+		contact1.point_self = world_point1 - body_position1;
+		contact1.point_other = world_point1 - body_position2;
+		contact1.velocity_other = p_body2.GetPointVelocity(world_point1);
+		contact1.impulse = impulse;
+
+		contact2.normal = p_manifold.mWorldSpaceNormal;
+		contact2.point_self = world_point2 - body_position2;
+		contact2.point_other = world_point2 - body_position1;
+		contact2.velocity_other = p_body1.GetPointVelocity(world_point2);
+		contact2.impulse = impulse;
 	}
 }
 
