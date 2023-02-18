@@ -113,19 +113,19 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	}
 
 	const JPH::BodyID& body_id = collector.mHit.mBodyID;
-	const JPH::SubShapeID& subshape_id = collector.mHit.mSubShapeID2;
+	const JPH::SubShapeID& sub_shape_id = collector.mHit.mSubShapeID2;
 
 	const JoltReadableBody3D body = space->read_body(body_id);
 	const JoltCollisionObject3D* object = body.as_object();
 	ERR_FAIL_NULL_D(object);
 
 	const JPH::Vec3 position = ray.GetPointOnRay(collector.mHit.mFraction);
-	const JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(subshape_id, position);
+	const JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(sub_shape_id, position);
 
 	const ObjectID object_id = object->get_instance_id();
 
 	const JPH::Shape& shape = *body->GetShape();
-	const auto shape_instance_id = (uint32_t)shape.GetSubShapeUserData(subshape_id);
+	const auto shape_instance_id = (uint32_t)shape.GetSubShapeUserData(sub_shape_id);
 	const int32_t shape_index = object->find_shape_index(shape_instance_id);
 	ERR_FAIL_COND_D(shape_index == -1);
 
