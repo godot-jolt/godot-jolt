@@ -661,7 +661,7 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 
 	JPH::EMotionType motion_type = {};
 
-	switch (p_mode) {
+	switch (mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {
 			motion_type = JPH::EMotionType::Static;
 		} break;
@@ -672,7 +672,7 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 			motion_type = JPH::EMotionType::Dynamic;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body mode: '%d'", p_mode));
+			ERR_FAIL_MSG(vformat("Unhandled body mode: '%d'", mode));
 		} break;
 	}
 
