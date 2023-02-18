@@ -595,12 +595,27 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 
 void JoltBody3D::call_queries() {
 	if (force_integration_callback.is_valid()) {
-		const Array arguments = Array::make(get_direct_state(), force_integration_userdata);
+		static thread_local Array arguments = []() {
+			Array array;
+			array.resize(2);
+			return array;
+		}();
+
+		arguments[0] = get_direct_state();
+		arguments[1] = force_integration_userdata;
+
 		force_integration_callback.callv(arguments);
 	}
 
 	if (body_state_callback.is_valid()) {
-		const Array arguments = Array::make(get_direct_state());
+		static thread_local Array arguments = []() {
+			Array array;
+			array.resize(1);
+			return array;
+		}();
+
+		arguments[0] = get_direct_state();
+
 		body_state_callback.callv(arguments);
 	}
 }
