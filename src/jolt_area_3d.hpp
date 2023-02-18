@@ -15,9 +15,9 @@ class JoltArea3D final : public JoltCollisionObject3D {
 			, self(p_self) { }
 
 		static uint32_t hash(const ShapeIDPair& p_pair) {
-			uint32_t h = hash_murmur3_one_32(p_pair.other.GetValue());
-			h = hash_murmur3_one_32(p_pair.self.GetValue(), h);
-			return hash_fmix32(h);
+			uint32_t hash = hash_murmur3_one_32(p_pair.other.GetValue());
+			hash = hash_murmur3_one_32(p_pair.self.GetValue(), hash);
+			return hash_fmix32(hash);
 		}
 
 		friend bool operator==(const ShapeIDPair& p_lhs, const ShapeIDPair& p_rhs) {
