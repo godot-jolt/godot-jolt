@@ -193,7 +193,7 @@ void JoltArea3D::body_shape_entered(
 
 	if (overlap.shape_pairs.size() == 0) {
 		const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
-		auto* body = jolt_body.as<JoltBody3D>();
+		JoltBody3D* body = jolt_body.as_body();
 		ERR_FAIL_NULL(body);
 
 		body->add_area(this);
@@ -219,7 +219,7 @@ bool JoltArea3D::body_shape_exited(
 
 	if (overlap->shape_pairs.size() == 0) {
 		const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
-		auto* body = jolt_body.as<JoltBody3D>();
+		JoltBody3D* body = jolt_body.as_body();
 
 		if (body != nullptr) {
 			body->remove_area(this);
@@ -304,7 +304,7 @@ void JoltArea3D::add_shape_pair(
 	const JPH::SubShapeID& p_self_shape_id
 ) {
 	const JoltReadableBody3D other_jolt_body = space->read_body(p_body_id, false);
-	auto* other_object = other_jolt_body.as<JoltCollisionObject3D>();
+	const JoltCollisionObject3D* other_object = other_jolt_body.as_object();
 	ERR_FAIL_NULL(other_object);
 
 	p_overlap.rid = other_object->get_rid();

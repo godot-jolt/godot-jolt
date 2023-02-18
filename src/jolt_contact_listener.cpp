@@ -156,10 +156,10 @@ void JoltContactListener::flush_contacts() {
 		const JoltReadableBodies3D jolt_bodies =
 			space->read_bodies(body_ids, count_of(body_ids), false);
 
-		auto* body1 = jolt_bodies[0].as<JoltBody3D>();
+		JoltBody3D* body1 = jolt_bodies[0].as_body();
 		ERR_FAIL_NULL(body1);
 
-		auto* body2 = jolt_bodies[1].as<JoltBody3D>();
+		JoltBody3D* body2 = jolt_bodies[1].as_body();
 		ERR_FAIL_NULL(body2);
 
 		const JPH::Shape& shape1 = *body1->get_jolt_shape();
@@ -211,7 +211,7 @@ void JoltContactListener::flush_area_shifts() {
 	for (const JPH::SubShapeIDPair& shape_pair : area_overlaps) {
 		auto is_shifted = [&](const JPH::BodyID& p_body_id, const JPH::SubShapeID& p_sub_shape_id) {
 			const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
-			auto* object = jolt_body.as<JoltCollisionObject3D>();
+			const JoltCollisionObject3D* object = jolt_body.as_object();
 			ERR_FAIL_NULL_V(object, false);
 
 			if (!object->get_previous_jolt_shape()) {
@@ -256,16 +256,8 @@ void JoltContactListener::flush_area_enters() {
 			continue;
 		}
 
-		auto as_area = [](const JoltReadableBody3D& p_jolt_body) -> JoltArea3D* {
-			if (p_jolt_body->IsSensor()) {
-				return p_jolt_body.as<JoltArea3D>();
-			} else {
-				return nullptr;
-			}
-		};
-
-		JoltArea3D* area1 = as_area(jolt_body1);
-		JoltArea3D* area2 = as_area(jolt_body2);
+		JoltArea3D* area1 = jolt_body1.as_area();
+		JoltArea3D* area2 = jolt_body2.as_area();
 
 		if (area1 && area2) {
 			if (area2->is_monitorable()) {
@@ -301,27 +293,11 @@ void JoltContactListener::flush_area_exits() {
 		const JoltReadableBody3D jolt_body1 = jolt_bodies[0];
 		const JoltReadableBody3D jolt_body2 = jolt_bodies[1];
 
-		auto as_area = [](const JoltReadableBody3D& p_jolt_body) -> JoltArea3D* {
-			if (p_jolt_body.is_valid() && p_jolt_body->IsSensor()) {
-				return p_jolt_body.as<JoltArea3D>();
-			} else {
-				return nullptr;
-			}
-		};
+		JoltArea3D* area1 = jolt_body1.as_area();
+		JoltArea3D* area2 = jolt_body2.as_area();
 
-		auto as_body = [](const JoltReadableBody3D& p_jolt_body) -> JoltBody3D* {
-			if (p_jolt_body.is_valid() && !p_jolt_body->IsSensor()) {
-				return p_jolt_body.as<JoltBody3D>();
-			} else {
-				return nullptr;
-			}
-		};
-
-		JoltArea3D* area1 = as_area(jolt_body1);
-		JoltArea3D* area2 = as_area(jolt_body2);
-
-		JoltBody3D* body1 = as_body(jolt_body1);
-		JoltBody3D* body2 = as_body(jolt_body2);
+		JoltBody3D* body1 = jolt_body1.as_body();
+		JoltBody3D* body2 = jolt_body2.as_body();
 
 		if (area1 && area2) {
 			area1->area_shape_exited(body_id2, sub_shape_id2, sub_shape_id1);

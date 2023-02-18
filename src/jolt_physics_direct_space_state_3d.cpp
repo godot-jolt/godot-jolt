@@ -116,7 +116,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const JPH::SubShapeID& subshape_id = collector.mHit.mSubShapeID2;
 
 	const JoltReadableBody3D body = space->read_body(body_id);
-	const auto* object = body.as<JoltCollisionObject3D>();
+	const JoltCollisionObject3D* object = body.as_object();
 	ERR_FAIL_NULL_D(object);
 
 	const JPH::Vec3 position = ray.GetPointOnRay(collector.mHit.mFraction);
