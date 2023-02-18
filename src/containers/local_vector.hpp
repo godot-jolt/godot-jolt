@@ -1,6 +1,6 @@
 #pragma once
 
-#include "error_macros.hpp"
+#include "misc/error_macros.hpp"
 
 template<typename TElement, typename TAllocator = std::allocator<TElement>>
 class LocalVector {

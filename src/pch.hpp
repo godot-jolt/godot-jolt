@@ -106,13 +106,13 @@ using namespace godot;
 #pragma warning(pop)
 #endif // _MSC_VER
 
-#include "bind.hpp"
-#include "conversion.hpp"
-#include "error_macros.hpp"
-#include "hash_map.hpp"
-#include "hash_set.hpp"
-#include "inline_vector.hpp"
-#include "local_vector.hpp"
-#include "rid_owner.hpp"
-#include "utility_functions.hpp"
-#include "wrapped.hpp"
+#include "containers/hash_map.hpp"
+#include "containers/hash_set.hpp"
+#include "containers/inline_vector.hpp"
+#include "containers/local_vector.hpp"
+#include "containers/rid_owner.hpp"
+#include "misc/bind_macros.hpp"
+#include "misc/error_macros.hpp"
+#include "misc/gdclass_macros.hpp"
+#include "misc/type_conversions.hpp"
+#include "misc/utility_functions.hpp"
