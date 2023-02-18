@@ -84,7 +84,8 @@ private:
 	void update_contacts(
 		const JPH::Body& p_body1,
 		const JPH::Body& p_body2,
-		const JPH::ContactManifold& p_manifold
+		const JPH::ContactManifold& p_manifold,
+		JPH::ContactSettings& p_settings
 	);
 
 	void flush_contacts();
