@@ -13,9 +13,9 @@ public:
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
-	uint64_t get_instance_id() const { return instance_id; }
+	ObjectID get_instance_id() const { return instance_id; }
 
-	void set_instance_id(uint64_t p_id) { instance_id = p_id; }
+	void set_instance_id(ObjectID p_id) { instance_id = p_id; }
 
 	JPH::BodyID get_jolt_id() const { return jolt_id; }
 
@@ -121,7 +121,7 @@ protected:
 
 	RID rid;
 
-	uint64_t instance_id = 0;
+	ObjectID instance_id;
 
 	JPH::BodyID jolt_id;
 

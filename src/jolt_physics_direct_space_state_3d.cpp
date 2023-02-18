@@ -122,7 +122,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const JPH::Vec3 position = ray.GetPointOnRay(collector.mHit.mFraction);
 	const JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(subshape_id, position);
 
-	const auto object_id = (uint64_t)object->get_instance_id();
+	const ObjectID object_id = object->get_instance_id();
 
 	const JPH::Shape& shape = *body->GetShape();
 	const auto shape_instance_id = (uint32_t)shape.GetSubShapeUserData(subshape_id);

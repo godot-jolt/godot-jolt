@@ -380,7 +380,7 @@ void JoltArea3D::report_event(
 	const Callable& p_callback,
 	PhysicsServer3D::AreaBodyStatus p_status,
 	const RID& p_other_rid,
-	uint64_t p_other_instance_id,
+	ObjectID p_other_instance_id,
 	int32_t p_other_shape_index,
 	int32_t p_self_shape_index
 ) const {

@@ -18,7 +18,7 @@ public:
 
 		int32_t collider_shape_index = 0;
 
-		uint64_t collider_id = 0;
+		ObjectID collider_id;
 
 		RID collider_rid;
 
