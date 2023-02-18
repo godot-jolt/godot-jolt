@@ -1,8 +1,8 @@
 #pragma once
 
-#include "inline_allocator.hpp"
-#include "local_vector.hpp"
-#include "utility_functions.hpp"
+#include "containers/inline_allocator.hpp"
+#include "containers/local_vector.hpp"
+#include "misc/utility_functions.hpp"
 
 template<typename TElement, int32_t TCapacity>
 class InlineVector final : public LocalVector<TElement, InlineAllocator<TElement, TCapacity>> {
