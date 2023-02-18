@@ -48,8 +48,6 @@ JoltDebugRenderer* JoltDebugRenderer::acquire() {
 }
 
 void JoltDebugRenderer::release(JoltDebugRenderer*& p_ptr) {
-	ERR_FAIL_NULL(p_ptr);
-
 	if (--ref_count == 0) {
 		delete_safely(singleton);
 	}
