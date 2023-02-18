@@ -2,7 +2,7 @@
 
 class_name HeightMap3D extends StaticBody3D
 
-@export
+@export_node_path("CollisionShape3D")
 var collision_shape := NodePath():
 	set(value):
 		collision_shape = value
