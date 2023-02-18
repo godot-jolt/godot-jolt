@@ -55,9 +55,9 @@ public:
 
 	void rebuild_shape(bool p_lock = true);
 
-	const JPH::Shape* get_jolt_shape() { return jolt_shape; }
+	const JPH::Shape* get_jolt_shape() const { return jolt_shape; }
 
-	const JPH::Shape* get_previous_jolt_shape() { return previous_jolt_shape; }
+	const JPH::Shape* get_previous_jolt_shape() const { return previous_jolt_shape; }
 
 	void add_shape(
 		JoltShape3D* p_shape,
