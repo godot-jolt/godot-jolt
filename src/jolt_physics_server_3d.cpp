@@ -502,9 +502,9 @@ void JoltPhysicsServer3D::_body_clear_shapes([[maybe_unused]] const RID& p_body)
 }
 
 void JoltPhysicsServer3D::_body_set_shape_disabled(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_shape_idx,
-	[[maybe_unused]] bool p_disabled
+	const RID& p_body,
+	int32_t p_shape_idx,
+	bool p_disabled
 ) {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
