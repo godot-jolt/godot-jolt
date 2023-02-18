@@ -148,7 +148,7 @@ public:
 
 	void integrate_forces(float p_step, bool p_lock = true);
 
-	void call_queries() override;
+	void call_queries();
 
 	void pre_step(float p_step) override;
 

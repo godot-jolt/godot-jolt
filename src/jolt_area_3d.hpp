@@ -148,7 +148,7 @@ public:
 		const JPH::SubShapeID& p_self_shape_id
 	);
 
-	void call_queries() override;
+	void call_queries();
 
 	bool has_custom_center_of_mass() const override { return false; }
 

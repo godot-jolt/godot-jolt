@@ -80,8 +80,6 @@ public:
 
 	void set_ray_pickable(bool p_enable) { ray_pickable = p_enable; }
 
-	virtual void call_queries() = 0;
-
 	virtual void pre_step(float p_step);
 
 	virtual void post_step(float p_step);
