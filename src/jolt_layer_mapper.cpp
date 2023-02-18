@@ -159,7 +159,7 @@ const char* JoltLayerMapper::GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer
 			return "AREA_UNDETECTABLE";
 		}
 		default: {
-			return "INVALID";
+			return "UNKNOWN";
 		}
 	}
 }
