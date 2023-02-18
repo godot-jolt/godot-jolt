@@ -126,15 +126,15 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 
 	const JPH::Shape& shape = *body->GetShape();
 	const auto shape_instance_id = (uint32_t)shape.GetSubShapeUserData(subshape_id);
-	const int32_t shape_idx = object->find_shape_index(shape_instance_id);
-	ERR_FAIL_COND_D(shape_idx == -1);
+	const int32_t shape_index = object->find_shape_index(shape_instance_id);
+	ERR_FAIL_COND_D(shape_index == -1);
 
 	p_result->position = to_godot(position);
 	p_result->normal = to_godot(normal);
 	p_result->rid = object->get_rid();
 	p_result->collider_id = object_id;
 	p_result->collider = ObjectDB::get_instance(object_id);
-	p_result->shape = shape_idx;
+	p_result->shape = shape_index;
 
 	return true;
 }
