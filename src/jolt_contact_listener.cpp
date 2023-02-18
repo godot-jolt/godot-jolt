@@ -105,10 +105,10 @@ void JoltContactListener::update_contacts(
 	const JPH::Vec3 body_position1 = p_body1.GetPosition();
 	const JPH::Vec3 body_position2 = p_body2.GetPosition();
 
-	JPH::Vec3 linear_velocity1;
-	JPH::Vec3 linear_velocity2;
-	JPH::Vec3 angular_velocity1;
-	JPH::Vec3 angular_velocity2;
+	JPH::Vec3 linear_velocity1 = {};
+	JPH::Vec3 linear_velocity2 = {};
+	JPH::Vec3 angular_velocity1 = {};
+	JPH::Vec3 angular_velocity2 = {};
 	JPH::ContactImpulses impulses;
 
 	JPH::EstimateCollisionResponse(
