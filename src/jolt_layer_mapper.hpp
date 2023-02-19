@@ -5,7 +5,9 @@ class JoltLayerMapper final
 	, public JPH::ObjectLayerPairFilter
 	, public JPH::ObjectVsBroadPhaseLayerFilter {
 	using Mutex = std::shared_mutex;
+
 	using MutexLockRead = std::shared_lock<Mutex>;
+
 	using MutexLockWrite = std::unique_lock<Mutex>;
 
 public:
