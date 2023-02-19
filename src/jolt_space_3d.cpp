@@ -2,13 +2,10 @@
 
 #include "jolt_area_3d.hpp"
 #include "jolt_body_3d.hpp"
-#include "jolt_broad_phase_layer.hpp"
 #include "jolt_contact_listener.hpp"
-#include "jolt_group_filter_rid.hpp"
 #include "jolt_joint_3d.hpp"
 #include "jolt_layer_mapper.hpp"
 #include "jolt_physics_direct_space_state_3d.hpp"
-#include "jolt_shape_3d.hpp"
 #include "jolt_temp_allocator.hpp"
 
 namespace {
