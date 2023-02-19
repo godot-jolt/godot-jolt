@@ -8,7 +8,7 @@ var collision_shape := NodePath():
 		collision_shape = value
 		properties_changed()
 
-@export
+@export_node_path("MeshInstance3D")
 var mesh_instance := NodePath():
 	set(value):
 		mesh_instance = value
