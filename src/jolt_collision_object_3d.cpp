@@ -6,21 +6,21 @@
 
 JoltCollisionObject3D::~JoltCollisionObject3D() = default;
 
-void JoltCollisionObject3D::set_space(JoltSpace3D* p_space) {
+void JoltCollisionObject3D::set_space(JoltSpace3D* p_space, bool p_lock) {
 	if (space == p_space) {
 		return;
 	}
 
 	if (space) {
-		remove_from_space();
-		destroy_in_space();
+		remove_from_space(p_lock);
+		destroy_in_space(p_lock);
 	}
 
 	space = p_space;
 
 	if (space) {
-		create_in_space();
-		add_to_space();
+		create_in_space(p_lock);
+		add_to_space(p_lock);
 	}
 }
 

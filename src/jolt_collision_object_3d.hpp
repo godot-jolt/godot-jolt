@@ -23,7 +23,7 @@ public:
 
 	JoltSpace3D* get_space() const { return space; }
 
-	void set_space(JoltSpace3D* p_space);
+	void set_space(JoltSpace3D* p_space, bool p_lock = true);
 
 	uint32_t get_collision_layer() const { return collision_layer; }
 
