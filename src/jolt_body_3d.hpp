@@ -54,8 +54,6 @@ public:
 		force_integration_userdata = p_userdata;
 	}
 
-	bool get_initial_sleep_state() const override { return initial_sleep_state; }
-
 	bool get_sleep_state(bool p_lock = true) const;
 
 	void set_sleep_state(bool p_enabled, bool p_lock = true);
@@ -65,10 +63,6 @@ public:
 	void set_can_sleep(bool p_enabled, bool p_lock = true);
 
 	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
-
-	Vector3 get_initial_linear_velocity() const { return initial_linear_velocity; }
-
-	Vector3 get_initial_angular_velocity() const { return initial_angular_velocity; }
 
 	Vector3 get_linear_velocity(bool p_lock = true) const;
 
@@ -205,6 +199,8 @@ public:
 	void set_angular_damp_mode(DampMode p_mode) { angular_damp_mode = p_mode; }
 
 private:
+	bool get_initial_sleep_state() const override { return initial_sleep_state; }
+
 	JPH::EMotionType get_motion_type() const override;
 
 	void create_in_space(bool p_lock = true) override;

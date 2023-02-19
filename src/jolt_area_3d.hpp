@@ -154,9 +154,9 @@ public:
 
 	Vector3 get_center_of_mass_custom() const override { return {0, 0, 0}; }
 
+private:
 	bool get_initial_sleep_state() const override { return false; }
 
-private:
 	JPH::EMotionType get_motion_type() const override { return JPH::EMotionType::Kinematic; }
 
 	void create_in_space(bool p_lock = true) override;
