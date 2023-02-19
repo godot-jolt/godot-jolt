@@ -90,9 +90,9 @@ private:
 
 	void flush_contacts();
 
-	void flush_area_shifts();
-
 	void flush_area_enters();
+
+	void flush_area_shifts();
 
 	void flush_area_exits();
 

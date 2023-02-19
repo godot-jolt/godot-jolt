@@ -207,35 +207,6 @@ void JoltContactListener::flush_contacts() {
 	}
 }
 
-void JoltContactListener::flush_area_shifts() {
-	for (const JPH::SubShapeIDPair& shape_pair : area_overlaps) {
-		auto is_shifted = [&](const JPH::BodyID& p_body_id, const JPH::SubShapeID& p_sub_shape_id) {
-			const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
-			const JoltCollisionObject3D* object = jolt_body.as_object();
-			ERR_FAIL_NULL_V(object, false);
-
-			if (!object->get_previous_jolt_shape()) {
-				return false;
-			}
-
-			const JPH::Shape& current_shape = *object->get_jolt_shape();
-			const JPH::Shape& previous_shape = *object->get_previous_jolt_shape();
-
-			const auto current_id = (uint32_t)current_shape.GetSubShapeUserData(p_sub_shape_id);
-			const auto previous_id = (uint32_t)previous_shape.GetSubShapeUserData(p_sub_shape_id);
-
-			return current_id != previous_id;
-		};
-
-		if (is_shifted(shape_pair.GetBody1ID(), shape_pair.GetSubShapeID1()) ||
-			is_shifted(shape_pair.GetBody2ID(), shape_pair.GetSubShapeID2()))
-		{
-			area_enters.insert(shape_pair);
-			area_exits.insert(shape_pair);
-		}
-	}
-}
-
 void JoltContactListener::flush_area_enters() {
 	for (const JPH::SubShapeIDPair& shape_pair : area_enters) {
 		const JPH::BodyID& body_id1 = shape_pair.GetBody1ID();
@@ -275,6 +246,35 @@ void JoltContactListener::flush_area_enters() {
 	}
 
 	area_enters.clear();
+}
+
+void JoltContactListener::flush_area_shifts() {
+	for (const JPH::SubShapeIDPair& shape_pair : area_overlaps) {
+		auto is_shifted = [&](const JPH::BodyID& p_body_id, const JPH::SubShapeID& p_sub_shape_id) {
+			const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
+			const JoltCollisionObject3D* object = jolt_body.as_object();
+			ERR_FAIL_NULL_V(object, false);
+
+			if (!object->get_previous_jolt_shape()) {
+				return false;
+			}
+
+			const JPH::Shape& current_shape = *object->get_jolt_shape();
+			const JPH::Shape& previous_shape = *object->get_previous_jolt_shape();
+
+			const auto current_id = (uint32_t)current_shape.GetSubShapeUserData(p_sub_shape_id);
+			const auto previous_id = (uint32_t)previous_shape.GetSubShapeUserData(p_sub_shape_id);
+
+			return current_id != previous_id;
+		};
+
+		if (is_shifted(shape_pair.GetBody1ID(), shape_pair.GetSubShapeID1()) ||
+			is_shifted(shape_pair.GetBody2ID(), shape_pair.GetSubShapeID2()))
+		{
+			area_enters.insert(shape_pair);
+			area_exits.insert(shape_pair);
+		}
+	}
 }
 
 void JoltContactListener::flush_area_exits() {
