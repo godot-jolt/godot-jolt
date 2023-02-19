@@ -61,8 +61,8 @@ void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p
 
 	space->get_body_iface(p_lock).SetPositionAndRotation(
 		jolt_id,
-		to_jolt(p_transform.get_origin()),
-		to_jolt(p_transform.get_basis()),
+		to_jolt(p_transform.origin),
+		to_jolt(p_transform.basis),
 		JPH::EActivation::DontActivate
 	);
 }
