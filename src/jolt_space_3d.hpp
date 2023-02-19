@@ -23,7 +23,7 @@ public:
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
-	JPH::PhysicsSystem* get_physics_system() const { return physics_system; }
+	JPH::PhysicsSystem& get_physics_system() const { return *physics_system; }
 
 	JPH::BodyInterface& get_body_iface(bool p_locked = true);
 

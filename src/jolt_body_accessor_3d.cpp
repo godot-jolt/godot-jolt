@@ -41,7 +41,7 @@ void JoltBodyAccessor3D::acquire_active(bool p_lock) {
 		vector = std::get_if<JPH::BodyIDVector>(&ids);
 	}
 
-	space->get_physics_system()->GetActiveBodies(*vector);
+	space->get_physics_system().GetActiveBodies(*vector);
 
 	acquire_internal(vector->data(), (int32_t)vector->size());
 }
@@ -56,7 +56,7 @@ void JoltBodyAccessor3D::acquire_all(bool p_lock) {
 		vector = std::get_if<JPH::BodyIDVector>(&ids);
 	}
 
-	space->get_physics_system()->GetBodies(*vector);
+	space->get_physics_system().GetBodies(*vector);
 
 	acquire_internal(vector->data(), (int32_t)vector->size());
 }
