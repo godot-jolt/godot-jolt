@@ -853,8 +853,8 @@ JPH::EMotionType JoltBody3D::get_motion_type() const {
 void JoltBody3D::create_in_space(bool p_lock) {
 	JPH::BodyCreationSettings settings = create_begin();
 
-	settings.mLinearVelocity = to_jolt(get_initial_linear_velocity());
-	settings.mAngularVelocity = to_jolt(get_initial_angular_velocity());
+	settings.mLinearVelocity = to_jolt(initial_linear_velocity);
+	settings.mAngularVelocity = to_jolt(initial_angular_velocity);
 	settings.mAllowDynamicOrKinematic = true;
 	settings.mMotionQuality =
 		ccd_enabled ? JPH::EMotionQuality::LinearCast : JPH::EMotionQuality::Discrete;
@@ -875,7 +875,7 @@ void JoltBody3D::create_in_space(bool p_lock) {
 
 	JPH::CollisionGroup::GroupID group_id = 0;
 	JPH::CollisionGroup::SubGroupID sub_group_id = 0;
-	JoltGroupFilterRID::encode_rid(get_rid(), group_id, sub_group_id);
+	JoltGroupFilterRID::encode_rid(rid, group_id, sub_group_id);
 
 	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
 }
