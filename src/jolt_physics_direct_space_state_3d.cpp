@@ -113,28 +113,28 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	}
 
 	const JPH::BodyID& body_id = collector.mHit.mBodyID;
-	const JPH::SubShapeID& subshape_id = collector.mHit.mSubShapeID2;
+	const JPH::SubShapeID& sub_shape_id = collector.mHit.mSubShapeID2;
 
 	const JoltReadableBody3D body = space->read_body(body_id);
-	const auto* object = body.as<JoltCollisionObject3D>();
+	const JoltCollisionObject3D* object = body.as_object();
 	ERR_FAIL_NULL_D(object);
 
 	const JPH::Vec3 position = ray.GetPointOnRay(collector.mHit.mFraction);
-	const JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(subshape_id, position);
+	const JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(sub_shape_id, position);
 
-	const auto object_id = (uint64_t)object->get_instance_id();
+	const ObjectID object_id = object->get_instance_id();
 
 	const JPH::Shape& shape = *body->GetShape();
-	const auto shape_instance_id = (uint32_t)shape.GetSubShapeUserData(subshape_id);
-	const int32_t shape_idx = object->find_shape_index(shape_instance_id);
-	ERR_FAIL_COND_D(shape_idx == -1);
+	const auto shape_instance_id = (uint32_t)shape.GetSubShapeUserData(sub_shape_id);
+	const int32_t shape_index = object->find_shape_index(shape_instance_id);
+	ERR_FAIL_COND_D(shape_index == -1);
 
 	p_result->position = to_godot(position);
 	p_result->normal = to_godot(normal);
 	p_result->rid = object->get_rid();
 	p_result->collider_id = object_id;
 	p_result->collider = ObjectDB::get_instance(object_id);
-	p_result->shape = shape_idx;
+	p_result->shape = shape_index;
 
 	return true;
 }

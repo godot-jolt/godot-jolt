@@ -1,5 +1,8 @@
 #pragma once
 
+class JoltArea3D;
+class JoltBody3D;
+class JoltCollisionObject3D;
 class JoltSpace3D;
 
 class JoltBodyAccessor3D {
@@ -145,10 +148,25 @@ public:
 
 	bool is_invalid() const { return body == nullptr; }
 
-	template<typename TType>
-	TType* as() const {
+	JoltCollisionObject3D* as_object() const {
 		if (body != nullptr) {
-			return reinterpret_cast<TType*>(body->GetUserData());
+			return reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
+		} else {
+			return nullptr;
+		}
+	}
+
+	JoltBody3D* as_body() const {
+		if (body != nullptr && !body->IsSensor()) {
+			return reinterpret_cast<JoltBody3D*>(body->GetUserData());
+		} else {
+			return nullptr;
+		}
+	}
+
+	JoltArea3D* as_area() const {
+		if (body != nullptr && body->IsSensor()) {
+			return reinterpret_cast<JoltArea3D*>(body->GetUserData());
 		} else {
 			return nullptr;
 		}

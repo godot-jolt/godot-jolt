@@ -40,10 +40,8 @@ constexpr int32_t count_of([[maybe_unused]] TElement (&p_array)[TSize]) {
 
 template<typename TType>
 _FORCE_INLINE_ void delete_safely(TType*& p_ptr) {
-	if (p_ptr != nullptr) {
-		delete p_ptr;
-		p_ptr = nullptr;
-	}
+	delete p_ptr;
+	p_ptr = nullptr;
 }
 
 template<typename TType>

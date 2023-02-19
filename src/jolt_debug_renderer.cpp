@@ -48,8 +48,6 @@ JoltDebugRenderer* JoltDebugRenderer::acquire() {
 }
 
 void JoltDebugRenderer::release(JoltDebugRenderer*& p_ptr) {
-	ERR_FAIL_NULL(p_ptr);
-
 	if (--ref_count == 0) {
 		delete_safely(singleton);
 	}
@@ -64,7 +62,7 @@ void JoltDebugRenderer::draw(
 ) {
 	camera_position = to_jolt(p_camera.get_camera_transform().origin);
 
-	JPH::PhysicsSystem* physics_system = p_space.get_physics_system();
+	JPH::PhysicsSystem& physics_system = p_space.get_physics_system();
 
 	if (p_settings.draw_bodies) {
 		JPH::BodyManager::DrawSettings jolt_settings;
@@ -81,19 +79,19 @@ void JoltDebugRenderer::draw(
 		jolt_settings.mDrawMassAndInertia = false;
 		jolt_settings.mDrawSleepStats = false;
 
-		physics_system->DrawBodies(jolt_settings, this);
+		physics_system.DrawBodies(jolt_settings, this);
 	}
 
 	if (p_settings.draw_constraints) {
-		physics_system->DrawConstraints(this);
+		physics_system.DrawConstraints(this);
 	}
 
 	if (p_settings.draw_constraint_reference_frames) {
-		physics_system->DrawConstraintReferenceFrame(this);
+		physics_system.DrawConstraintReferenceFrame(this);
 	}
 
 	if (p_settings.draw_constraint_limits) {
-		physics_system->DrawConstraintLimits(this);
+		physics_system.DrawConstraintLimits(this);
 	}
 }
 

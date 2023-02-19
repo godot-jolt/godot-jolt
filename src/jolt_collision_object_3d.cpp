@@ -6,21 +6,21 @@
 
 JoltCollisionObject3D::~JoltCollisionObject3D() = default;
 
-void JoltCollisionObject3D::set_space(JoltSpace3D* p_space) {
+void JoltCollisionObject3D::set_space(JoltSpace3D* p_space, bool p_lock) {
 	if (space == p_space) {
 		return;
 	}
 
 	if (space) {
-		remove_from_space();
-		destroy_in_space();
+		remove_from_space(p_lock);
+		destroy_in_space(p_lock);
 	}
 
 	space = p_space;
 
 	if (space) {
-		create_in_space();
-		add_to_space();
+		create_in_space(p_lock);
+		add_to_space(p_lock);
 	}
 }
 
@@ -61,8 +61,8 @@ void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p
 
 	space->get_body_iface(p_lock).SetPositionAndRotation(
 		jolt_id,
-		to_jolt(p_transform.get_origin()),
-		to_jolt(p_transform.get_basis()),
+		to_jolt(p_transform.origin),
+		to_jolt(p_transform.basis),
 		JPH::EActivation::DontActivate
 	);
 }

@@ -307,7 +307,7 @@ void JoltPhysicsServer3D::_area_attach_object_instance_id(const RID& p_area, uin
 	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
-	area->set_instance_id(p_id);
+	area->set_instance_id(ObjectID(p_id));
 }
 
 uint64_t JoltPhysicsServer3D::_area_get_object_instance_id(const RID& p_area) const {
@@ -502,9 +502,9 @@ void JoltPhysicsServer3D::_body_clear_shapes([[maybe_unused]] const RID& p_body)
 }
 
 void JoltPhysicsServer3D::_body_set_shape_disabled(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_shape_idx,
-	[[maybe_unused]] bool p_disabled
+	const RID& p_body,
+	int32_t p_shape_idx,
+	bool p_disabled
 ) {
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
@@ -516,7 +516,7 @@ void JoltPhysicsServer3D::_body_attach_object_instance_id(const RID& p_body, uin
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	body->set_instance_id(p_id);
+	body->set_instance_id(ObjectID(p_id));
 }
 
 uint64_t JoltPhysicsServer3D::_body_get_object_instance_id(const RID& p_body) const {

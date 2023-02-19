@@ -12,10 +12,10 @@ public:
 
 	LocalVector() = default;
 
-	explicit LocalVector(int32_t p_capacity) { storage.reserve(p_capacity); }
+	explicit LocalVector(int32_t p_capacity) { impl.reserve(p_capacity); }
 
 	LocalVector(std::initializer_list<TElement> p_list)
-		: storage(p_list) { }
+		: impl(p_list) { }
 
 	_FORCE_INLINE_ void push_back(const TElement& p_value) { emplace_back(p_value); }
 
@@ -23,13 +23,13 @@ public:
 
 	template<typename... TArgs>
 	_FORCE_INLINE_ TElement& emplace_back(TArgs&&... p_args) {
-		return storage.emplace_back(std::forward<TArgs>(p_args)...);
+		return impl.emplace_back(std::forward<TArgs>(p_args)...);
 	}
 
 	_FORCE_INLINE_ void remove_at(int32_t p_index) {
 		ERR_FAIL_INDEX(p_index, size());
 
-		storage.erase(begin() + p_index);
+		impl.erase(begin() + p_index);
 	}
 
 	_FORCE_INLINE_ void remove_at_unordered(int32_t p_index) {
@@ -42,13 +42,13 @@ public:
 
 		std::swap(*element_iter, *last_element_iter);
 
-		storage.erase(last_element_iter);
+		impl.erase(last_element_iter);
 	}
 
 	_FORCE_INLINE_ void erase(const TElement& p_value) {
 		auto new_end = std::remove(begin(), end(), p_value);
 		if (new_end != end()) {
-			storage.erase(new_end, end());
+			impl.erase(new_end, end());
 		}
 	}
 
@@ -56,23 +56,23 @@ public:
 	_FORCE_INLINE_ int32_t erase_if(TCallable&& p_callable) {
 		const auto new_end = std::remove_if(begin(), end(), std::forward<TCallable>(p_callable));
 		const auto count = (int32_t)std::distance(new_end, end());
-		storage.erase(new_end, end());
+		impl.erase(new_end, end());
 		return count;
 	}
 
 	_FORCE_INLINE_ void invert() { std::reverse(begin(), end()); }
 
-	_FORCE_INLINE_ void clear() { storage.clear(); }
+	_FORCE_INLINE_ void clear() { impl.clear(); }
 
-	_FORCE_INLINE_ bool is_empty() const { return storage.empty(); }
+	_FORCE_INLINE_ bool is_empty() const { return impl.empty(); }
 
-	_FORCE_INLINE_ int32_t get_capacity() const { return (int32_t)storage.capacity(); }
+	_FORCE_INLINE_ int32_t get_capacity() const { return (int32_t)impl.capacity(); }
 
-	_FORCE_INLINE_ void reserve(int32_t p_capacity) { storage.reserve((size_t)p_capacity); }
+	_FORCE_INLINE_ void reserve(int32_t p_capacity) { impl.reserve((size_t)p_capacity); }
 
-	_FORCE_INLINE_ int32_t size() const { return (int32_t)storage.size(); }
+	_FORCE_INLINE_ int32_t size() const { return (int32_t)impl.size(); }
 
-	_FORCE_INLINE_ void resize(int32_t p_size) { storage.resize((size_t)p_size); }
+	_FORCE_INLINE_ void resize(int32_t p_size) { impl.resize((size_t)p_size); }
 
 	_FORCE_INLINE_ void insert(int32_t p_index, const TElement& p_value) {
 		emplace(p_index, p_value);
@@ -86,17 +86,17 @@ public:
 	_FORCE_INLINE_ void emplace(int32_t p_index, TArgs&&... p_args) {
 		ERR_FAIL_INDEX(p_index, size() + 1);
 
-		storage.emplace(begin() + p_index, std::forward<TArgs>(p_args)...);
+		impl.emplace(begin() + p_index, std::forward<TArgs>(p_args)...);
 	}
 
 	_FORCE_INLINE_ void ordered_insert(const TElement& p_val) {
 		auto position = std::lower_bound(begin(), end(), p_val);
-		storage.insert(position, p_val);
+		impl.insert(position, p_val);
 	}
 
 	_FORCE_INLINE_ void ordered_insert(TElement&& p_val) {
 		auto position = std::lower_bound(begin(), end(), p_val);
-		storage.insert(position, std::move(p_val));
+		impl.insert(position, std::move(p_val));
 	}
 
 	_FORCE_INLINE_ int32_t find(const TElement& p_value, int32_t p_from = 0) const {
@@ -129,37 +129,37 @@ public:
 		std::sort(begin(), end(), p_comparer);
 	}
 
-	_FORCE_INLINE_ TElement* ptr() { return storage.data(); }
+	_FORCE_INLINE_ TElement* ptr() { return impl.data(); }
 
-	_FORCE_INLINE_ const TElement* ptr() const { return storage.data(); }
+	_FORCE_INLINE_ const TElement* ptr() const { return impl.data(); }
 
-	_FORCE_INLINE_ Iterator begin() { return storage.begin(); }
+	_FORCE_INLINE_ Iterator begin() { return impl.begin(); }
 
-	_FORCE_INLINE_ Iterator end() { return storage.end(); }
+	_FORCE_INLINE_ Iterator end() { return impl.end(); }
 
-	_FORCE_INLINE_ ConstIterator begin() const { return storage.begin(); }
+	_FORCE_INLINE_ ConstIterator begin() const { return impl.begin(); }
 
-	_FORCE_INLINE_ ConstIterator end() const { return storage.end(); }
+	_FORCE_INLINE_ ConstIterator end() const { return impl.end(); }
 
-	_FORCE_INLINE_ ConstIterator cbegin() const { return storage.cbegin(); }
+	_FORCE_INLINE_ ConstIterator cbegin() const { return impl.cbegin(); }
 
-	_FORCE_INLINE_ ConstIterator cend() const { return storage.cend(); }
+	_FORCE_INLINE_ ConstIterator cend() const { return impl.cend(); }
 
 	_FORCE_INLINE_ TElement& operator[](int32_t p_index) {
 		CRASH_BAD_INDEX(p_index, size());
-		return storage[(size_t)p_index];
+		return impl[(size_t)p_index];
 	}
 
 	_FORCE_INLINE_ const TElement& operator[](int32_t p_index) const {
 		CRASH_BAD_INDEX(p_index, size());
-		return storage[(size_t)p_index];
+		return impl[(size_t)p_index];
 	}
 
 	_FORCE_INLINE_ LocalVector& operator=(std::initializer_list<TElement> p_list) {
-		storage = p_list;
+		impl = p_list;
 		return *this;
 	}
 
 private:
-	Implementation storage;
+	Implementation impl;
 };

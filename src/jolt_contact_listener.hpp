@@ -16,11 +16,11 @@ class JoltContactListener final : public JPH::ContactListener {
 
 	struct ShapePairHasher {
 		static uint32_t hash(const JPH::SubShapeIDPair& p_pair) {
-			uint32_t h = hash_murmur3_one_32(p_pair.GetBody1ID().GetIndexAndSequenceNumber());
-			h = hash_murmur3_one_32(p_pair.GetSubShapeID1().GetValue(), h);
-			h = hash_murmur3_one_32(p_pair.GetBody2ID().GetIndexAndSequenceNumber(), h);
-			h = hash_murmur3_one_32(p_pair.GetSubShapeID2().GetValue(), h);
-			return hash_fmix32(h);
+			uint32_t hash = hash_murmur3_one_32(p_pair.GetBody1ID().GetIndexAndSequenceNumber());
+			hash = hash_murmur3_one_32(p_pair.GetSubShapeID1().GetValue(), hash);
+			hash = hash_murmur3_one_32(p_pair.GetBody2ID().GetIndexAndSequenceNumber(), hash);
+			hash = hash_murmur3_one_32(p_pair.GetSubShapeID2().GetValue(), hash);
+			return hash_fmix32(hash);
 		}
 	};
 
@@ -90,9 +90,9 @@ private:
 
 	void flush_contacts();
 
-	void flush_area_shifts();
-
 	void flush_area_enters();
+
+	void flush_area_shifts();
 
 	void flush_area_exits();
 

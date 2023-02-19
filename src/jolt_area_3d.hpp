@@ -15,9 +15,9 @@ class JoltArea3D final : public JoltCollisionObject3D {
 			, self(p_self) { }
 
 		static uint32_t hash(const ShapeIDPair& p_pair) {
-			uint32_t h = hash_murmur3_one_32(p_pair.other.GetValue());
-			h = hash_murmur3_one_32(p_pair.self.GetValue(), h);
-			return hash_fmix32(h);
+			uint32_t hash = hash_murmur3_one_32(p_pair.other.GetValue());
+			hash = hash_murmur3_one_32(p_pair.self.GetValue(), hash);
+			return hash_fmix32(hash);
 		}
 
 		friend bool operator==(const ShapeIDPair& p_lhs, const ShapeIDPair& p_rhs) {
@@ -36,7 +36,7 @@ class JoltArea3D final : public JoltCollisionObject3D {
 	};
 
 	struct Overlap {
-		uint64_t instance_id = 0;
+		ObjectID instance_id;
 
 		RID rid;
 
@@ -148,15 +148,15 @@ public:
 		const JPH::SubShapeID& p_self_shape_id
 	);
 
-	void call_queries() override;
+	void call_queries();
 
 	bool has_custom_center_of_mass() const override { return false; }
 
 	Vector3 get_center_of_mass_custom() const override { return {0, 0, 0}; }
 
+private:
 	bool get_initial_sleep_state() const override { return false; }
 
-private:
 	JPH::EMotionType get_motion_type() const override { return JPH::EMotionType::Kinematic; }
 
 	void create_in_space(bool p_lock = true) override;
@@ -186,7 +186,7 @@ private:
 		const Callable& p_callback,
 		PhysicsServer3D::AreaBodyStatus p_status,
 		const RID& p_other_rid,
-		uint64_t p_other_instance_id,
+		ObjectID p_other_instance_id,
 		int32_t p_other_shape_index,
 		int32_t p_self_shape_index
 	) const;

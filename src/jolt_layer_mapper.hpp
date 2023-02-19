@@ -5,7 +5,9 @@ class JoltLayerMapper final
 	, public JPH::ObjectLayerPairFilter
 	, public JPH::ObjectVsBroadPhaseLayerFilter {
 	using Mutex = std::shared_mutex;
+
 	using MutexLockRead = std::shared_lock<Mutex>;
+
 	using MutexLockWrite = std::unique_lock<Mutex>;
 
 public:
@@ -16,7 +18,7 @@ public:
 	);
 
 	void from_object_layer(
-		JPH::ObjectLayer p_object_layer,
+		JPH::ObjectLayer p_encoded_layer,
 		JPH::BroadPhaseLayer& p_broad_phase_layer,
 		uint32_t& p_collision_layer,
 		uint32_t& p_collision_mask
@@ -31,9 +33,11 @@ private:
 	const char* GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer) const override;
 #endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
 
-	bool ShouldCollide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer p_layer2) const override;
+	bool ShouldCollide(JPH::ObjectLayer p_encoded_layer1, JPH::ObjectLayer p_encoded_layer2)
+		const override;
 
-	bool ShouldCollide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2) const override;
+	bool ShouldCollide(JPH::ObjectLayer p_encoded_layer1, JPH::BroadPhaseLayer p_broad_phase_layer2)
+		const override;
 
 	JPH::ObjectLayer next_object_layer = 0;
 

@@ -2,13 +2,13 @@
 
 class_name HeightMap3D extends StaticBody3D
 
-@export
+@export_node_path("CollisionShape3D")
 var collision_shape := NodePath():
 	set(value):
 		collision_shape = value
 		properties_changed()
 
-@export
+@export_node_path("MeshInstance3D")
 var mesh_instance := NodePath():
 	set(value):
 		mesh_instance = value
@@ -86,8 +86,8 @@ func generate():
 		for x in range(resolution):
 			var i := z * resolution + x
 			var fy := remap(heights[i], min_height, max_height, 0, 1)
-			var fx := 1.0 - abs(remap(x / size, 0, 1, -1, 1)) as float
-			var fz := 1.0 - abs(remap(z / size, 0, 1, -1, 1)) as float
+			var fx := 1.0 - absf(remap(x / size, 0, 1, -1, 1))
+			var fz := 1.0 - absf(remap(z / size, 0, 1, -1, 1))
 			heights[i] = fy * fx * fz * amplitude
 
 	height_map_shape.map_width = resolution
@@ -110,8 +110,8 @@ func generate():
 	for n in range(vertex_count):
 		var i := plane_indices[n]
 		var v := plane_vertices[i]
-		var ix := round(v.x + extent) as int
-		var iz := round(v.z + extent) as int
+		var ix := roundi(v.x + extent)
+		var iz := roundi(v.z + extent)
 		var vy := heights[iz * resolution + ix]
 		vertices[n] = Vector3(v.x, vy, v.z)
 

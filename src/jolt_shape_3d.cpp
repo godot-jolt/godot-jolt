@@ -43,7 +43,7 @@ JPH::ShapeRefC JoltShape3D::try_build() {
 	return jolt_ref;
 }
 
-JPH::ShapeRefC JoltShape3D::with_scale(const JPH::ShapeRefC& p_shape, const Vector3& p_scale) {
+JPH::ShapeRefC JoltShape3D::with_scale(const JPH::Shape* p_shape, const Vector3& p_scale) {
 	ERR_FAIL_NULL_D(p_shape);
 
 	const JPH::ScaledShapeSettings shape_settings(p_shape, to_jolt(p_scale));
@@ -63,7 +63,7 @@ JPH::ShapeRefC JoltShape3D::with_scale(const JPH::ShapeRefC& p_shape, const Vect
 }
 
 JPH::ShapeRefC JoltShape3D::with_basis_origin(
-	const JPH::ShapeRefC& p_shape,
+	const JPH::Shape* p_shape,
 	const Basis& p_basis,
 	const Vector3& p_origin
 ) {
@@ -92,7 +92,7 @@ JPH::ShapeRefC JoltShape3D::with_basis_origin(
 }
 
 JPH::ShapeRefC JoltShape3D::with_transform(
-	const JPH::ShapeRefC& p_shape,
+	const JPH::Shape* p_shape,
 	const Transform3D& p_transform
 ) {
 	ERR_FAIL_NULL_D(p_shape);
@@ -125,7 +125,7 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 }
 
 JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
-	const JPH::ShapeRefC& p_shape,
+	const JPH::Shape* p_shape,
 	const Vector3& p_offset
 ) {
 	ERR_FAIL_NULL_D(p_shape);
@@ -147,7 +147,7 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
 }
 
 JPH::ShapeRefC JoltShape3D::with_center_of_mass(
-	const JPH::ShapeRefC& p_shape,
+	const JPH::Shape* p_shape,
 	const Vector3& p_center_of_mass
 ) {
 	ERR_FAIL_NULL_D(p_shape);
@@ -162,7 +162,7 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass(
 	return with_center_of_mass_offset(p_shape, center_of_mass_offset);
 }
 
-JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::ShapeRefC& p_shape, uint64_t p_user_data) {
+JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p_user_data) {
 	JoltOverrideUserDataShapeSettings shape_settings(p_shape);
 	shape_settings.mUserData = (JPH::uint64)p_user_data;
 

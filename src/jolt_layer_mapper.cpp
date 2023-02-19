@@ -112,13 +112,13 @@ JPH::ObjectLayer JoltLayerMapper::to_object_layer(
 }
 
 void JoltLayerMapper::from_object_layer(
-	JPH::ObjectLayer p_object_layer,
+	JPH::ObjectLayer p_encoded_layer,
 	JPH::BroadPhaseLayer& p_broad_phase_layer,
 	uint32_t& p_collision_layer,
 	uint32_t& p_collision_mask
 ) const {
 	JPH::ObjectLayer object_layer = {};
-	decode_layers(p_object_layer, p_broad_phase_layer, object_layer);
+	decode_layers(p_encoded_layer, p_broad_phase_layer, object_layer);
 
 	uint64_t collision = 0;
 
@@ -159,23 +159,26 @@ const char* JoltLayerMapper::GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer
 			return "AREA_UNDETECTABLE";
 		}
 		default: {
-			return "INVALID";
+			return "UNKNOWN";
 		}
 	}
 }
 
 #endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
 
-bool JoltLayerMapper::ShouldCollide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer p_layer2) const {
+bool JoltLayerMapper::ShouldCollide(
+	JPH::ObjectLayer p_encoded_layer1,
+	JPH::ObjectLayer p_encoded_layer2
+) const {
 	JPH::BroadPhaseLayer broad_phase_layer1 = {};
 	uint32_t collision_layer1 = 0;
 	uint32_t collision_mask1 = 0;
-	from_object_layer(p_layer1, broad_phase_layer1, collision_layer1, collision_mask1);
+	from_object_layer(p_encoded_layer1, broad_phase_layer1, collision_layer1, collision_mask1);
 
 	JPH::BroadPhaseLayer broad_phase_layer2 = {};
 	uint32_t collision_layer2 = 0;
 	uint32_t collision_mask2 = 0;
-	from_object_layer(p_layer2, broad_phase_layer2, collision_layer2, collision_mask2);
+	from_object_layer(p_encoded_layer2, broad_phase_layer2, collision_layer2, collision_mask2);
 
 	const bool first_scans_second = (collision_mask1 & collision_layer2) != 0;
 	const bool second_scans_first = (collision_mask2 & collision_layer1) != 0;
@@ -183,15 +186,17 @@ bool JoltLayerMapper::ShouldCollide(JPH::ObjectLayer p_layer1, JPH::ObjectLayer 
 	return first_scans_second || second_scans_first;
 }
 
-bool JoltLayerMapper::ShouldCollide(JPH::ObjectLayer p_layer1, JPH::BroadPhaseLayer p_layer2)
-	const {
+bool JoltLayerMapper::ShouldCollide(
+	JPH::ObjectLayer p_encoded_layer1,
+	JPH::BroadPhaseLayer p_broad_phase_layer2
+) const {
 	static constexpr JoltBroadPhaseLayerTable table;
 
 	JPH::BroadPhaseLayer broad_phase_layer1 = {};
 	JPH::ObjectLayer object_layer1 = 0;
-	decode_layers(p_layer1, broad_phase_layer1, object_layer1);
+	decode_layers(p_encoded_layer1, broad_phase_layer1, object_layer1);
 
-	return table.should_collide(broad_phase_layer1, p_layer2);
+	return table.should_collide(broad_phase_layer1, p_broad_phase_layer2);
 }
 
 static_assert(sizeof(JPH::ObjectLayer) == 2);

@@ -13,9 +13,9 @@ public:
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
-	uint64_t get_instance_id() const { return instance_id; }
+	ObjectID get_instance_id() const { return instance_id; }
 
-	void set_instance_id(uint64_t p_id) { instance_id = p_id; }
+	void set_instance_id(ObjectID p_id) { instance_id = p_id; }
 
 	JPH::BodyID get_jolt_id() const { return jolt_id; }
 
@@ -23,7 +23,7 @@ public:
 
 	JoltSpace3D* get_space() const { return space; }
 
-	void set_space(JoltSpace3D* p_space);
+	void set_space(JoltSpace3D* p_space, bool p_lock = true);
 
 	uint32_t get_collision_layer() const { return collision_layer; }
 
@@ -32,8 +32,6 @@ public:
 	uint32_t get_collision_mask() const { return collision_mask; }
 
 	void set_collision_mask(uint32_t p_mask, bool p_lock = true);
-
-	Transform3D get_initial_transform() const { return initial_transform; }
 
 	Transform3D get_transform(bool p_lock = true) const;
 
@@ -55,9 +53,9 @@ public:
 
 	void rebuild_shape(bool p_lock = true);
 
-	const JPH::Shape* get_jolt_shape() { return jolt_shape; }
+	const JPH::Shape* get_jolt_shape() const { return jolt_shape; }
 
-	const JPH::Shape* get_previous_jolt_shape() { return previous_jolt_shape; }
+	const JPH::Shape* get_previous_jolt_shape() const { return previous_jolt_shape; }
 
 	void add_shape(
 		JoltShape3D* p_shape,
@@ -79,8 +77,6 @@ public:
 	bool is_ray_pickable() const { return ray_pickable; }
 
 	void set_ray_pickable(bool p_enable) { ray_pickable = p_enable; }
-
-	virtual void call_queries() = 0;
 
 	virtual void pre_step(float p_step);
 
@@ -121,7 +117,7 @@ protected:
 
 	RID rid;
 
-	uint64_t instance_id = 0;
+	ObjectID instance_id;
 
 	JPH::BodyID jolt_id;
 

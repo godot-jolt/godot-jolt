@@ -595,12 +595,27 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 
 void JoltBody3D::call_queries() {
 	if (force_integration_callback.is_valid()) {
-		const Array arguments = Array::make(get_direct_state(), force_integration_userdata);
+		static thread_local Array arguments = []() {
+			Array array;
+			array.resize(2);
+			return array;
+		}();
+
+		arguments[0] = get_direct_state();
+		arguments[1] = force_integration_userdata;
+
 		force_integration_callback.callv(arguments);
 	}
 
 	if (body_state_callback.is_valid()) {
-		const Array arguments = Array::make(get_direct_state());
+		static thread_local Array arguments = []() {
+			Array array;
+			array.resize(1);
+			return array;
+		}();
+
+		arguments[0] = get_direct_state();
+
 		body_state_callback.callv(arguments);
 	}
 }
@@ -646,7 +661,7 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 
 	JPH::EMotionType motion_type = {};
 
-	switch (p_mode) {
+	switch (mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {
 			motion_type = JPH::EMotionType::Static;
 		} break;
@@ -657,7 +672,7 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 			motion_type = JPH::EMotionType::Dynamic;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body mode: '%d'", p_mode));
+			ERR_FAIL_MSG(vformat("Unhandled body mode: '%d'", mode));
 		} break;
 	}
 
@@ -838,8 +853,8 @@ JPH::EMotionType JoltBody3D::get_motion_type() const {
 void JoltBody3D::create_in_space(bool p_lock) {
 	JPH::BodyCreationSettings settings = create_begin();
 
-	settings.mLinearVelocity = to_jolt(get_initial_linear_velocity());
-	settings.mAngularVelocity = to_jolt(get_initial_angular_velocity());
+	settings.mLinearVelocity = to_jolt(initial_linear_velocity);
+	settings.mAngularVelocity = to_jolt(initial_angular_velocity);
 	settings.mAllowDynamicOrKinematic = true;
 	settings.mMotionQuality =
 		ccd_enabled ? JPH::EMotionQuality::LinearCast : JPH::EMotionQuality::Discrete;
@@ -860,7 +875,7 @@ void JoltBody3D::create_in_space(bool p_lock) {
 
 	JPH::CollisionGroup::GroupID group_id = 0;
 	JPH::CollisionGroup::SubGroupID sub_group_id = 0;
-	JoltGroupFilterRID::encode_rid(get_rid(), group_id, sub_group_id);
+	JoltGroupFilterRID::encode_rid(rid, group_id, sub_group_id);
 
 	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
 }
@@ -892,11 +907,8 @@ JPH::MassProperties JoltBody3D::calculate_mass_properties(const JPH::Shape& p_sh
 	return mass_properties;
 }
 
-JPH::MassProperties JoltBody3D::calculate_mass_properties(bool p_lock) const {
-	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return calculate_mass_properties(*body->GetShape());
+JPH::MassProperties JoltBody3D::calculate_mass_properties() const {
+	return calculate_mass_properties(*jolt_shape);
 }
 
 void JoltBody3D::mass_properties_changed(bool p_lock) {
@@ -907,6 +919,5 @@ void JoltBody3D::mass_properties_changed(bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	const JPH::MassProperties mass_properties = calculate_mass_properties(false);
-	body->GetMotionPropertiesUnchecked()->SetMassProperties(mass_properties);
+	body->GetMotionPropertiesUnchecked()->SetMassProperties(calculate_mass_properties());
 }

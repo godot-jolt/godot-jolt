@@ -26,30 +26,27 @@ public:
 
 	JPH::ShapeRefC get_jolt_ref() const { return jolt_ref; }
 
-	static JPH::ShapeRefC with_scale(const JPH::ShapeRefC& p_shape, const Vector3& p_scale);
+	static JPH::ShapeRefC with_scale(const JPH::Shape* p_shape, const Vector3& p_scale);
 
 	static JPH::ShapeRefC with_basis_origin(
-		const JPH::ShapeRefC& p_shape,
+		const JPH::Shape* p_shape,
 		const Basis& p_basis,
 		const Vector3& p_origin
 	);
 
-	static JPH::ShapeRefC with_transform(
-		const JPH::ShapeRefC& p_shape,
-		const Transform3D& p_transform
-	);
+	static JPH::ShapeRefC with_transform(const JPH::Shape* p_shape, const Transform3D& p_transform);
 
 	static JPH::ShapeRefC with_center_of_mass_offset(
-		const JPH::ShapeRefC& p_shape,
+		const JPH::Shape* p_shape,
 		const Vector3& p_offset
 	);
 
 	static JPH::ShapeRefC with_center_of_mass(
-		const JPH::ShapeRefC& p_shape,
+		const JPH::Shape* p_shape,
 		const Vector3& p_center_of_mass
 	);
 
-	static JPH::ShapeRefC with_user_data(const JPH::ShapeRefC& p_shape, uint64_t p_user_data);
+	static JPH::ShapeRefC with_user_data(const JPH::Shape* p_shape, uint64_t p_user_data);
 
 	template<typename TCallable>
 	static JPH::ShapeRefC as_compound(TCallable&& p_callable);
