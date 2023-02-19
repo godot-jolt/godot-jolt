@@ -907,11 +907,8 @@ JPH::MassProperties JoltBody3D::calculate_mass_properties(const JPH::Shape& p_sh
 	return mass_properties;
 }
 
-JPH::MassProperties JoltBody3D::calculate_mass_properties(bool p_lock) const {
-	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return calculate_mass_properties(*body->GetShape());
+JPH::MassProperties JoltBody3D::calculate_mass_properties() const {
+	return calculate_mass_properties(*jolt_shape);
 }
 
 void JoltBody3D::mass_properties_changed(bool p_lock) {
@@ -922,6 +919,5 @@ void JoltBody3D::mass_properties_changed(bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	const JPH::MassProperties mass_properties = calculate_mass_properties(false);
-	body->GetMotionPropertiesUnchecked()->SetMassProperties(mass_properties);
+	body->GetMotionPropertiesUnchecked()->SetMassProperties(calculate_mass_properties());
 }

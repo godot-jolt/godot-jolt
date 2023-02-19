@@ -211,7 +211,7 @@ private:
 
 	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
 
-	JPH::MassProperties calculate_mass_properties(bool p_lock = true) const;
+	JPH::MassProperties calculate_mass_properties() const;
 
 	void mass_properties_changed(bool p_lock);
 
