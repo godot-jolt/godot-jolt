@@ -816,8 +816,6 @@ void JoltBody3D::create_in_space(bool p_lock) {
 	settings.mAllowSleeping = allowed_sleep;
 	settings.mFriction = friction;
 	settings.mRestitution = bounce;
-	settings.mLinearDamping = linear_damp;
-	settings.mAngularDamping = angular_damp;
 	settings.mGravityFactor = gravity_scale;
 	settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
 	settings.mMassPropertiesOverride = calculate_mass_properties(*settings.GetShape());
