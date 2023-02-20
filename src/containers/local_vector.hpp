@@ -99,6 +99,18 @@ public:
 		impl.insert(position, std::move(p_val));
 	}
 
+	template<typename TCallable>
+	_FORCE_INLINE_ void ordered_insert(const TElement& p_val, TCallable&& p_callable) {
+		auto iter = std::lower_bound(begin(), end(), p_val, std::forward<TCallable>(p_callable));
+		impl.insert(iter, p_val);
+	}
+
+	template<typename TCallable>
+	_FORCE_INLINE_ void ordered_insert(TElement&& p_val, TCallable&& p_callable) {
+		auto iter = std::lower_bound(begin(), end(), p_val, std::forward<TCallable>(p_callable));
+		impl.insert(iter, std::move(p_val));
+	}
+
 	_FORCE_INLINE_ int32_t find(const TElement& p_value, int32_t p_from = 0) const {
 		if (p_from < size()) {
 			auto found = std::find(begin() + p_from, end(), p_value);
