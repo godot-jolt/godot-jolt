@@ -360,11 +360,25 @@ void JoltPhysicsServer3D::_area_set_collision_mask(const RID& p_area, uint32_t p
 	area->set_collision_mask(p_mask);
 }
 
+uint32_t JoltPhysicsServer3D::_area_get_collision_mask(const RID& p_area) const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	return area->get_collision_mask();
+}
+
 void JoltPhysicsServer3D::_area_set_collision_layer(const RID& p_area, uint32_t p_layer) {
 	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
 	area->set_collision_layer(p_layer);
+}
+
+uint32_t JoltPhysicsServer3D::_area_get_collision_layer(const RID& p_area) const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	return area->get_collision_layer();
 }
 
 void JoltPhysicsServer3D::_area_set_monitorable(const RID& p_area, bool p_monitorable) {
