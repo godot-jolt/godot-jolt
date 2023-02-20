@@ -136,9 +136,9 @@ public:
 
 	TypedArray<RID> get_collision_exceptions(bool p_lock = true) const;
 
-	void add_area(JoltArea3D* p_area) { areas.push_back(p_area); }
+	void add_area(JoltArea3D* p_area);
 
-	void remove_area(JoltArea3D* p_area) { areas.erase(p_area); }
+	void remove_area(JoltArea3D* p_area);
 
 	void integrate_forces(float p_step, bool p_lock = true);
 
@@ -208,6 +208,10 @@ private:
 	void mode_changed(bool p_lock = true);
 
 	void shapes_changed(bool p_lock) override;
+
+	void areas_changed(bool p_lock = true);
+
+	void damp_changed(bool p_lock = true);
 
 	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
 
