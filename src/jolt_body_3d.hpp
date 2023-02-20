@@ -12,8 +12,6 @@ public:
 	struct Contact {
 		float depth = 0.0f;
 
-		float impulse = 0.0f;
-
 		int32_t shape_index = 0;
 
 		int32_t collider_shape_index = 0;
@@ -29,6 +27,8 @@ public:
 		Vector3 collider_position;
 
 		Vector3 collider_velocity;
+
+		Vector3 impulse;
 	};
 
 	~JoltBody3D() override;
@@ -97,7 +97,7 @@ public:
 		const Vector3& p_position,
 		const Vector3& p_collider_position,
 		const Vector3& p_collider_velocity,
-		float p_impulse
+		const Vector3& p_impulse
 	);
 
 	void reset_mass_properties(bool p_lock = true);

@@ -33,7 +33,7 @@ class JoltContactListener final : public JPH::ContactListener {
 
 		JPH::Vec3 velocity_other = {};
 
-		float impulse = {};
+		JPH::Vec3 impulse = {};
 	};
 
 	using Contacts = LocalVector<Contact>;
