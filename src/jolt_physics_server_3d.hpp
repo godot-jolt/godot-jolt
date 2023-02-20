@@ -128,7 +128,11 @@ public:
 
 	void _area_set_collision_layer(const RID& p_area, uint32_t p_layer) override;
 
+	uint32_t _area_get_collision_layer(const RID& p_area) const override;
+
 	void _area_set_collision_mask(const RID& p_area, uint32_t p_mask) override;
+
+	uint32_t _area_get_collision_mask(const RID& p_area) const override;
 
 	void _area_set_monitorable(const RID& p_area, bool p_monitorable) override;
 
