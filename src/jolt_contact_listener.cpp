@@ -105,21 +105,14 @@ void JoltContactListener::update_contacts(
 	const JPH::Vec3 body_position1 = p_body1.GetPosition();
 	const JPH::Vec3 body_position2 = p_body2.GetPosition();
 
-	JPH::Vec3 linear_velocity1 = {};
-	JPH::Vec3 linear_velocity2 = {};
-	JPH::Vec3 angular_velocity1 = {};
-	JPH::Vec3 angular_velocity2 = {};
-	JPH::ContactImpulses impulses;
+	JPH::CollisionEstimationResult collision;
 
 	JPH::EstimateCollisionResponse(
 		p_body1,
 		p_body2,
 		p_manifold,
-		linear_velocity1,
-		angular_velocity1,
-		linear_velocity2,
-		angular_velocity2,
-		impulses,
+		collision,
+		p_settings.mCombinedFriction,
 		p_settings.mCombinedRestitution
 	);
 
@@ -133,19 +126,24 @@ void JoltContactListener::update_contacts(
 		const JPH::Vec3 world_point1 = p_manifold.mBaseOffset + relative_point1;
 		const JPH::Vec3 world_point2 = p_manifold.mBaseOffset + relative_point2;
 
-		const float impulse = impulses[i];
+		const JPH::CollisionEstimationResult::Impulse& impulse = collision.mImpulses[i];
+
+		const JPH::Vec3 contact_impulse = p_manifold.mWorldSpaceNormal * impulse.mContactImpulse;
+		const JPH::Vec3 friction_impulse1 = collision.mTangent1 * impulse.mFrictionImpulse1;
+		const JPH::Vec3 friction_impulse2 = collision.mTangent2 * impulse.mFrictionImpulse2;
+		const JPH::Vec3 combined_impulse = contact_impulse + friction_impulse1 + friction_impulse2;
 
 		contact1.normal = -p_manifold.mWorldSpaceNormal;
 		contact1.point_self = world_point1 - body_position1;
 		contact1.point_other = world_point1 - body_position2;
 		contact1.velocity_other = p_body2.GetPointVelocity(world_point1);
-		contact1.impulse = impulse;
+		contact1.impulse = -combined_impulse;
 
 		contact2.normal = p_manifold.mWorldSpaceNormal;
 		contact2.point_self = world_point2 - body_position2;
 		contact2.point_other = world_point2 - body_position1;
 		contact2.velocity_other = p_body1.GetPointVelocity(world_point2);
-		contact2.impulse = impulse;
+		contact2.impulse = combined_impulse;
 	}
 }
 
@@ -184,7 +182,7 @@ void JoltContactListener::flush_contacts() {
 				to_godot(contact.point_self),
 				to_godot(contact.point_other),
 				to_godot(contact.velocity_other),
-				contact.impulse
+				to_godot(contact.impulse)
 			);
 		}
 
@@ -198,7 +196,7 @@ void JoltContactListener::flush_contacts() {
 				to_godot(contact.point_self),
 				to_godot(contact.point_other),
 				to_godot(contact.velocity_other),
-				contact.impulse
+				to_godot(contact.impulse)
 			);
 		}
 

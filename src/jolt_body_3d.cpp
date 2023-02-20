@@ -289,7 +289,7 @@ void JoltBody3D::add_contact(
 	const Vector3& p_position,
 	const Vector3& p_collider_position,
 	const Vector3& p_collider_velocity,
-	float p_impulse
+	const Vector3& p_impulse
 ) {
 	const int32_t max_contacts = get_max_contacts_reported();
 
@@ -316,7 +316,6 @@ void JoltBody3D::add_contact(
 	}
 
 	if (contact != nullptr) {
-		contact->impulse = p_impulse;
 		contact->shape_index = p_shape_index;
 		contact->collider_shape_index = p_collider_shape_index;
 		contact->collider_id = p_collider->get_instance_id();
@@ -325,6 +324,7 @@ void JoltBody3D::add_contact(
 		contact->position = p_position;
 		contact->collider_position = p_collider_position;
 		contact->collider_velocity = p_collider_velocity;
+		contact->impulse = p_impulse;
 	}
 }
 
