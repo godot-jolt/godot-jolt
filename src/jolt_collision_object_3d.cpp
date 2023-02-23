@@ -1,5 +1,6 @@
 #include "jolt_collision_object_3d.hpp"
 
+#include "jolt_empty_shape.hpp"
 #include "jolt_layer_mapper.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
@@ -180,7 +181,7 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	JPH::ObjectLayer object_layer =
+	const JPH::ObjectLayer object_layer =
 		space->map_to_object_layer(get_broad_phase_layer(), collision_layer, collision_mask);
 
 	previous_jolt_shape = jolt_shape;
@@ -188,11 +189,7 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 	jolt_shape = try_build_shape();
 
 	if (!jolt_shape) {
-		// Use a fallback shape instead
-		jolt_shape = new JPH::SphereShape(1.0f);
-
-		// Place it in object layer 0, which will make it collide with nothing
-		object_layer = 0;
+		jolt_shape = new JoltEmptyShape();
 	}
 
 	JPH::BodyInterface& body_iface = space->get_body_iface(false);
@@ -273,17 +270,13 @@ void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled,
 }
 
 JPH::BodyCreationSettings JoltCollisionObject3D::create_begin() {
-	JPH::ObjectLayer object_layer =
+	const JPH::ObjectLayer object_layer =
 		space->map_to_object_layer(get_broad_phase_layer(), collision_layer, collision_mask);
 
 	jolt_shape = try_build_shape();
 
 	if (!jolt_shape) {
-		// Use a fallback shape instead
-		jolt_shape = new JPH::SphereShape(1.0f);
-
-		// Place it in object layer 0, which will make it collide with nothing
-		object_layer = 0;
+		jolt_shape = new JoltEmptyShape();
 	}
 
 	return {

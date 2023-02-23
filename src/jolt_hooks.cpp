@@ -1,5 +1,6 @@
 #include "jolt_hooks.hpp"
 
+#include "jolt_empty_shape.hpp"
 #include "jolt_override_user_data_shape.hpp"
 
 void* jolt_alloc(size_t p_size) {
@@ -60,6 +61,7 @@ void initialize_jolt_hooks() {
 
 	JPH::RegisterTypes();
 
+	JoltEmptyShape::register_type();
 	JoltOverrideUserDataShape::register_type();
 }
 
