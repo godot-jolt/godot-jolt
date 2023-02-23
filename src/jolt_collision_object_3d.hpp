@@ -21,6 +21,12 @@ public:
 
 	void set_jolt_id(JPH::BodyID p_jolt_id) { jolt_id = p_jolt_id; }
 
+	void* get_instance() const;
+
+	Object* get_instance_unsafe() const;
+
+	Object* get_instance_wrapped() const;
+
 	JoltSpace3D* get_space() const { return space; }
 
 	void set_space(JoltSpace3D* p_space, bool p_lock = true);
