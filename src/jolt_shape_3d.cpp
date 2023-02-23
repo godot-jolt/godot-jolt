@@ -104,21 +104,10 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 		return shape;
 	}
 
-	const Vector3 scale_squared(
-		transform.basis.get_column(Vector3::AXIS_X).length_squared(),
-		transform.basis.get_column(Vector3::AXIS_Y).length_squared(),
-		transform.basis.get_column(Vector3::AXIS_Z).length_squared()
-	);
+	Vector3 scale(1.0f, 1.0f, 1.0f);
 
-	if (scale_squared != Vector3(1.0f, 1.0f, 1.0f)) {
-		const Vector3 scale(
-			Math::sqrt(scale_squared.x),
-			Math::sqrt(scale_squared.y),
-			Math::sqrt(scale_squared.z)
-		);
-
+	if (try_extract_scale(transform, scale)) {
 		shape = with_scale(shape, scale);
-		transform = transform.orthonormalized();
 	}
 
 	return with_basis_origin(shape, transform.basis, transform.origin);
