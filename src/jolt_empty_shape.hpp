@@ -67,6 +67,7 @@ public:
 
 	// clang-format on
 
+#ifdef JPH_DEBUG_RENDERER
 	void Draw(
 		[[maybe_unused]] JPH::DebugRenderer* p_renderer,
 		[[maybe_unused]] JPH::RMat44Arg p_center_of_mass_transform,
@@ -75,6 +76,7 @@ public:
 		[[maybe_unused]] bool p_use_material_colors,
 		[[maybe_unused]] bool p_draw_wireframe
 	) const override { }
+#endif // JPH_DEBUG_RENDERER
 
 	bool CastRay(
 		[[maybe_unused]] const JPH::RayCast& p_ray,
