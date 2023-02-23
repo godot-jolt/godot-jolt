@@ -7,6 +7,24 @@
 
 JoltCollisionObject3D::~JoltCollisionObject3D() = default;
 
+void* JoltCollisionObject3D::get_instance() const {
+	return internal::gde_interface->object_get_instance_from_id(instance_id);
+}
+
+Object* JoltCollisionObject3D::get_instance_unsafe() const {
+	// HACK(mihe): This is being deliberately and incorrectly cast to a godot-cpp `Object` when in
+	// reality it's a Godot `Object`. This is meant to be used in places where an `Object` is
+	// returned through a parameter, such as in `PhysicsServer3DExtensionRayResult`, because
+	// godot-cpp is unable to do the necessary unwrapping of the instance bindings in such cases.
+	//
+	// Dereferencing this pointer from the extension will lead to bad things.
+	return static_cast<Object*>(get_instance());
+}
+
+Object* JoltCollisionObject3D::get_instance_wrapped() const {
+	return ObjectDB::get_instance(instance_id);
+}
+
 void JoltCollisionObject3D::set_space(JoltSpace3D* p_space, bool p_lock) {
 	if (space == p_space) {
 		return;

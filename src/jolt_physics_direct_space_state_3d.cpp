@@ -133,7 +133,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	p_result->normal = to_godot(normal);
 	p_result->rid = object->get_rid();
 	p_result->collider_id = object_id;
-	p_result->collider = ObjectDB::get_instance(object_id);
+	p_result->collider = object->get_instance_unsafe();
 	p_result->shape = shape_index;
 
 	return true;
