@@ -1,6 +1,7 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 
 #include "jolt_collision_object_3d.hpp"
+#include "jolt_query_collectors.hpp"
 #include "jolt_query_filter_3d.hpp"
 #include "jolt_space_3d.hpp"
 
@@ -32,22 +33,24 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	settings.mBackFaceMode = p_hit_back_faces ? JPH::EBackFaceMode::CollideWithBackFaces
 											  : JPH::EBackFaceMode::IgnoreBackFaces;
 
-	JPH::ClosestHitCollisionCollector<JPH::CastRayCollector> collector;
+	JoltQueryCollectorClosest<JPH::CastRayCollector> collector;
 
 	query.CastRay(ray, settings, collector, query_filter, query_filter, query_filter);
 
-	if (!collector.HadHit()) {
+	if (!collector.had_hit()) {
 		return false;
 	}
 
-	const JPH::BodyID& body_id = collector.mHit.mBodyID;
-	const JPH::SubShapeID& sub_shape_id = collector.mHit.mSubShapeID2;
+	const JPH::RayCastResult& hit = collector.get_hit();
+
+	const JPH::BodyID& body_id = hit.mBodyID;
+	const JPH::SubShapeID& sub_shape_id = hit.mSubShapeID2;
 
 	const JoltReadableBody3D body = space->read_body(body_id);
 	const JoltCollisionObject3D* object = body.as_object();
 	ERR_FAIL_NULL_D(object);
 
-	const JPH::Vec3 position = ray.GetPointOnRay(collector.mHit.mFraction);
+	const JPH::Vec3 position = ray.GetPointOnRay(hit.mFraction);
 	const JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(sub_shape_id, position);
 
 	const ObjectID object_id = object->get_instance_id();
