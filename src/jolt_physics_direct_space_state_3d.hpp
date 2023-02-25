@@ -42,7 +42,7 @@ public:
 		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
-		PhysicsServer3DExtensionShapeResult* p_result_count,
+		PhysicsServer3DExtensionShapeResult* p_results,
 		int32_t p_max_results
 	) override;
 
@@ -80,7 +80,7 @@ public:
 		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
-		PhysicsServer3DExtensionShapeRestInfo* p_rest_info
+		PhysicsServer3DExtensionShapeRestInfo* p_info
 	) override;
 
 	Vector3 _get_closest_point_to_object_volume(const RID& p_object, const Vector3& p_point)

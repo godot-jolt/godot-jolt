@@ -1,80 +1,13 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 
-#include "jolt_broad_phase_layer.hpp"
+#include "jolt_area_3d.hpp"
+#include "jolt_body_3d.hpp"
 #include "jolt_collision_object_3d.hpp"
+#include "jolt_physics_server_3d.hpp"
+#include "jolt_query_collectors.hpp"
+#include "jolt_query_filter_3d.hpp"
+#include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
-
-class JoltQueryFilter3D final
-	: public JPH::BroadPhaseLayerFilter
-	, public JPH::ObjectLayerFilter
-	, public JPH::BodyFilter {
-public:
-	JoltQueryFilter3D(
-		const JoltPhysicsDirectSpaceState3D& p_space_state,
-		uint32_t p_collision_mask,
-		bool p_collide_with_bodies,
-		bool p_collide_with_areas
-	)
-		: space_state(p_space_state)
-		, space(space_state.get_space())
-		, collision_mask(p_collision_mask)
-		, collide_with_bodies(p_collide_with_bodies)
-		, collide_with_areas(p_collide_with_areas) { }
-
-	bool ShouldCollide(JPH::BroadPhaseLayer p_broad_phase_layer) const override {
-		const auto broad_phase_layer = (JPH::BroadPhaseLayer::Type)p_broad_phase_layer;
-
-		switch (broad_phase_layer) {
-			case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::BODY_STATIC:
-			case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::BODY_DYNAMIC: {
-				return collide_with_bodies;
-			} break;
-			case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::AREA_DETECTABLE:
-			case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::AREA_UNDETECTABLE: {
-				return collide_with_areas;
-			} break;
-			default: {
-				ERR_FAIL_D_MSG(vformat("Unhandled broad phase layer: '%d'", broad_phase_layer));
-			}
-		}
-	}
-
-	bool ShouldCollide(JPH::ObjectLayer p_object_layer) const override {
-		JPH::BroadPhaseLayer object_broad_phase_layer = {};
-		uint32_t object_collision_layer = 0;
-		uint32_t object_collision_mask = 0;
-
-		space.map_from_object_layer(
-			p_object_layer,
-			object_broad_phase_layer,
-			object_collision_layer,
-			object_collision_mask
-		);
-
-		return (collision_mask & object_collision_layer) != 0;
-	}
-
-	bool ShouldCollide([[maybe_unused]] const JPH::BodyID& p_body_id) const override {
-		return true;
-	}
-
-	bool ShouldCollideLocked(const JPH::Body& p_body) const override {
-		return !space_state.is_body_excluded_from_query(
-			reinterpret_cast<JoltCollisionObject3D*>(p_body.GetUserData())->get_rid()
-		);
-	}
-
-private:
-	const JoltPhysicsDirectSpaceState3D& space_state;
-
-	const JoltSpace3D& space;
-
-	uint32_t collision_mask = 0;
-
-	bool collide_with_bodies = false;
-
-	bool collide_with_areas = false;
-};
 
 JoltPhysicsDirectSpaceState3D::JoltPhysicsDirectSpaceState3D(JoltSpace3D* p_space)
 	: space(p_space) { }
@@ -89,8 +22,6 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	bool p_hit_back_faces,
 	PhysicsServer3DExtensionRayResult* p_result
 ) {
-	const JPH::NarrowPhaseQuery& query = space->get_narrow_phase_query();
-
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
@@ -104,29 +35,30 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	settings.mBackFaceMode = p_hit_back_faces ? JPH::EBackFaceMode::CollideWithBackFaces
 											  : JPH::EBackFaceMode::IgnoreBackFaces;
 
-	JPH::ClosestHitCollisionCollector<JPH::CastRayCollector> collector;
+	JoltQueryCollectorClosest<JPH::CastRayCollector> collector;
 
-	query.CastRay(ray, settings, collector, query_filter, query_filter, query_filter);
+	space->get_narrow_phase_query()
+		.CastRay(ray, settings, collector, query_filter, query_filter, query_filter);
 
-	if (!collector.HadHit()) {
+	if (!collector.had_hit()) {
 		return false;
 	}
 
-	const JPH::BodyID& body_id = collector.mHit.mBodyID;
-	const JPH::SubShapeID& sub_shape_id = collector.mHit.mSubShapeID2;
+	const JPH::RayCastResult& hit = collector.get_hit();
+
+	const JPH::BodyID& body_id = hit.mBodyID;
+	const JPH::SubShapeID& sub_shape_id = hit.mSubShapeID2;
 
 	const JoltReadableBody3D body = space->read_body(body_id);
 	const JoltCollisionObject3D* object = body.as_object();
 	ERR_FAIL_NULL_D(object);
 
-	const JPH::Vec3 position = ray.GetPointOnRay(collector.mHit.mFraction);
+	const JPH::Vec3 position = ray.GetPointOnRay(hit.mFraction);
 	const JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(sub_shape_id, position);
 
 	const ObjectID object_id = object->get_instance_id();
 
-	const JPH::Shape& shape = *body->GetShape();
-	const auto shape_instance_id = (uint32_t)shape.GetSubShapeUserData(sub_shape_id);
-	const int32_t shape_index = object->find_shape_index(shape_instance_id);
+	const int32_t shape_index = object->find_shape_index(sub_shape_id);
 	ERR_FAIL_COND_D(shape_index == -1);
 
 	p_result->position = to_godot(position);
@@ -140,76 +72,423 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 }
 
 int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
-	[[maybe_unused]] const Vector3& p_position,
-	[[maybe_unused]] uint32_t p_collision_mask,
-	[[maybe_unused]] bool p_collide_with_bodies,
-	[[maybe_unused]] bool p_collide_with_areas,
-	[[maybe_unused]] PhysicsServer3DExtensionShapeResult* p_results,
-	[[maybe_unused]] int32_t p_max_results
+	const Vector3& p_position,
+	uint32_t p_collision_mask,
+	bool p_collide_with_bodies,
+	bool p_collide_with_areas,
+	PhysicsServer3DExtensionShapeResult* p_results,
+	int32_t p_max_results
 ) {
-	ERR_FAIL_D_NOT_IMPL();
+	if (p_max_results == 0) {
+		return 0;
+	}
+
+	const JoltQueryFilter3D
+		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
+
+	JoltQueryCollectorAny<JPH::CollidePointCollector> collector(p_max_results);
+
+	space->get_narrow_phase_query()
+		.CollidePoint(to_jolt(p_position), collector, query_filter, query_filter, query_filter);
+
+	const int32_t hit_count = collector.get_hit_count();
+
+	for (int32_t i = 0; i < hit_count; ++i) {
+		const JPH::CollidePointResult& hit = collector.get_hit(i);
+
+		const JoltReadableBody3D body = space->read_body(hit.mBodyID);
+		const JoltCollisionObject3D* object = body.as_object();
+		ERR_FAIL_NULL_D(object);
+
+		const ObjectID object_id = object->get_instance_id();
+
+		const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
+		ERR_FAIL_COND_D(shape_index == -1);
+
+		PhysicsServer3DExtensionShapeResult& result = *p_results++;
+
+		result.rid = object->get_rid();
+		result.collider_id = object_id;
+		result.collider = object->get_instance_unsafe();
+		result.shape = shape_index;
+	}
+
+	return hit_count;
 }
 
 int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
-	[[maybe_unused]] const RID& p_shape_rid,
-	[[maybe_unused]] const Transform3D& p_transform,
+	const RID& p_shape_rid,
+	const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
-	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] uint32_t p_collision_mask,
-	[[maybe_unused]] bool p_collide_with_bodies,
-	[[maybe_unused]] bool p_collide_with_areas,
-	[[maybe_unused]] PhysicsServer3DExtensionShapeResult* p_result_count,
-	[[maybe_unused]] int32_t p_max_results
+	double p_margin,
+	uint32_t p_collision_mask,
+	bool p_collide_with_bodies,
+	bool p_collide_with_areas,
+	PhysicsServer3DExtensionShapeResult* p_results,
+	int32_t p_max_results
 ) {
-	ERR_FAIL_D_NOT_IMPL();
+	if (p_max_results == 0) {
+		return 0;
+	}
+
+	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+
+	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
+	ERR_FAIL_NULL_D(shape);
+
+	const JPH::ShapeRefC jolt_shape = shape->try_build();
+	ERR_FAIL_NULL_D(jolt_shape);
+
+	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
+	Vector3 scale(1.0f, 1.0f, 1.0f);
+	try_extract_scale(transform_com, scale);
+
+	JPH::CollideShapeSettings settings;
+	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
+
+	const JoltQueryFilter3D
+		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
+
+	JoltQueryCollectorAny<JPH::CollideShapeCollector> collector(p_max_results);
+
+	space->get_narrow_phase_query().CollideShape(
+		jolt_shape,
+		to_jolt(scale),
+		to_jolt(transform_com),
+		settings,
+		JPH::Vec3::sZero(),
+		collector,
+		query_filter,
+		query_filter,
+		query_filter
+	);
+
+	const int32_t hit_count = collector.get_hit_count();
+
+	for (int32_t i = 0; i < hit_count; ++i) {
+		const JPH::CollideShapeResult& hit = collector.get_hit(i);
+
+		const JoltReadableBody3D body = space->read_body(hit.mBodyID2);
+		const JoltCollisionObject3D* object = body.as_object();
+		ERR_FAIL_NULL_D(object);
+
+		const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
+		ERR_FAIL_COND_D(shape_index == -1);
+
+		PhysicsServer3DExtensionShapeResult& result = *p_results++;
+
+		result.rid = object->get_rid();
+		result.collider_id = object->get_instance_id();
+		result.collider = object->get_instance_unsafe();
+		result.shape = shape_index;
+	}
+
+	return hit_count;
 }
 
 bool JoltPhysicsDirectSpaceState3D::_cast_motion(
-	[[maybe_unused]] const RID& p_shape_rid,
-	[[maybe_unused]] const Transform3D& p_transform,
-	[[maybe_unused]] const Vector3& p_motion,
-	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] uint32_t p_collision_mask,
-	[[maybe_unused]] bool p_collide_with_bodies,
-	[[maybe_unused]] bool p_collide_with_areas,
-	[[maybe_unused]] float* p_closest_safe,
-	[[maybe_unused]] float* p_closest_unsafe,
-	[[maybe_unused]] PhysicsServer3DExtensionShapeRestInfo* p_info
+	const RID& p_shape_rid,
+	const Transform3D& p_transform,
+	const Vector3& p_motion,
+	double p_margin,
+	uint32_t p_collision_mask,
+	bool p_collide_with_bodies,
+	bool p_collide_with_areas,
+	float* p_closest_safe,
+	float* p_closest_unsafe,
+	PhysicsServer3DExtensionShapeRestInfo* p_info
 ) {
-	ERR_FAIL_D_NOT_IMPL();
+	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+
+	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
+	ERR_FAIL_NULL_D(shape);
+
+	const JPH::ShapeRefC jolt_shape = shape->try_build();
+	ERR_FAIL_NULL_D(jolt_shape);
+
+	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
+	Vector3 scale(1.0f, 1.0f, 1.0f);
+	try_extract_scale(transform_com, scale);
+
+	JPH::ShapeCastSettings settings;
+	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
+
+	const JoltQueryFilter3D
+		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
+
+	JoltQueryCollectorClosest<JPH::CastShapeCollector> collector;
+
+	space->get_narrow_phase_query().CastShape(
+		JPH::RShapeCast(jolt_shape, to_jolt(scale), to_jolt(transform_com), to_jolt(p_motion)),
+		settings,
+		JPH::Vec3::sZero(),
+		collector,
+		query_filter,
+		query_filter,
+		query_filter
+	);
+
+	if (!collector.had_hit()) {
+		return false;
+	}
+
+	const JPH::ShapeCastResult& hit = collector.get_hit();
+
+	if (p_info != nullptr) {
+		const JoltReadableBody3D body = space->read_body(hit.mBodyID2);
+		const JoltCollisionObject3D* object = body.as_object();
+		ERR_FAIL_NULL_D(object);
+
+		const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
+		ERR_FAIL_COND_D(shape_index == -1);
+
+		const Vector3 hit_point = to_godot(hit.mContactPointOn2);
+		const Vector3 hit_normal = to_godot(-hit.mPenetrationAxis.Normalized());
+
+		p_info->point = hit_point;
+		p_info->normal = hit_normal;
+		p_info->rid = object->get_rid();
+		p_info->collider_id = object->get_instance_id();
+		p_info->shape = shape_index;
+		p_info->linear_velocity = object->get_velocity_at_position(hit_point, false);
+	}
+
+	// HACK(mihe): Since the fraction we get from Jolt seemingly can't be interpreted as safe nor
+	// unsafe we have to instead assume that it lies somewhere right inbetween. This means we have
+	// to nudge the fraction in both directions by some arbitrary small amount to get the fractions
+	// we're looking for. This feels error-prone, and will almost definitely break for some.
+
+	const float nudge = 0.005f / p_motion.length();
+
+	*p_closest_safe = max(hit.mFraction - nudge, 0.0f);
+	*p_closest_unsafe = min(hit.mFraction + nudge, 1.0f);
+
+	return true;
 }
 
 bool JoltPhysicsDirectSpaceState3D::_collide_shape(
-	[[maybe_unused]] const RID& p_shape_rid,
-	[[maybe_unused]] const Transform3D& p_transform,
+	const RID& p_shape_rid,
+	const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
-	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] uint32_t p_collision_mask,
-	[[maybe_unused]] bool p_collide_with_bodies,
-	[[maybe_unused]] bool p_collide_with_areas,
-	[[maybe_unused]] void* p_results,
-	[[maybe_unused]] int32_t p_max_results,
-	[[maybe_unused]] int32_t* p_result_count
+	double p_margin,
+	uint32_t p_collision_mask,
+	bool p_collide_with_bodies,
+	bool p_collide_with_areas,
+	void* p_results,
+	int32_t p_max_results,
+	int32_t* p_result_count
 ) {
-	ERR_FAIL_D_NOT_IMPL();
+	if (p_max_results == 0) {
+		return false;
+	}
+
+	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+
+	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
+	ERR_FAIL_NULL_D(shape);
+
+	const JPH::ShapeRefC jolt_shape = shape->try_build();
+	ERR_FAIL_NULL_D(jolt_shape);
+
+	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
+	Vector3 scale(1.0f, 1.0f, 1.0f);
+	try_extract_scale(transform_com, scale);
+
+	JPH::CollideShapeSettings settings;
+	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
+
+	const JoltQueryFilter3D
+		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
+
+	JoltQueryCollectorAny<JPH::CollideShapeCollector> collector(p_max_results);
+
+	space->get_narrow_phase_query().CollideShape(
+		jolt_shape,
+		to_jolt(scale),
+		to_jolt(transform_com),
+		settings,
+		JPH::Vec3::sZero(),
+		collector,
+		query_filter,
+		query_filter,
+		query_filter
+	);
+
+	auto* results = static_cast<Vector3*>(p_results);
+
+	const int32_t hit_count = collector.get_hit_count();
+
+	for (int32_t i = 0; i < hit_count; ++i) {
+		const JPH::CollideShapeResult& hit = collector.get_hit(i);
+
+		*results++ = to_godot(hit.mContactPointOn1);
+		*results++ = to_godot(hit.mContactPointOn2);
+	}
+
+	*p_result_count = hit_count;
+
+	return true;
 }
 
 bool JoltPhysicsDirectSpaceState3D::_rest_info(
-	[[maybe_unused]] const RID& p_shape_rid,
-	[[maybe_unused]] const Transform3D& p_transform,
+	const RID& p_shape_rid,
+	const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
-	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] uint32_t p_collision_mask,
-	[[maybe_unused]] bool p_collide_with_bodies,
-	[[maybe_unused]] bool p_collide_with_areas,
-	[[maybe_unused]] PhysicsServer3DExtensionShapeRestInfo* p_rest_info
+	double p_margin,
+	uint32_t p_collision_mask,
+	bool p_collide_with_bodies,
+	bool p_collide_with_areas,
+	PhysicsServer3DExtensionShapeRestInfo* p_info
 ) {
-	ERR_FAIL_D_NOT_IMPL();
+	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+
+	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
+	ERR_FAIL_NULL_D(shape);
+
+	const JPH::ShapeRefC jolt_shape = shape->try_build();
+	ERR_FAIL_NULL_D(jolt_shape);
+
+	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
+	Vector3 scale(1.0f, 1.0f, 1.0f);
+	try_extract_scale(transform_com, scale);
+
+	JPH::CollideShapeSettings settings;
+	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
+
+	const JoltQueryFilter3D
+		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
+
+	JoltQueryCollectorClosest<JPH::CollideShapeCollector> collector;
+
+	space->get_narrow_phase_query().CollideShape(
+		jolt_shape,
+		to_jolt(scale),
+		to_jolt(transform_com),
+		settings,
+		JPH::Vec3::sZero(),
+		collector,
+		query_filter,
+		query_filter,
+		query_filter
+	);
+
+	if (!collector.had_hit()) {
+		return false;
+	}
+
+	const JPH::CollideShapeResult& hit = collector.get_hit();
+
+	const JoltReadableBody3D body = space->read_body(hit.mBodyID2);
+	const JoltCollisionObject3D* object = body.as_object();
+	ERR_FAIL_NULL_D(object);
+
+	const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
+	ERR_FAIL_COND_D(shape_index == -1);
+
+	const Vector3 hit_point = to_godot(hit.mContactPointOn2);
+	const Vector3 hit_normal = to_godot(-hit.mPenetrationAxis.Normalized());
+
+	p_info->point = hit_point;
+	p_info->normal = hit_normal;
+	p_info->rid = object->get_rid();
+	p_info->collider_id = object->get_instance_id();
+	p_info->shape = shape_index;
+	p_info->linear_velocity = object->get_velocity_at_position(hit_point, false);
+
+	return true;
 }
 
 Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
-	[[maybe_unused]] const RID& p_object,
-	[[maybe_unused]] const Vector3& p_point
+	const RID& p_object,
+	const Vector3& p_point
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+
+	JoltCollisionObject3D* object = physics_server->get_area(p_object);
+
+	if (object == nullptr) {
+		object = physics_server->get_body(p_object);
+	}
+
+	ERR_FAIL_NULL_D(object);
+	ERR_FAIL_COND_D(object->get_space() != space);
+
+	const JoltReadableBody3D body = space->read_body(*object);
+	const JPH::TransformedShape shape = body->GetTransformedShape();
+
+	JoltQueryCollectorAll<JPH::TransformedShapeCollector> collector;
+	shape.CollectTransformedShapes(body->GetWorldSpaceBounds(), collector);
+
+	const JPH::Vec3 point = to_jolt(p_point);
+
+	float closest_distance_sq = FLT_MAX;
+	JPH::Vec3 closest_point = JPH::Vec3::sZero();
+
+	bool found_point = false;
+
+	for (int32_t i = 0; i < collector.get_hit_count(); ++i) {
+		const JPH::TransformedShape& sub_shape_transformed = collector.get_hit(i);
+		const JPH::Shape& sub_shape = *sub_shape_transformed.mShape;
+
+		if (sub_shape.GetType() != JPH::EShapeType::Convex) {
+			continue;
+		}
+
+		const auto& sub_shape_convex = static_cast<const JPH::ConvexShape&>(sub_shape);
+
+		JPH::GJKClosestPoint gjk;
+
+		// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
+		JPH::ConvexShape::SupportBuffer shape_support_buffer;
+
+		const JPH::ConvexShape::Support* shape_support = sub_shape_convex.GetSupportFunction(
+			JPH::ConvexShape::ESupportMode::IncludeConvexRadius,
+			shape_support_buffer,
+			sub_shape_transformed.GetShapeScale()
+		);
+
+		const JPH::Quat& sub_shape_rotation = sub_shape_transformed.mShapeRotation;
+		const JPH::Vec3& sub_shape_pos_com = sub_shape_transformed.mShapePositionCOM;
+		const JPH::Mat44 sub_shape_3x3 = JPH::RMat44::sRotation(sub_shape_rotation);
+		const JPH::Vec3 sub_shape_com_local = sub_shape.GetCenterOfMass();
+		const JPH::Vec3 sub_shape_com = sub_shape_3x3.Multiply3x3(sub_shape_com_local);
+		const JPH::Vec3 sub_shape_pos = sub_shape_pos_com - sub_shape_com;
+		const JPH::Mat44 sub_shape_4x4 = sub_shape_3x3.PostTranslated(sub_shape_pos);
+		const JPH::Mat44 sub_shape_4x4_inv = sub_shape_4x4.InversedRotationTranslation();
+
+		JPH::PointConvexSupport point_support = {};
+		point_support.mPoint = sub_shape_4x4_inv * point;
+
+		JPH::Vec3 separating_axis = JPH::Vec3::sAxisX();
+		JPH::Vec3 point_on_a = JPH::Vec3::sZero();
+		JPH::Vec3 point_on_b = JPH::Vec3::sZero();
+
+		const float distance_sq = gjk.GetClosestPoints(
+			*shape_support,
+			point_support,
+			JPH::cDefaultCollisionTolerance,
+			FLT_MAX,
+			separating_axis,
+			point_on_a,
+			point_on_b
+		);
+
+		if (distance_sq == 0.0f) {
+			closest_point = point;
+			found_point = true;
+			break;
+		}
+
+		if (distance_sq < closest_distance_sq) {
+			closest_distance_sq = distance_sq;
+			closest_point = sub_shape_4x4 * point_on_a;
+			found_point = true;
+		}
+	}
+
+	if (found_point) {
+		return to_godot(closest_point);
+	} else {
+		return to_godot(body->GetPosition());
+	}
 }

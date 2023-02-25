@@ -137,16 +137,18 @@ JoltReadableBody3D JoltSpace3D::read_body(const JPH::BodyID& p_body_id, bool p_l
 	return {*this, p_body_id, p_lock};
 }
 
-JoltReadableBody3D JoltSpace3D::read_body(const JoltBody3D& p_body, bool p_lock) const {
-	return read_body(p_body.get_jolt_id(), p_lock);
+JoltReadableBody3D JoltSpace3D::read_body(const JoltCollisionObject3D& p_object, bool p_lock)
+	const {
+	return read_body(p_object.get_jolt_id(), p_lock);
 }
 
 JoltWritableBody3D JoltSpace3D::write_body(const JPH::BodyID& p_body_id, bool p_lock) const {
 	return {*this, p_body_id, p_lock};
 }
 
-JoltWritableBody3D JoltSpace3D::write_body(const JoltBody3D& p_body, bool p_lock) const {
-	return write_body(p_body.get_jolt_id(), p_lock);
+JoltWritableBody3D JoltSpace3D::write_body(const JoltCollisionObject3D& p_object, bool p_lock)
+	const {
+	return write_body(p_object.get_jolt_id(), p_lock);
 }
 
 JoltReadableBodies3D JoltSpace3D::read_bodies(

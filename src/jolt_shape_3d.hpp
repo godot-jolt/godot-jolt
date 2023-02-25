@@ -26,6 +26,8 @@ public:
 
 	JPH::ShapeRefC get_jolt_ref() const { return jolt_ref; }
 
+	Vector3 get_center_of_mass() const;
+
 	static JPH::ShapeRefC with_scale(const JPH::Shape* p_shape, const Vector3& p_scale);
 
 	static JPH::ShapeRefC with_basis_origin(
