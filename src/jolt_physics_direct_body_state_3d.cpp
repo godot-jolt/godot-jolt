@@ -64,8 +64,9 @@ void JoltPhysicsDirectBodyState3D::_set_angular_velocity([[maybe_unused]] const 
 	ERR_FAIL_NOT_IMPL();
 }
 
-void JoltPhysicsDirectBodyState3D::_set_transform([[maybe_unused]] const Transform3D& p_transform) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_set_transform(const Transform3D& p_transform) {
+	ERR_FAIL_NULL(body);
+	return body->set_transform(p_transform);
 }
 
 Transform3D JoltPhysicsDirectBodyState3D::_get_transform() const {
