@@ -12,11 +12,13 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_total_gravity() const {
 }
 
 double JoltPhysicsDirectBodyState3D::_get_total_angular_damp() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return (double)body->get_total_angular_damp();
 }
 
 double JoltPhysicsDirectBodyState3D::_get_total_linear_damp() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return (double)body->get_total_linear_damp();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass() const {

@@ -787,6 +787,24 @@ void JoltBody3D::set_angular_damp(float p_damp, bool p_lock) {
 	damp_changed(p_lock);
 }
 
+float JoltBody3D::get_total_linear_damp(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return body->GetMotionPropertiesUnchecked()->GetLinearDamping();
+}
+
+float JoltBody3D::get_total_angular_damp(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return body->GetMotionPropertiesUnchecked()->GetAngularDamping();
+}
+
 JPH::EMotionType JoltBody3D::get_motion_type() const {
 	switch (mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {

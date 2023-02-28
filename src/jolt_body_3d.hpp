@@ -190,6 +190,10 @@ public:
 
 	void set_angular_damp(float p_damp, bool p_lock = true);
 
+	float get_total_linear_damp(bool p_lock = true) const;
+
+	float get_total_angular_damp(bool p_lock = true) const;
+
 	DampMode get_linear_damp_mode() const { return linear_damp_mode; }
 
 	void set_linear_damp_mode(DampMode p_mode) { linear_damp_mode = p_mode; }
