@@ -1,6 +1,7 @@
 #include "jolt_physics_direct_body_state_3d.hpp"
 
 #include "jolt_body_3d.hpp"
+#include "jolt_space_3d.hpp"
 
 JoltPhysicsDirectBodyState3D::JoltPhysicsDirectBodyState3D(JoltBody3D* p_body)
 	: body(p_body) { }
@@ -228,7 +229,11 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_velocity_at_position
 }
 
 double JoltPhysicsDirectBodyState3D::_get_step() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+
+	// TODO(mihe): Use `calculate_physics_step` instead (and remove `last_step` entirely) once
+	// godotengine/godot-cpp#889 has been fixed
+	return (double)body->get_space()->get_last_step();
 }
 
 void JoltPhysicsDirectBodyState3D::_integrate_forces() {
