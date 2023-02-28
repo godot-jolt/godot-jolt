@@ -43,7 +43,8 @@ double JoltPhysicsDirectBodyState3D::_get_inverse_mass() const {
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_inverse_inertia() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_inverse_inertia();
 }
 
 Basis JoltPhysicsDirectBodyState3D::_get_inverse_inertia_tensor() const {

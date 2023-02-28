@@ -238,6 +238,19 @@ Basis JoltBody3D::get_principal_inertia_axes(bool p_lock) const {
 	return principal_inertia_axes;
 }
 
+Vector3 JoltBody3D::get_inverse_inertia(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	if (mode != PhysicsServer3D::BodyMode::BODY_MODE_RIGID) {
+		return {};
+	}
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return to_godot(body->GetMotionPropertiesUnchecked()->GetInverseInertiaDiagonal());
+}
+
 Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
