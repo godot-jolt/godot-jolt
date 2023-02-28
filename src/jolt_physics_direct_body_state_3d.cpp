@@ -20,7 +20,8 @@ double JoltPhysicsDirectBodyState3D::_get_total_linear_damp() const {
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_center_of_mass();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass_local() const {
