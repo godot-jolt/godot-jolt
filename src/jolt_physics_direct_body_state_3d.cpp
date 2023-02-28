@@ -49,9 +49,9 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_linear_velocity() const {
 	return body->get_linear_velocity();
 }
 
-void JoltPhysicsDirectBodyState3D::_set_linear_velocity([[maybe_unused]] const Vector3& p_velocity
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_set_linear_velocity(const Vector3& p_velocity) {
+	ERR_FAIL_NULL(body);
+	return body->set_linear_velocity(p_velocity);
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_angular_velocity() const {
