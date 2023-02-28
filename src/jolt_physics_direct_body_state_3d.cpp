@@ -25,7 +25,8 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass() const {
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass_local() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_transform().xform_inv(body->get_center_of_mass());
 }
 
 Basis JoltPhysicsDirectBodyState3D::_get_principal_inertia_axes() const {
