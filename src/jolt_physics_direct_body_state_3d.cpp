@@ -1,6 +1,7 @@
 #include "jolt_physics_direct_body_state_3d.hpp"
 
 #include "jolt_body_3d.hpp"
+#include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_space_3d.hpp"
 
 JoltPhysicsDirectBodyState3D::JoltPhysicsDirectBodyState3D(JoltBody3D* p_body)
@@ -241,5 +242,5 @@ void JoltPhysicsDirectBodyState3D::_integrate_forces() {
 }
 
 PhysicsDirectSpaceState3D* JoltPhysicsDirectBodyState3D::_get_space_state() {
-	ERR_FAIL_D_NOT_IMPL();
+	return body->get_space()->get_direct_state();
 }
