@@ -8,7 +8,8 @@ JoltPhysicsDirectBodyState3D::JoltPhysicsDirectBodyState3D(JoltBody3D* p_body)
 	: body(p_body) { }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_total_gravity() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_gravity();
 }
 
 double JoltPhysicsDirectBodyState3D::_get_total_angular_damp() const {

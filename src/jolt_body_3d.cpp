@@ -530,14 +530,14 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(jolt_body.is_invalid());
 
-	const Vector3 position = get_position(false);
+	gravity = Vector3();
 
-	Vector3 total_gravity;
+	const Vector3 position = get_position(false);
 
 	bool gravity_done = false;
 
 	for (JoltArea3D* area : areas) {
-		gravity_done = integrate(total_gravity, area->get_gravity_mode(), [&]() {
+		gravity_done = integrate(gravity, area->get_gravity_mode(), [&]() {
 			return area->compute_gravity(position);
 		});
 
@@ -547,15 +547,15 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 	}
 
 	if (!gravity_done) {
-		total_gravity += space->get_default_area()->compute_gravity(position);
+		gravity += space->get_default_area()->compute_gravity(position);
 	}
 
-	total_gravity *= gravity_scale * p_step;
+	gravity *= gravity_scale;
 
 	JPH::MotionProperties& motion_properties = *jolt_body->GetMotionPropertiesUnchecked();
 
 	motion_properties.SetLinearVelocityClamped(
-		motion_properties.GetLinearVelocity() + to_jolt(total_gravity)
+		motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
 	);
 
 	jolt_body->AddForce(to_jolt(constant_force));

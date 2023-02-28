@@ -182,6 +182,8 @@ public:
 
 	void set_gravity_scale(float p_scale) { gravity_scale = p_scale; }
 
+	Vector3 get_gravity() const { return gravity; }
+
 	float get_linear_damp() const { return linear_damp; }
 
 	void set_linear_damp(float p_damp, bool p_lock = true);
@@ -266,6 +268,8 @@ private:
 	Vector3 constant_force;
 
 	Vector3 constant_torque;
+
+	Vector3 gravity;
 
 	Callable body_state_callback;
 
