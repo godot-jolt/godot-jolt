@@ -62,6 +62,10 @@ public:
 
 	void set_can_sleep(bool p_enabled, bool p_lock = true);
 
+	Basis get_principal_inertia_axes(bool p_lock = true) const;
+
+	Vector3 get_inverse_inertia(bool p_lock = true) const;
+
 	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
 
 	Vector3 get_linear_velocity(bool p_lock = true) const;
@@ -182,6 +186,8 @@ public:
 
 	void set_gravity_scale(float p_scale) { gravity_scale = p_scale; }
 
+	Vector3 get_gravity() const { return gravity; }
+
 	float get_linear_damp() const { return linear_damp; }
 
 	void set_linear_damp(float p_damp, bool p_lock = true);
@@ -189,6 +195,10 @@ public:
 	float get_angular_damp() const { return angular_damp; }
 
 	void set_angular_damp(float p_damp, bool p_lock = true);
+
+	float get_total_linear_damp(bool p_lock = true) const;
+
+	float get_total_angular_damp(bool p_lock = true) const;
 
 	DampMode get_linear_damp_mode() const { return linear_damp_mode; }
 
@@ -262,6 +272,8 @@ private:
 	Vector3 constant_force;
 
 	Vector3 constant_torque;
+
+	Vector3 gravity;
 
 	Callable body_state_callback;
 

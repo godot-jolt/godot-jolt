@@ -1,40 +1,50 @@
 #include "jolt_physics_direct_body_state_3d.hpp"
 
 #include "jolt_body_3d.hpp"
+#include "jolt_physics_direct_space_state_3d.hpp"
+#include "jolt_space_3d.hpp"
 
 JoltPhysicsDirectBodyState3D::JoltPhysicsDirectBodyState3D(JoltBody3D* p_body)
 	: body(p_body) { }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_total_gravity() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_gravity();
 }
 
 double JoltPhysicsDirectBodyState3D::_get_total_angular_damp() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return (double)body->get_total_angular_damp();
 }
 
 double JoltPhysicsDirectBodyState3D::_get_total_linear_damp() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return (double)body->get_total_linear_damp();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_center_of_mass();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass_local() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_transform().xform_inv(body->get_center_of_mass());
 }
 
 Basis JoltPhysicsDirectBodyState3D::_get_principal_inertia_axes() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_principal_inertia_axes();
 }
 
 double JoltPhysicsDirectBodyState3D::_get_inverse_mass() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return 1.0 / body->get_mass();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_inverse_inertia() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return body->get_inverse_inertia();
 }
 
 Basis JoltPhysicsDirectBodyState3D::_get_inverse_inertia_tensor() const {
@@ -47,9 +57,9 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_linear_velocity() const {
 	return body->get_linear_velocity();
 }
 
-void JoltPhysicsDirectBodyState3D::_set_linear_velocity([[maybe_unused]] const Vector3& p_velocity
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_set_linear_velocity(const Vector3& p_velocity) {
+	ERR_FAIL_NULL(body);
+	return body->set_linear_velocity(p_velocity);
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_angular_velocity() const {
@@ -57,13 +67,14 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_angular_velocity() const {
 	return body->get_angular_velocity();
 }
 
-void JoltPhysicsDirectBodyState3D::_set_angular_velocity([[maybe_unused]] const Vector3& p_velocity
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_set_angular_velocity(const Vector3& p_velocity) {
+	ERR_FAIL_NULL(body);
+	return body->set_angular_velocity(p_velocity);
 }
 
-void JoltPhysicsDirectBodyState3D::_set_transform([[maybe_unused]] const Transform3D& p_transform) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsDirectBodyState3D::_set_transform(const Transform3D& p_transform) {
+	ERR_FAIL_NULL(body);
+	return body->set_transform(p_transform);
 }
 
 Transform3D JoltPhysicsDirectBodyState3D::_get_transform() const {
@@ -228,7 +239,11 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_velocity_at_position
 }
 
 double JoltPhysicsDirectBodyState3D::_get_step() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+
+	// TODO(mihe): Use `calculate_physics_step` instead (and remove `last_step` entirely) once
+	// godotengine/godot-cpp#889 has been fixed
+	return (double)body->get_space()->get_last_step();
 }
 
 void JoltPhysicsDirectBodyState3D::_integrate_forces() {
@@ -236,5 +251,5 @@ void JoltPhysicsDirectBodyState3D::_integrate_forces() {
 }
 
 PhysicsDirectSpaceState3D* JoltPhysicsDirectBodyState3D::_get_space_state() {
-	ERR_FAIL_D_NOT_IMPL();
+	return body->get_space()->get_direct_state();
 }

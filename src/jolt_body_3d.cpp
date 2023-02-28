@@ -219,6 +219,38 @@ void JoltBody3D::set_can_sleep(bool p_enabled, bool p_lock) {
 	body->SetAllowSleeping(allowed_sleep);
 }
 
+Basis JoltBody3D::get_principal_inertia_axes(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	if (mode != PhysicsServer3D::BodyMode::BODY_MODE_RIGID) {
+		return {};
+	}
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	// TODO(mihe): See if there's some way of getting this directly from Jolt
+
+	Basis inertia_tensor = to_godot(jolt_shape->GetMassProperties().mInertia).basis;
+	const Basis principal_inertia_axes_local = inertia_tensor.diagonalize().transposed();
+	const Basis principal_inertia_axes = get_basis() * principal_inertia_axes_local;
+
+	return principal_inertia_axes;
+}
+
+Vector3 JoltBody3D::get_inverse_inertia(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	if (mode != PhysicsServer3D::BodyMode::BODY_MODE_RIGID) {
+		return {};
+	}
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return to_godot(body->GetMotionPropertiesUnchecked()->GetInverseInertiaDiagonal());
+}
+
 Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
@@ -229,7 +261,7 @@ Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
 
-	return to_godot(body->GetInverseInertia().GetQuaternion());
+	return to_godot(body->GetInverseInertia()).basis;
 }
 
 Vector3 JoltBody3D::get_linear_velocity(bool p_lock) const {
@@ -530,14 +562,14 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(jolt_body.is_invalid());
 
-	const Vector3 position = get_position(false);
+	gravity = Vector3();
 
-	Vector3 total_gravity;
+	const Vector3 position = get_position(false);
 
 	bool gravity_done = false;
 
 	for (JoltArea3D* area : areas) {
-		gravity_done = integrate(total_gravity, area->get_gravity_mode(), [&]() {
+		gravity_done = integrate(gravity, area->get_gravity_mode(), [&]() {
 			return area->compute_gravity(position);
 		});
 
@@ -547,15 +579,15 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 	}
 
 	if (!gravity_done) {
-		total_gravity += space->get_default_area()->compute_gravity(position);
+		gravity += space->get_default_area()->compute_gravity(position);
 	}
 
-	total_gravity *= gravity_scale * p_step;
+	gravity *= gravity_scale;
 
 	JPH::MotionProperties& motion_properties = *jolt_body->GetMotionPropertiesUnchecked();
 
 	motion_properties.SetLinearVelocityClamped(
-		motion_properties.GetLinearVelocity() + to_jolt(total_gravity)
+		motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
 	);
 
 	jolt_body->AddForce(to_jolt(constant_force));
@@ -785,6 +817,24 @@ void JoltBody3D::set_angular_damp(float p_damp, bool p_lock) {
 	angular_damp = p_damp;
 
 	damp_changed(p_lock);
+}
+
+float JoltBody3D::get_total_linear_damp(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return body->GetMotionPropertiesUnchecked()->GetLinearDamping();
+}
+
+float JoltBody3D::get_total_angular_damp(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return body->GetMotionPropertiesUnchecked()->GetAngularDamping();
 }
 
 JPH::EMotionType JoltBody3D::get_motion_type() const {

@@ -72,6 +72,8 @@ public:
 
 	JoltArea3D* get_default_area() const { return default_area; }
 
+	float get_last_step() const { return last_step; }
+
 	void add_joint(JoltJoint3D* p_joint);
 
 	void remove_joint(JoltJoint3D* p_joint);
@@ -98,4 +100,6 @@ private:
 	JoltPhysicsDirectSpaceState3D* direct_state = nullptr;
 
 	JoltArea3D* default_area = nullptr;
+
+	float last_step = 0.0f;
 };

@@ -48,6 +48,8 @@ JoltSpace3D::~JoltSpace3D() {
 }
 
 void JoltSpace3D::step(float p_step) {
+	last_step = p_step;
+
 	pre_step(p_step);
 
 	physics_system->Update(p_step, 1, 1, temp_allocator, job_system);
