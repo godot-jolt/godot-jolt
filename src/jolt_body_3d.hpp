@@ -62,6 +62,8 @@ public:
 
 	void set_can_sleep(bool p_enabled, bool p_lock = true);
 
+	Basis get_principal_inertia_axes(bool p_lock = true) const;
+
 	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
 
 	Vector3 get_linear_velocity(bool p_lock = true) const;

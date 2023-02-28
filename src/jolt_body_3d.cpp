@@ -219,6 +219,25 @@ void JoltBody3D::set_can_sleep(bool p_enabled, bool p_lock) {
 	body->SetAllowSleeping(allowed_sleep);
 }
 
+Basis JoltBody3D::get_principal_inertia_axes(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	if (mode != PhysicsServer3D::BodyMode::BODY_MODE_RIGID) {
+		return {};
+	}
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	// TODO(mihe): See if there's some way of getting this directly from Jolt
+
+	Basis inertia_tensor = to_godot(jolt_shape->GetMassProperties().mInertia).basis;
+	const Basis principal_inertia_axes_local = inertia_tensor.diagonalize().transposed();
+	const Basis principal_inertia_axes = get_basis() * principal_inertia_axes_local;
+
+	return principal_inertia_axes;
+}
+
 Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
