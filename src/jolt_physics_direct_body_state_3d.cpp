@@ -37,7 +37,8 @@ Basis JoltPhysicsDirectBodyState3D::_get_principal_inertia_axes() const {
 }
 
 double JoltPhysicsDirectBodyState3D::_get_inverse_mass() const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_NULL_D(body);
+	return 1.0 / body->get_mass();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_inverse_inertia() const {
