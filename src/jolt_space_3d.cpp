@@ -55,9 +55,20 @@ void JoltSpace3D::step(float p_step) {
 	physics_system->Update(p_step, 1, 1, temp_allocator, job_system);
 
 	post_step(p_step);
+
+	has_stepped = true;
 }
 
 void JoltSpace3D::call_queries() {
+	if (!has_stepped) {
+		// HACK(mihe): We need to skip the first invocation of this method, because there will be
+		// pending notifications that need to be flushed first, which can cause weird conflicts with
+		// things like `_integrate_forces`. This happens to also emulate the behavior of Godot
+		// Physics, where (active) collision objects must register to have `call_queries` invoked,
+		// which they don't do until the physics step, which happens after this.
+		return;
+	}
+
 	body_accessor.acquire_active();
 
 	const int32_t body_count = body_accessor.get_count();

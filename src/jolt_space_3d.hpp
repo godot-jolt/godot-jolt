@@ -102,4 +102,6 @@ private:
 	JoltArea3D* default_area = nullptr;
 
 	float last_step = 0.0f;
+
+	bool has_stepped = false;
 };
