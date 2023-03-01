@@ -227,8 +227,17 @@ void JoltPhysicsServer3D::_area_set_space(const RID& p_area, const RID& p_space)
 	area->set_space(space);
 }
 
-RID JoltPhysicsServer3D::_area_get_space([[maybe_unused]] const RID& p_area) const {
-	ERR_FAIL_D_NOT_IMPL();
+RID JoltPhysicsServer3D::_area_get_space(const RID& p_area) const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	JoltSpace3D* space = area->get_space();
+
+	if (space == nullptr) {
+		return {};
+	}
+
+	return space->get_rid();
 }
 
 void JoltPhysicsServer3D::_area_add_shape(
@@ -438,8 +447,17 @@ void JoltPhysicsServer3D::_body_set_space(const RID& p_body, const RID& p_space)
 	body->set_space(space);
 }
 
-RID JoltPhysicsServer3D::_body_get_space([[maybe_unused]] const RID& p_body) const {
-	ERR_FAIL_D_NOT_IMPL();
+RID JoltPhysicsServer3D::_body_get_space(const RID& p_body) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	JoltSpace3D* space = body->get_space();
+
+	if (space == nullptr) {
+		return {};
+	}
+
+	return space->get_rid();
 }
 
 void JoltPhysicsServer3D::_body_set_mode(const RID& p_body, BodyMode p_mode) {
