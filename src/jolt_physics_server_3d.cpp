@@ -665,11 +665,14 @@ void JoltPhysicsServer3D::_body_set_user_flags(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] uint32_t p_flags
 ) {
-	ERR_FAIL_NOT_IMPL();
+	WARN_PRINT(
+		"Body user flags are not supported by Godot Jolt. "
+		"Any such value will be ignored."
+	);
 }
 
 uint32_t JoltPhysicsServer3D::_body_get_user_flags([[maybe_unused]] const RID& p_body) const {
-	ERR_FAIL_D_NOT_IMPL();
+	return 0;
 }
 
 void JoltPhysicsServer3D::_body_set_param(
