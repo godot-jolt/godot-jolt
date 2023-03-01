@@ -312,8 +312,11 @@ void JoltPhysicsServer3D::_area_remove_shape(const RID& p_area, int32_t p_shape_
 	area->remove_shape(p_shape_idx);
 }
 
-void JoltPhysicsServer3D::_area_clear_shapes([[maybe_unused]] const RID& p_area) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_area_clear_shapes(const RID& p_area) {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	area->clear_shapes();
 }
 
 void JoltPhysicsServer3D::_area_set_shape_disabled(
@@ -557,8 +560,11 @@ void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int32_t p_shape_
 	body->remove_shape((int32_t)p_shape_idx);
 }
 
-void JoltPhysicsServer3D::_body_clear_shapes([[maybe_unused]] const RID& p_body) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_body_clear_shapes(const RID& p_body) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->clear_shapes();
 }
 
 void JoltPhysicsServer3D::_body_set_shape_disabled(

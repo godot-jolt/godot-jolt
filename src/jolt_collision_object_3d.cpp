@@ -245,6 +245,12 @@ void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
 	rebuild_shape(p_lock);
 }
 
+void JoltCollisionObject3D::clear_shapes(bool p_lock) {
+	shapes.clear();
+
+	rebuild_shape(p_lock);
+}
+
 int32_t JoltCollisionObject3D::find_shape_index(uint32_t p_shape_instance_id) const {
 	return shapes.find_if([&](const JoltShapeInstance3D& p_shape) {
 		return p_shape.get_id() == p_shape_instance_id;
