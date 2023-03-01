@@ -486,9 +486,11 @@ void JoltPhysicsServer3D::_body_set_mode(const RID& p_body, BodyMode p_mode) {
 	body->set_mode(p_mode);
 }
 
-PhysicsServer3D::BodyMode JoltPhysicsServer3D::_body_get_mode([[maybe_unused]] const RID& p_body
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+PhysicsServer3D::BodyMode JoltPhysicsServer3D::_body_get_mode(const RID& p_body) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_mode();
 }
 
 void JoltPhysicsServer3D::_body_add_shape(
