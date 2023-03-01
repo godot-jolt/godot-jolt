@@ -106,9 +106,11 @@ void JoltPhysicsServer3D::_shape_set_custom_solver_bias(
 	ERR_FAIL_NOT_IMPL();
 }
 
-PhysicsServer3D::ShapeType JoltPhysicsServer3D::_shape_get_type([[maybe_unused]] const RID& p_shape
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+PhysicsServer3D::ShapeType JoltPhysicsServer3D::_shape_get_type(const RID& p_shape) const {
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL_D(shape);
+
+	return shape->get_type();
 }
 
 Variant JoltPhysicsServer3D::_shape_get_data(const RID& p_shape) const {
