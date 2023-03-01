@@ -23,6 +23,10 @@ public:
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
+	double get_param(PhysicsServer3D::SpaceParameter p_param) const;
+
+	void set_param(PhysicsServer3D::SpaceParameter p_param, double p_value);
+
 	JPH::PhysicsSystem& get_physics_system() const { return *physics_system; }
 
 	JPH::BodyInterface& get_body_iface(bool p_locked = true);

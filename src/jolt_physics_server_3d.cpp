@@ -169,18 +169,21 @@ bool JoltPhysicsServer3D::_space_is_active(const RID& p_space) const {
 }
 
 void JoltPhysicsServer3D::_space_set_param(
-	[[maybe_unused]] const RID& p_space,
-	[[maybe_unused]] SpaceParameter p_param,
-	[[maybe_unused]] double p_value
+	const RID& p_space,
+	SpaceParameter p_param,
+	double p_value
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltSpace3D* space = space_owner.get_or_null(p_space);
+	ERR_FAIL_NULL(space);
+
+	space->set_param(p_param, p_value);
 }
 
-double JoltPhysicsServer3D::_space_get_param(
-	[[maybe_unused]] const RID& p_space,
-	[[maybe_unused]] SpaceParameter p_param
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+double JoltPhysicsServer3D::_space_get_param(const RID& p_space, SpaceParameter p_param) const {
+	JoltSpace3D* space = space_owner.get_or_null(p_space);
+	ERR_FAIL_NULL_D(space);
+
+	return space->get_param(p_param);
 }
 
 PhysicsDirectSpaceState3D* JoltPhysicsServer3D::_space_get_direct_state(const RID& p_space) {
