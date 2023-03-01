@@ -8,8 +8,8 @@ public:
 	JoltShapeInstance3D(
 		JoltCollisionObject3D* p_parent,
 		JoltShape3D* p_shape,
-		const Transform3D& p_transform,
-		bool p_disabled
+		const Transform3D& p_transform = {},
+		bool p_disabled = false
 	);
 
 	JoltShapeInstance3D(const JoltShapeInstance3D& p_other) = delete;

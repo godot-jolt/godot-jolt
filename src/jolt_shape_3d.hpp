@@ -4,6 +4,8 @@ class JoltCollisionObject3D;
 
 class JoltShape3D {
 public:
+	using ShapeType = PhysicsServer3D::ShapeType;
+
 	virtual ~JoltShape3D() = 0;
 
 	RID get_rid() const { return rid; }
@@ -15,6 +17,8 @@ public:
 	void remove_owner(JoltCollisionObject3D* p_owner);
 
 	void remove_self(bool p_lock = true);
+
+	virtual ShapeType get_type() const = 0;
 
 	virtual Variant get_data() const = 0;
 
@@ -64,6 +68,8 @@ protected:
 };
 
 class JoltSphereShape3D final : public JoltShape3D {
+	ShapeType get_type() const override { return ShapeType::SHAPE_SPHERE; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -80,6 +86,8 @@ private:
 
 class JoltBoxShape3D final : public JoltShape3D {
 public:
+	ShapeType get_type() const override { return ShapeType::SHAPE_BOX; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -96,6 +104,8 @@ private:
 
 class JoltCapsuleShape3D final : public JoltShape3D {
 public:
+	ShapeType get_type() const override { return ShapeType::SHAPE_CAPSULE; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -114,6 +124,8 @@ private:
 
 class JoltCylinderShape3D final : public JoltShape3D {
 public:
+	ShapeType get_type() const override { return ShapeType::SHAPE_CYLINDER; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -132,6 +144,8 @@ private:
 
 class JoltConvexPolygonShape3D final : public JoltShape3D {
 public:
+	ShapeType get_type() const override { return ShapeType::SHAPE_CONVEX_POLYGON; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -148,6 +162,8 @@ private:
 
 class JoltConcavePolygonShape3D final : public JoltShape3D {
 public:
+	ShapeType get_type() const override { return ShapeType::SHAPE_CONCAVE_POLYGON; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -166,6 +182,8 @@ private:
 
 class JoltHeightMapShape3D final : public JoltShape3D {
 public:
+	ShapeType get_type() const override { return ShapeType::SHAPE_HEIGHTMAP; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;

@@ -106,9 +106,11 @@ void JoltPhysicsServer3D::_shape_set_custom_solver_bias(
 	ERR_FAIL_NOT_IMPL();
 }
 
-PhysicsServer3D::ShapeType JoltPhysicsServer3D::_shape_get_type([[maybe_unused]] const RID& p_shape
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+PhysicsServer3D::ShapeType JoltPhysicsServer3D::_shape_get_type(const RID& p_shape) const {
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL_D(shape);
+
+	return shape->get_type();
 }
 
 Variant JoltPhysicsServer3D::_shape_get_data(const RID& p_shape) const {
@@ -225,8 +227,17 @@ void JoltPhysicsServer3D::_area_set_space(const RID& p_area, const RID& p_space)
 	area->set_space(space);
 }
 
-RID JoltPhysicsServer3D::_area_get_space([[maybe_unused]] const RID& p_area) const {
-	ERR_FAIL_D_NOT_IMPL();
+RID JoltPhysicsServer3D::_area_get_space(const RID& p_area) const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	JoltSpace3D* space = area->get_space();
+
+	if (space == nullptr) {
+		return {};
+	}
+
+	return space->get_rid();
 }
 
 void JoltPhysicsServer3D::_area_add_shape(
@@ -245,11 +256,17 @@ void JoltPhysicsServer3D::_area_add_shape(
 }
 
 void JoltPhysicsServer3D::_area_set_shape(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int32_t p_shape_idx,
-	[[maybe_unused]] const RID& p_shape
+	const RID& p_area,
+	int32_t p_shape_idx,
+	const RID& p_shape
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL(shape);
+
+	area->set_shape(p_shape_idx, shape);
 }
 
 void JoltPhysicsServer3D::_area_set_shape_transform(
@@ -263,22 +280,29 @@ void JoltPhysicsServer3D::_area_set_shape_transform(
 	area->set_shape_transform(p_shape_idx, p_transform);
 }
 
-int32_t JoltPhysicsServer3D::_area_get_shape_count([[maybe_unused]] const RID& p_area) const {
-	ERR_FAIL_D_NOT_IMPL();
+int32_t JoltPhysicsServer3D::_area_get_shape_count(const RID& p_area) const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	return area->get_shape_count();
 }
 
-RID JoltPhysicsServer3D::_area_get_shape(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int32_t p_shape_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+RID JoltPhysicsServer3D::_area_get_shape(const RID& p_area, int32_t p_shape_idx) const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	JoltShape3D* shape = area->get_shape(p_shape_idx);
+	ERR_FAIL_NULL_D(shape);
+
+	return shape->get_rid();
 }
 
-Transform3D JoltPhysicsServer3D::_area_get_shape_transform(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int32_t p_shape_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Transform3D JoltPhysicsServer3D::_area_get_shape_transform(const RID& p_area, int32_t p_shape_idx)
+	const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	return area->get_shape_transform(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_area_remove_shape(const RID& p_area, int32_t p_shape_idx) {
@@ -288,8 +312,11 @@ void JoltPhysicsServer3D::_area_remove_shape(const RID& p_area, int32_t p_shape_
 	area->remove_shape(p_shape_idx);
 }
 
-void JoltPhysicsServer3D::_area_clear_shapes([[maybe_unused]] const RID& p_area) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_area_clear_shapes(const RID& p_area) {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	area->clear_shapes();
 }
 
 void JoltPhysicsServer3D::_area_set_shape_disabled(
@@ -349,8 +376,11 @@ Variant JoltPhysicsServer3D::_area_get_param(const RID& p_area, AreaParameter p_
 	return area->get_param(p_param);
 }
 
-Transform3D JoltPhysicsServer3D::_area_get_transform([[maybe_unused]] const RID& p_area) const {
-	ERR_FAIL_D_NOT_IMPL();
+Transform3D JoltPhysicsServer3D::_area_get_transform(const RID& p_area) const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	return area->get_transform();
 }
 
 void JoltPhysicsServer3D::_area_set_collision_mask(const RID& p_area, uint32_t p_mask) {
@@ -436,8 +466,17 @@ void JoltPhysicsServer3D::_body_set_space(const RID& p_body, const RID& p_space)
 	body->set_space(space);
 }
 
-RID JoltPhysicsServer3D::_body_get_space([[maybe_unused]] const RID& p_body) const {
-	ERR_FAIL_D_NOT_IMPL();
+RID JoltPhysicsServer3D::_body_get_space(const RID& p_body) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	JoltSpace3D* space = body->get_space();
+
+	if (space == nullptr) {
+		return {};
+	}
+
+	return space->get_rid();
 }
 
 void JoltPhysicsServer3D::_body_set_mode(const RID& p_body, BodyMode p_mode) {
@@ -447,9 +486,11 @@ void JoltPhysicsServer3D::_body_set_mode(const RID& p_body, BodyMode p_mode) {
 	body->set_mode(p_mode);
 }
 
-PhysicsServer3D::BodyMode JoltPhysicsServer3D::_body_get_mode([[maybe_unused]] const RID& p_body
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+PhysicsServer3D::BodyMode JoltPhysicsServer3D::_body_get_mode(const RID& p_body) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_mode();
 }
 
 void JoltPhysicsServer3D::_body_add_shape(
@@ -468,11 +509,17 @@ void JoltPhysicsServer3D::_body_add_shape(
 }
 
 void JoltPhysicsServer3D::_body_set_shape(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_shape_idx,
-	[[maybe_unused]] const RID& p_shape
+	const RID& p_body,
+	int32_t p_shape_idx,
+	const RID& p_shape
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL(shape);
+
+	body->set_shape(p_shape_idx, shape);
 }
 
 void JoltPhysicsServer3D::_body_set_shape_transform(
@@ -486,22 +533,29 @@ void JoltPhysicsServer3D::_body_set_shape_transform(
 	body->set_shape_transform(p_shape_idx, p_transform);
 }
 
-int32_t JoltPhysicsServer3D::_body_get_shape_count([[maybe_unused]] const RID& p_body) const {
-	ERR_FAIL_D_NOT_IMPL();
+int32_t JoltPhysicsServer3D::_body_get_shape_count(const RID& p_body) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_shape_count();
 }
 
-RID JoltPhysicsServer3D::_body_get_shape(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_shape_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+RID JoltPhysicsServer3D::_body_get_shape(const RID& p_body, int32_t p_shape_idx) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	JoltShape3D* shape = body->get_shape(p_shape_idx);
+	ERR_FAIL_NULL_D(shape);
+
+	return shape->get_rid();
 }
 
-Transform3D JoltPhysicsServer3D::_body_get_shape_transform(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_shape_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Transform3D JoltPhysicsServer3D::_body_get_shape_transform(const RID& p_body, int32_t p_shape_idx)
+	const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_shape_transform(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int32_t p_shape_idx) {
@@ -511,8 +565,11 @@ void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int32_t p_shape_
 	body->remove_shape((int32_t)p_shape_idx);
 }
 
-void JoltPhysicsServer3D::_body_clear_shapes([[maybe_unused]] const RID& p_body) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_body_clear_shapes(const RID& p_body) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->clear_shapes();
 }
 
 void JoltPhysicsServer3D::_body_set_shape_disabled(
@@ -762,10 +819,13 @@ Vector3 JoltPhysicsServer3D::_body_get_constant_torque(const RID& p_body) const 
 }
 
 void JoltPhysicsServer3D::_body_set_axis_velocity(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Vector3& p_axis_velocity
+	const RID& p_body,
+	const Vector3& p_axis_velocity
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_axis_velocity(p_axis_velocity);
 }
 
 void JoltPhysicsServer3D::_body_set_axis_lock(
@@ -894,10 +954,11 @@ bool JoltPhysicsServer3D::_body_test_motion(
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-PhysicsDirectBodyState3D* JoltPhysicsServer3D::_body_get_direct_state(
-	[[maybe_unused]] const RID& p_body
-) {
-	ERR_FAIL_D_NOT_IMPL();
+PhysicsDirectBodyState3D* JoltPhysicsServer3D::_body_get_direct_state(const RID& p_body) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_direct_state();
 }
 
 RID JoltPhysicsServer3D::_soft_body_create() {

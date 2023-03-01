@@ -306,6 +306,25 @@ void JoltBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
 	body->GetMotionPropertiesUnchecked()->SetAngularVelocityClamped(to_jolt(p_velocity));
 }
 
+void JoltBody3D::set_axis_velocity(const Vector3& p_axis_velocity, bool p_lock) {
+	const Vector3 axis = p_axis_velocity.normalized();
+
+	if (space) {
+		const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+		ERR_FAIL_COND(body.is_invalid());
+
+		Vector3 linear_velocity = get_linear_velocity(false);
+		linear_velocity -= axis * axis.dot(linear_velocity);
+		linear_velocity += p_axis_velocity;
+		set_linear_velocity(linear_velocity, false);
+	} else {
+		Vector3 linear_velocity = initial_linear_velocity;
+		linear_velocity -= axis * axis.dot(linear_velocity);
+		linear_velocity += p_axis_velocity;
+		initial_linear_velocity = linear_velocity;
+	}
+}
+
 void JoltBody3D::set_center_of_mass_custom(const Vector3& p_center_of_mass, bool p_lock) {
 	custom_center_of_mass = true;
 	center_of_mass_custom = p_center_of_mass;

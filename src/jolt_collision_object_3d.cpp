@@ -245,6 +245,12 @@ void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
 	rebuild_shape(p_lock);
 }
 
+void JoltCollisionObject3D::clear_shapes(bool p_lock) {
+	shapes.clear();
+
+	rebuild_shape(p_lock);
+}
+
 int32_t JoltCollisionObject3D::find_shape_index(uint32_t p_shape_instance_id) const {
 	return shapes.find_if([&](const JoltShapeInstance3D& p_shape) {
 		return p_shape.get_id() == p_shape_instance_id;
@@ -255,6 +261,26 @@ int32_t JoltCollisionObject3D::find_shape_index(const JPH::SubShapeID& p_sub_sha
 	ERR_FAIL_NULL_V(jolt_shape, -1);
 
 	return find_shape_index((uint32_t)jolt_shape->GetSubShapeUserData(p_sub_shape_id));
+}
+
+JoltShape3D* JoltCollisionObject3D::get_shape(int32_t p_index) const {
+	ERR_FAIL_INDEX_D(p_index, shapes.size());
+
+	return shapes[p_index].get_shape();
+}
+
+void JoltCollisionObject3D::set_shape(int32_t p_index, JoltShape3D* p_shape, bool p_lock) {
+	ERR_FAIL_INDEX(p_index, shapes.size());
+
+	shapes[p_index] = JoltShapeInstance3D(this, p_shape);
+
+	rebuild_shape(p_lock);
+}
+
+Transform3D JoltCollisionObject3D::get_shape_transform(int32_t p_index) const {
+	ERR_FAIL_INDEX_D(p_index, shapes.size());
+
+	return shapes[p_index].get_transform();
 }
 
 void JoltCollisionObject3D::set_shape_transform(

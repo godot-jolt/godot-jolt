@@ -74,9 +74,19 @@ public:
 
 	void remove_shape(int32_t p_index, bool p_lock = true);
 
+	void clear_shapes(bool p_lock = true);
+
+	int32_t get_shape_count() const { return shapes.size(); }
+
 	int32_t find_shape_index(uint32_t p_shape_instance_id) const;
 
 	int32_t find_shape_index(const JPH::SubShapeID& p_sub_shape_id) const;
+
+	JoltShape3D* get_shape(int32_t p_index) const;
+
+	void set_shape(int32_t p_index, JoltShape3D* p_shape, bool p_lock = true);
+
+	Transform3D get_shape_transform(int32_t p_index) const;
 
 	void set_shape_transform(int32_t p_index, const Transform3D& p_transform, bool p_lock = true);
 
