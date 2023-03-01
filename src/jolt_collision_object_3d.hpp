@@ -78,6 +78,8 @@ public:
 
 	int32_t find_shape_index(const JPH::SubShapeID& p_sub_shape_id) const;
 
+	void set_shape(int32_t p_index, JoltShape3D* p_shape, bool p_lock = true);
+
 	void set_shape_transform(int32_t p_index, const Transform3D& p_transform, bool p_lock = true);
 
 	void set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock = true);

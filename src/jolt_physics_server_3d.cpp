@@ -256,11 +256,17 @@ void JoltPhysicsServer3D::_area_add_shape(
 }
 
 void JoltPhysicsServer3D::_area_set_shape(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int32_t p_shape_idx,
-	[[maybe_unused]] const RID& p_shape
+	const RID& p_area,
+	int32_t p_shape_idx,
+	const RID& p_shape
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL(shape);
+
+	area->set_shape(p_shape_idx, shape);
 }
 
 void JoltPhysicsServer3D::_area_set_shape_transform(
@@ -488,11 +494,17 @@ void JoltPhysicsServer3D::_body_add_shape(
 }
 
 void JoltPhysicsServer3D::_body_set_shape(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_shape_idx,
-	[[maybe_unused]] const RID& p_shape
+	const RID& p_body,
+	int32_t p_shape_idx,
+	const RID& p_shape
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL(shape);
+
+	body->set_shape(p_shape_idx, shape);
 }
 
 void JoltPhysicsServer3D::_body_set_shape_transform(
