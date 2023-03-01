@@ -899,13 +899,16 @@ void JoltPhysicsServer3D::_body_set_contacts_reported_depth_threshold(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] double p_threshold
 ) {
-	ERR_FAIL_NOT_IMPL();
+	WARN_PRINT(
+		"Per-body contact depth threshold is not supported by Godot Jolt. "
+		"Any such value will be ignored."
+	);
 }
 
 double JoltPhysicsServer3D::_body_get_contacts_reported_depth_threshold(
 	[[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	return 0.0;
 }
 
 void JoltPhysicsServer3D::_body_set_omit_force_integration(
