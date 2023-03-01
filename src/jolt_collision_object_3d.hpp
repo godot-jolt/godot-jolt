@@ -74,6 +74,8 @@ public:
 
 	void remove_shape(int32_t p_index, bool p_lock = true);
 
+	int32_t get_shape_count() const { return shapes.size(); }
+
 	int32_t find_shape_index(uint32_t p_shape_instance_id) const;
 
 	int32_t find_shape_index(const JPH::SubShapeID& p_sub_shape_id) const;
