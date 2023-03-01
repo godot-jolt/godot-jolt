@@ -819,10 +819,13 @@ Vector3 JoltPhysicsServer3D::_body_get_constant_torque(const RID& p_body) const 
 }
 
 void JoltPhysicsServer3D::_body_set_axis_velocity(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Vector3& p_axis_velocity
+	const RID& p_body,
+	const Vector3& p_axis_velocity
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_axis_velocity(p_axis_velocity);
 }
 
 void JoltPhysicsServer3D::_body_set_axis_lock(

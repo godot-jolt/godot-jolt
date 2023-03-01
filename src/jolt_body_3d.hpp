@@ -76,6 +76,8 @@ public:
 
 	void set_angular_velocity(const Vector3& p_velocity, bool p_lock = true);
 
+	void set_axis_velocity(const Vector3& p_axis_velocity, bool p_lock = true);
+
 	bool has_custom_center_of_mass() const override { return custom_center_of_mass; }
 
 	Vector3 get_center_of_mass_custom() const override { return center_of_mass_custom; }
