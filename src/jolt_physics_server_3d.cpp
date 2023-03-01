@@ -197,16 +197,16 @@ void JoltPhysicsServer3D::_space_set_debug_contacts(
 	[[maybe_unused]] const RID& p_space,
 	[[maybe_unused]] int32_t p_max_contacts
 ) {
-	ERR_FAIL_NOT_IMPL();
+	WARN_PRINT("Contact debugging is not supported by Godot Jolt.");
 }
 
 PackedVector3Array JoltPhysicsServer3D::_space_get_contacts([[maybe_unused]] const RID& p_space
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("Contact debugging is not supported by Godot Jolt.");
 }
 
 int32_t JoltPhysicsServer3D::_space_get_contact_count([[maybe_unused]] const RID& p_space) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("Contact debugging is not supported by Godot Jolt.");
 }
 
 RID JoltPhysicsServer3D::_area_create() {
