@@ -16,6 +16,15 @@ constexpr uint32_t GDJOLT_BODY_MUTEX_COUNT = 0; // 0 = default
 constexpr uint32_t GDJOLT_MAX_BODY_PAIRS = 65536;
 constexpr uint32_t GDJOLT_MAX_CONTACT_CONSTRAINTS = 8192;
 
+constexpr double GDJOLT_SPACE_CONTACT_RECYCLE_RADIUS = 0.01;
+constexpr double GDJOLT_SPACE_CONTACT_MAX_SEPARATION = 0.05;
+constexpr double GDJOLT_SPACE_CONTACT_MAX_ALLOWED_PENETRATION = 0.01;
+constexpr double GDJOLT_SPACE_CONTACT_DEFAULT_BIAS = 0.8;
+constexpr double GDJOLT_SPACE_SLEEP_THRESHOLD_LINEAR = 0.1;
+constexpr double GDJOLT_SPACE_SLEEP_THRESHOLD_ANGULAR = 8.0 * Math_PI / 180;
+constexpr double GDJOLT_SPACE_TIME_BEFORE_SLEEP = 0.5;
+constexpr double GDJOLT_SPACE_SOLVER_ITERATIONS = 8;
+
 } // namespace
 
 JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
@@ -90,6 +99,97 @@ void JoltSpace3D::call_queries() {
 	}
 
 	body_accessor.release();
+}
+
+double JoltSpace3D::get_param(PhysicsServer3D::SpaceParameter p_param) const {
+	switch (p_param) {
+		case PhysicsServer3D::SPACE_PARAM_CONTACT_RECYCLE_RADIUS: {
+			return GDJOLT_SPACE_CONTACT_RECYCLE_RADIUS;
+		}
+		case PhysicsServer3D::SPACE_PARAM_CONTACT_MAX_SEPARATION: {
+			return GDJOLT_SPACE_CONTACT_MAX_SEPARATION;
+		}
+		case PhysicsServer3D::SPACE_PARAM_CONTACT_MAX_ALLOWED_PENETRATION: {
+			return GDJOLT_SPACE_CONTACT_MAX_ALLOWED_PENETRATION;
+		}
+		case PhysicsServer3D::SPACE_PARAM_CONTACT_DEFAULT_BIAS: {
+			return GDJOLT_SPACE_CONTACT_DEFAULT_BIAS;
+		}
+		case PhysicsServer3D::SPACE_PARAM_BODY_LINEAR_VELOCITY_SLEEP_THRESHOLD: {
+			return GDJOLT_SPACE_SLEEP_THRESHOLD_LINEAR;
+		}
+		case PhysicsServer3D::SPACE_PARAM_BODY_ANGULAR_VELOCITY_SLEEP_THRESHOLD: {
+			return GDJOLT_SPACE_SLEEP_THRESHOLD_ANGULAR;
+		}
+		case PhysicsServer3D::SPACE_PARAM_BODY_TIME_TO_SLEEP: {
+			return GDJOLT_SPACE_TIME_BEFORE_SLEEP;
+		}
+		case PhysicsServer3D::SPACE_PARAM_SOLVER_ITERATIONS: {
+			return GDJOLT_SPACE_SOLVER_ITERATIONS;
+		}
+		default: {
+			ERR_FAIL_D_MSG(vformat("Unhandled space parameter: '%d'", p_param));
+		}
+	}
+}
+
+void JoltSpace3D::set_param(
+	PhysicsServer3D::SpaceParameter p_param,
+	[[maybe_unused]] double p_value
+) {
+	switch (p_param) {
+		case PhysicsServer3D::SPACE_PARAM_CONTACT_RECYCLE_RADIUS: {
+			WARN_PRINT(
+				"Space-specific contact recycle radius is not supported by Godot Jolt. "
+				"Any such value will be ignored."
+			);
+		} break;
+		case PhysicsServer3D::SPACE_PARAM_CONTACT_MAX_SEPARATION: {
+			WARN_PRINT(
+				"Space-specific contact max separation is not supported by Godot Jolt. "
+				"Any such value will be ignored."
+			);
+		} break;
+		case PhysicsServer3D::SPACE_PARAM_CONTACT_MAX_ALLOWED_PENETRATION: {
+			WARN_PRINT(
+				"Space-specific contact max allowed penetration is not supported by Godot Jolt. "
+				"Any such value will be ignored."
+			);
+		} break;
+		case PhysicsServer3D::SPACE_PARAM_CONTACT_DEFAULT_BIAS: {
+			WARN_PRINT(
+				"Space-specific contact default bias is not supported by Godot Jolt. "
+				"Any such value will be ignored."
+			);
+		} break;
+		case PhysicsServer3D::SPACE_PARAM_BODY_LINEAR_VELOCITY_SLEEP_THRESHOLD: {
+			WARN_PRINT(
+				"Space-specific linear velocity sleep threshold is not supported by Godot Jolt. "
+				"Any such value will be ignored."
+			);
+		} break;
+		case PhysicsServer3D::SPACE_PARAM_BODY_ANGULAR_VELOCITY_SLEEP_THRESHOLD: {
+			WARN_PRINT(
+				"Space-specific angular velocity sleep threshold is not supported by Godot Jolt. "
+				"Any such value will be ignored."
+			);
+		} break;
+		case PhysicsServer3D::SPACE_PARAM_BODY_TIME_TO_SLEEP: {
+			WARN_PRINT(
+				"Space-specific body sleep time is not supported by Godot Jolt. "
+				"Any such value will be ignored."
+			);
+		} break;
+		case PhysicsServer3D::SPACE_PARAM_SOLVER_ITERATIONS: {
+			WARN_PRINT(
+				"Space-specific solver iterations is not supported by Godot Jolt. "
+				"Any such value will be ignored."
+			);
+		} break;
+		default: {
+			ERR_FAIL_MSG(vformat("Unhandled space parameter: '%d'", p_param));
+		} break;
+	}
 }
 
 JPH::BodyInterface& JoltSpace3D::get_body_iface(bool p_locked) {

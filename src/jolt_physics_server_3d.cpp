@@ -89,7 +89,7 @@ RID JoltPhysicsServer3D::_heightmap_shape_create() {
 }
 
 RID JoltPhysicsServer3D::_custom_shape_create() {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("Custom shapes are not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_shape_set_data(const RID& p_shape, const Variant& p_data) {
@@ -169,18 +169,21 @@ bool JoltPhysicsServer3D::_space_is_active(const RID& p_space) const {
 }
 
 void JoltPhysicsServer3D::_space_set_param(
-	[[maybe_unused]] const RID& p_space,
-	[[maybe_unused]] SpaceParameter p_param,
-	[[maybe_unused]] double p_value
+	const RID& p_space,
+	SpaceParameter p_param,
+	double p_value
 ) {
-	ERR_FAIL_NOT_IMPL();
+	JoltSpace3D* space = space_owner.get_or_null(p_space);
+	ERR_FAIL_NULL(space);
+
+	space->set_param(p_param, p_value);
 }
 
-double JoltPhysicsServer3D::_space_get_param(
-	[[maybe_unused]] const RID& p_space,
-	[[maybe_unused]] SpaceParameter p_param
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+double JoltPhysicsServer3D::_space_get_param(const RID& p_space, SpaceParameter p_param) const {
+	JoltSpace3D* space = space_owner.get_or_null(p_space);
+	ERR_FAIL_NULL_D(space);
+
+	return space->get_param(p_param);
 }
 
 PhysicsDirectSpaceState3D* JoltPhysicsServer3D::_space_get_direct_state(const RID& p_space) {
@@ -194,16 +197,16 @@ void JoltPhysicsServer3D::_space_set_debug_contacts(
 	[[maybe_unused]] const RID& p_space,
 	[[maybe_unused]] int32_t p_max_contacts
 ) {
-	ERR_FAIL_NOT_IMPL();
+	WARN_PRINT("Contact debugging is not supported by Godot Jolt.");
 }
 
 PackedVector3Array JoltPhysicsServer3D::_space_get_contacts([[maybe_unused]] const RID& p_space
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("Contact debugging is not supported by Godot Jolt.");
 }
 
 int32_t JoltPhysicsServer3D::_space_get_contact_count([[maybe_unused]] const RID& p_space) const {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("Contact debugging is not supported by Godot Jolt.");
 }
 
 RID JoltPhysicsServer3D::_area_create() {
@@ -662,11 +665,14 @@ void JoltPhysicsServer3D::_body_set_user_flags(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] uint32_t p_flags
 ) {
-	ERR_FAIL_NOT_IMPL();
+	WARN_PRINT(
+		"Body user flags are not supported by Godot Jolt. "
+		"Any such value will be ignored."
+	);
 }
 
 uint32_t JoltPhysicsServer3D::_body_get_user_flags([[maybe_unused]] const RID& p_body) const {
-	ERR_FAIL_D_NOT_IMPL();
+	return 0;
 }
 
 void JoltPhysicsServer3D::_body_set_param(
@@ -893,13 +899,16 @@ void JoltPhysicsServer3D::_body_set_contacts_reported_depth_threshold(
 	[[maybe_unused]] const RID& p_body,
 	[[maybe_unused]] double p_threshold
 ) {
-	ERR_FAIL_NOT_IMPL();
+	WARN_PRINT(
+		"Per-body contact depth threshold is not supported by Godot Jolt. "
+		"Any such value will be ignored."
+	);
 }
 
 double JoltPhysicsServer3D::_body_get_contacts_reported_depth_threshold(
 	[[maybe_unused]] const RID& p_body
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	return 0.0;
 }
 
 void JoltPhysicsServer3D::_body_set_omit_force_integration(
