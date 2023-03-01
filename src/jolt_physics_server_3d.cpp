@@ -297,11 +297,12 @@ RID JoltPhysicsServer3D::_area_get_shape(const RID& p_area, int32_t p_shape_idx)
 	return shape->get_rid();
 }
 
-Transform3D JoltPhysicsServer3D::_area_get_shape_transform(
-	[[maybe_unused]] const RID& p_area,
-	[[maybe_unused]] int32_t p_shape_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Transform3D JoltPhysicsServer3D::_area_get_shape_transform(const RID& p_area, int32_t p_shape_idx)
+	const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	return area->get_shape_transform(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_area_remove_shape(const RID& p_area, int32_t p_shape_idx) {
@@ -541,11 +542,12 @@ RID JoltPhysicsServer3D::_body_get_shape(const RID& p_body, int32_t p_shape_idx)
 	return shape->get_rid();
 }
 
-Transform3D JoltPhysicsServer3D::_body_get_shape_transform(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_shape_idx
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+Transform3D JoltPhysicsServer3D::_body_get_shape_transform(const RID& p_body, int32_t p_shape_idx)
+	const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_shape_transform(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int32_t p_shape_idx) {

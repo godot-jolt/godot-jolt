@@ -271,6 +271,12 @@ void JoltCollisionObject3D::set_shape(int32_t p_index, JoltShape3D* p_shape, boo
 	rebuild_shape(p_lock);
 }
 
+Transform3D JoltCollisionObject3D::get_shape_transform(int32_t p_index) const {
+	ERR_FAIL_INDEX_D(p_index, shapes.size());
+
+	return shapes[p_index].get_transform();
+}
+
 void JoltCollisionObject3D::set_shape_transform(
 	int32_t p_index,
 	const Transform3D& p_transform,
