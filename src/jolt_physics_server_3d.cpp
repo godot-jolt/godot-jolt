@@ -89,7 +89,7 @@ RID JoltPhysicsServer3D::_heightmap_shape_create() {
 }
 
 RID JoltPhysicsServer3D::_custom_shape_create() {
-	ERR_FAIL_D_NOT_IMPL();
+	ERR_FAIL_D_MSG("Custom shapes are not supported by Godot Jolt.");
 }
 
 void JoltPhysicsServer3D::_shape_set_data(const RID& p_shape, const Variant& p_data) {
