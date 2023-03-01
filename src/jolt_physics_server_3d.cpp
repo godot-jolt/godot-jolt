@@ -376,8 +376,11 @@ Variant JoltPhysicsServer3D::_area_get_param(const RID& p_area, AreaParameter p_
 	return area->get_param(p_param);
 }
 
-Transform3D JoltPhysicsServer3D::_area_get_transform([[maybe_unused]] const RID& p_area) const {
-	ERR_FAIL_D_NOT_IMPL();
+Transform3D JoltPhysicsServer3D::_area_get_transform(const RID& p_area) const {
+	JoltArea3D* area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_D(area);
+
+	return area->get_transform();
 }
 
 void JoltPhysicsServer3D::_area_set_collision_mask(const RID& p_area, uint32_t p_mask) {
