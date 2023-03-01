@@ -954,10 +954,11 @@ bool JoltPhysicsServer3D::_body_test_motion(
 	ERR_FAIL_D_NOT_IMPL();
 }
 
-PhysicsDirectBodyState3D* JoltPhysicsServer3D::_body_get_direct_state(
-	[[maybe_unused]] const RID& p_body
-) {
-	ERR_FAIL_D_NOT_IMPL();
+PhysicsDirectBodyState3D* JoltPhysicsServer3D::_body_get_direct_state(const RID& p_body) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_direct_state();
 }
 
 RID JoltPhysicsServer3D::_soft_body_create() {
