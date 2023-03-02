@@ -119,7 +119,7 @@ protected:
 
 	JPH::Body* create_end(const JPH::BodyCreationSettings& p_settings, bool p_lock = true);
 
-	void destroy_in_space(bool p_lock = true);
+	virtual void destroy_in_space(bool p_lock = true);
 
 	void add_to_space(bool p_lock = true);
 

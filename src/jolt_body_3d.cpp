@@ -222,7 +222,7 @@ void JoltBody3D::set_can_sleep(bool p_enabled, bool p_lock) {
 Basis JoltBody3D::get_principal_inertia_axes(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	if (mode != PhysicsServer3D::BodyMode::BODY_MODE_RIGID) {
+	if (is_static() || is_kinematic()) {
 		return {};
 	}
 
@@ -241,7 +241,7 @@ Basis JoltBody3D::get_principal_inertia_axes(bool p_lock) const {
 Vector3 JoltBody3D::get_inverse_inertia(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	if (mode != PhysicsServer3D::BodyMode::BODY_MODE_RIGID) {
+	if (is_static() || is_kinematic()) {
 		return {};
 	}
 
@@ -254,7 +254,7 @@ Vector3 JoltBody3D::get_inverse_inertia(bool p_lock) const {
 Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 	ERR_FAIL_NULL_D(space);
 
-	if (mode != PhysicsServer3D::BodyMode::BODY_MODE_RIGID) {
+	if (is_static() || is_kinematic()) {
 		return {};
 	}
 
@@ -659,15 +659,6 @@ JoltPhysicsDirectBodyState3D* JoltBody3D::get_direct_state() {
 }
 
 void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
-	if (p_mode == PhysicsServer3D::BODY_MODE_RIGID_LINEAR) {
-		WARN_PRINT(
-			"Locking rotation is not supported by Godot Jolt. "
-			"Any such setting will be treated as disabled."
-		);
-
-		p_mode = PhysicsServer3D::BODY_MODE_RIGID;
-	}
-
 	if (p_mode == mode) {
 		return;
 	}
@@ -688,7 +679,8 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
 			motion_type = JPH::EMotionType::Kinematic;
 		} break;
-		case PhysicsServer3D::BODY_MODE_RIGID: {
+		case PhysicsServer3D::BODY_MODE_RIGID:
+		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
 			motion_type = JPH::EMotionType::Dynamic;
 		} break;
 		default: {
@@ -856,6 +848,24 @@ float JoltBody3D::get_total_angular_damp(bool p_lock) const {
 	return body->GetMotionPropertiesUnchecked()->GetAngularDamping();
 }
 
+bool JoltBody3D::is_axis_locked(PhysicsServer3D::BodyAxis p_axis) const {
+	return (locked_axes & (uint32_t)p_axis) != 0;
+}
+
+void JoltBody3D::set_axis_lock(PhysicsServer3D::BodyAxis p_axis, bool p_lock_axis, bool p_lock) {
+	const uint32_t previous_locked_axes = locked_axes;
+
+	if (p_lock_axis) {
+		locked_axes |= (uint32_t)p_axis;
+	} else {
+		locked_axes &= ~(uint32_t)p_axis;
+	}
+
+	if (previous_locked_axes != locked_axes) {
+		axis_lock_changed(p_lock);
+	}
+}
+
 JPH::EMotionType JoltBody3D::get_motion_type() const {
 	switch (mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {
@@ -902,10 +912,18 @@ void JoltBody3D::create_in_space(bool p_lock) {
 	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
 
 	areas_changed(p_lock);
+	axis_lock_changed(p_lock);
+}
+
+void JoltBody3D::destroy_in_space(bool p_lock) {
+	destroy_axes_constraint();
+
+	JoltCollisionObject3D::destroy_in_space(p_lock);
 }
 
 void JoltBody3D::mode_changed(bool p_lock) {
 	object_layer_changed(p_lock);
+	axis_lock_changed(p_lock);
 }
 
 void JoltBody3D::shapes_changed(bool p_lock) {
@@ -982,6 +1000,10 @@ void JoltBody3D::damp_changed(bool p_lock) {
 	motion_properties.SetAngularDamping(total_angular_damp);
 }
 
+void JoltBody3D::axis_lock_changed(bool p_lock) {
+	create_axes_constraint(p_lock);
+}
+
 JPH::MassProperties JoltBody3D::calculate_mass_properties(const JPH::Shape& p_shape) const {
 	const bool calculate_mass = mass <= 0;
 	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
@@ -1014,4 +1036,58 @@ void JoltBody3D::mass_properties_changed(bool p_lock) {
 	ERR_FAIL_COND(body.is_invalid());
 
 	body->GetMotionPropertiesUnchecked()->SetMassProperties(calculate_mass_properties());
+}
+
+void JoltBody3D::create_axes_constraint(bool p_lock) {
+	if (!space) {
+		return;
+	}
+
+	destroy_axes_constraint();
+
+	if (!are_axes_locked() && !is_rigid_linear()) {
+		return;
+	}
+
+	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(jolt_body.is_invalid());
+
+	JPH::SixDOFConstraintSettings constraint_settings;
+	constraint_settings.mPosition1 = jolt_body->GetCenterOfMassPosition();
+	constraint_settings.mPosition2 = constraint_settings.mPosition1;
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_X)) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationX);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Y)) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationY);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Z)) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationZ);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_X) || is_rigid_linear()) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationX);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Y) || is_rigid_linear()) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationY);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Z) || is_rigid_linear()) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationZ);
+	}
+
+	axes_constraint = constraint_settings.Create(JPH::Body::sFixedToWorld, *jolt_body);
+
+	space->add_joint(axes_constraint);
+}
+
+void JoltBody3D::destroy_axes_constraint() {
+	if (space && axes_constraint) {
+		space->remove_joint(axes_constraint);
+		axes_constraint = nullptr;
+	}
 }

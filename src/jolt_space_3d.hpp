@@ -78,7 +78,11 @@ public:
 
 	float get_last_step() const { return last_step; }
 
+	void add_joint(JPH::Constraint* p_jolt_ref);
+
 	void add_joint(JoltJoint3D* p_joint);
+
+	void remove_joint(JPH::Constraint* p_jolt_ref);
 
 	void remove_joint(JoltJoint3D* p_joint);
 

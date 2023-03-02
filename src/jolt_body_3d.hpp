@@ -162,7 +162,11 @@ public:
 
 	bool is_kinematic() const { return mode == PhysicsServer3D::BODY_MODE_KINEMATIC; }
 
-	bool is_rigid() const { return mode == PhysicsServer3D::BODY_MODE_RIGID; }
+	bool is_rigid_free() const { return mode == PhysicsServer3D::BODY_MODE_RIGID; }
+
+	bool is_rigid_linear() const { return mode == PhysicsServer3D::BODY_MODE_RIGID_LINEAR; }
+
+	bool is_rigid() const { return is_rigid_free() || is_rigid_linear(); }
 
 	bool is_ccd_enabled() const { return ccd_enabled; }
 
@@ -210,12 +214,20 @@ public:
 
 	void set_angular_damp_mode(DampMode p_mode) { angular_damp_mode = p_mode; }
 
+	bool is_axis_locked(PhysicsServer3D::BodyAxis p_axis) const;
+
+	void set_axis_lock(PhysicsServer3D::BodyAxis p_axis, bool p_lock_axis, bool p_lock = true);
+
+	bool are_axes_locked() const { return locked_axes != 0; }
+
 private:
 	bool get_initial_sleep_state() const override { return initial_sleep_state; }
 
 	JPH::EMotionType get_motion_type() const override;
 
 	void create_in_space(bool p_lock = true) override;
+
+	void destroy_in_space(bool p_lock = true) override;
 
 	void mode_changed(bool p_lock = true);
 
@@ -225,11 +237,17 @@ private:
 
 	void damp_changed(bool p_lock = true);
 
+	void axis_lock_changed(bool p_lock = true);
+
 	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
 
 	JPH::MassProperties calculate_mass_properties() const;
 
 	void mass_properties_changed(bool p_lock);
+
+	void create_axes_constraint(bool p_lock = true);
+
+	void destroy_axes_constraint();
 
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
 
@@ -259,6 +277,8 @@ private:
 
 	bool custom_center_of_mass = false;
 
+	uint32_t locked_axes = 0;
+
 	int32_t contact_count = 0;
 
 	LocalVector<Contact> contacts;
@@ -284,4 +304,6 @@ private:
 	Variant force_integration_userdata;
 
 	JoltPhysicsDirectBodyState3D* direct_state = nullptr;
+
+	JPH::Ref<JPH::Constraint> axes_constraint;
 };
