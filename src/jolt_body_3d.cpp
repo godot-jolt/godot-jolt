@@ -1052,8 +1052,6 @@ void JoltBody3D::create_axes_constraint(bool p_lock) {
 	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(jolt_body.is_invalid());
 
-	const Transform3D transform = get_transform(false);
-
 	JPH::SixDOFConstraintSettings constraint_settings;
 	constraint_settings.mPosition1 = jolt_body->GetCenterOfMassPosition();
 	constraint_settings.mPosition2 = constraint_settings.mPosition1;
