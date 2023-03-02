@@ -834,24 +834,18 @@ void JoltPhysicsServer3D::_body_set_axis_velocity(
 	body->set_axis_velocity(p_axis_velocity);
 }
 
-void JoltPhysicsServer3D::_body_set_axis_lock(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] BodyAxis p_axis,
-	bool p_lock
-) {
-	if (p_lock) {
-		WARN_PRINT(
-			"Axis lock is not supported by Godot Jolt. "
-			"Any such setting will be treated as disabled."
-		);
-	}
+void JoltPhysicsServer3D::_body_set_axis_lock(const RID& p_body, BodyAxis p_axis, bool p_lock) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_axis_lock(p_axis, p_lock);
 }
 
-bool JoltPhysicsServer3D::_body_is_axis_locked(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] BodyAxis p_axis
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+bool JoltPhysicsServer3D::_body_is_axis_locked(const RID& p_body, BodyAxis p_axis) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->is_axis_locked(p_axis);
 }
 
 void JoltPhysicsServer3D::_body_add_collision_exception(
