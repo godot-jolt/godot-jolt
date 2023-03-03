@@ -127,6 +127,6 @@ private:
 #ifdef DEBUG_ENABLED
 	PackedVector3Array debug_contacts;
 
-	std::atomic<int32_t> debug_contact_count;
+	std::atomic<int32_t> debug_contact_count = 0;
 #endif // DEBUG_ENABLED
 };
