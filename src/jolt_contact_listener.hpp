@@ -62,7 +62,7 @@ public:
 
 	void post_step();
 
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 	const PackedVector3Array& get_debug_contacts() const { return debug_contacts; }
 
 	int32_t get_debug_contact_count() const { return debug_contact_count; }
@@ -106,7 +106,7 @@ private:
 
 	void flush_area_exits();
 
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 	void add_debug_contacts(const JPH::ContactManifold& p_manifold);
 #endif // DEBUG_ENABLED
 
@@ -124,7 +124,7 @@ private:
 
 	Overlaps area_exits;
 
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 	PackedVector3Array debug_contacts;
 
 	std::atomic<int32_t> debug_contact_count;

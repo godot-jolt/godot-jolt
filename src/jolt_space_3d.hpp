@@ -86,7 +86,7 @@ public:
 
 	void remove_joint(JoltJoint3D* p_joint);
 
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 	const PackedVector3Array& get_debug_contacts() const;
 
 	int32_t get_debug_contact_count() const;

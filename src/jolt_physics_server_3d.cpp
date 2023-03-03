@@ -197,7 +197,7 @@ void JoltPhysicsServer3D::_space_set_debug_contacts(
 	[[maybe_unused]] const RID& p_space,
 	[[maybe_unused]] int32_t p_max_contacts
 ) {
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL(space);
 
@@ -207,7 +207,7 @@ void JoltPhysicsServer3D::_space_set_debug_contacts(
 
 PackedVector3Array JoltPhysicsServer3D::_space_get_contacts([[maybe_unused]] const RID& p_space
 ) const {
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
 
@@ -218,7 +218,7 @@ PackedVector3Array JoltPhysicsServer3D::_space_get_contacts([[maybe_unused]] con
 }
 
 int32_t JoltPhysicsServer3D::_space_get_contact_count([[maybe_unused]] const RID& p_space) const {
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
 

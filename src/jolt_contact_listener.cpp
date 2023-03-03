@@ -38,7 +38,7 @@ void JoltContactListener::OnContactAdded(
 	const JPH::ContactManifold& p_manifold,
 	JPH::ContactSettings& p_settings
 ) {
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 	add_debug_contacts(p_manifold);
 #endif // DEBUG_ENABLED
 
@@ -64,7 +64,7 @@ void JoltContactListener::OnContactPersisted(
 	const JPH::ContactManifold& p_manifold,
 	JPH::ContactSettings& p_settings
 ) {
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 	add_debug_contacts(p_manifold);
 #endif // DEBUG_ENABLED
 
@@ -323,7 +323,7 @@ void JoltContactListener::flush_area_exits() {
 	area_exits.clear();
 }
 
-#if DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
 
 void JoltContactListener::add_debug_contacts(const JPH::ContactManifold& p_manifold) {
 	const int64_t max_count = debug_contacts.size();
