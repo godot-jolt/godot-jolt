@@ -22,7 +22,10 @@ void JoltContactListener::listen_for(JoltCollisionObject3D* p_object) {
 
 void JoltContactListener::pre_step() {
 	listening_for.clear();
+
+#ifdef DEBUG_ENABLED
 	debug_contact_count = 0;
+#endif // DEBUG_ENABLED
 }
 
 void JoltContactListener::post_step() {
