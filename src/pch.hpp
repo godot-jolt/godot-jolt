@@ -89,6 +89,7 @@
 #include <mimalloc.h>
 
 #include <algorithm>
+#include <atomic>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>

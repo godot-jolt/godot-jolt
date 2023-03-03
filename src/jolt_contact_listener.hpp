@@ -62,6 +62,16 @@ public:
 
 	void post_step();
 
+#if DEBUG_ENABLED
+	const PackedVector3Array& get_debug_contacts() const { return debug_contacts; }
+
+	int32_t get_debug_contact_count() const { return debug_contact_count; }
+
+	int32_t get_max_debug_contacts() const { return (int32_t)debug_contacts.size(); }
+
+	void set_max_debug_contacts(int32_t p_count) { debug_contacts.resize(p_count); }
+#endif // DEBUG_ENABLED
+
 private:
 	void OnContactAdded(
 		const JPH::Body& p_body1,
@@ -96,6 +106,10 @@ private:
 
 	void flush_area_exits();
 
+#if DEBUG_ENABLED
+	void add_debug_contacts(const JPH::ContactManifold& p_manifold);
+#endif // DEBUG_ENABLED
+
 	JoltSpace3D* space = nullptr;
 
 	Mutex write_mutex;
@@ -109,4 +123,10 @@ private:
 	Overlaps area_enters;
 
 	Overlaps area_exits;
+
+#if DEBUG_ENABLED
+	PackedVector3Array debug_contacts;
+
+	std::atomic<int32_t> debug_contact_count;
+#endif // DEBUG_ENABLED
 };

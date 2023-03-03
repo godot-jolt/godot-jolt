@@ -304,6 +304,26 @@ void JoltSpace3D::remove_joint(JoltJoint3D* p_joint) {
 	remove_joint(p_joint->get_jolt_ref());
 }
 
+#if DEBUG_ENABLED
+
+const PackedVector3Array& JoltSpace3D::get_debug_contacts() const {
+	return contact_listener->get_debug_contacts();
+}
+
+int32_t JoltSpace3D::get_debug_contact_count() const {
+	return contact_listener->get_debug_contact_count();
+}
+
+int32_t JoltSpace3D::get_max_debug_contacts() const {
+	return contact_listener->get_max_debug_contacts();
+}
+
+void JoltSpace3D::set_max_debug_contacts(int32_t p_count) {
+	contact_listener->set_max_debug_contacts(p_count);
+}
+
+#endif // DEBUG_ENABLED
+
 void JoltSpace3D::pre_step(float p_step) {
 	body_accessor.acquire_all(true);
 

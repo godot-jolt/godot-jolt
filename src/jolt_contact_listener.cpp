@@ -22,6 +22,7 @@ void JoltContactListener::listen_for(JoltCollisionObject3D* p_object) {
 
 void JoltContactListener::pre_step() {
 	listening_for.clear();
+	debug_contact_count = 0;
 }
 
 void JoltContactListener::post_step() {
@@ -37,6 +38,10 @@ void JoltContactListener::OnContactAdded(
 	const JPH::ContactManifold& p_manifold,
 	JPH::ContactSettings& p_settings
 ) {
+#if DEBUG_ENABLED
+	add_debug_contacts(p_manifold);
+#endif // DEBUG_ENABLED
+
 	if (!is_listening_for(p_body1) && !is_listening_for(p_body2)) {
 		return;
 	}
@@ -59,6 +64,10 @@ void JoltContactListener::OnContactPersisted(
 	const JPH::ContactManifold& p_manifold,
 	JPH::ContactSettings& p_settings
 ) {
+#if DEBUG_ENABLED
+	add_debug_contacts(p_manifold);
+#endif // DEBUG_ENABLED
+
 	if (p_body1.IsSensor() || p_body2.IsSensor()) {
 		return;
 	}
@@ -313,3 +322,41 @@ void JoltContactListener::flush_area_exits() {
 
 	area_exits.clear();
 }
+
+#if DEBUG_ENABLED
+
+void JoltContactListener::add_debug_contacts(const JPH::ContactManifold& p_manifold) {
+	const int64_t max_count = debug_contacts.size();
+
+	if (max_count == 0) {
+		return;
+	}
+
+	const auto additional_pairs = (int32_t)p_manifold.mRelativeContactPointsOn1.size();
+	const int32_t additional_contacts = additional_pairs * 2;
+
+	int32_t current_count = debug_contact_count;
+	bool exchanged = false;
+
+	do {
+		const int32_t new_count = current_count + additional_contacts;
+
+		if (new_count > max_count) {
+			return;
+		}
+
+		exchanged = debug_contact_count.compare_exchange_weak(current_count, new_count);
+	} while (!exchanged);
+
+	for (int32_t i = 0; i < additional_pairs; ++i) {
+		const int32_t pair_index = current_count + i * 2;
+
+		debug_contacts[pair_index + 0] =
+			to_godot(p_manifold.GetWorldSpaceContactPointOn1((JPH::uint)i));
+
+		debug_contacts[pair_index + 1] =
+			to_godot(p_manifold.GetWorldSpaceContactPointOn2((JPH::uint)i));
+	}
+}
+
+#endif // DEBUG_ENABLED

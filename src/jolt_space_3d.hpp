@@ -86,6 +86,16 @@ public:
 
 	void remove_joint(JoltJoint3D* p_joint);
 
+#if DEBUG_ENABLED
+	const PackedVector3Array& get_debug_contacts() const;
+
+	int32_t get_debug_contact_count() const;
+
+	int32_t get_max_debug_contacts() const;
+
+	void set_max_debug_contacts(int32_t p_count);
+#endif // DEBUG_ENABLED
+
 private:
 	void pre_step(float p_step);
 
