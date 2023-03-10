@@ -67,6 +67,24 @@ protected:
 	HashMap<JoltCollisionObject3D*, int32_t> ref_counts_by_owner;
 };
 
+class JoltWorldBoundaryShape3D final : public JoltShape3D {
+public:
+	ShapeType get_type() const override { return ShapeType::SHAPE_WORLD_BOUNDARY; }
+
+	Variant get_data() const override;
+
+	void set_data(const Variant& p_data) override;
+
+	bool is_valid() const override { return plane != Plane(); }
+
+private:
+	void clear();
+
+	JPH::ShapeRefC build() const override;
+
+	Plane plane;
+};
+
 class JoltSphereShape3D final : public JoltShape3D {
 	ShapeType get_type() const override { return ShapeType::SHAPE_SPHERE; }
 

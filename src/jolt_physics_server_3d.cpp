@@ -32,7 +32,10 @@ void JoltPhysicsServer3D::finish_statics() {
 }
 
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
-	ERR_FAIL_D_NOT_IMPL();
+	JoltShape3D* shape = memnew(JoltWorldBoundaryShape3D);
+	RID rid = shape_owner.make_rid(shape);
+	shape->set_rid(rid);
+	return rid;
 }
 
 RID JoltPhysicsServer3D::_separation_ray_shape_create() {
