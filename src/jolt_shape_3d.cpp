@@ -175,6 +175,36 @@ JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p
 	return shape_result.Get();
 }
 
+Variant JoltWorldBoundaryShape3D::get_data() const {
+	return plane;
+}
+
+void JoltWorldBoundaryShape3D::set_data(const Variant& p_data) {
+	clear();
+
+	ERR_FAIL_COND(p_data.get_type() != Variant::PLANE);
+
+	const Plane new_plane = p_data;
+
+	if (new_plane == Plane()) {
+		return;
+	}
+
+	plane = new_plane;
+}
+
+void JoltWorldBoundaryShape3D::clear() {
+	jolt_ref = nullptr;
+	plane = Plane();
+}
+
+JPH::ShapeRefC JoltWorldBoundaryShape3D::build() const {
+	ERR_FAIL_D_MSG(
+		"WorldBoundaryShape3D is not supported by Godot Jolt. "
+		"Consider using one or more reasonably sized BoxShape3D instead."
+	);
+}
+
 Variant JoltSphereShape3D::get_data() const {
 	return radius;
 }
