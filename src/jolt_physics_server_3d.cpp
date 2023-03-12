@@ -971,15 +971,29 @@ void JoltPhysicsServer3D::_body_set_ray_pickable(const RID& p_body, bool p_enabl
 }
 
 bool JoltPhysicsServer3D::_body_test_motion(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Transform3D& p_from,
-	[[maybe_unused]] const Vector3& p_motion,
-	[[maybe_unused]] double p_margin,
-	[[maybe_unused]] int32_t p_max_collisions,
-	[[maybe_unused]] bool p_collide_separation_ray,
-	[[maybe_unused]] PhysicsServer3DExtensionMotionResult* p_result
+	const RID& p_body,
+	const Transform3D& p_from,
+	const Vector3& p_motion,
+	double p_margin,
+	int32_t p_max_collisions,
+	bool p_collide_separation_ray,
+	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
-	ERR_FAIL_D_NOT_IMPL();
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	JoltSpace3D* space = body->get_space();
+	ERR_FAIL_NULL_D(space);
+
+	return space->get_direct_state()->test_body_motion(
+		*body,
+		p_from,
+		p_motion,
+		(float)p_margin,
+		p_max_collisions,
+		p_collide_separation_ray,
+		p_result
+	);
 }
 
 PhysicsDirectBodyState3D* JoltPhysicsServer3D::_body_get_direct_state(const RID& p_body) {

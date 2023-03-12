@@ -1,5 +1,6 @@
 #pragma once
 
+class JoltBody3D;
 class JoltSpace3D;
 
 class JoltPhysicsDirectSpaceState3D final : public PhysicsDirectSpaceState3DExtension {
@@ -86,8 +87,49 @@ public:
 	Vector3 _get_closest_point_to_object_volume(const RID& p_object, const Vector3& p_point)
 		const override;
 
+	bool test_body_motion(
+		const JoltBody3D& p_body,
+		const Transform3D& p_transform,
+		const Vector3& p_motion,
+		float p_margin,
+		int32_t p_max_collisions,
+		bool p_collide_separation_ray,
+		PhysicsServer3DExtensionMotionResult* p_result
+	) const;
+
 	JoltSpace3D& get_space() const { return *space; }
 
 private:
+	bool body_motion_recover(
+		const JoltBody3D& p_body,
+		Transform3D& p_transform_com,
+		const Vector3& p_scale,
+		float p_margin,
+		bool p_collide_separation_ray,
+		Vector3& p_recover_motion
+	) const;
+
+	bool body_motion_cast(
+		const JoltBody3D& p_body,
+		const Transform3D& p_transform_com,
+		const Vector3& p_scale,
+		float p_margin,
+		const Vector3& p_motion,
+		bool p_collide_separation_ray,
+		float& p_safe_fraction,
+		float& p_unsafe_fraction
+	) const;
+
+	bool body_motion_collide(
+		const JoltBody3D& p_body,
+		const Transform3D& p_transform_com,
+		const Vector3& p_scale,
+		float p_margin,
+		int32_t p_max_collisions,
+		bool p_collide_separation_ray,
+		PhysicsServer3DExtensionMotionCollision* p_collisions,
+		int32_t& p_collision_count
+	) const;
+
 	JoltSpace3D* space = nullptr;
 };

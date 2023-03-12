@@ -3,6 +3,7 @@
 #include "jolt_area_3d.hpp"
 #include "jolt_body_3d.hpp"
 #include "jolt_collision_object_3d.hpp"
+#include "jolt_motion_filter_3d.hpp"
 #include "jolt_physics_server_3d.hpp"
 #include "jolt_query_collectors.hpp"
 #include "jolt_query_filter_3d.hpp"
@@ -491,4 +492,258 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 	} else {
 		return to_godot(body->GetPosition());
 	}
+}
+
+bool JoltPhysicsDirectSpaceState3D::test_body_motion(
+	const JoltBody3D& p_body,
+	const Transform3D& p_transform,
+	const Vector3& p_motion,
+	float p_margin,
+	int32_t p_max_collisions,
+	bool p_collide_separation_ray,
+	PhysicsServer3DExtensionMotionResult* p_result
+) const {
+	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
+
+	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
+	Transform3D transform_com = p_transform.translated_local(center_of_mass);
+	Vector3 scale(1.0f, 1.0f, 1.0f);
+	try_extract_scale(transform_com, scale);
+
+	Vector3 recover_motion;
+
+	const bool recovered = body_motion_recover(
+		p_body,
+		transform_com,
+		scale,
+		p_margin,
+		p_collide_separation_ray,
+		recover_motion
+	);
+
+	float safe_fraction = 1.0f;
+	float unsafe_fraction = 1.0f;
+
+	const bool hit = body_motion_cast(
+		p_body,
+		transform_com,
+		scale,
+		p_margin,
+		p_motion,
+		p_collide_separation_ray,
+		safe_fraction,
+		unsafe_fraction
+	);
+
+	bool collided = false;
+
+	if (hit || (recovered /* && p_recovery_as_collision */)) {
+		collided = body_motion_collide(
+			p_body,
+			transform_com.translated(p_motion * unsafe_fraction),
+			scale,
+			p_margin,
+			min(p_max_collisions, 32),
+			p_collide_separation_ray,
+			p_result->collisions,
+			p_result->collision_count
+		);
+	}
+
+	if (collided) {
+		const PhysicsServer3DExtensionMotionCollision& deepest = p_result->collisions[0];
+
+		p_result->travel = recover_motion + p_motion * safe_fraction;
+		p_result->remainder = p_motion - p_motion * safe_fraction;
+		p_result->collision_depth = deepest.depth;
+		p_result->collision_safe_fraction = safe_fraction;
+		p_result->collision_unsafe_fraction = unsafe_fraction;
+	} else {
+		p_result->travel = recover_motion + p_motion;
+		p_result->remainder = Vector3();
+		p_result->collision_depth = 0.0f;
+		p_result->collision_safe_fraction = 1.0f;
+		p_result->collision_unsafe_fraction = 1.0f;
+		p_result->collision_count = 0;
+	}
+
+	return collided;
+}
+
+bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
+	const JoltBody3D& p_body,
+	Transform3D& p_transform_com,
+	const Vector3& p_scale,
+	float p_margin,
+	bool p_collide_separation_ray,
+	Vector3& p_recover_motion
+) const {
+	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
+
+	JPH::CollideShapeSettings settings;
+	settings.mCollisionTolerance = p_margin;
+
+	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
+
+	bool recovered = false;
+
+	for (int32_t i = 0; i < 4; ++i) {
+		JoltQueryCollectorClosest<JPH::CollideShapeCollector> collector;
+
+		space->get_narrow_phase_query().CollideShape(
+			jolt_shape,
+			to_jolt(p_scale),
+			to_jolt(p_transform_com),
+			settings,
+			JPH::Vec3::sZero(),
+			collector,
+			motion_filter,
+			motion_filter,
+			motion_filter,
+			motion_filter
+		);
+
+		if (!collector.had_hit()) {
+			break;
+		}
+
+		const JPH::CollideShapeResult& hit = collector.get_hit();
+
+		if (hit.mPenetrationDepth == 0.0f) {
+			break;
+		}
+
+		const Vector3 contact_normal = to_godot(-hit.mPenetrationAxis.Normalized());
+		const Vector3 recover_motion = contact_normal * hit.mPenetrationDepth;
+
+		p_recover_motion += recover_motion;
+		p_transform_com.origin += recover_motion;
+
+		recovered = true;
+	}
+
+	return recovered;
+}
+
+bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
+	const JoltBody3D& p_body,
+	const Transform3D& p_transform_com,
+	const Vector3& p_scale,
+	float p_margin,
+	const Vector3& p_motion,
+	bool p_collide_separation_ray,
+	float& p_safe_fraction,
+	float& p_unsafe_fraction
+) const {
+	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
+
+	// TODO(mihe): Having these tolerances be as small as this feels brittle. Look into calculating
+	// them based on motion length or something.
+	JPH::ShapeCastSettings settings;
+	settings.mCollisionTolerance = FLT_EPSILON;
+	settings.mPenetrationTolerance = FLT_EPSILON;
+
+	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
+
+	JoltQueryCollectorClosest<JPH::CastShapeCollector> collector;
+
+	space->get_narrow_phase_query().CastShape(
+		JPH::RShapeCast(jolt_shape, to_jolt(p_scale), to_jolt(p_transform_com), to_jolt(p_motion)),
+		settings,
+		JPH::Vec3::sZero(),
+		collector,
+		motion_filter,
+		motion_filter,
+		motion_filter,
+		motion_filter
+	);
+
+	if (!collector.had_hit()) {
+		p_safe_fraction = 1.0f;
+		p_unsafe_fraction = 1.0f;
+
+		return false;
+	}
+
+	const JPH::ShapeCastResult& hit = collector.get_hit();
+
+	// TODO(mihe): Some epsilon should be applied to this nudge
+	const float nudge = p_margin / p_motion.length();
+
+	p_safe_fraction = max(hit.mFraction - nudge, 0.0f);
+	p_unsafe_fraction = min(hit.mFraction + nudge, 1.0f);
+
+	return true;
+}
+
+bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
+	const JoltBody3D& p_body,
+	const Transform3D& p_transform_com,
+	const Vector3& p_scale,
+	float p_margin,
+	int32_t p_max_collisions,
+	bool p_collide_separation_ray,
+	PhysicsServer3DExtensionMotionCollision* p_collisions,
+	int32_t& p_collision_count
+) const {
+	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
+
+	JPH::CollideShapeSettings settings;
+	settings.mCollisionTolerance = p_margin;
+
+	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
+
+	JoltQueryCollectorClosestMulti<JPH::CollideShapeCollector> collector(p_max_collisions);
+
+	space->get_narrow_phase_query().CollideShape(
+		jolt_shape,
+		to_jolt(p_scale),
+		to_jolt(p_transform_com),
+		settings,
+		JPH::Vec3::sZero(),
+		collector,
+		motion_filter,
+		motion_filter,
+		motion_filter,
+		motion_filter
+	);
+
+	if (!collector.had_hit()) {
+		p_collision_count = 0;
+
+		return false;
+	}
+
+	p_collision_count = collector.get_hit_count();
+
+	for (int32_t i = 0; i < p_collision_count; ++i) {
+		const JPH::CollideShapeResult& hit = collector.get_hit(i);
+
+		const JoltReadableBody3D collider_jolt_body = space->read_body(hit.mBodyID2);
+		const JoltCollisionObject3D* collider = collider_jolt_body.as_object();
+		ERR_FAIL_NULL_D(collider);
+
+		const Vector3 position = to_godot(hit.mContactPointOn2);
+		const Vector3 normal = to_godot(-hit.mPenetrationAxis.Normalized());
+
+		const int32_t local_shape = p_body.find_shape_index(hit.mSubShapeID1);
+		ERR_FAIL_COND_D(local_shape == -1);
+
+		const int32_t collider_shape = collider->find_shape_index(hit.mSubShapeID2);
+		ERR_FAIL_COND_D(collider_shape == -1);
+
+		PhysicsServer3DExtensionMotionCollision& collision = *p_collisions++;
+
+		collision.position = position;
+		collision.normal = normal;
+		collision.collider_velocity = collider->get_velocity_at_position(position, false);
+		collision.collider_angular_velocity = collider->get_angular_velocity(false);
+		collision.depth = hit.mPenetrationDepth;
+		collision.local_shape = local_shape;
+		collision.collider_id = collider->get_instance_id();
+		collision.collider = collider->get_rid();
+		collision.collider_shape = collider_shape;
+	}
+
+	return true;
 }
