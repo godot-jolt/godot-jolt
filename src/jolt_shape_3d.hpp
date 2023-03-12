@@ -85,6 +85,26 @@ private:
 	Plane plane;
 };
 
+class JoltSeparationRayShape3D final : public JoltShape3D {
+public:
+	ShapeType get_type() const override { return ShapeType::SHAPE_SEPARATION_RAY; }
+
+	Variant get_data() const override;
+
+	void set_data(const Variant& p_data) override;
+
+	bool is_valid() const override { return length > 0.0f; }
+
+private:
+	void clear();
+
+	JPH::ShapeRefC build() const override;
+
+	float length = 0.0f;
+
+	bool slide_on_slope = false;
+};
+
 class JoltSphereShape3D final : public JoltShape3D {
 	ShapeType get_type() const override { return ShapeType::SHAPE_SPHERE; }
 

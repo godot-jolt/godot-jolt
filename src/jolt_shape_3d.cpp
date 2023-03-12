@@ -2,6 +2,7 @@
 
 #include "jolt_collision_object_3d.hpp"
 #include "jolt_override_user_data_shape.hpp"
+#include "jolt_ray_shape.hpp"
 
 namespace {
 
@@ -203,6 +204,62 @@ JPH::ShapeRefC JoltWorldBoundaryShape3D::build() const {
 		"WorldBoundaryShape3D is not supported by Godot Jolt. "
 		"Consider using one or more reasonably sized BoxShape3D instead."
 	);
+}
+
+Variant JoltSeparationRayShape3D::get_data() const {
+	Dictionary data;
+	data["length"] = length;
+	data["slide_on_slope"] = slide_on_slope;
+	return data;
+}
+
+void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
+	clear();
+
+	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
+
+	const Dictionary data = p_data;
+
+	const Variant maybe_length = data.get("length", {});
+	ERR_FAIL_COND(maybe_length.get_type() != Variant::FLOAT);
+
+	const Variant maybe_slide_on_slope = data.get("slide_on_slope", {});
+	ERR_FAIL_COND(maybe_slide_on_slope.get_type() != Variant::BOOL);
+
+	const float new_length = maybe_length;
+	const bool new_slide_on_slope = maybe_slide_on_slope;
+
+	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
+	// letting these remain invalid.
+	if (new_length == 0.0f) {
+		return;
+	}
+
+	length = new_length;
+	slide_on_slope = new_slide_on_slope;
+}
+
+void JoltSeparationRayShape3D::clear() {
+	jolt_ref = nullptr;
+	length = 0.0f;
+	slide_on_slope = false;
+}
+
+JPH::ShapeRefC JoltSeparationRayShape3D::build() const {
+	const JoltRayShapeSettings shape_settings(length, slide_on_slope);
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to build separation ray shape with length '%f'. "
+			"It returned the following error: '%s'.",
+			length,
+			to_godot(shape_result.GetError())
+		)
+	);
+
+	return shape_result.Get();
 }
 
 Variant JoltSphereShape3D::get_data() const {
