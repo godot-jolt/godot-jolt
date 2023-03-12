@@ -133,6 +133,24 @@ Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
 	return to_godot(body->GetCenterOfMassPosition());
 }
 
+Vector3 JoltCollisionObject3D::get_linear_velocity(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return to_godot(body->GetLinearVelocity());
+}
+
+Vector3 JoltCollisionObject3D::get_angular_velocity(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return to_godot(body->GetAngularVelocity());
+}
+
 Vector3 JoltCollisionObject3D::get_velocity_at_position(const Vector3& p_position, bool p_lock)
 	const {
 	ERR_FAIL_NULL_D(space);

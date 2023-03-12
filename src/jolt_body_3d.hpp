@@ -68,11 +68,7 @@ public:
 
 	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
 
-	Vector3 get_linear_velocity(bool p_lock = true) const;
-
 	void set_linear_velocity(const Vector3& p_velocity, bool p_lock = true);
-
-	Vector3 get_angular_velocity(bool p_lock = true) const;
 
 	void set_angular_velocity(const Vector3& p_velocity, bool p_lock = true);
 
