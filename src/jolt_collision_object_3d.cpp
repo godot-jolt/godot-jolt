@@ -281,6 +281,16 @@ int32_t JoltCollisionObject3D::find_shape_index(const JPH::SubShapeID& p_sub_sha
 	return find_shape_index((uint32_t)jolt_shape->GetSubShapeUserData(p_sub_shape_id));
 }
 
+JoltShape3D* JoltCollisionObject3D::find_shape(uint32_t p_shape_instance_id) const {
+	const int32_t shape_index = find_shape_index(p_shape_instance_id);
+	return shape_index != -1 ? shapes[shape_index].get_shape() : nullptr;
+}
+
+JoltShape3D* JoltCollisionObject3D::find_shape(const JPH::SubShapeID& p_sub_shape_id) const {
+	const int32_t shape_index = find_shape_index(p_sub_shape_id);
+	return shape_index != -1 ? shapes[shape_index].get_shape() : nullptr;
+}
+
 JoltShape3D* JoltCollisionObject3D::get_shape(int32_t p_index) const {
 	ERR_FAIL_INDEX_D(p_index, shapes.size());
 
