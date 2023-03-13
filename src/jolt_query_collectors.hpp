@@ -92,3 +92,39 @@ private:
 
 	bool valid = false;
 };
+
+template<typename TBase>
+class JoltQueryCollectorClosestMulti final : public TBase {
+public:
+	using Hit = typename TBase::ResultType;
+
+	explicit JoltQueryCollectorClosestMulti(int32_t p_max_hits)
+		: max_hits(p_max_hits) { }
+
+	bool had_hit() const { return hits.size(); }
+
+	int32_t get_hit_count() const { return hits.size(); }
+
+	const Hit& get_hit(int32_t p_index) const { return hits[p_index]; }
+
+private:
+	void Reset() override {
+		TBase::Reset();
+
+		hits.clear();
+	}
+
+	void AddHit(const Hit& p_hit) override {
+		hits.ordered_insert(p_hit, [](const Hit& p_lhs, const Hit& p_rhs) {
+			return p_lhs.GetEarlyOutFraction() < p_rhs.GetEarlyOutFraction();
+		});
+
+		if (hits.size() > max_hits) {
+			hits.resize(max_hits);
+		}
+	}
+
+	InlineVector<Hit, 33> hits;
+
+	int32_t max_hits = 0;
+};

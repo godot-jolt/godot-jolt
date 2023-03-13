@@ -133,6 +133,24 @@ Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
 	return to_godot(body->GetCenterOfMassPosition());
 }
 
+Vector3 JoltCollisionObject3D::get_linear_velocity(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return to_godot(body->GetLinearVelocity());
+}
+
+Vector3 JoltCollisionObject3D::get_angular_velocity(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return to_godot(body->GetAngularVelocity());
+}
+
 Vector3 JoltCollisionObject3D::get_velocity_at_position(const Vector3& p_position, bool p_lock)
 	const {
 	ERR_FAIL_NULL_D(space);
@@ -261,6 +279,16 @@ int32_t JoltCollisionObject3D::find_shape_index(const JPH::SubShapeID& p_sub_sha
 	ERR_FAIL_NULL_V(jolt_shape, -1);
 
 	return find_shape_index((uint32_t)jolt_shape->GetSubShapeUserData(p_sub_shape_id));
+}
+
+JoltShape3D* JoltCollisionObject3D::find_shape(uint32_t p_shape_instance_id) const {
+	const int32_t shape_index = find_shape_index(p_shape_instance_id);
+	return shape_index != -1 ? shapes[shape_index].get_shape() : nullptr;
+}
+
+JoltShape3D* JoltCollisionObject3D::find_shape(const JPH::SubShapeID& p_sub_shape_id) const {
+	const int32_t shape_index = find_shape_index(p_sub_shape_id);
+	return shape_index != -1 ? shapes[shape_index].get_shape() : nullptr;
 }
 
 JoltShape3D* JoltCollisionObject3D::get_shape(int32_t p_index) const {

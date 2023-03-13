@@ -264,15 +264,6 @@ Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 	return to_godot(body->GetInverseInertia()).basis;
 }
 
-Vector3 JoltBody3D::get_linear_velocity(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
-
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return to_godot(body->GetMotionPropertiesUnchecked()->GetLinearVelocity());
-}
-
 void JoltBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
 	if (!space) {
 		initial_linear_velocity = p_velocity;
@@ -283,15 +274,6 @@ void JoltBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
 	ERR_FAIL_COND(body.is_invalid());
 
 	body->GetMotionPropertiesUnchecked()->SetLinearVelocityClamped(to_jolt(p_velocity));
-}
-
-Vector3 JoltBody3D::get_angular_velocity(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
-
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return to_godot(body->GetMotionPropertiesUnchecked()->GetAngularVelocity());
 }
 
 void JoltBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {

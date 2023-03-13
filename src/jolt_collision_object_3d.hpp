@@ -53,6 +53,10 @@ public:
 
 	Vector3 get_center_of_mass(bool p_lock = true) const;
 
+	Vector3 get_linear_velocity(bool p_lock = true) const;
+
+	Vector3 get_angular_velocity(bool p_lock = true) const;
+
 	Vector3 get_velocity_at_position(const Vector3& p_position, bool p_lock = true) const;
 
 	JPH::ShapeRefC try_build_shape();
@@ -81,6 +85,10 @@ public:
 	int32_t find_shape_index(uint32_t p_shape_instance_id) const;
 
 	int32_t find_shape_index(const JPH::SubShapeID& p_sub_shape_id) const;
+
+	JoltShape3D* find_shape(uint32_t p_shape_instance_id) const;
+
+	JoltShape3D* find_shape(const JPH::SubShapeID& p_sub_shape_id) const;
 
 	JoltShape3D* get_shape(int32_t p_index) const;
 
