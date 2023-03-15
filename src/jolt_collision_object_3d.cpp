@@ -217,9 +217,6 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	const JPH::ObjectLayer object_layer =
-		space->map_to_object_layer(get_broad_phase_layer(), collision_layer, collision_mask);
-
 	previous_jolt_shape = jolt_shape;
 
 	jolt_shape = try_build_shape();
@@ -230,7 +227,7 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 
 	JPH::BodyInterface& body_iface = space->get_body_iface(false);
 
-	body_iface.SetObjectLayer(jolt_id, object_layer);
+	body_iface.SetObjectLayer(jolt_id, get_object_layer());
 	body_iface.SetShape(jolt_id, jolt_shape, false, JPH::EActivation::DontActivate);
 
 	shapes_changed(false);
@@ -348,9 +345,6 @@ void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled,
 }
 
 JPH::BodyCreationSettings JoltCollisionObject3D::create_begin() {
-	const JPH::ObjectLayer object_layer =
-		space->map_to_object_layer(get_broad_phase_layer(), collision_layer, collision_mask);
-
 	jolt_shape = try_build_shape();
 
 	if (!jolt_shape) {
@@ -362,7 +356,7 @@ JPH::BodyCreationSettings JoltCollisionObject3D::create_begin() {
 		to_jolt(initial_transform.origin),
 		to_jolt(initial_transform.basis),
 		get_motion_type(),
-		object_layer};
+		get_object_layer()};
 }
 
 JPH::Body* JoltCollisionObject3D::create_end(
@@ -414,19 +408,18 @@ void JoltCollisionObject3D::post_step([[maybe_unused]] float p_step) {
 	previous_jolt_shape = nullptr;
 }
 
+JPH::ObjectLayer JoltCollisionObject3D::get_object_layer() const {
+	ERR_FAIL_NULL_D(space);
+
+	return space->map_to_object_layer(get_broad_phase_layer(), collision_layer, collision_mask);
+}
+
 void JoltCollisionObject3D::object_layer_changed(bool p_lock) {
 	if (!space) {
 		return;
 	}
 
-	space->get_body_iface(p_lock).SetObjectLayer(
-		jolt_id,
-		space->map_to_object_layer(
-			get_broad_phase_layer(),
-			get_collision_layer(),
-			get_collision_mask()
-		)
-	);
+	space->get_body_iface(p_lock).SetObjectLayer(jolt_id, get_object_layer());
 }
 
 void JoltCollisionObject3D::collision_layer_changed(bool p_lock) {

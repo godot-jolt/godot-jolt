@@ -113,6 +113,8 @@ public:
 protected:
 	virtual JPH::BroadPhaseLayer get_broad_phase_layer() const = 0;
 
+	JPH::ObjectLayer get_object_layer() const;
+
 	virtual bool has_custom_center_of_mass() const = 0;
 
 	virtual Vector3 get_center_of_mass_custom() const = 0;
