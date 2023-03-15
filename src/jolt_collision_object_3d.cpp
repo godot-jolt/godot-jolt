@@ -326,6 +326,12 @@ void JoltCollisionObject3D::set_shape_transform(
 	rebuild_shape(p_lock);
 }
 
+bool JoltCollisionObject3D::is_shape_disabled(int32_t p_index) const {
+	ERR_FAIL_INDEX_D(p_index, shapes.size());
+
+	return shapes[p_index].is_disabled();
+}
+
 void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 

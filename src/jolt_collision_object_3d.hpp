@@ -98,6 +98,8 @@ public:
 
 	void set_shape_transform(int32_t p_index, const Transform3D& p_transform, bool p_lock = true);
 
+	bool is_shape_disabled(int32_t p_index) const;
+
 	void set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock = true);
 
 	bool is_ray_pickable() const { return ray_pickable; }
