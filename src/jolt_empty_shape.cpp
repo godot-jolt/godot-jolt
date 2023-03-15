@@ -69,33 +69,33 @@ JPH::ShapeSettings::ShapeResult JoltEmptyShapeSettings::Create() const {
 }
 
 void JoltEmptyShape::register_type() {
-	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JPH::EShapeSubType::User2);
+	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JPH::EShapeSubType::User1);
 
 	shape_functions.mConstruct = construct_empty;
 	shape_functions.mColor = JPH::Color::sBlack;
 
 	for (const JPH::EShapeSubType sub_type : JPH::sAllSubShapeTypes) {
 		JPH::CollisionDispatch::sRegisterCollideShape(
-			JPH::EShapeSubType::User2,
+			JPH::EShapeSubType::User1,
 			sub_type,
 			collide_empty_vs_shape
 		);
 
 		JPH::CollisionDispatch::sRegisterCollideShape(
 			sub_type,
-			JPH::EShapeSubType::User2,
+			JPH::EShapeSubType::User1,
 			collide_shape_vs_empty
 		);
 
 		JPH::CollisionDispatch::sRegisterCastShape(
-			JPH::EShapeSubType::User2,
+			JPH::EShapeSubType::User1,
 			sub_type,
 			cast_empty_vs_shape
 		);
 
 		JPH::CollisionDispatch::sRegisterCastShape(
 			sub_type,
-			JPH::EShapeSubType::User2,
+			JPH::EShapeSubType::User1,
 			cast_shape_vs_empty
 		);
 	}

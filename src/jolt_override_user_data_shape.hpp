@@ -18,13 +18,13 @@ public:
 	static void register_type();
 
 	JoltOverrideUserDataShape()
-		: DecoratedShape(JPH::EShapeSubType::User1) { }
+		: DecoratedShape(JPH::EShapeSubType::User2) { }
 
 	JoltOverrideUserDataShape(
 		const JoltOverrideUserDataShapeSettings& p_settings,
 		ShapeResult& p_result
 	)
-		: DecoratedShape(JPH::EShapeSubType::User1, p_settings, p_result) {
+		: DecoratedShape(JPH::EShapeSubType::User2, p_settings, p_result) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
 		}
