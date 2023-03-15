@@ -142,7 +142,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	JPH::CollideShapeSettings settings;
 	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
@@ -209,7 +209,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	JPH::ShapeCastSettings settings;
 	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
@@ -293,7 +293,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	JPH::CollideShapeSettings settings;
 	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
@@ -351,7 +351,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	JPH::CollideShapeSettings settings;
 	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
@@ -508,7 +508,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
 	Transform3D transform_com = p_transform.translated_local(center_of_mass);
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	Vector3 recover_motion;
 

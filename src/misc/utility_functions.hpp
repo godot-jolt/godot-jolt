@@ -52,7 +52,7 @@ _FORCE_INLINE_ void memdelete_safely(TType*& p_ptr) {
 	}
 }
 
-_FORCE_INLINE_ bool try_extract_scale(Basis& p_basis, Vector3& p_scale) {
+_FORCE_INLINE_ bool try_strip_scale(Basis& p_basis, Vector3& p_scale) {
 	p_scale = Vector3(1.0f, 1.0f, 1.0f);
 
 	Vector3 x = p_basis.get_column(Vector3::AXIS_X);
@@ -82,8 +82,8 @@ _FORCE_INLINE_ bool try_extract_scale(Basis& p_basis, Vector3& p_scale) {
 	return true;
 }
 
-_FORCE_INLINE_ bool try_extract_scale(Transform3D& p_transform, Vector3& p_scale) {
-	return try_extract_scale(p_transform.basis, p_scale);
+_FORCE_INLINE_ bool try_strip_scale(Transform3D& p_transform, Vector3& p_scale) {
+	return try_strip_scale(p_transform.basis, p_scale);
 }
 
 _FORCE_INLINE_ double calculate_physics_step() {

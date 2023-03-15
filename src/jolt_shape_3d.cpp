@@ -113,7 +113,7 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 
 	Vector3 scale(1.0f, 1.0f, 1.0f);
 
-	if (try_extract_scale(transform, scale)) {
+	if (try_strip_scale(transform, scale)) {
 		shape = with_scale(shape, scale);
 	}
 
