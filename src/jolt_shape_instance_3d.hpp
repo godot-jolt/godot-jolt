@@ -22,7 +22,7 @@ public:
 
 	JoltShape3D* get_shape() const { return shape; }
 
-	JPH::ShapeRefC get_jolt_ref() const { return jolt_ref; }
+	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
 	const Transform3D& get_transform() const { return transform; }
 
