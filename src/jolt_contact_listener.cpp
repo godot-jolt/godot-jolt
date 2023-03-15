@@ -172,17 +172,8 @@ void JoltContactListener::flush_contacts() {
 		JoltBody3D* body2 = jolt_bodies[1].as_body();
 		ERR_FAIL_NULL(body2);
 
-		const JPH::Shape& shape1 = *body1->get_jolt_shape();
-		const JPH::Shape& shape2 = *body2->get_jolt_shape();
-
-		const JPH::SubShapeID& sub_shape_id1 = shape_pair.GetSubShapeID1();
-		const JPH::SubShapeID& sub_shape_id2 = shape_pair.GetSubShapeID2();
-
-		const auto shape_instance_id1 = (uint32_t)shape1.GetSubShapeUserData(sub_shape_id1);
-		const auto shape_instance_id2 = (uint32_t)shape2.GetSubShapeUserData(sub_shape_id2);
-
-		const int32_t shape_index1 = body1->find_shape_index(shape_instance_id1);
-		const int32_t shape_index2 = body2->find_shape_index(shape_instance_id2);
+		const int32_t shape_index1 = body1->find_shape_index(shape_pair.GetSubShapeID1());
+		const int32_t shape_index2 = body2->find_shape_index(shape_pair.GetSubShapeID2());
 
 		for (const Contact& contact : manifold.contacts1) {
 			body1->add_contact(
