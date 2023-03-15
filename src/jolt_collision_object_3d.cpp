@@ -7,7 +7,7 @@
 
 JoltCollisionObject3D::~JoltCollisionObject3D() = default;
 
-void* JoltCollisionObject3D::get_instance() const {
+GodotObject* JoltCollisionObject3D::get_instance() const {
 	return internal::gde_interface->object_get_instance_from_id(instance_id);
 }
 
@@ -18,7 +18,7 @@ Object* JoltCollisionObject3D::get_instance_unsafe() const {
 	// godot-cpp is unable to do the necessary unwrapping of the instance bindings in such cases.
 	//
 	// Dereferencing this pointer from the extension will lead to bad things.
-	return static_cast<Object*>(get_instance());
+	return reinterpret_cast<Object*>(get_instance());
 }
 
 Object* JoltCollisionObject3D::get_instance_wrapped() const {
