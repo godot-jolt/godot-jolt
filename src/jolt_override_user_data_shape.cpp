@@ -135,6 +135,14 @@ void cast_shape_vs_override_user_data(
 
 } // namespace
 
+JPH::ShapeSettings::ShapeResult JoltOverrideUserDataShapeSettings::Create() const {
+	if (mCachedResult.IsEmpty()) {
+		new JoltOverrideUserDataShape(*this, mCachedResult);
+	}
+
+	return mCachedResult;
+}
+
 void JoltOverrideUserDataShape::register_type() {
 	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JPH::EShapeSubType::User1);
 
@@ -166,12 +174,4 @@ void JoltOverrideUserDataShape::register_type() {
 			cast_shape_vs_override_user_data
 		);
 	}
-}
-
-JPH::ShapeSettings::ShapeResult JoltOverrideUserDataShapeSettings::Create() const {
-	if (mCachedResult.IsEmpty()) {
-		new JoltOverrideUserDataShape(*this, mCachedResult);
-	}
-
-	return mCachedResult;
 }
