@@ -887,6 +887,83 @@ void JoltBody3D::destroy_in_space(bool p_lock) {
 	JoltCollisionObject3D::destroy_in_space(p_lock);
 }
 
+JPH::MassProperties JoltBody3D::calculate_mass_properties(const JPH::Shape& p_shape) const {
+	const bool calculate_mass = mass <= 0;
+	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
+
+	JPH::MassProperties mass_properties = p_shape.GetMassProperties();
+
+	if (calculate_mass && calculate_inertia) {
+		mass_properties.mInertia(3, 3) = 1.0f;
+	} else if (calculate_inertia) {
+		mass_properties.ScaleToMass(mass);
+		mass_properties.mInertia(3, 3) = 1.0f;
+	} else {
+		mass_properties.mMass = mass;
+		mass_properties.mInertia.SetDiagonal3(to_jolt(inertia));
+	}
+
+	return mass_properties;
+}
+
+JPH::MassProperties JoltBody3D::calculate_mass_properties() const {
+	return calculate_mass_properties(*jolt_shape);
+}
+
+void JoltBody3D::create_axes_constraint(bool p_lock) {
+	if (!space) {
+		return;
+	}
+
+	destroy_axes_constraint();
+
+	if (!are_axes_locked() && !is_rigid_linear()) {
+		return;
+	}
+
+	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(jolt_body.is_invalid());
+
+	JPH::SixDOFConstraintSettings constraint_settings;
+	constraint_settings.mPosition1 = jolt_body->GetCenterOfMassPosition();
+	constraint_settings.mPosition2 = constraint_settings.mPosition1;
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_X)) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationX);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Y)) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationY);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Z)) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationZ);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_X) || is_rigid_linear()) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationX);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Y) || is_rigid_linear()) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationY);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Z) || is_rigid_linear()) {
+		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationZ);
+	}
+
+	axes_constraint = constraint_settings.Create(JPH::Body::sFixedToWorld, *jolt_body);
+
+	space->add_joint(axes_constraint);
+}
+
+void JoltBody3D::destroy_axes_constraint() {
+	if (space && axes_constraint) {
+		space->remove_joint(axes_constraint);
+		axes_constraint = nullptr;
+	}
+}
+
 void JoltBody3D::mode_changed(bool p_lock) {
 	object_layer_changed(p_lock);
 	axis_lock_changed(p_lock);
@@ -970,29 +1047,6 @@ void JoltBody3D::axis_lock_changed(bool p_lock) {
 	create_axes_constraint(p_lock);
 }
 
-JPH::MassProperties JoltBody3D::calculate_mass_properties(const JPH::Shape& p_shape) const {
-	const bool calculate_mass = mass <= 0;
-	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
-
-	JPH::MassProperties mass_properties = p_shape.GetMassProperties();
-
-	if (calculate_mass && calculate_inertia) {
-		mass_properties.mInertia(3, 3) = 1.0f;
-	} else if (calculate_inertia) {
-		mass_properties.ScaleToMass(mass);
-		mass_properties.mInertia(3, 3) = 1.0f;
-	} else {
-		mass_properties.mMass = mass;
-		mass_properties.mInertia.SetDiagonal3(to_jolt(inertia));
-	}
-
-	return mass_properties;
-}
-
-JPH::MassProperties JoltBody3D::calculate_mass_properties() const {
-	return calculate_mass_properties(*jolt_shape);
-}
-
 void JoltBody3D::mass_properties_changed(bool p_lock) {
 	if (!space) {
 		return;
@@ -1002,58 +1056,4 @@ void JoltBody3D::mass_properties_changed(bool p_lock) {
 	ERR_FAIL_COND(body.is_invalid());
 
 	body->GetMotionPropertiesUnchecked()->SetMassProperties(calculate_mass_properties());
-}
-
-void JoltBody3D::create_axes_constraint(bool p_lock) {
-	if (!space) {
-		return;
-	}
-
-	destroy_axes_constraint();
-
-	if (!are_axes_locked() && !is_rigid_linear()) {
-		return;
-	}
-
-	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
-	ERR_FAIL_COND(jolt_body.is_invalid());
-
-	JPH::SixDOFConstraintSettings constraint_settings;
-	constraint_settings.mPosition1 = jolt_body->GetCenterOfMassPosition();
-	constraint_settings.mPosition2 = constraint_settings.mPosition1;
-
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_X)) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationX);
-	}
-
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Y)) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationY);
-	}
-
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Z)) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationZ);
-	}
-
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_X) || is_rigid_linear()) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationX);
-	}
-
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Y) || is_rigid_linear()) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationY);
-	}
-
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Z) || is_rigid_linear()) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationZ);
-	}
-
-	axes_constraint = constraint_settings.Create(JPH::Body::sFixedToWorld, *jolt_body);
-
-	space->add_joint(axes_constraint);
-}
-
-void JoltBody3D::destroy_axes_constraint() {
-	if (space && axes_constraint) {
-		space->remove_joint(axes_constraint);
-		axes_constraint = nullptr;
-	}
 }
