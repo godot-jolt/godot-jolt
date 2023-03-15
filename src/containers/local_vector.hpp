@@ -90,13 +90,13 @@ public:
 	}
 
 	_FORCE_INLINE_ void ordered_insert(const TElement& p_val) {
-		auto position = std::lower_bound(begin(), end(), p_val);
-		impl.insert(position, p_val);
+		auto iter = std::lower_bound(begin(), end(), p_val);
+		impl.insert(iter, p_val);
 	}
 
 	_FORCE_INLINE_ void ordered_insert(TElement&& p_val) {
-		auto position = std::lower_bound(begin(), end(), p_val);
-		impl.insert(position, std::move(p_val));
+		auto iter = std::lower_bound(begin(), end(), p_val);
+		impl.insert(iter, std::move(p_val));
 	}
 
 	template<typename TCallable>
