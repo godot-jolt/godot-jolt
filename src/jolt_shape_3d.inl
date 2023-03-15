@@ -24,7 +24,7 @@ JPH::ShapeRefC JoltShape3D::as_compound(TCallable&& p_callable) {
 		shape_result.HasError(),
 		vformat(
 			"Failed to create compound shape with sub-shape count '%d'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			(int32_t)shape_settings.mSubShapes.size(),
 			to_godot(shape_result.GetError())
 		)
