@@ -652,23 +652,7 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 		return;
 	}
 
-	JPH::EMotionType motion_type = {};
-
-	switch (mode) {
-		case PhysicsServer3D::BODY_MODE_STATIC: {
-			motion_type = JPH::EMotionType::Static;
-		} break;
-		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
-			motion_type = JPH::EMotionType::Kinematic;
-		} break;
-		case PhysicsServer3D::BODY_MODE_RIGID:
-		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
-			motion_type = JPH::EMotionType::Dynamic;
-		} break;
-		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body mode: '%d'", mode));
-		} break;
-	}
+	const JPH::EMotionType motion_type = get_motion_type();
 
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
