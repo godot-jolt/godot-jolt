@@ -42,6 +42,8 @@ void collide_ray_vs_shape(
 	JPH::CollideShapeCollector& p_collector,
 	[[maybe_unused]] const JPH::ShapeFilter& p_shape_filter
 ) {
+	ERR_FAIL_COND(p_shape1->GetSubType() != JPH::EShapeSubType::UserConvex1);
+
 	const auto* shape1 = static_cast<const JoltRayShape*>(p_shape1);
 
 	// TODO(mihe): This transform scale/inverse feels unnecessary and should be optimized
