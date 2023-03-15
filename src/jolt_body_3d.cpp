@@ -332,7 +332,7 @@ void JoltBody3D::add_contact(
 
 	Contact* contact = nullptr;
 
-	if (contact_count != max_contacts) {
+	if (contact_count < max_contacts) {
 		contact = &contacts[contact_count++];
 	} else {
 		auto shallowest = std::min_element(
