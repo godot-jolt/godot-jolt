@@ -86,7 +86,7 @@ _FORCE_INLINE_ bool try_extract_scale(Transform3D& p_transform, Vector3& p_scale
 	return try_extract_scale(p_transform.basis, p_scale);
 }
 
-inline double calculate_physics_step() {
+_FORCE_INLINE_ double calculate_physics_step() {
 	// TODO(mihe): Replace these constants with the appropriate singleton calls once
 	// godotengine/godot-cpp#889 is fixed
 	const int32_t ticks_per_second = 60; // Engine::get_physics_ticks_per_second()
