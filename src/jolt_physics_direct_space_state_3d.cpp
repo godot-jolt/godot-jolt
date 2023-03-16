@@ -101,15 +101,13 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
 		const JoltCollisionObject3D* object = body.as_object();
 		ERR_FAIL_NULL_D(object);
 
-		const ObjectID object_id = object->get_instance_id();
-
 		const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
 		ERR_FAIL_COND_D(shape_index == -1);
 
 		PhysicsServer3DExtensionShapeResult& result = *p_results++;
 
 		result.rid = object->get_rid();
-		result.collider_id = object_id;
+		result.collider_id = object->get_instance_id();
 		result.collider = object->get_instance_unsafe();
 		result.shape = shape_index;
 	}
@@ -244,10 +242,9 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		ERR_FAIL_COND_D(shape_index == -1);
 
 		const Vector3 hit_point = to_godot(hit.mContactPointOn2);
-		const Vector3 hit_normal = to_godot(-hit.mPenetrationAxis.Normalized());
 
 		p_info->point = hit_point;
-		p_info->normal = hit_normal;
+		p_info->normal = to_godot(-hit.mPenetrationAxis.Normalized());
 		p_info->rid = object->get_rid();
 		p_info->collider_id = object->get_instance_id();
 		p_info->shape = shape_index;
@@ -387,10 +384,9 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	ERR_FAIL_COND_D(shape_index == -1);
 
 	const Vector3 hit_point = to_godot(hit.mContactPointOn2);
-	const Vector3 hit_normal = to_godot(-hit.mPenetrationAxis.Normalized());
 
 	p_info->point = hit_point;
-	p_info->normal = hit_normal;
+	p_info->normal = to_godot(-hit.mPenetrationAxis.Normalized());
 	p_info->rid = object->get_rid();
 	p_info->collider_id = object->get_instance_id();
 	p_info->shape = shape_index;
