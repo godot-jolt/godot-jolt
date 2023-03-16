@@ -125,7 +125,9 @@ void JoltContactListener::update_contacts(
 		p_manifold,
 		collision,
 		p_settings.mCombinedFriction,
-		p_settings.mCombinedRestitution
+		p_settings.mCombinedRestitution,
+		1.0f,
+		5
 	);
 
 	for (JPH::uint i = 0; i < contact_count; ++i) {
