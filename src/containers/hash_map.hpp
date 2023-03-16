@@ -64,12 +64,12 @@ public:
 
 	_FORCE_INLINE_ bool erase(const TKey& p_key) { return impl.erase(p_key) != 0; }
 
-	template<typename TCallable>
-	_FORCE_INLINE_ int32_t erase_if(TCallable&& p_callable) {
+	template<typename TPredicate>
+	_FORCE_INLINE_ int32_t erase_if(TPredicate&& p_pred) {
 		int32_t count = 0;
 
 		for (auto iter = begin(); iter != end();) {
-			if (p_callable(*iter)) {
+			if (p_pred(*iter)) {
 				iter = impl.erase(iter);
 				count++;
 			} else {

@@ -52,9 +52,9 @@ public:
 		}
 	}
 
-	template<typename TCallable>
-	_FORCE_INLINE_ int32_t erase_if(TCallable&& p_callable) {
-		const auto new_end = std::remove_if(begin(), end(), std::forward<TCallable>(p_callable));
+	template<typename TPredicate>
+	_FORCE_INLINE_ int32_t erase_if(TPredicate&& p_pred) {
+		const auto new_end = std::remove_if(begin(), end(), std::forward<TPredicate>(p_pred));
 		const auto count = (int32_t)std::distance(new_end, end());
 		impl.erase(new_end, end());
 		return count;
@@ -99,15 +99,15 @@ public:
 		impl.insert(iter, std::move(p_val));
 	}
 
-	template<typename TCallable>
-	_FORCE_INLINE_ void ordered_insert(const TElement& p_val, TCallable&& p_callable) {
-		auto iter = std::lower_bound(begin(), end(), p_val, std::forward<TCallable>(p_callable));
+	template<typename TPredicate>
+	_FORCE_INLINE_ void ordered_insert(const TElement& p_val, TPredicate&& p_pred) {
+		auto iter = std::lower_bound(begin(), end(), p_val, std::forward<TPredicate>(p_pred));
 		impl.insert(iter, p_val);
 	}
 
-	template<typename TCallable>
-	_FORCE_INLINE_ void ordered_insert(TElement&& p_val, TCallable&& p_callable) {
-		auto iter = std::lower_bound(begin(), end(), p_val, std::forward<TCallable>(p_callable));
+	template<typename TPredicate>
+	_FORCE_INLINE_ void ordered_insert(TElement&& p_val, TPredicate&& p_pred) {
+		auto iter = std::lower_bound(begin(), end(), p_val, std::forward<TPredicate>(p_pred));
 		impl.insert(iter, std::move(p_val));
 	}
 
@@ -122,10 +122,10 @@ public:
 		return -1;
 	}
 
-	template<typename TCallable>
-	_FORCE_INLINE_ int32_t find_if(TCallable&& p_callable, int32_t p_from = 0) const {
+	template<typename TPredicate>
+	_FORCE_INLINE_ int32_t find_if(TPredicate&& p_pred, int32_t p_from = 0) const {
 		if (p_from < size()) {
-			auto found = std::find_if(begin() + p_from, end(), std::forward<TCallable>(p_callable));
+			auto found = std::find_if(begin() + p_from, end(), std::forward<TPredicate>(p_pred));
 			if (found != end()) {
 				return (int32_t)std::distance(begin(), found);
 			}
