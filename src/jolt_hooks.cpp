@@ -68,5 +68,7 @@ void initialize_jolt_hooks() {
 }
 
 void deinitialize_jolt_hooks() {
+	JPH::UnregisterTypes();
+
 	delete_safely(JPH::Factory::sInstance);
 }
