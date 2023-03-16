@@ -29,13 +29,11 @@ public:
 	using Hit = typename TBase::ResultType;
 
 	explicit JoltQueryCollectorAny(int32_t p_max_hits)
-		: hits(p_max_hits) {
-		hits.resize(p_max_hits);
-	}
+		: max_hits(p_max_hits) { }
 
-	bool had_hit() const { return hit_count > 0; }
+	bool had_hit() const { return hits.size() > 0; }
 
-	int32_t get_hit_count() const { return hit_count; }
+	int32_t get_hit_count() const { return hits.size(); }
 
 	const Hit& get_hit(int32_t p_index) const { return hits[p_index]; }
 
@@ -43,22 +41,22 @@ private:
 	void Reset() override {
 		TBase::Reset();
 
-		hit_count = 0;
+		hits.clear();
 	}
 
 	void AddHit(const Hit& p_hit) override {
-		if (hit_count < hits.size()) {
-			hits[hit_count++] = p_hit;
+		if (hits.size() < max_hits) {
+			hits.push_back(p_hit);
 		}
 
-		if (hit_count == hits.size()) {
+		if (hits.size() == max_hits) {
 			TBase::ForceEarlyOut();
 		}
 	}
 
 	InlineVector<Hit, 32> hits;
 
-	int32_t hit_count = 0;
+	int32_t max_hits = 0;
 };
 
 template<typename TBase>
