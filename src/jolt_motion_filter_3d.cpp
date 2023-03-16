@@ -56,21 +56,18 @@ bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_body) const {
 		!physics_server.body_test_motion_is_excluding_body(object->get_rid());
 }
 
-bool JoltMotionFilter3D::ShouldCollide([[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id2
+bool JoltMotionFilter3D::ShouldCollide(
+	[[maybe_unused]] const JPH::Shape* p_shape2,
+	[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id2
 ) const {
 	return true;
 }
 
 bool JoltMotionFilter3D::ShouldCollide(
-	const JPH::SubShapeID& p_sub_shape_id1,
+	const JPH::Shape* p_shape1,
+	[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id1,
+	[[maybe_unused]] const JPH::Shape* p_shape2,
 	[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id2
 ) const {
-	if (collide_separation_ray) {
-		return true;
-	}
-
-	const JoltShape3D* shape = body.find_shape(p_sub_shape_id1);
-	ERR_FAIL_NULL_V(shape, true);
-
-	return shape->get_type() != PhysicsServer3D::SHAPE_SEPARATION_RAY;
+	return collide_separation_ray || p_shape1->GetSubType() != JPH::EShapeSubType::UserConvex1;
 }
