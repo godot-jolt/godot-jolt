@@ -211,6 +211,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	JPH::ShapeCastSettings settings;
 	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
+	settings.mBackFaceModeConvex = JPH::EBackFaceMode::CollideWithBackFaces;
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -253,15 +254,14 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		p_info->linear_velocity = object->get_velocity_at_position(hit_point, false);
 	}
 
-	// HACK(mihe): Since the fraction we get from Jolt seemingly can't be interpreted as safe nor
-	// unsafe we have to instead assume that it lies somewhere right inbetween. This means we have
-	// to nudge the fraction in both directions by some arbitrary small amount to get the fractions
-	// we're looking for. This feels error-prone, and will almost definitely break for some.
+	const float small_number = 0.000001f;
+	const float motion_length = p_motion.length();
+	const float nudge_epsilon = max(small_number * motion_length, small_number);
+	const float nudge_distance = settings.mCollisionTolerance + nudge_epsilon;
+	const float nudge_fraction = max(nudge_distance / motion_length, FLT_EPSILON);
 
-	const float nudge = 0.005f / p_motion.length();
-
-	*p_closest_safe = max(hit.mFraction - nudge, 0.0f);
-	*p_closest_unsafe = min(hit.mFraction + nudge, 1.0f);
+	*p_closest_safe = max(hit.mFraction - nudge_fraction, 0.0f);
+	*p_closest_unsafe = min(hit.mFraction + nudge_fraction, 1.0f);
 
 	return true;
 }
