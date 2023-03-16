@@ -105,7 +105,6 @@ private:
 		Transform3D& p_transform_com,
 		const Vector3& p_scale,
 		float p_margin,
-		bool p_collide_separation_ray,
 		Vector3& p_recover_motion
 	) const;
 
@@ -126,7 +125,6 @@ private:
 		const Vector3& p_scale,
 		float p_margin,
 		int32_t p_max_collisions,
-		bool p_collide_separation_ray,
 		PhysicsServer3DExtensionMotionCollision* p_collisions,
 		int32_t& p_collision_count
 	) const;

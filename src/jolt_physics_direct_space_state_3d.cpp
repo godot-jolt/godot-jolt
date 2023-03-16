@@ -506,16 +506,9 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	Vector3 scale(1.0f, 1.0f, 1.0f);
 	try_strip_scale(transform_com, scale);
 
-	Vector3 recover_motion;
+	Vector3 recovery;
 
-	const bool recovered = body_motion_recover(
-		p_body,
-		transform_com,
-		scale,
-		p_margin,
-		p_collide_separation_ray,
-		recover_motion
-	);
+	const bool recovered = body_motion_recover(p_body, transform_com, scale, p_margin, recovery);
 
 	float safe_fraction = 1.0f;
 	float unsafe_fraction = 1.0f;
@@ -540,7 +533,6 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 			scale,
 			p_margin,
 			min(p_max_collisions, 32),
-			p_collide_separation_ray,
 			p_result->collisions,
 			p_result->collision_count
 		);
@@ -549,13 +541,13 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	if (collided) {
 		const PhysicsServer3DExtensionMotionCollision& deepest = p_result->collisions[0];
 
-		p_result->travel = recover_motion + p_motion * safe_fraction;
+		p_result->travel = recovery + p_motion * safe_fraction;
 		p_result->remainder = p_motion - p_motion * safe_fraction;
 		p_result->collision_depth = deepest.depth;
 		p_result->collision_safe_fraction = safe_fraction;
 		p_result->collision_unsafe_fraction = unsafe_fraction;
 	} else {
-		p_result->travel = recover_motion + p_motion;
+		p_result->travel = recovery + p_motion;
 		p_result->remainder = Vector3();
 		p_result->collision_depth = 0.0f;
 		p_result->collision_safe_fraction = 1.0f;
@@ -571,7 +563,6 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	Transform3D& p_transform_com,
 	const Vector3& p_scale,
 	float p_margin,
-	bool p_collide_separation_ray,
 	Vector3& p_recover_motion
 ) const {
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
@@ -579,7 +570,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	JPH::CollideShapeSettings settings;
 	settings.mCollisionTolerance = p_margin;
 
-	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
+	const JoltMotionFilter3D motion_filter(p_body);
 
 	bool recovered = false;
 
@@ -678,7 +669,6 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 	const Vector3& p_scale,
 	float p_margin,
 	int32_t p_max_collisions,
-	bool p_collide_separation_ray,
 	PhysicsServer3DExtensionMotionCollision* p_collisions,
 	int32_t& p_collision_count
 ) const {
@@ -687,7 +677,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 	JPH::CollideShapeSettings settings;
 	settings.mCollisionTolerance = p_margin;
 
-	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
+	const JoltMotionFilter3D motion_filter(p_body);
 
 	JoltQueryCollectorClosestMulti<JPH::CollideShapeCollector> collector(p_max_collisions);
 

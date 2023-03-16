@@ -9,7 +9,7 @@ class JoltMotionFilter3D final
 	, public JPH::BodyFilter
 	, public JPH::ShapeFilter {
 public:
-	JoltMotionFilter3D(const JoltBody3D& p_body, bool p_collide_separation_ray);
+	explicit JoltMotionFilter3D(const JoltBody3D& p_body, bool p_collide_separation_ray = true);
 
 	bool ShouldCollide(JPH::BroadPhaseLayer p_broad_phase_layer) const override;
 
