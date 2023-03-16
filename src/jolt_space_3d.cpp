@@ -44,6 +44,10 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 		*layer_mapper
 	);
 
+	JPH::PhysicsSettings physics_settings;
+	physics_settings.mDeterministicSimulation = false;
+
+	physics_system->SetPhysicsSettings(physics_settings);
 	physics_system->SetGravity(JPH::Vec3::sZero());
 	physics_system->SetContactListener(contact_listener);
 }
