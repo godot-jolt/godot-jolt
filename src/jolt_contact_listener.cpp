@@ -231,7 +231,7 @@ void JoltContactListener::flush_area_enters() {
 		JoltArea3D* area1 = jolt_body1.as_area();
 		JoltArea3D* area2 = jolt_body2.as_area();
 
-		if (area1 && area2) {
+		if (area1 != nullptr && area2 != nullptr) {
 			if (area2->is_monitorable()) {
 				area1->area_shape_entered(body_id2, sub_shape_id2, sub_shape_id1);
 			}
@@ -239,9 +239,9 @@ void JoltContactListener::flush_area_enters() {
 			if (area1->is_monitorable()) {
 				area2->area_shape_entered(body_id1, sub_shape_id1, sub_shape_id2);
 			}
-		} else if (area1 && !area2) {
+		} else if (area1 != nullptr && area2 == nullptr) {
 			area1->body_shape_entered(body_id2, sub_shape_id2, sub_shape_id1);
-		} else if (!area1 && area2) {
+		} else if (area1 == nullptr && area2 != nullptr) {
 			area2->body_shape_entered(body_id1, sub_shape_id1, sub_shape_id2);
 		}
 	}
@@ -256,7 +256,7 @@ void JoltContactListener::flush_area_shifts() {
 			const JoltCollisionObject3D* object = jolt_body.as_object();
 			ERR_FAIL_NULL_V(object, false);
 
-			if (!object->get_previous_jolt_shape()) {
+			if (object->get_previous_jolt_shape() == nullptr) {
 				return false;
 			}
 
@@ -300,16 +300,16 @@ void JoltContactListener::flush_area_exits() {
 		JoltBody3D* body1 = jolt_body1.as_body();
 		JoltBody3D* body2 = jolt_body2.as_body();
 
-		if (area1 && area2) {
+		if (area1 != nullptr && area2 != nullptr) {
 			area1->area_shape_exited(body_id2, sub_shape_id2, sub_shape_id1);
 			area2->area_shape_exited(body_id1, sub_shape_id1, sub_shape_id2);
-		} else if (area1 && body2) {
+		} else if (area1 != nullptr && body2 != nullptr) {
 			area1->body_shape_exited(body_id2, sub_shape_id2, sub_shape_id1);
-		} else if (body1 && area2) {
+		} else if (body1 != nullptr && area2 != nullptr) {
 			area2->body_shape_exited(body_id1, sub_shape_id1, sub_shape_id2);
-		} else if (area1) {
+		} else if (area1 != nullptr) {
 			area1->shape_exited(body_id2, sub_shape_id2, sub_shape_id1);
-		} else if (area2) {
+		} else if (area2 != nullptr) {
 			area2->shape_exited(body_id1, sub_shape_id1, sub_shape_id2);
 		}
 	}

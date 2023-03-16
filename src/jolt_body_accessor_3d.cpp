@@ -36,7 +36,7 @@ void JoltBodyAccessor3D::acquire_active(bool p_lock) {
 
 	auto* vector = std::get_if<JPH::BodyIDVector>(&ids);
 
-	if (!vector) {
+	if (vector == nullptr) {
 		ids = JPH::BodyIDVector();
 		vector = std::get_if<JPH::BodyIDVector>(&ids);
 	}
@@ -51,7 +51,7 @@ void JoltBodyAccessor3D::acquire_all(bool p_lock) {
 
 	auto* vector = std::get_if<JPH::BodyIDVector>(&ids);
 
-	if (!vector) {
+	if (vector == nullptr) {
 		ids = JPH::BodyIDVector();
 		vector = std::get_if<JPH::BodyIDVector>(&ids);
 	}

@@ -30,14 +30,14 @@ void JoltCollisionObject3D::set_space(JoltSpace3D* p_space, bool p_lock) {
 		return;
 	}
 
-	if (space) {
+	if (space != nullptr) {
 		remove_from_space(p_lock);
 		destroy_in_space(p_lock);
 	}
 
 	space = p_space;
 
-	if (space) {
+	if (space != nullptr) {
 		create_in_space(p_lock);
 		add_to_space(p_lock);
 	}
@@ -73,7 +73,7 @@ Transform3D JoltCollisionObject3D::get_transform(bool p_lock) const {
 }
 
 void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p_lock) {
-	if (!space) {
+	if (space == nullptr) {
 		initial_transform = p_transform;
 		return;
 	}
@@ -96,7 +96,7 @@ Basis JoltCollisionObject3D::get_basis(bool p_lock) const {
 }
 
 void JoltCollisionObject3D::set_basis(const Basis& p_basis, bool p_lock) {
-	if (!space) {
+	if (space == nullptr) {
 		initial_transform.basis = p_basis;
 		return;
 	}
@@ -115,7 +115,7 @@ Vector3 JoltCollisionObject3D::get_position(bool p_lock) const {
 }
 
 void JoltCollisionObject3D::set_position(const Vector3& p_position, bool p_lock) {
-	if (!space) {
+	if (space == nullptr) {
 		initial_transform.origin = p_position;
 		return;
 	}
@@ -209,7 +209,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
 }
 
 void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
-	if (!space) {
+	if (space == nullptr) {
 		shapes_changed(p_lock);
 		return;
 	}
@@ -221,7 +221,7 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 
 	jolt_shape = try_build_shape();
 
-	if (!jolt_shape) {
+	if (jolt_shape == nullptr) {
 		jolt_shape = new JoltEmptyShape();
 	}
 
@@ -351,7 +351,7 @@ void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled,
 }
 
 void JoltCollisionObject3D::destroy_in_space(bool p_lock) {
-	if (!space) {
+	if (space == nullptr) {
 		return;
 	}
 
@@ -361,7 +361,7 @@ void JoltCollisionObject3D::destroy_in_space(bool p_lock) {
 }
 
 void JoltCollisionObject3D::add_to_space(bool p_lock) {
-	if (!space) {
+	if (space == nullptr) {
 		return;
 	}
 
@@ -372,7 +372,7 @@ void JoltCollisionObject3D::add_to_space(bool p_lock) {
 }
 
 void JoltCollisionObject3D::remove_from_space(bool p_lock) {
-	if (!space) {
+	if (space == nullptr) {
 		return;
 	}
 
@@ -394,7 +394,7 @@ JPH::ObjectLayer JoltCollisionObject3D::get_object_layer() const {
 JPH::BodyCreationSettings JoltCollisionObject3D::create_begin() {
 	jolt_shape = try_build_shape();
 
-	if (!jolt_shape) {
+	if (jolt_shape == nullptr) {
 		jolt_shape = new JoltEmptyShape();
 	}
 
@@ -421,7 +421,7 @@ JPH::Body* JoltCollisionObject3D::create_end(
 }
 
 void JoltCollisionObject3D::object_layer_changed(bool p_lock) {
-	if (!space) {
+	if (space == nullptr) {
 		return;
 	}
 

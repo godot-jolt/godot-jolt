@@ -281,7 +281,7 @@ JoltWritableBodies3D JoltSpace3D::write_bodies(
 }
 
 JoltPhysicsDirectSpaceState3D* JoltSpace3D::get_direct_state() {
-	if (!direct_state) {
+	if (direct_state == nullptr) {
 		direct_state = memnew(JoltPhysicsDirectSpaceState3D(this));
 	}
 

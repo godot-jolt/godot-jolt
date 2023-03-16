@@ -325,8 +325,6 @@ CheckOptions:
     value: CamelCase
   - key: readability-identifier-naming.VariableCase
     value: lower_case
-  - key: readability-implicit-bool-conversion.AllowPointerConditions
-    value: true
   - key: readability-inconsistent-declaration-parameter-name.Strict
     value: true
   - key: readability-simplify-boolean-expr.ChainedConditionalAssignment

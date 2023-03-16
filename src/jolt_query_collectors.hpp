@@ -101,7 +101,7 @@ public:
 	explicit JoltQueryCollectorClosestMulti(int32_t p_max_hits)
 		: max_hits(p_max_hits) { }
 
-	bool had_hit() const { return hits.size(); }
+	bool had_hit() const { return hits.size() > 0; }
 
 	int32_t get_hit_count() const { return hits.size(); }
 
