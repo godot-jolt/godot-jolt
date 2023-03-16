@@ -225,6 +225,14 @@ private:
 
 	void destroy_in_space(bool p_lock = true) override;
 
+	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
+
+	JPH::MassProperties calculate_mass_properties() const;
+
+	void create_axes_constraint(bool p_lock = true);
+
+	void destroy_axes_constraint();
+
 	void mode_changed(bool p_lock = true);
 
 	void shapes_changed(bool p_lock) override;
@@ -235,15 +243,7 @@ private:
 
 	void axis_lock_changed(bool p_lock = true);
 
-	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
-
-	JPH::MassProperties calculate_mass_properties() const;
-
-	void mass_properties_changed(bool p_lock);
-
-	void create_axes_constraint(bool p_lock = true);
-
-	void destroy_axes_constraint();
+	void mass_properties_changed(bool p_lock = true);
 
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
 

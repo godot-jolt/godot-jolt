@@ -72,8 +72,8 @@ func generate():
 		for x in range(resolution):
 			heights[z * resolution + x] = noise_gen.get_noise_2d(x, z)
 
-	var min_height := +INF as float
-	var max_height := -INF as float
+	var min_height := +INF
+	var max_height := -INF
 
 	for height in heights:
 		min_height = min(min_height, height)

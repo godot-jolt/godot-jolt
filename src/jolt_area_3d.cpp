@@ -310,16 +310,10 @@ void JoltArea3D::add_shape_pair(
 	p_overlap.rid = other_object->get_rid();
 	p_overlap.instance_id = other_object->get_instance_id();
 
-	const JPH::Shape& self_shape = *get_jolt_shape();
-	const JPH::Shape& other_shape = *other_object->get_jolt_shape();
-
-	auto self_shape_instance_id = (uint32_t)self_shape.GetSubShapeUserData(p_self_shape_id);
-	auto other_shape_instance_id = (uint32_t)other_shape.GetSubShapeUserData(p_other_shape_id);
-
 	ShapeIndexPair& shape_indices = p_overlap.shape_pairs[{p_other_shape_id, p_self_shape_id}];
 
-	shape_indices.other = other_object->find_shape_index(other_shape_instance_id);
-	shape_indices.self = find_shape_index(self_shape_instance_id);
+	shape_indices.other = other_object->find_shape_index(p_other_shape_id);
+	shape_indices.self = find_shape_index(p_self_shape_id);
 
 	p_overlap.pending_added.push_back(shape_indices);
 }

@@ -19,7 +19,7 @@ void collide_override_user_data_vs_shape(
 	JPH::CollideShapeCollector& p_collector,
 	const JPH::ShapeFilter& p_shape_filter
 ) {
-	ERR_FAIL_COND(p_shape1->GetSubType() != JPH::EShapeSubType::User1);
+	ERR_FAIL_COND(p_shape1->GetSubType() != JPH::EShapeSubType::User2);
 
 	const auto* shape1 = static_cast<const JoltOverrideUserDataShape*>(p_shape1);
 
@@ -51,7 +51,7 @@ void collide_shape_vs_override_user_data(
 	JPH::CollideShapeCollector& p_collector,
 	const JPH::ShapeFilter& p_shape_filter
 ) {
-	ERR_FAIL_COND(p_shape2->GetSubType() != JPH::EShapeSubType::User1);
+	ERR_FAIL_COND(p_shape2->GetSubType() != JPH::EShapeSubType::User2);
 
 	const auto* shape2 = static_cast<const JoltOverrideUserDataShape*>(p_shape2);
 
@@ -81,7 +81,7 @@ void cast_override_user_data_vs_shape(
 	const JPH::SubShapeIDCreator& p_sub_shape_id_creator2,
 	JPH::CastShapeCollector& p_collector
 ) {
-	ERR_FAIL_COND(p_shape_cast.mShape->GetSubType() != JPH::EShapeSubType::User1);
+	ERR_FAIL_COND(p_shape_cast.mShape->GetSubType() != JPH::EShapeSubType::User2);
 
 	const auto* shape = static_cast<const JoltOverrideUserDataShape*>(p_shape_cast.mShape);
 
@@ -116,7 +116,7 @@ void cast_shape_vs_override_user_data(
 	const JPH::SubShapeIDCreator& p_sub_shape_id_creator2,
 	JPH::CastShapeCollector& p_collector
 ) {
-	ERR_FAIL_COND(p_shape->GetSubType() != JPH::EShapeSubType::User1);
+	ERR_FAIL_COND(p_shape->GetSubType() != JPH::EShapeSubType::User2);
 
 	const auto* shape = static_cast<const JoltOverrideUserDataShape*>(p_shape);
 
@@ -135,43 +135,43 @@ void cast_shape_vs_override_user_data(
 
 } // namespace
 
-void JoltOverrideUserDataShape::register_type() {
-	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JPH::EShapeSubType::User1);
-
-	shape_functions.mConstruct = construct_override_user_data;
-	shape_functions.mColor = JPH::Color::sCyan;
-
-	for (const JPH::EShapeSubType sub_type : JPH::sAllSubShapeTypes) {
-		JPH::CollisionDispatch::sRegisterCollideShape(
-			JPH::EShapeSubType::User1,
-			sub_type,
-			collide_override_user_data_vs_shape
-		);
-
-		JPH::CollisionDispatch::sRegisterCollideShape(
-			sub_type,
-			JPH::EShapeSubType::User1,
-			collide_shape_vs_override_user_data
-		);
-
-		JPH::CollisionDispatch::sRegisterCastShape(
-			JPH::EShapeSubType::User1,
-			sub_type,
-			cast_override_user_data_vs_shape
-		);
-
-		JPH::CollisionDispatch::sRegisterCastShape(
-			sub_type,
-			JPH::EShapeSubType::User1,
-			cast_shape_vs_override_user_data
-		);
-	}
-}
-
 JPH::ShapeSettings::ShapeResult JoltOverrideUserDataShapeSettings::Create() const {
 	if (mCachedResult.IsEmpty()) {
 		new JoltOverrideUserDataShape(*this, mCachedResult);
 	}
 
 	return mCachedResult;
+}
+
+void JoltOverrideUserDataShape::register_type() {
+	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JPH::EShapeSubType::User2);
+
+	shape_functions.mConstruct = construct_override_user_data;
+	shape_functions.mColor = JPH::Color::sCyan;
+
+	for (const JPH::EShapeSubType sub_type : JPH::sAllSubShapeTypes) {
+		JPH::CollisionDispatch::sRegisterCollideShape(
+			JPH::EShapeSubType::User2,
+			sub_type,
+			collide_override_user_data_vs_shape
+		);
+
+		JPH::CollisionDispatch::sRegisterCollideShape(
+			sub_type,
+			JPH::EShapeSubType::User2,
+			collide_shape_vs_override_user_data
+		);
+
+		JPH::CollisionDispatch::sRegisterCastShape(
+			JPH::EShapeSubType::User2,
+			sub_type,
+			cast_override_user_data_vs_shape
+		);
+
+		JPH::CollisionDispatch::sRegisterCastShape(
+			sub_type,
+			JPH::EShapeSubType::User2,
+			cast_shape_vs_override_user_data
+		);
+	}
 }

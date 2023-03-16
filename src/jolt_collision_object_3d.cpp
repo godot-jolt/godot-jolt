@@ -7,7 +7,7 @@
 
 JoltCollisionObject3D::~JoltCollisionObject3D() = default;
 
-void* JoltCollisionObject3D::get_instance() const {
+GodotObject* JoltCollisionObject3D::get_instance() const {
 	return internal::gde_interface->object_get_instance_from_id(instance_id);
 }
 
@@ -18,7 +18,7 @@ Object* JoltCollisionObject3D::get_instance_unsafe() const {
 	// godot-cpp is unable to do the necessary unwrapping of the instance bindings in such cases.
 	//
 	// Dereferencing this pointer from the extension will lead to bad things.
-	return static_cast<Object*>(get_instance());
+	return reinterpret_cast<Object*>(get_instance());
 }
 
 Object* JoltCollisionObject3D::get_instance_wrapped() const {
@@ -217,9 +217,6 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	const JPH::ObjectLayer object_layer =
-		space->map_to_object_layer(get_broad_phase_layer(), collision_layer, collision_mask);
-
 	previous_jolt_shape = jolt_shape;
 
 	jolt_shape = try_build_shape();
@@ -230,7 +227,7 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 
 	JPH::BodyInterface& body_iface = space->get_body_iface(false);
 
-	body_iface.SetObjectLayer(jolt_id, object_layer);
+	body_iface.SetObjectLayer(jolt_id, get_object_layer());
 	body_iface.SetShape(jolt_id, jolt_shape, false, JPH::EActivation::DontActivate);
 
 	shapes_changed(false);
@@ -263,6 +260,20 @@ void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
 	rebuild_shape(p_lock);
 }
 
+JoltShape3D* JoltCollisionObject3D::get_shape(int32_t p_index) const {
+	ERR_FAIL_INDEX_D(p_index, shapes.size());
+
+	return shapes[p_index].get_shape();
+}
+
+void JoltCollisionObject3D::set_shape(int32_t p_index, JoltShape3D* p_shape, bool p_lock) {
+	ERR_FAIL_INDEX(p_index, shapes.size());
+
+	shapes[p_index] = JoltShapeInstance3D(this, p_shape);
+
+	rebuild_shape(p_lock);
+}
+
 void JoltCollisionObject3D::clear_shapes(bool p_lock) {
 	shapes.clear();
 
@@ -291,20 +302,6 @@ JoltShape3D* JoltCollisionObject3D::find_shape(const JPH::SubShapeID& p_sub_shap
 	return shape_index != -1 ? shapes[shape_index].get_shape() : nullptr;
 }
 
-JoltShape3D* JoltCollisionObject3D::get_shape(int32_t p_index) const {
-	ERR_FAIL_INDEX_D(p_index, shapes.size());
-
-	return shapes[p_index].get_shape();
-}
-
-void JoltCollisionObject3D::set_shape(int32_t p_index, JoltShape3D* p_shape, bool p_lock) {
-	ERR_FAIL_INDEX(p_index, shapes.size());
-
-	shapes[p_index] = JoltShapeInstance3D(this, p_shape);
-
-	rebuild_shape(p_lock);
-}
-
 Transform3D JoltCollisionObject3D::get_shape_transform(int32_t p_index) const {
 	ERR_FAIL_INDEX_D(p_index, shapes.size());
 
@@ -329,6 +326,12 @@ void JoltCollisionObject3D::set_shape_transform(
 	rebuild_shape(p_lock);
 }
 
+bool JoltCollisionObject3D::is_shape_disabled(int32_t p_index) const {
+	ERR_FAIL_INDEX_D(p_index, shapes.size());
+
+	return shapes[p_index].is_disabled();
+}
+
 void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
@@ -345,38 +348,6 @@ void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled,
 	}
 
 	rebuild_shape(p_lock);
-}
-
-JPH::BodyCreationSettings JoltCollisionObject3D::create_begin() {
-	const JPH::ObjectLayer object_layer =
-		space->map_to_object_layer(get_broad_phase_layer(), collision_layer, collision_mask);
-
-	jolt_shape = try_build_shape();
-
-	if (!jolt_shape) {
-		jolt_shape = new JoltEmptyShape();
-	}
-
-	return {
-		jolt_shape,
-		to_jolt(initial_transform.origin),
-		to_jolt(initial_transform.basis),
-		get_motion_type(),
-		object_layer};
-}
-
-JPH::Body* JoltCollisionObject3D::create_end(
-	const JPH::BodyCreationSettings& p_settings,
-	bool p_lock
-) {
-	JPH::BodyInterface& body_iface = space->get_body_iface(p_lock);
-	JPH::Body* body = body_iface.CreateBody(p_settings);
-
-	body->SetUserData(reinterpret_cast<JPH::uint64>(this));
-
-	set_jolt_id(body->GetID());
-
-	return body;
 }
 
 void JoltCollisionObject3D::destroy_in_space(bool p_lock) {
@@ -414,19 +385,47 @@ void JoltCollisionObject3D::post_step([[maybe_unused]] float p_step) {
 	previous_jolt_shape = nullptr;
 }
 
+JPH::ObjectLayer JoltCollisionObject3D::get_object_layer() const {
+	ERR_FAIL_NULL_D(space);
+
+	return space->map_to_object_layer(get_broad_phase_layer(), collision_layer, collision_mask);
+}
+
+JPH::BodyCreationSettings JoltCollisionObject3D::create_begin() {
+	jolt_shape = try_build_shape();
+
+	if (!jolt_shape) {
+		jolt_shape = new JoltEmptyShape();
+	}
+
+	return {
+		jolt_shape,
+		to_jolt(initial_transform.origin),
+		to_jolt(initial_transform.basis),
+		get_motion_type(),
+		get_object_layer()};
+}
+
+JPH::Body* JoltCollisionObject3D::create_end(
+	const JPH::BodyCreationSettings& p_settings,
+	bool p_lock
+) {
+	JPH::BodyInterface& body_iface = space->get_body_iface(p_lock);
+	JPH::Body* body = body_iface.CreateBody(p_settings);
+
+	body->SetUserData(reinterpret_cast<JPH::uint64>(this));
+
+	set_jolt_id(body->GetID());
+
+	return body;
+}
+
 void JoltCollisionObject3D::object_layer_changed(bool p_lock) {
 	if (!space) {
 		return;
 	}
 
-	space->get_body_iface(p_lock).SetObjectLayer(
-		jolt_id,
-		space->map_to_object_layer(
-			get_broad_phase_layer(),
-			get_collision_layer(),
-			get_collision_mask()
-		)
-	);
+	space->get_body_iface(p_lock).SetObjectLayer(jolt_id, get_object_layer());
 }
 
 void JoltCollisionObject3D::collision_layer_changed(bool p_lock) {

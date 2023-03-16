@@ -28,7 +28,7 @@ public:
 
 	JPH::ShapeRefC try_build();
 
-	JPH::ShapeRefC get_jolt_ref() const { return jolt_ref; }
+	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
 	Vector3 get_center_of_mass() const;
 

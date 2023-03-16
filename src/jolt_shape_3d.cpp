@@ -60,7 +60,7 @@ JPH::ShapeRefC JoltShape3D::with_scale(const JPH::Shape* p_shape, const Vector3&
 		shape_result.HasError(),
 		vformat(
 			"Failed to scale shape with scale '%v'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			p_scale,
 			to_godot(shape_result.GetError())
 		)
@@ -88,7 +88,7 @@ JPH::ShapeRefC JoltShape3D::with_basis_origin(
 		shape_result.HasError(),
 		vformat(
 			"Failed to offset shape with basis '%s' and origin '%v'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			p_basis,
 			p_origin,
 			to_godot(shape_result.GetError())
@@ -113,7 +113,7 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 
 	Vector3 scale(1.0f, 1.0f, 1.0f);
 
-	if (try_extract_scale(transform, scale)) {
+	if (try_strip_scale(transform, scale)) {
 		shape = with_scale(shape, scale);
 	}
 
@@ -133,7 +133,7 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
 		shape_result.HasError(),
 		vformat(
 			"Failed to offset center of mass with offset '%v'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			p_offset,
 			to_godot(shape_result.GetError())
 		)
@@ -295,7 +295,7 @@ JPH::ShapeRefC JoltSphereShape3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build sphere shape with radius '%f'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			radius,
 			to_godot(shape_result.GetError())
 		)
@@ -339,7 +339,7 @@ JPH::ShapeRefC JoltBoxShape3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build box shape with half extents '%v'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			half_extents,
 			to_godot(shape_result.GetError())
 		)
@@ -410,7 +410,7 @@ JPH::ShapeRefC JoltCapsuleShape3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build capsule shape with height '%f' and radius '%f'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			height,
 			radius,
 			to_godot(shape_result.GetError())
@@ -470,7 +470,7 @@ JPH::ShapeRefC JoltCylinderShape3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build cylinder shape with height '%f' and radius '%f'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			height,
 			radius,
 			to_godot(shape_result.GetError())
@@ -526,7 +526,7 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build convex polygon shape with vertex count '%d'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			vertex_count,
 			to_godot(shape_result.GetError())
 		)
@@ -627,7 +627,7 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build concave polygon shape with vertex count '%d'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			vertex_count,
 			to_godot(shape_result.GetError())
 		)
@@ -747,7 +747,7 @@ JPH::ShapeRefC JoltHeightMapShape3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build height map shape with width '%d', depth '%d' and height count '%d'. "
-			"Jolt returned the following error: '%s'.",
+			"It returned the following error: '%s'.",
 			width,
 			depth,
 			heights.size(),

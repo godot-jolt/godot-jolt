@@ -101,15 +101,13 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
 		const JoltCollisionObject3D* object = body.as_object();
 		ERR_FAIL_NULL_D(object);
 
-		const ObjectID object_id = object->get_instance_id();
-
 		const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
 		ERR_FAIL_COND_D(shape_index == -1);
 
 		PhysicsServer3DExtensionShapeResult& result = *p_results++;
 
 		result.rid = object->get_rid();
-		result.collider_id = object_id;
+		result.collider_id = object->get_instance_id();
 		result.collider = object->get_instance_unsafe();
 		result.shape = shape_index;
 	}
@@ -142,7 +140,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	JPH::CollideShapeSettings settings;
 	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
@@ -209,7 +207,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	JPH::ShapeCastSettings settings;
 	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
@@ -244,10 +242,9 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		ERR_FAIL_COND_D(shape_index == -1);
 
 		const Vector3 hit_point = to_godot(hit.mContactPointOn2);
-		const Vector3 hit_normal = to_godot(-hit.mPenetrationAxis.Normalized());
 
 		p_info->point = hit_point;
-		p_info->normal = hit_normal;
+		p_info->normal = to_godot(-hit.mPenetrationAxis.Normalized());
 		p_info->rid = object->get_rid();
 		p_info->collider_id = object->get_instance_id();
 		p_info->shape = shape_index;
@@ -293,7 +290,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	JPH::CollideShapeSettings settings;
 	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
@@ -351,7 +348,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	JPH::CollideShapeSettings settings;
 	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
@@ -387,10 +384,9 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	ERR_FAIL_COND_D(shape_index == -1);
 
 	const Vector3 hit_point = to_godot(hit.mContactPointOn2);
-	const Vector3 hit_normal = to_godot(-hit.mPenetrationAxis.Normalized());
 
 	p_info->point = hit_point;
-	p_info->normal = hit_normal;
+	p_info->normal = to_godot(-hit.mPenetrationAxis.Normalized());
 	p_info->rid = object->get_rid();
 	p_info->collider_id = object->get_instance_id();
 	p_info->shape = shape_index;
@@ -508,7 +504,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
 	Transform3D transform_com = p_transform.translated_local(center_of_mass);
 	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_extract_scale(transform_com, scale);
+	try_strip_scale(transform_com, scale);
 
 	Vector3 recover_motion;
 

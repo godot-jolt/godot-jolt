@@ -21,7 +21,7 @@ public:
 
 	void set_jolt_id(JPH::BodyID p_jolt_id) { jolt_id = p_jolt_id; }
 
-	void* get_instance() const;
+	GodotObject* get_instance() const;
 
 	Object* get_instance_unsafe() const;
 
@@ -78,6 +78,10 @@ public:
 
 	void remove_shape(int32_t p_index, bool p_lock = true);
 
+	JoltShape3D* get_shape(int32_t p_index) const;
+
+	void set_shape(int32_t p_index, JoltShape3D* p_shape, bool p_lock = true);
+
 	void clear_shapes(bool p_lock = true);
 
 	int32_t get_shape_count() const { return shapes.size(); }
@@ -90,13 +94,11 @@ public:
 
 	JoltShape3D* find_shape(const JPH::SubShapeID& p_sub_shape_id) const;
 
-	JoltShape3D* get_shape(int32_t p_index) const;
-
-	void set_shape(int32_t p_index, JoltShape3D* p_shape, bool p_lock = true);
-
 	Transform3D get_shape_transform(int32_t p_index) const;
 
 	void set_shape_transform(int32_t p_index, const Transform3D& p_transform, bool p_lock = true);
+
+	bool is_shape_disabled(int32_t p_index) const;
 
 	void set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock = true);
 
@@ -113,6 +115,8 @@ public:
 protected:
 	virtual JPH::BroadPhaseLayer get_broad_phase_layer() const = 0;
 
+	JPH::ObjectLayer get_object_layer() const;
+
 	virtual bool has_custom_center_of_mass() const = 0;
 
 	virtual Vector3 get_center_of_mass_custom() const = 0;
@@ -123,15 +127,15 @@ protected:
 
 	virtual void create_in_space(bool p_lock = true) = 0;
 
+	virtual void destroy_in_space(bool p_lock = true);
+
+	virtual void add_to_space(bool p_lock = true);
+
+	virtual void remove_from_space(bool p_lock = true);
+
 	JPH::BodyCreationSettings create_begin();
 
 	JPH::Body* create_end(const JPH::BodyCreationSettings& p_settings, bool p_lock = true);
-
-	virtual void destroy_in_space(bool p_lock = true);
-
-	void add_to_space(bool p_lock = true);
-
-	void remove_from_space(bool p_lock = true);
 
 	void object_layer_changed(bool p_lock = true);
 

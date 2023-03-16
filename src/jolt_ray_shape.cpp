@@ -4,6 +4,27 @@
 
 namespace {
 
+class JoltRayConvexSupport final : public JPH::ConvexShape::Support {
+public:
+	explicit JoltRayConvexSupport(float p_length)
+		: length(p_length) { }
+
+	JPH::Vec3 GetSupport(JPH::Vec3Arg p_direction) const override {
+		if (p_direction.GetZ() > 0.0f) {
+			return {0.0f, 0.0f, length};
+		} else {
+			return JPH::Vec3::sZero();
+		}
+	}
+
+	float GetConvexRadius() const override { return 0.0f; }
+
+private:
+	float length = 0.0f;
+};
+
+static_assert(sizeof(JoltRayConvexSupport) <= sizeof(JPH::ConvexShape::SupportBuffer));
+
 JPH::Shape* construct_ray() {
 	return new JoltRayShape();
 }
@@ -21,6 +42,8 @@ void collide_ray_vs_shape(
 	JPH::CollideShapeCollector& p_collector,
 	[[maybe_unused]] const JPH::ShapeFilter& p_shape_filter
 ) {
+	ERR_FAIL_COND(p_shape1->GetSubType() != JPH::EShapeSubType::UserConvex1);
+
 	const auto* shape1 = static_cast<const JoltRayShape*>(p_shape1);
 
 	// TODO(mihe): This transform scale/inverse feels unnecessary and should be optimized
@@ -117,27 +140,6 @@ JPH::ShapeSettings::ShapeResult JoltRayShapeSettings::Create() const {
 
 	return mCachedResult;
 }
-
-class JoltRayConvexSupport final : public JPH::ConvexShape::Support {
-public:
-	explicit JoltRayConvexSupport(float p_length)
-		: length(p_length) { }
-
-	JPH::Vec3 GetSupport(JPH::Vec3Arg p_direction) const override {
-		if (p_direction.GetZ() > 0.0f) {
-			return {0.0f, 0.0f, length};
-		} else {
-			return JPH::Vec3::sZero();
-		}
-	}
-
-	float GetConvexRadius() const override { return 0.0f; }
-
-private:
-	float length = 0.0f;
-};
-
-static_assert(sizeof(JoltRayConvexSupport) <= sizeof(JPH::ConvexShape::SupportBuffer));
 
 void JoltRayShape::register_type() {
 	JPH::ShapeFunctions& shape_functions =

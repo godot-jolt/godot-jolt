@@ -12,10 +12,10 @@ public:
 	static void register_type();
 
 	JoltEmptyShape()
-		: Shape(JPH::EShapeType::User2, JPH::EShapeSubType::User2) { }
+		: Shape(JPH::EShapeType::User1, JPH::EShapeSubType::User1) { }
 
 	JoltEmptyShape(const JoltEmptyShapeSettings& p_settings, ShapeResult& p_result)
-		: Shape(JPH::EShapeType::User2, JPH::EShapeSubType::User2, p_settings, p_result) {
+		: Shape(JPH::EShapeType::User1, JPH::EShapeSubType::User1, p_settings, p_result) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
 		}

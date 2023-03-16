@@ -190,8 +190,7 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_contact_local_normal(int32_t p_contac
 Vector3 JoltPhysicsDirectBodyState3D::_get_contact_impulse(int32_t p_contact_idx) const {
 	ERR_FAIL_NULL_D(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
-	const JoltBody3D::Contact& contact = body->get_contact(p_contact_idx);
-	return contact.impulse;
+	return body->get_contact(p_contact_idx).impulse;
 }
 
 int32_t JoltPhysicsDirectBodyState3D::_get_contact_local_shape(int32_t p_contact_idx) const {
