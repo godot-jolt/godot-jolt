@@ -9,11 +9,6 @@ else()
 	set(GDJOLT_STATIC_RUNTIME_LIBRARY FALSE)
 endif()
 
-set(GDJOLT_CROSS_PLATFORM_DETERMINISTIC FALSE
-	CACHE BOOL
-	"Compile in such a way as to attempt to keep things deterministic across platforms."
-)
-
 set(GDJOLT_INTERPROCEDURAL_OPTIMIZATION TRUE
 	CACHE BOOL
 	"Enable interprocedural optimizations for any optimized builds."

@@ -61,9 +61,6 @@ set(msvcrt_debug $<$<CONFIG:Debug,EditorDebug>:Debug>)
 set(msvcrt_dll $<$<NOT:${use_static_crt}>:DLL>)
 set(msvcrt MultiThreaded${msvcrt_debug}${msvcrt_dll})
 
-set(deterministic $<BOOL:${GDJOLT_CROSS_PLATFORM_DETERMINISTIC}>)
-set(not_deterministic $<NOT:${deterministic}>)
-
 set(target_avx512 $<STREQUAL:${GDJOLT_X86_INSTRUCTION_SET},AVX512>)
 set(target_avx2 $<STREQUAL:${GDJOLT_X86_INSTRUCTION_SET},AVX2>)
 set(target_avx $<STREQUAL:${GDJOLT_X86_INSTRUCTION_SET},AVX>)
@@ -131,7 +128,7 @@ if(MSVC)
 		PRIVATE /Zc:preprocessor # Enable standard-conforming preprocessor
 		PRIVATE /Zc:referenceBinding # Enforce reference binding rules
 		PRIVATE /volatile:iso # Enable standard-conforming interpretation of `volatile`
-		PRIVATE $<${not_deterministic}:/fp:fast> # Enable aggressive floating-point optimizations
+		PRIVATE /fp:fast # Enable aggressive floating-point optimizations
 		PRIVATE $<${is_optimized_config}:/GS-> # Disable security checks
 		PRIVATE $<${target_avx}:/arch:AVX> # Enable AVX instructions
 		PRIVATE $<${target_avx2}:/arch:AVX2> # Enable AVX2 instructions
@@ -164,9 +161,8 @@ else()
 		PRIVATE -Wshadow # Enable variable/type shadowing warnings
 		PRIVATE -Wundef # Enable warnings about undefined identifiers in `#if` directives
 		PRIVATE -pthread # Use POSIX threads
+		PRIVATE -ffast-math # Enable aggressive floating-point optimizations
 		PRIVATE ${macro_prefix_option} # Make `__FILE__` relative
-		PRIVATE $<${deterministic}:-ffp-contract=off> # Disable floating-point contractions
-		PRIVATE $<${not_deterministic}:-ffast-math> # Enable aggressive floating-point optimizations
 		PRIVATE $<${use_sse2}:-msse2> # Enable SSE2 instructions
 		PRIVATE $<${use_sse4_2}:-msse4.2> # Enable SSE4.2 instructions
 		PRIVATE $<${use_sse4_2}:-mpopcnt> # Enable the POPCNT instruction

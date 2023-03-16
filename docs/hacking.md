@@ -30,12 +30,6 @@ defaults by passing `-DGDJOLT_SOME_VARIABLE=VALUE` to CMake.
     - This is to conform with Godot, which doesn't utilize anything newer than SSE2.
     - There will be separate releases on GitHub for each of the instruction sets.
       - Alternatively all will be bundled and loaded based on `CPUID`.
-- `GDJOLT_CROSS_PLATFORM_DETERMINISTIC`
-  - Compiles in such a way as to attempt to keep things deterministic across *different* platforms.
-  - ⚠️ While this flag makes Jolt itself deterministic, the Godot engine and/or this extension may
-    not be, and likely aren't, which makes this flag nothing but a performance cost.
-  - You do not need this for determinism on the same platform (assuming identical binary).
-  - Default is `FALSE`.
 - `GDJOLT_INTERPROCEDURAL_OPTIMIZATION`
   - Enables interprocedural optimizations for any optimized builds, also known as link-time
     optimizations or link-time code generation.
