@@ -19,10 +19,13 @@ public:
 
 	bool ShouldCollideLocked(const JPH::Body& p_body) const override;
 
-	bool ShouldCollide(const JPH::SubShapeID& p_sub_shape_id2) const override;
+	bool ShouldCollide(const JPH::Shape* p_shape2, const JPH::SubShapeID& p_sub_shape_id2)
+		const override;
 
 	bool ShouldCollide(
+		const JPH::Shape* p_shape1,
 		const JPH::SubShapeID& p_sub_shape_id1,
+		const JPH::Shape* p_shape2,
 		const JPH::SubShapeID& p_sub_shape_id2
 	) const override;
 
