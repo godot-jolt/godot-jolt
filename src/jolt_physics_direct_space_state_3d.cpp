@@ -512,9 +512,18 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	Vector3 scale(1.0f, 1.0f, 1.0f);
 	try_strip_scale(transform_com, scale);
 
-	Vector3 recovery;
+	const Vector3 motion_direction = p_motion.normalized();
 
-	const bool recovered = body_motion_recover(p_body, transform_com, scale, p_margin, recovery);
+	Vector3 recover_motion;
+
+	const bool recovered = body_motion_recover(
+		p_body,
+		transform_com,
+		scale,
+		motion_direction,
+		p_margin,
+		recover_motion
+	);
 
 	float safe_fraction = 1.0f;
 	float unsafe_fraction = 1.0f;
@@ -523,7 +532,6 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		p_body,
 		transform_com,
 		scale,
-		p_margin,
 		p_motion,
 		p_collide_separation_ray,
 		safe_fraction,
@@ -537,6 +545,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 			p_body,
 			transform_com.translated(p_motion * unsafe_fraction),
 			scale,
+			motion_direction,
 			p_margin,
 			min(p_max_collisions, 32),
 			p_result->collisions,
@@ -547,13 +556,13 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	if (collided) {
 		const PhysicsServer3DExtensionMotionCollision& deepest = p_result->collisions[0];
 
-		p_result->travel = recovery + p_motion * safe_fraction;
+		p_result->travel = recover_motion + p_motion * safe_fraction;
 		p_result->remainder = p_motion - p_motion * safe_fraction;
 		p_result->collision_depth = deepest.depth;
 		p_result->collision_safe_fraction = safe_fraction;
 		p_result->collision_unsafe_fraction = unsafe_fraction;
 	} else {
-		p_result->travel = recovery + p_motion;
+		p_result->travel = recover_motion + p_motion;
 		p_result->remainder = Vector3();
 		p_result->collision_depth = 0.0f;
 		p_result->collision_safe_fraction = 1.0f;
@@ -568,13 +577,16 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	const JoltBody3D& p_body,
 	Transform3D& p_transform_com,
 	const Vector3& p_scale,
+	const Vector3& p_direction,
 	float p_margin,
 	Vector3& p_recover_motion
 ) const {
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
 	JPH::CollideShapeSettings settings;
-	settings.mCollisionTolerance = p_margin;
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
+	settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
+	settings.mMaxSeparationDistance = p_margin;
 
 	const JoltMotionFilter3D motion_filter(p_body);
 
@@ -602,12 +614,14 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 
 		const JPH::CollideShapeResult& hit = collector.get_hit();
 
-		if (hit.mPenetrationDepth == 0.0f) {
+		const float depth = hit.mPenetrationDepth + p_margin;
+
+		if (depth <= 0.0f) {
 			break;
 		}
 
 		const Vector3 contact_normal = to_godot(-hit.mPenetrationAxis.Normalized());
-		const Vector3 recover_motion = contact_normal * hit.mPenetrationDepth;
+		const Vector3 recover_motion = contact_normal * depth;
 
 		p_recover_motion += recover_motion;
 		p_transform_com.origin += recover_motion;
@@ -622,7 +636,6 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 	const JoltBody3D& p_body,
 	const Transform3D& p_transform_com,
 	const Vector3& p_scale,
-	float p_margin,
 	const Vector3& p_motion,
 	bool p_collide_separation_ray,
 	float& p_safe_fraction,
@@ -630,11 +643,13 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 ) const {
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
-	// TODO(mihe): Having these tolerances be as small as this feels brittle. Look into calculating
-	// them based on motion length or something.
+	const float motion_length = p_motion.length();
+	const Vector3 direction = motion_length != 0.0f ? p_motion / motion_length : p_motion;
+
 	JPH::ShapeCastSettings settings;
-	settings.mCollisionTolerance = FLT_EPSILON;
-	settings.mPenetrationTolerance = FLT_EPSILON;
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
+	settings.mActiveEdgeMovementDirection = to_jolt(direction);
+	settings.mBackFaceModeConvex = JPH::EBackFaceMode::CollideWithBackFaces;
 
 	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
 
@@ -660,11 +675,13 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 
 	const JPH::ShapeCastResult& hit = collector.get_hit();
 
-	// TODO(mihe): Some epsilon should be applied to this nudge
-	const float nudge = p_margin / p_motion.length();
+	const float small_number = 0.000001f;
+	const float nudge_epsilon = max(small_number * motion_length, small_number);
+	const float nudge_distance = settings.mCollisionTolerance + nudge_epsilon;
+	const float nudge_fraction = max(nudge_distance / motion_length, FLT_EPSILON);
 
-	p_safe_fraction = max(hit.mFraction - nudge, 0.0f);
-	p_unsafe_fraction = min(hit.mFraction + nudge, 1.0f);
+	p_safe_fraction = max(hit.mFraction - nudge_fraction, 0.0f);
+	p_unsafe_fraction = min(hit.mFraction + nudge_fraction, 1.0f);
 
 	return true;
 }
@@ -673,6 +690,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 	const JoltBody3D& p_body,
 	const Transform3D& p_transform_com,
 	const Vector3& p_scale,
+	const Vector3& p_direction,
 	float p_margin,
 	int32_t p_max_collisions,
 	PhysicsServer3DExtensionMotionCollision* p_collisions,
@@ -681,7 +699,9 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
 	JPH::CollideShapeSettings settings;
-	settings.mCollisionTolerance = p_margin;
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
+	settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
+	settings.mMaxSeparationDistance = p_margin;
 
 	const Vector3& base_offset = p_transform_com.origin;
 
@@ -718,7 +738,6 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 		ERR_FAIL_NULL_D(collider);
 
 		const Vector3 position = base_offset + to_godot(hit.mContactPointOn2);
-		const Vector3 normal = to_godot(-hit.mPenetrationAxis.Normalized());
 
 		const int32_t local_shape = p_body.find_shape_index(hit.mSubShapeID1);
 		ERR_FAIL_COND_D(local_shape == -1);
@@ -729,10 +748,10 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 		PhysicsServer3DExtensionMotionCollision& collision = *p_collisions++;
 
 		collision.position = position;
-		collision.normal = normal;
+		collision.normal = to_godot(-hit.mPenetrationAxis.Normalized());
 		collision.collider_velocity = collider->get_velocity_at_position(position, false);
 		collision.collider_angular_velocity = collider->get_angular_velocity(false);
-		collision.depth = hit.mPenetrationDepth;
+		collision.depth = hit.mPenetrationDepth + p_margin;
 		collision.local_shape = local_shape;
 		collision.collider_id = collider->get_instance_id();
 		collision.collider = collider->get_rid();
