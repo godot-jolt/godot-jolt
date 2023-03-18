@@ -331,20 +331,11 @@ void JoltBoxShape3D::set_data(Vector3 p_half_extents) {
 	const float shortest_axis = p_half_extents[p_half_extents.min_axis_index()];
 
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
-	// letting these remain invalid.
-	if (shortest_axis <= 0.0f) {
+	// letting these remain invalid. We also treat anything smaller than or equal to the margin as
+	// zero-sized since Jolt will emit errors otherwise.
+	if (shortest_axis <= margin) {
 		return;
 	}
-
-	ERR_FAIL_COND_MSG(
-		shortest_axis <= margin,
-		vformat(
-			"Failed to set box shape data with extents '%v' and margin '%f'. "
-			"Extents must be greater than the margin. ",
-			p_half_extents,
-			margin
-		)
-	);
 
 	half_extents = p_half_extents;
 }
@@ -485,32 +476,11 @@ void JoltCylinderShape3D::set_data(float p_height, float p_radius) {
 	clear();
 
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
-	// letting these remain invalid.
-	if (p_height <= 0.0f || p_radius <= 0.0f) {
+	// letting these remain invalid. We also treat anything smaller than the margin as zero-sized
+	// since Jolt will emit errors otherwise.
+	if (p_height < margin || p_radius < margin) {
 		return;
 	}
-
-	ERR_FAIL_COND_MSG(
-		p_height < margin,
-		vformat(
-			"Failed to set cylinder shape data with height '%f', radius '%f' and margin '%f'. "
-			"Height must be equal to or greater than the margin. ",
-			p_height,
-			p_radius,
-			margin
-		)
-	);
-
-	ERR_FAIL_COND_MSG(
-		p_radius < margin,
-		vformat(
-			"Failed to set cylinder shape data with height '%f', radius '%f' and margin '%f'. "
-			"Radius must be equal to or greater than the margin. ",
-			p_height,
-			p_radius,
-			margin
-		)
-	);
 
 	height = p_height;
 	radius = p_radius;
