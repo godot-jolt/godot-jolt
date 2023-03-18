@@ -75,6 +75,8 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(Plane p_plane);
+
 	bool is_valid() const override { return plane != Plane(); }
 
 private:
@@ -92,6 +94,8 @@ public:
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
+
+	void set_data(float p_length, bool p_slide_on_slope);
 
 	bool is_valid() const override { return length > 0.0f; }
 
@@ -112,6 +116,8 @@ class JoltSphereShape3D final : public JoltShape3D {
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(float p_radius);
+
 	bool is_valid() const override { return radius > 0; }
 
 private:
@@ -130,6 +136,8 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(Vector3 p_half_extents);
+
 	bool is_valid() const override { return half_extents.x > 0; }
 
 private:
@@ -147,6 +155,8 @@ public:
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
+
+	void set_data(float p_height, float p_radius);
 
 	bool is_valid() const override { return radius > 0; }
 
@@ -168,6 +178,8 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(float p_height, float p_radius);
+
 	bool is_valid() const override { return radius > 0; }
 
 private:
@@ -188,6 +200,8 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(PackedVector3Array p_vertices);
+
 	bool is_valid() const override { return !vertices.is_empty(); }
 
 private:
@@ -205,6 +219,8 @@ public:
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
+
+	void set_data(PackedVector3Array p_faces, bool p_backface_collision);
 
 	bool is_valid() const override { return !faces.is_empty(); }
 
@@ -225,6 +241,8 @@ public:
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
+
+	void set_data(PackedFloat32Array p_heights, int32_t p_width, int32_t p_depth);
 
 	bool is_valid() const override { return width > 0; }
 
