@@ -126,15 +126,18 @@ Variant JoltPhysicsServer3D::_shape_get_data(const RID& p_shape) const {
 	return shape->get_data();
 }
 
-void JoltPhysicsServer3D::_shape_set_margin(
-	[[maybe_unused]] const RID& p_shape,
-	[[maybe_unused]] double p_margin
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_shape_set_margin(const RID& p_shape, double p_margin) {
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL(shape);
+
+	shape->set_margin((float)p_margin);
 }
 
-double JoltPhysicsServer3D::_shape_get_margin([[maybe_unused]] const RID& p_shape) const {
-	ERR_FAIL_D_NOT_IMPL();
+double JoltPhysicsServer3D::_shape_get_margin(const RID& p_shape) const {
+	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL_D(shape);
+
+	return (double)shape->get_margin();
 }
 
 double JoltPhysicsServer3D::_shape_get_custom_solver_bias([[maybe_unused]] const RID& p_shape

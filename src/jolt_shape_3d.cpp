@@ -4,12 +4,6 @@
 #include "jolt_override_user_data_shape.hpp"
 #include "jolt_ray_shape.hpp"
 
-namespace {
-
-constexpr float GDJOLT_CONVEX_RADIUS = 0.0f;
-
-} // namespace
-
 JoltShape3D::~JoltShape3D() = default;
 
 void JoltShape3D::add_owner(JoltCollisionObject3D* p_owner) {
@@ -333,13 +327,28 @@ void JoltBoxShape3D::set_data(Vector3 p_half_extents) {
 	const float shortest_axis = p_half_extents[p_half_extents.min_axis_index()];
 
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
-	// letting these remain invalid. We also treat any extents smaller than or equal to the convex
-	// radius as zero-sized, otherwise Jolt will report an error.
-	if (shortest_axis <= GDJOLT_CONVEX_RADIUS) {
+	// letting these remain invalid.
+	if (shortest_axis <= 0.0f) {
 		return;
 	}
 
+	ERR_FAIL_COND_MSG(
+		shortest_axis <= margin,
+		vformat(
+			"Failed to set box shape data with extents '%v' and margin '%f'. "
+			"Extents must be greater than the margin. ",
+			p_half_extents,
+			margin
+		)
+	);
+
 	half_extents = p_half_extents;
+}
+
+void JoltBoxShape3D::set_margin(float p_margin) {
+	margin = p_margin;
+
+	set_data(half_extents);
 }
 
 void JoltBoxShape3D::clear() {
@@ -348,7 +357,7 @@ void JoltBoxShape3D::clear() {
 }
 
 JPH::ShapeRefC JoltBoxShape3D::build() const {
-	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), GDJOLT_CONVEX_RADIUS);
+	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -466,14 +475,41 @@ void JoltCylinderShape3D::set_data(float p_height, float p_radius) {
 	clear();
 
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
-	// letting these remain invalid. We also treat any extents smaller than the convex radius as
-	// zero-sized, otherwise Jolt will report an error.
-	if (p_height < GDJOLT_CONVEX_RADIUS || p_radius < GDJOLT_CONVEX_RADIUS) {
+	// letting these remain invalid.
+	if (p_height <= 0.0f || p_radius <= 0.0f) {
 		return;
 	}
 
+	ERR_FAIL_COND_MSG(
+		p_height < margin,
+		vformat(
+			"Failed to set cylinder shape data with height '%f', radius '%f' and margin '%f'. "
+			"Height must be equal to or greater than the margin. ",
+			p_height,
+			p_radius,
+			margin
+		)
+	);
+
+	ERR_FAIL_COND_MSG(
+		p_radius < margin,
+		vformat(
+			"Failed to set cylinder shape data with height '%f', radius '%f' and margin '%f'. "
+			"Radius must be equal to or greater than the margin. ",
+			p_height,
+			p_radius,
+			margin
+		)
+	);
+
 	height = p_height;
 	radius = p_radius;
+}
+
+void JoltCylinderShape3D::set_margin(float p_margin) {
+	margin = p_margin;
+
+	set_data(height, radius);
 }
 
 void JoltCylinderShape3D::clear() {
@@ -485,7 +521,7 @@ void JoltCylinderShape3D::clear() {
 JPH::ShapeRefC JoltCylinderShape3D::build() const {
 	const float half_height = height / 2.0f;
 
-	const JPH::CylinderShapeSettings shape_settings(half_height, radius, GDJOLT_CONVEX_RADIUS);
+	const JPH::CylinderShapeSettings shape_settings(half_height, radius, margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -526,6 +562,12 @@ void JoltConvexPolygonShape3D::set_data(PackedVector3Array p_vertices) {
 	vertices = std::move(p_vertices);
 }
 
+void JoltConvexPolygonShape3D::set_margin(float p_margin) {
+	margin = p_margin;
+
+	set_data(vertices);
+}
+
 void JoltConvexPolygonShape3D::clear() {
 	jolt_ref = nullptr;
 	vertices.clear();
@@ -544,7 +586,7 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::build() const {
 		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
 	}
 
-	const JPH::ConvexHullShapeSettings shape_settings(jolt_vertices, GDJOLT_CONVEX_RADIUS);
+	const JPH::ConvexHullShapeSettings shape_settings(jolt_vertices, margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
