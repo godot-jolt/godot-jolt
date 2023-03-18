@@ -26,13 +26,17 @@ void JoltShape3D::remove_self(bool p_lock) {
 	}
 }
 
-JPH::ShapeRefC JoltShape3D::try_build() {
+JPH::ShapeRefC JoltShape3D::try_build(float p_extra_margin) {
 	if (!is_valid()) {
 		return {};
 	}
 
+	if (p_extra_margin > 0.0f) {
+		return build(p_extra_margin);
+	}
+
 	if (jolt_ref == nullptr) {
-		jolt_ref = build();
+		jolt_ref = build(0.0f);
 	}
 
 	return jolt_ref;
@@ -197,7 +201,7 @@ void JoltWorldBoundaryShape3D::clear() {
 	plane = Plane();
 }
 
-JPH::ShapeRefC JoltWorldBoundaryShape3D::build() const {
+JPH::ShapeRefC JoltWorldBoundaryShape3D::build([[maybe_unused]] float p_extra_margin) const {
 	ERR_FAIL_D_MSG(
 		"WorldBoundaryShape3D is not supported by Godot Jolt. "
 		"Consider using one or more reasonably sized BoxShape3D instead."
@@ -246,8 +250,8 @@ void JoltSeparationRayShape3D::clear() {
 	slide_on_slope = false;
 }
 
-JPH::ShapeRefC JoltSeparationRayShape3D::build() const {
-	const JoltRayShapeSettings shape_settings(length, slide_on_slope);
+JPH::ShapeRefC JoltSeparationRayShape3D::build(float p_extra_margin) const {
+	const JoltRayShapeSettings shape_settings(length + p_extra_margin, slide_on_slope);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -292,8 +296,8 @@ void JoltSphereShape3D::clear() {
 	radius = 0.0f;
 }
 
-JPH::ShapeRefC JoltSphereShape3D::build() const {
-	const JPH::SphereShapeSettings shape_settings(radius);
+JPH::ShapeRefC JoltSphereShape3D::build(float p_extra_margin) const {
+	const JPH::SphereShapeSettings shape_settings(radius + p_extra_margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -356,8 +360,14 @@ void JoltBoxShape3D::clear() {
 	half_extents.zero();
 }
 
-JPH::ShapeRefC JoltBoxShape3D::build() const {
-	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), margin);
+JPH::ShapeRefC JoltBoxShape3D::build(float p_extra_margin) const {
+	const Vector3 padded_half_extents(
+		half_extents.x + p_extra_margin,
+		half_extents.y + p_extra_margin,
+		half_extents.z + p_extra_margin
+	);
+
+	const JPH::BoxShapeSettings shape_settings(to_jolt(padded_half_extents), margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -427,11 +437,11 @@ void JoltCapsuleShape3D::clear() {
 	radius = 0.0f;
 }
 
-JPH::ShapeRefC JoltCapsuleShape3D::build() const {
+JPH::ShapeRefC JoltCapsuleShape3D::build(float p_extra_margin) const {
 	const float half_height = height / 2.0f;
 	const float clamped_height = max(half_height - radius, CMP_EPSILON);
 
-	const JPH::CapsuleShapeSettings shape_settings(clamped_height, radius);
+	const JPH::CapsuleShapeSettings shape_settings(clamped_height + p_extra_margin, radius);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -518,10 +528,15 @@ void JoltCylinderShape3D::clear() {
 	radius = 0.0f;
 }
 
-JPH::ShapeRefC JoltCylinderShape3D::build() const {
+JPH::ShapeRefC JoltCylinderShape3D::build(float p_extra_margin) const {
 	const float half_height = height / 2.0f;
 
-	const JPH::CylinderShapeSettings shape_settings(half_height, radius, margin);
+	const JPH::CylinderShapeSettings shape_settings(
+		half_height + p_extra_margin,
+		radius + p_extra_margin,
+		margin
+	);
+
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -573,7 +588,7 @@ void JoltConvexPolygonShape3D::clear() {
 	vertices.clear();
 }
 
-JPH::ShapeRefC JoltConvexPolygonShape3D::build() const {
+JPH::ShapeRefC JoltConvexPolygonShape3D::build(float p_extra_margin) const {
 	const auto vertex_count = (int32_t)vertices.size();
 
 	JPH::Array<JPH::Vec3> jolt_vertices;
@@ -583,7 +598,11 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::build() const {
 	const Vector3* vertices_end = vertices_begin + vertex_count;
 
 	for (const Vector3* vertex = vertices_begin; vertex != vertices_end; ++vertex) {
-		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
+		JPH::Vec3& jolt_vertex = jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
+
+		if (p_extra_margin > 0.0f) {
+			jolt_vertex += jolt_vertex.NormalizedOr(JPH::Vec3::sZero()) * p_extra_margin;
+		}
 	}
 
 	const JPH::ConvexHullShapeSettings shape_settings(jolt_vertices, margin);
@@ -660,7 +679,14 @@ void JoltConcavePolygonShape3D::clear() {
 	backface_collision = false;
 }
 
-JPH::ShapeRefC JoltConcavePolygonShape3D::build() const {
+JPH::ShapeRefC JoltConcavePolygonShape3D::build([[maybe_unused]] float p_extra_margin) const {
+	if (unlikely(p_extra_margin > 0.0f)) {
+		WARN_PRINT(
+			"Concave polygon shapes with extra margin are not supported by Godot Jolt."
+			"Any such value will be ignored."
+		);
+	}
+
 	const auto vertex_count = (int32_t)faces.size();
 	const int32_t face_count = vertex_count / 3;
 
@@ -803,7 +829,14 @@ void JoltHeightMapShape3D::clear() {
 	depth = 0;
 }
 
-JPH::ShapeRefC JoltHeightMapShape3D::build() const {
+JPH::ShapeRefC JoltHeightMapShape3D::build([[maybe_unused]] float p_extra_margin) const {
+	if (unlikely(p_extra_margin > 0.0f)) {
+		WARN_PRINT(
+			"Height map shapes with extra margin are not supported by Godot Jolt. "
+			"Any such value will be ignored."
+		);
+	}
+
 	const int32_t width_tiles = width - 1;
 	const int32_t depth_tiles = depth - 1;
 

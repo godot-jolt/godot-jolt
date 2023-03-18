@@ -30,7 +30,7 @@ public:
 
 	virtual bool is_valid() const = 0;
 
-	JPH::ShapeRefC try_build();
+	JPH::ShapeRefC try_build(float p_extra_margin = 0.0f);
 
 	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
@@ -62,7 +62,7 @@ public:
 	static JPH::ShapeRefC as_compound(TCallable&& p_callable);
 
 protected:
-	virtual JPH::ShapeRefC build() const = 0;
+	virtual JPH::ShapeRefC build(float p_extra_margin) const = 0;
 
 	RID rid;
 
@@ -90,7 +90,7 @@ public:
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	Plane plane;
 };
@@ -114,7 +114,7 @@ public:
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float length = 0.0f;
 
@@ -139,7 +139,7 @@ class JoltSphereShape3D final : public JoltShape3D {
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float radius = 0.0f;
 };
@@ -163,7 +163,7 @@ public:
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	Vector3 half_extents;
 
@@ -189,7 +189,7 @@ public:
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float height = 0.0f;
 
@@ -215,7 +215,7 @@ public:
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float height = 0.0f;
 
@@ -243,7 +243,7 @@ public:
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	PackedVector3Array vertices;
 
@@ -269,7 +269,7 @@ public:
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	PackedVector3Array faces;
 
@@ -295,7 +295,7 @@ public:
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	PackedFloat32Array heights;
 
