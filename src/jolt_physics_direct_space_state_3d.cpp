@@ -135,15 +135,12 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
-	const JPH::ShapeRefC jolt_shape = shape->try_build();
+	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
 	try_strip_scale(transform_com, scale);
-
-	JPH::CollideShapeSettings settings;
-	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
 
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
@@ -154,7 +151,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 		jolt_shape,
 		to_jolt(scale),
 		to_jolt(transform_com),
-		settings,
+		JPH::CollideShapeSettings(),
 		to_jolt(transform_com.origin),
 		collector,
 		query_filter,
@@ -202,7 +199,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
-	const JPH::ShapeRefC jolt_shape = shape->try_build();
+	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
@@ -210,7 +207,6 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	try_strip_scale(transform_com, scale);
 
 	JPH::ShapeCastSettings settings;
-	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
 	settings.mBackFaceModeConvex = JPH::EBackFaceMode::CollideWithBackFaces;
 
 	const Vector3& base_offset = transform_com.origin;
@@ -287,15 +283,12 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
-	const JPH::ShapeRefC jolt_shape = shape->try_build();
+	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
 	try_strip_scale(transform_com, scale);
-
-	JPH::CollideShapeSettings settings;
-	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -308,7 +301,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 		jolt_shape,
 		to_jolt(scale),
 		to_jolt(transform_com),
-		settings,
+		JPH::CollideShapeSettings(),
 		to_jolt(base_offset),
 		collector,
 		query_filter,
@@ -347,15 +340,12 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
-	const JPH::ShapeRefC jolt_shape = shape->try_build();
+	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
 	Transform3D transform_com = p_transform.translated_local(shape->get_center_of_mass());
 	Vector3 scale(1.0f, 1.0f, 1.0f);
 	try_strip_scale(transform_com, scale);
-
-	JPH::CollideShapeSettings settings;
-	settings.mCollisionTolerance = max((float)p_margin, JPH::cDefaultCollisionTolerance);
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -368,7 +358,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 		jolt_shape,
 		to_jolt(scale),
 		to_jolt(transform_com),
-		settings,
+		JPH::CollideShapeSettings(),
 		to_jolt(base_offset),
 		collector,
 		query_filter,

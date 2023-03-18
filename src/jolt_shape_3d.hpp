@@ -24,9 +24,13 @@ public:
 
 	virtual void set_data(const Variant& p_data) = 0;
 
+	virtual float get_margin() const = 0;
+
+	virtual void set_margin(float p_margin) = 0;
+
 	virtual bool is_valid() const = 0;
 
-	JPH::ShapeRefC try_build();
+	JPH::ShapeRefC try_build(float p_extra_margin = 0.0f);
 
 	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
@@ -58,7 +62,7 @@ public:
 	static JPH::ShapeRefC as_compound(TCallable&& p_callable);
 
 protected:
-	virtual JPH::ShapeRefC build() const = 0;
+	virtual JPH::ShapeRefC build(float p_extra_margin) const = 0;
 
 	RID rid;
 
@@ -75,12 +79,18 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(Plane p_plane);
+
+	float get_margin() const override { return 0.0f; }
+
+	void set_margin([[maybe_unused]] float p_margin) override { }
+
 	bool is_valid() const override { return plane != Plane(); }
 
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	Plane plane;
 };
@@ -93,12 +103,18 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(float p_length, bool p_slide_on_slope);
+
+	float get_margin() const override { return 0.0f; }
+
+	void set_margin([[maybe_unused]] float p_margin) override { }
+
 	bool is_valid() const override { return length > 0.0f; }
 
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float length = 0.0f;
 
@@ -112,12 +128,18 @@ class JoltSphereShape3D final : public JoltShape3D {
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(float p_radius);
+
+	float get_margin() const override { return 0.0f; }
+
+	void set_margin([[maybe_unused]] float p_margin) override { }
+
 	bool is_valid() const override { return radius > 0; }
 
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float radius = 0.0f;
 };
@@ -130,14 +152,22 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(Vector3 p_half_extents);
+
+	float get_margin() const override { return margin; }
+
+	void set_margin(float p_margin) override;
+
 	bool is_valid() const override { return half_extents.x > 0; }
 
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	Vector3 half_extents;
+
+	float margin = 0.04f;
 };
 
 class JoltCapsuleShape3D final : public JoltShape3D {
@@ -148,12 +178,18 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(float p_height, float p_radius);
+
+	float get_margin() const override { return 0.0f; }
+
+	void set_margin([[maybe_unused]] float p_margin) override { }
+
 	bool is_valid() const override { return radius > 0; }
 
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float height = 0.0f;
 
@@ -168,16 +204,24 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(float p_height, float p_radius);
+
+	float get_margin() const override { return margin; }
+
+	void set_margin(float p_margin) override;
+
 	bool is_valid() const override { return radius > 0; }
 
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float height = 0.0f;
 
 	float radius = 0.0f;
+
+	float margin = 0.04f;
 };
 
 class JoltConvexPolygonShape3D final : public JoltShape3D {
@@ -188,14 +232,22 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(PackedVector3Array p_vertices);
+
+	float get_margin() const override { return margin; }
+
+	void set_margin(float p_margin) override;
+
 	bool is_valid() const override { return !vertices.is_empty(); }
 
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	PackedVector3Array vertices;
+
+	float margin = 0.04f;
 };
 
 class JoltConcavePolygonShape3D final : public JoltShape3D {
@@ -206,12 +258,18 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(PackedVector3Array p_faces, bool p_backface_collision);
+
+	float get_margin() const override { return 0.0f; }
+
+	void set_margin([[maybe_unused]] float p_margin) override { }
+
 	bool is_valid() const override { return !faces.is_empty(); }
 
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	PackedVector3Array faces;
 
@@ -226,12 +284,18 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
+	void set_data(PackedFloat32Array p_heights, int32_t p_width, int32_t p_depth);
+
+	float get_margin() const override { return 0.0f; }
+
+	void set_margin([[maybe_unused]] float p_margin) override { }
+
 	bool is_valid() const override { return width > 0; }
 
 private:
 	void clear();
 
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	PackedFloat32Array heights;
 
