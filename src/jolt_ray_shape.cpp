@@ -46,21 +46,26 @@ void collide_ray_vs_shape(
 
 	const auto* shape1 = static_cast<const JoltRayShape*>(p_shape1);
 
+	const float margin = p_collide_shape_settings.mMaxSeparationDistance;
+	const float ray_length = shape1->length;
+	const float ray_length_padded = ray_length + margin;
+
 	// TODO(mihe): This transform scale/inverse feels unnecessary and should be optimized
 
 	const JPH::Mat44 transform1 = p_center_of_mass_transform1 * JPH::Mat44::sScale(p_scale1);
 	const JPH::Mat44 transform2 = p_center_of_mass_transform2 * JPH::Mat44::sScale(p_scale2);
 	const JPH::Mat44 transform_inv2 = transform2.Inversed();
 
-	const JPH::Vec3 start = transform1.GetTranslation();
-	const JPH::Vec3 direction = transform1.GetAxisZ();
-	const JPH::Vec3 vector = direction * shape1->length;
+	const JPH::Vec3 ray_start = transform1.GetTranslation();
+	const JPH::Vec3 ray_direction = transform1.GetAxisZ();
+	const JPH::Vec3 ray_vector = ray_direction * ray_length;
+	const JPH::Vec3 ray_vector_padded = ray_direction * ray_length_padded;
 
-	const JPH::Vec3 local_start2 = transform_inv2 * start;
-	const JPH::Vec3 local_direction2 = transform_inv2.Multiply3x3(direction);
-	const JPH::Vec3 local_vector2 = transform_inv2.Multiply3x3(vector);
+	const JPH::Vec3 ray_start2 = transform_inv2 * ray_start;
+	const JPH::Vec3 ray_direction2 = transform_inv2.Multiply3x3(ray_direction);
+	const JPH::Vec3 ray_vector_padded2 = transform_inv2.Multiply3x3(ray_vector_padded);
 
-	const JPH::RayCast ray_cast(local_start2, local_vector2);
+	const JPH::RayCast ray_cast(ray_start2, ray_vector_padded2);
 
 	JPH::RayCastSettings ray_cast_settings;
 	ray_cast_settings.mBackFaceMode = p_collide_shape_settings.mBackFaceMode;
@@ -71,32 +76,41 @@ void collide_ray_vs_shape(
 	// implementation. I assume it's the latter, hence the deviation.
 	ray_cast_settings.mTreatConvexAsSolid = true;
 
-	JoltQueryCollectorClosest<JPH::CastRayCollector> collector;
+	JoltQueryCollectorClosest<JPH::CastRayCollector> ray_collector;
 
-	p_shape2->CastRay(ray_cast, ray_cast_settings, p_sub_shape_id_creator2, collector);
+	p_shape2->CastRay(ray_cast, ray_cast_settings, p_sub_shape_id_creator2, ray_collector);
 
-	if (!collector.had_hit()) {
+	if (!ray_collector.had_hit()) {
 		return;
 	}
 
-	const JPH::RayCastResult& hit = collector.get_hit();
+	const JPH::RayCastResult& hit = ray_collector.get_hit();
 
-	const JPH::Vec3 local_point2 = local_start2 + local_vector2 * hit.mFraction;
-	const JPH::Vec3 local_normal2 = shape1->slide_on_slope
-		? p_shape2->GetSurfaceNormal(hit.mSubShapeID2, local_point2)
-		: -local_direction2;
+	const float hit_distance = ray_length_padded * hit.mFraction;
+	const float hit_depth = ray_length - hit_distance;
 
-	const JPH::Vec3 point_on_1 = start + vector;
-	const JPH::Vec3 point_on_2 = transform2 * local_point2;
-	const JPH::Vec3 normal = transform2.Multiply3x3(local_normal2);
+	if (-hit_depth >= p_collector.GetEarlyOutFraction()) {
+		return;
+	}
+
+	const JPH::Vec3 hit_point2 = ray_cast.GetPointOnRay(hit.mFraction);
+
+	const JPH::Vec3 hit_point_on_1 = ray_start + ray_vector;
+	const JPH::Vec3 hit_point_on_2 = transform2 * hit_point2;
+
+	const JPH::Vec3 hit_normal2 = shape1->slide_on_slope
+		? p_shape2->GetSurfaceNormal(hit.mSubShapeID2, hit_point2)
+		: -ray_direction2;
+
+	const JPH::Vec3 hit_normal = transform2.Multiply3x3(hit_normal2);
 
 	const JPH::CollideShapeResult result(
-		point_on_1,
-		point_on_2,
-		-normal,
-		(point_on_1 - point_on_2).Length(),
+		hit_point_on_1,
+		hit_point_on_2,
+		-hit_normal,
+		hit_depth,
 		p_sub_shape_id_creator1.GetID(),
-		p_sub_shape_id_creator2.GetID(),
+		hit.mSubShapeID2,
 		JPH::TransformedShape::sGetBodyID(p_collector.GetContext())
 	);
 
