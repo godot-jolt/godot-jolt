@@ -210,6 +210,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	JPH::ShapeCastSettings settings;
 	settings.mBackFaceModeConvex = JPH::EBackFaceMode::CollideWithBackFaces;
+	settings.mUseShrunkenShapeAndConvexRadius = true;
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -255,11 +256,13 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	const float small_number = 0.000001f;
 	const float motion_length = p_motion.length();
 	const float nudge_epsilon = max(small_number * motion_length, small_number);
-	const float nudge_distance = settings.mCollisionTolerance + nudge_epsilon;
-	const float nudge_fraction = max(nudge_distance / motion_length, FLT_EPSILON);
+	const float nudge_safe = settings.mCollisionTolerance + nudge_epsilon;
+	const float nudge_unsafe = nudge_safe + shape->get_margin();
+	const float nudge_fraction_safe = max(nudge_safe / motion_length, FLT_EPSILON);
+	const float nudge_fraction_unsafe = max(nudge_unsafe / motion_length, FLT_EPSILON);
 
-	*p_closest_safe = max(hit.mFraction - nudge_fraction, 0.0f);
-	*p_closest_unsafe = min(hit.mFraction + nudge_fraction, 1.0f);
+	*p_closest_safe = max(hit.mFraction - nudge_fraction_safe, 0.0f);
+	*p_closest_unsafe = min(hit.mFraction + nudge_fraction_unsafe, 1.0f);
 
 	return true;
 }
@@ -644,6 +647,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
 	settings.mActiveEdgeMovementDirection = to_jolt(direction);
 	settings.mBackFaceModeConvex = JPH::EBackFaceMode::CollideWithBackFaces;
+	settings.mUseShrunkenShapeAndConvexRadius = true;
 
 	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
 
@@ -669,13 +673,18 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 
 	const JPH::ShapeCastResult& hit = collector.get_hit();
 
+	const JoltShape3D* shape = p_body.find_shape(hit.mSubShapeID1);
+	ERR_FAIL_NULL_D(shape);
+
 	const float small_number = 0.000001f;
 	const float nudge_epsilon = max(small_number * motion_length, small_number);
-	const float nudge_distance = settings.mCollisionTolerance + nudge_epsilon;
-	const float nudge_fraction = max(nudge_distance / motion_length, FLT_EPSILON);
+	const float nudge_safe = settings.mCollisionTolerance + nudge_epsilon;
+	const float nudge_unsafe = nudge_safe + shape->get_margin();
+	const float nudge_fraction_safe = max(nudge_safe / motion_length, FLT_EPSILON);
+	const float nudge_fraction_unsafe = max(nudge_unsafe / motion_length, FLT_EPSILON);
 
-	p_safe_fraction = max(hit.mFraction - nudge_fraction, 0.0f);
-	p_unsafe_fraction = min(hit.mFraction + nudge_fraction, 1.0f);
+	p_safe_fraction = max(hit.mFraction - nudge_fraction_safe, 0.0f);
+	p_unsafe_fraction = min(hit.mFraction + nudge_fraction_unsafe, 1.0f);
 
 	return true;
 }
