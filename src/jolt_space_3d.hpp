@@ -35,6 +35,8 @@ public:
 
 	const JPH::BodyLockInterface& get_lock_iface(bool p_locked = true) const;
 
+	const JPH::BroadPhaseQuery& get_broad_phase_query() const;
+
 	const JPH::NarrowPhaseQuery& get_narrow_phase_query(bool p_locked = true) const;
 
 	JPH::ObjectLayer map_to_object_layer(

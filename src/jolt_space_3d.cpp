@@ -220,6 +220,10 @@ const JPH::BodyLockInterface& JoltSpace3D::get_lock_iface(bool p_locked) const {
 	}
 }
 
+const JPH::BroadPhaseQuery& JoltSpace3D::get_broad_phase_query() const {
+	return physics_system->GetBroadPhaseQuery();
+}
+
 const JPH::NarrowPhaseQuery& JoltSpace3D::get_narrow_phase_query(bool p_locked) const {
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetNarrowPhaseQuery();
