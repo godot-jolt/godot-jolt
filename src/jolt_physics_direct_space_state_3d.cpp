@@ -87,7 +87,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
-	JoltQueryCollectorAny<JPH::CollidePointCollector> collector(p_max_results);
+	JoltQueryCollectorAnyMulti<JPH::CollidePointCollector, 32> collector(p_max_results);
 
 	space->get_narrow_phase_query()
 		.CollidePoint(to_jolt(p_position), collector, query_filter, query_filter, query_filter);
@@ -146,7 +146,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
-	JoltQueryCollectorAny<JPH::CollideShapeCollector> collector(p_max_results);
+	JoltQueryCollectorAnyMulti<JPH::CollideShapeCollector, 32> collector(p_max_results);
 
 	space->get_narrow_phase_query().CollideShape(
 		jolt_shape,
@@ -301,7 +301,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
-	JoltQueryCollectorAny<JPH::CollideShapeCollector> collector(p_max_results);
+	JoltQueryCollectorAnyMulti<JPH::CollideShapeCollector, 32> collector(p_max_results);
 
 	space->get_narrow_phase_query().CollideShape(
 		jolt_shape,
@@ -416,7 +416,7 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 	const JoltReadableBody3D body = space->read_body(*object);
 	const JPH::TransformedShape shape = body->GetTransformedShape();
 
-	JoltQueryCollectorAll<JPH::TransformedShapeCollector> collector;
+	JoltQueryCollectorAll<JPH::TransformedShapeCollector, 32> collector;
 	shape.CollectTransformedShapes(body->GetWorldSpaceBounds(), collector);
 
 	const JPH::Vec3 point = to_jolt(p_point);
@@ -710,7 +710,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 
 	const JoltMotionFilter3D motion_filter(p_body);
 
-	JoltQueryCollectorClosestMulti<JPH::CollideShapeCollector> collector(p_max_collisions);
+	JoltQueryCollectorClosestMulti<JPH::CollideShapeCollector, 32> collector(p_max_collisions);
 
 	space->get_narrow_phase_query().CollideShape(
 		jolt_shape,

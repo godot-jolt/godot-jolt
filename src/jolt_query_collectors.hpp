@@ -1,6 +1,6 @@
 #pragma once
 
-template<typename TBase>
+template<typename TBase, int32_t TInlineCapacity>
 class JoltQueryCollectorAll : public TBase {
 public:
 	using Hit = typename TBase::ResultType;
@@ -11,6 +11,8 @@ public:
 
 	const Hit& get_hit(int32_t p_index) const { return hits[p_index]; }
 
+	void reset() { Reset(); }
+
 private:
 	void Reset() override {
 		TBase::Reset();
@@ -20,7 +22,7 @@ private:
 
 	void AddHit(const Hit& p_hit) override { hits.push_back(p_hit); }
 
-	InlineVector<Hit, 32> hits;
+	InlineVector<Hit, TInlineCapacity> hits;
 };
 
 template<typename TBase>
@@ -28,7 +30,37 @@ class JoltQueryCollectorAny final : public TBase {
 public:
 	using Hit = typename TBase::ResultType;
 
-	explicit JoltQueryCollectorAny(int32_t p_max_hits)
+	bool had_hit() const { return valid; }
+
+	const Hit& get_hit() const { return hit; }
+
+	void reset() { Reset(); }
+
+private:
+	void Reset() override {
+		TBase::Reset();
+
+		valid = false;
+	}
+
+	void AddHit(const Hit& p_hit) override {
+		hit = p_hit;
+		valid = true;
+
+		TBase::ForceEarlyOut();
+	}
+
+	Hit hit;
+
+	bool valid = false;
+};
+
+template<typename TBase, int32_t TInlineCapacity>
+class JoltQueryCollectorAnyMulti final : public TBase {
+public:
+	using Hit = typename TBase::ResultType;
+
+	explicit JoltQueryCollectorAnyMulti(int32_t p_max_hits = TInlineCapacity)
 		: max_hits(p_max_hits) { }
 
 	bool had_hit() const { return hits.size() > 0; }
@@ -36,6 +68,8 @@ public:
 	int32_t get_hit_count() const { return hits.size(); }
 
 	const Hit& get_hit(int32_t p_index) const { return hits[p_index]; }
+
+	void reset() { Reset(); }
 
 private:
 	void Reset() override {
@@ -54,7 +88,7 @@ private:
 		}
 	}
 
-	InlineVector<Hit, 32> hits;
+	InlineVector<Hit, TInlineCapacity> hits;
 
 	int32_t max_hits = 0;
 };
@@ -67,6 +101,8 @@ public:
 	bool had_hit() const { return valid; }
 
 	const Hit& get_hit() const { return hit; }
+
+	void reset() { Reset(); }
 
 private:
 	void Reset() override {
@@ -91,7 +127,7 @@ private:
 	bool valid = false;
 };
 
-template<typename TBase>
+template<typename TBase, int32_t TInlineCapacity>
 class JoltQueryCollectorClosestMulti final : public TBase {
 public:
 	using Hit = typename TBase::ResultType;
@@ -104,6 +140,8 @@ public:
 	int32_t get_hit_count() const { return hits.size(); }
 
 	const Hit& get_hit(int32_t p_index) const { return hits[p_index]; }
+
+	void reset() { Reset(); }
 
 private:
 	void Reset() override {
@@ -122,7 +160,7 @@ private:
 		}
 	}
 
-	InlineVector<Hit, 33> hits;
+	InlineVector<Hit, TInlineCapacity + 1> hits;
 
 	int32_t max_hits = 0;
 };
