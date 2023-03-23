@@ -613,12 +613,23 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 
 		const float depth = hit.mPenetrationDepth + p_margin;
 
-		if (depth <= 0.0f) {
+		// HACK(mihe): An arbitrary number that's meant to prevent issues where recovery ends up
+		// being too great and thereby preventing `body_motion_collide` from actually hitting
+		// anything. Stems from godotengine/godot#52953.
+		const float magic_depth = p_margin * 0.05f;
+
+		if (depth <= magic_depth) {
 			break;
 		}
 
 		const Vector3 contact_normal = to_godot(-hit.mPenetrationAxis.Normalized());
-		const Vector3 recover_motion = contact_normal * depth;
+
+		// HACK(mihe): Another arbitrary number that's meant to prevent issues where recovery ends
+		// up being too great and thereby preventing `body_motion_collide` from actually hitting
+		// anything. Stems from godotengine/godot#46148.
+		const float magic_fraction = 0.4f;
+
+		const Vector3 recover_motion = contact_normal * (depth - magic_depth) * magic_fraction;
 
 		p_recover_motion += recover_motion;
 		p_transform_com.origin += recover_motion;
