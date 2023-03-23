@@ -118,6 +118,7 @@ if(MSVC)
 		PRIVATE /w44245 # Enable implicit conversion warning
 		PRIVATE /w44365 # Enable another implicit conversion warning
 		PRIVATE /w44800 # Enable another implicit conversion warning
+		PRIVATE /wd4324 # Disable structure padding warning
 		PRIVATE /EHsc # Enable exception handling
 		PRIVATE /GF # Enable string pooling
 		PRIVATE /Gy # Enable function-level linking

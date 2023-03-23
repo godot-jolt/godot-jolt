@@ -1,6 +1,7 @@
 #pragma once
 
 class JoltBody3D;
+class JoltShape3D;
 class JoltSpace3D;
 
 class JoltPhysicsDirectSpaceState3D final : public PhysicsDirectSpaceState3DExtension {
@@ -100,9 +101,35 @@ public:
 	JoltSpace3D& get_space() const { return *space; }
 
 private:
+	bool cast_motion(
+		JoltShape3D& p_shape,
+		double p_margin,
+		const Transform3D& p_transform,
+		const Vector3& p_motion,
+		const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
+		const JPH::ObjectLayerFilter& p_object_layer_filter,
+		const JPH::BodyFilter& p_body_filter,
+		const JPH::ShapeFilter& p_shape_filter,
+		float& p_closest_safe,
+		float& p_closest_unsafe
+	) const;
+
+	bool cast_motion(
+		const JPH::Shape& p_jolt_shape,
+		const Transform3D& p_transform_com,
+		const Vector3& p_scale,
+		const Vector3& p_motion,
+		const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
+		const JPH::ObjectLayerFilter& p_object_layer_filter,
+		const JPH::BodyFilter& p_body_filter,
+		const JPH::ShapeFilter& p_shape_filter,
+		float& p_closest_safe,
+		float& p_closest_unsafe
+	) const;
+
 	bool body_motion_recover(
 		const JoltBody3D& p_body,
-		Transform3D& p_transform_com,
+		Transform3D& p_transform,
 		const Vector3& p_scale,
 		const Vector3& p_direction,
 		float p_margin,
@@ -111,7 +138,7 @@ private:
 
 	bool body_motion_cast(
 		const JoltBody3D& p_body,
-		const Transform3D& p_transform_com,
+		const Transform3D& p_transform,
 		const Vector3& p_scale,
 		const Vector3& p_motion,
 		bool p_collide_separation_ray,
@@ -121,7 +148,7 @@ private:
 
 	bool body_motion_collide(
 		const JoltBody3D& p_body,
-		const Transform3D& p_transform_com,
+		const Transform3D& p_transform,
 		const Vector3& p_scale,
 		const Vector3& p_direction,
 		float p_margin,
