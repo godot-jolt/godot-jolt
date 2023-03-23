@@ -20,6 +20,8 @@ public:
 
 	virtual ShapeType get_type() const = 0;
 
+	virtual bool is_convex() const = 0;
+
 	virtual Variant get_data() const = 0;
 
 	virtual void set_data(const Variant& p_data) = 0;
@@ -75,6 +77,8 @@ class JoltWorldBoundaryShape3D final : public JoltShape3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_WORLD_BOUNDARY; }
 
+	bool is_convex() const override { return false; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -98,6 +102,8 @@ private:
 class JoltSeparationRayShape3D final : public JoltShape3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_SEPARATION_RAY; }
+
+	bool is_convex() const override { return true; }
 
 	Variant get_data() const override;
 
@@ -124,6 +130,8 @@ private:
 class JoltSphereShape3D final : public JoltShape3D {
 	ShapeType get_type() const override { return ShapeType::SHAPE_SPHERE; }
 
+	bool is_convex() const override { return true; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -147,6 +155,8 @@ private:
 class JoltBoxShape3D final : public JoltShape3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_BOX; }
+
+	bool is_convex() const override { return true; }
 
 	Variant get_data() const override;
 
@@ -174,6 +184,8 @@ class JoltCapsuleShape3D final : public JoltShape3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CAPSULE; }
 
+	bool is_convex() const override { return true; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -199,6 +211,8 @@ private:
 class JoltCylinderShape3D final : public JoltShape3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CYLINDER; }
+
+	bool is_convex() const override { return true; }
 
 	Variant get_data() const override;
 
@@ -228,6 +242,8 @@ class JoltConvexPolygonShape3D final : public JoltShape3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CONVEX_POLYGON; }
 
+	bool is_convex() const override { return true; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -254,6 +270,8 @@ class JoltConcavePolygonShape3D final : public JoltShape3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CONCAVE_POLYGON; }
 
+	bool is_convex() const override { return false; }
+
 	Variant get_data() const override;
 
 	void set_data(const Variant& p_data) override;
@@ -279,6 +297,8 @@ private:
 class JoltHeightMapShape3D final : public JoltShape3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_HEIGHTMAP; }
+
+	bool is_convex() const override { return false; }
 
 	Variant get_data() const override;
 
