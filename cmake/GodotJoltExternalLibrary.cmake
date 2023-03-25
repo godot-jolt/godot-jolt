@@ -218,7 +218,6 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 
 	set(cmake_cache_args
 		-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
-		-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
 		-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
 		-DCMAKE_POSITION_INDEPENDENT_CODE=TRUE
 		-DCMAKE_POLICY_DEFAULT_CMP0069=NEW # Allows use of INTERPROCEDURAL_OPTIMIZATION
@@ -227,6 +226,14 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 		${log_level_arg}
 		${arg_CMAKE_CACHE_ARGS}
 	)
+
+	if(DEFINED CMAKE_C_COMPILER)
+		# The `CMAKE_C_COMPILER` variable is not defined when using the Visual Studio generators, so
+		# we make sure to only pass it on if it is
+		list(APPEND cmake_cache_args
+			-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+		)
+	endif()
 
 	if(CMAKE_HOST_SYSTEM_NAME STREQUAL Darwin)
 		list(APPEND cmake_cache_args
