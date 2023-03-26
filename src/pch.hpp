@@ -44,6 +44,7 @@
 #include <Jolt/Jolt.h>
 
 #include <Jolt/Core/Factory.h>
+#include <Jolt/Core/FixedSizeFreeList.h>
 #include <Jolt/Core/IssueReporting.h>
 #include <Jolt/Core/JobSystemThreadPool.h>
 #include <Jolt/Core/TempAllocator.h>
@@ -111,6 +112,7 @@ using namespace godot;
 #pragma warning(pop)
 #endif // _MSC_VER
 
+#include "containers/free_list.hpp"
 #include "containers/hash_map.hpp"
 #include "containers/hash_set.hpp"
 #include "containers/inline_vector.hpp"
