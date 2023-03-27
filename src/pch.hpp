@@ -16,6 +16,7 @@
 #include <godot_cpp/classes/geometry_instance3d.hpp>
 #include <godot_cpp/classes/mesh.hpp>
 #include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/physics_direct_body_state3d_extension.hpp>
 #include <godot_cpp/classes/physics_direct_space_state3d_extension.hpp>
 #include <godot_cpp/classes/physics_server3d_extension.hpp>
@@ -28,6 +29,7 @@
 #include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/worker_thread_pool.hpp>
 #include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
@@ -46,7 +48,7 @@
 #include <Jolt/Core/Factory.h>
 #include <Jolt/Core/FixedSizeFreeList.h>
 #include <Jolt/Core/IssueReporting.h>
-#include <Jolt/Core/JobSystemThreadPool.h>
+#include <Jolt/Core/JobSystemWithBarrier.h>
 #include <Jolt/Core/TempAllocator.h>
 #include <Jolt/Geometry/ConvexSupport.h>
 #include <Jolt/Geometry/GJKClosestPoint.h>

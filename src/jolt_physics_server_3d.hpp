@@ -2,6 +2,7 @@
 
 class JoltArea3D;
 class JoltBody3D;
+class JoltJobSystem;
 class JoltJoint3D;
 class JoltShape3D;
 class JoltSpace3D;
@@ -12,11 +13,6 @@ class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
 protected:
 	// NOLINTNEXTLINE(readability-identifier-naming)
 	static void _bind_methods() { }
-
-private:
-	static void init_statics();
-
-	static void finish_statics();
 
 public:
 	RID _world_boundary_shape_create() override;
@@ -572,13 +568,11 @@ public:
 	JoltJoint3D* get_joint(const RID& p_rid) const { return joint_owner.get_or_null(p_rid); }
 
 private:
-	inline static int32_t server_count;
-
-	inline static JPH::JobSystem* job_system;
-
 	bool active = true;
 
 	bool flushing_queries = false;
+
+	JoltJobSystem* job_system = nullptr;
 
 	HashSet<JoltSpace3D*> active_spaces;
 
