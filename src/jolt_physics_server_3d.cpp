@@ -5,31 +5,13 @@
 #include "jolt_cone_twist_joint_3d.hpp"
 #include "jolt_generic_6dof_joint_3d.hpp"
 #include "jolt_hinge_joint_3d.hpp"
+#include "jolt_job_system.hpp"
 #include "jolt_joint_3d.hpp"
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_pin_joint_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_slider_joint_3d.hpp"
 #include "jolt_space_3d.hpp"
-
-namespace {
-
-constexpr int32_t GDJOLT_MAX_PHYSICS_JOBS = 2048;
-constexpr int32_t GDJOLT_MAX_PHYSICS_BARRIERS = 8;
-
-} // namespace
-
-void JoltPhysicsServer3D::init_statics() {
-	job_system = new JPH::JobSystemThreadPool(
-		GDJOLT_MAX_PHYSICS_JOBS,
-		GDJOLT_MAX_PHYSICS_BARRIERS,
-		(int32_t)std::thread::hardware_concurrency() - 1
-	);
-}
-
-void JoltPhysicsServer3D::finish_statics() {
-	delete_safely(job_system);
-}
 
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
 	JoltShape3D* shape = memnew(JoltWorldBoundaryShape3D);
@@ -1683,9 +1665,7 @@ void JoltPhysicsServer3D::_set_active(bool p_active) {
 }
 
 void JoltPhysicsServer3D::_init() {
-	if (server_count++ == 0) {
-		init_statics();
-	}
+	job_system = new JoltJobSystem();
 }
 
 void JoltPhysicsServer3D::_step(double p_step) {
@@ -1693,9 +1673,13 @@ void JoltPhysicsServer3D::_step(double p_step) {
 		return;
 	}
 
+	job_system->pre_step();
+
 	for (JoltSpace3D* active_space : active_spaces) {
 		active_space->step((float)p_step);
 	}
+
+	job_system->post_step();
 }
 
 void JoltPhysicsServer3D::_flush_queries() {
@@ -1714,10 +1698,6 @@ void JoltPhysicsServer3D::_flush_queries() {
 
 void JoltPhysicsServer3D::_finish() {
 	delete_safely(job_system);
-
-	if (--server_count == 0) {
-		finish_statics();
-	}
 }
 
 bool JoltPhysicsServer3D::_is_flushing_queries() const {
