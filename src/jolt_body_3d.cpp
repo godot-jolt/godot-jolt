@@ -233,7 +233,7 @@ Basis JoltBody3D::get_principal_inertia_axes(bool p_lock) const {
 
 	Basis inertia_tensor = to_godot(jolt_shape->GetMassProperties().mInertia).basis;
 	const Basis principal_inertia_axes_local = inertia_tensor.diagonalize().transposed();
-	const Basis principal_inertia_axes = get_basis() * principal_inertia_axes_local;
+	const Basis principal_inertia_axes = get_basis(false) * principal_inertia_axes_local;
 
 	return principal_inertia_axes;
 }
