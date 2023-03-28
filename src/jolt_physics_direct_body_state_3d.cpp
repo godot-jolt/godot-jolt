@@ -239,9 +239,6 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_velocity_at_position
 
 double JoltPhysicsDirectBodyState3D::_get_step() const {
 	ERR_FAIL_NULL_D(body);
-
-	// TODO(mihe): Use `calculate_physics_step` instead (and remove `last_step` entirely) once
-	// godotengine/godot-cpp#889 has been fixed
 	return (double)body->get_space()->get_last_step();
 }
 
