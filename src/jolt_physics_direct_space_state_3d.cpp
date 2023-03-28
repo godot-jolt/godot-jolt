@@ -34,8 +34,9 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 
 	JPH::RayCastSettings settings;
 	settings.mTreatConvexAsSolid = p_hit_from_inside;
-	settings.mBackFaceMode = p_hit_back_faces ? JPH::EBackFaceMode::CollideWithBackFaces
-											  : JPH::EBackFaceMode::IgnoreBackFaces;
+	settings.mBackFaceMode = p_hit_back_faces
+		? JPH::EBackFaceMode::CollideWithBackFaces
+		: JPH::EBackFaceMode::IgnoreBackFaces;
 
 	JoltQueryCollectorClosest<JPH::CastRayCollector> collector;
 
@@ -468,8 +469,14 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 
 	Vector3 recover_motion;
 
-	const bool recovered =
-		body_motion_recover(p_body, transform, scale, motion_direction, p_margin, recover_motion);
+	const bool recovered = body_motion_recover(
+		p_body,
+		transform,
+		scale,
+		motion_direction,
+		p_margin,
+		recover_motion
+	);
 
 	float safe_fraction = 1.0f;
 	float unsafe_fraction = 1.0f;

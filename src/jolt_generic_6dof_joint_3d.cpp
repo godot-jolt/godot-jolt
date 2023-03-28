@@ -427,8 +427,11 @@ void JoltGeneric6DOFJoint3D::rebuild(bool p_lock) {
 		body_ids.push_back(body_b->get_jolt_id());
 	}
 
-	const JoltWritableBodies3D bodies =
-		space->write_bodies(body_ids.ptr(), body_ids.size(), p_lock);
+	const JoltWritableBodies3D bodies = space->write_bodies(
+		body_ids.ptr(),
+		body_ids.size(),
+		p_lock
+	);
 
 	if (jolt_ref != nullptr) {
 		space->remove_joint(this);

@@ -165,8 +165,11 @@ void JoltContactListener::flush_contacts() {
 	for (auto&& [shape_pair, manifold] : manifolds_by_shape_pair) {
 		const JPH::BodyID body_ids[] = {shape_pair.GetBody1ID(), shape_pair.GetBody2ID()};
 
-		const JoltReadableBodies3D jolt_bodies =
-			space->read_bodies(body_ids, count_of(body_ids), false);
+		const JoltReadableBodies3D jolt_bodies = space->read_bodies(
+			body_ids,
+			count_of(body_ids),
+			false
+		);
 
 		JoltBody3D* body1 = jolt_bodies[0].as_body();
 		ERR_FAIL_NULL(body1);
@@ -220,8 +223,11 @@ void JoltContactListener::flush_area_enters() {
 
 		const JPH::BodyID body_ids[] = {body_id1, body_id2};
 
-		const JoltReadableBodies3D jolt_bodies =
-			space->read_bodies(body_ids, count_of(body_ids), false);
+		const JoltReadableBodies3D jolt_bodies = space->read_bodies(
+			body_ids,
+			count_of(body_ids),
+			false
+		);
 
 		const JoltReadableBody3D jolt_body1 = jolt_bodies[0];
 		const JoltReadableBody3D jolt_body2 = jolt_bodies[1];
@@ -290,8 +296,11 @@ void JoltContactListener::flush_area_exits() {
 
 		const JPH::BodyID body_ids[] = {body_id1, body_id2};
 
-		const JoltReadableBodies3D jolt_bodies =
-			space->read_bodies(body_ids, count_of(body_ids), false);
+		const JoltReadableBodies3D jolt_bodies = space->read_bodies(
+			body_ids,
+			count_of(body_ids),
+			false
+		);
 
 		const JoltReadableBody3D jolt_body1 = jolt_bodies[0];
 		const JoltReadableBody3D jolt_body2 = jolt_bodies[1];
@@ -347,11 +356,11 @@ void JoltContactListener::add_debug_contacts(const JPH::ContactManifold& p_manif
 	for (int32_t i = 0; i < additional_pairs; ++i) {
 		const int32_t pair_index = current_count + i * 2;
 
-		debug_contacts[pair_index + 0] =
-			to_godot(p_manifold.GetWorldSpaceContactPointOn1((JPH::uint)i));
+		const JPH::Vec3 point_on_1 = p_manifold.GetWorldSpaceContactPointOn1((JPH::uint)i);
+		const JPH::Vec3 point_on_2 = p_manifold.GetWorldSpaceContactPointOn2((JPH::uint)i);
 
-		debug_contacts[pair_index + 1] =
-			to_godot(p_manifold.GetWorldSpaceContactPointOn2((JPH::uint)i));
+		debug_contacts[pair_index + 0] = to_godot(point_on_1);
+		debug_contacts[pair_index + 1] = to_godot(point_on_2);
 	}
 }
 

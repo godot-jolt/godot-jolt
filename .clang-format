@@ -112,15 +112,15 @@ SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 1
 
 # Penalties
-# PenaltyBreakAssignment: 2
+PenaltyBreakAssignment: 1000000
 PenaltyBreakBeforeFirstCallParameter: 0
 PenaltyBreakComment: 0
-# PenaltyBreakFirstLessLess: 120
+PenaltyBreakFirstLessLess: 1000000
 PenaltyBreakOpenParenthesis: 0
-# PenaltyBreakString: 1000
-# PenaltyBreakTemplateDeclaration: 10
-# PenaltyExcessCharacter: 1000000
-# PenaltyIndentedWhitespace: 0
+PenaltyBreakString: 0
+PenaltyBreakTemplateDeclaration: 0
+PenaltyExcessCharacter: 1000000
+PenaltyIndentedWhitespace: 3
 PenaltyReturnTypeOnItsOwnLine: 1000000
 
 # Includes

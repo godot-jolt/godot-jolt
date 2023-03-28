@@ -156,8 +156,9 @@ JPH::ShapeSettings::ShapeResult JoltRayShapeSettings::Create() const {
 }
 
 void JoltRayShape::register_type() {
-	JPH::ShapeFunctions& shape_functions =
-		JPH::ShapeFunctions::sGet(JPH::EShapeSubType::UserConvex1);
+	constexpr auto ray_sub_type = JPH::EShapeSubType::UserConvex1;
+
+	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(ray_sub_type);
 
 	shape_functions.mConstruct = construct_ray;
 	shape_functions.mColor = JPH::Color::sDarkRed;
@@ -175,29 +176,20 @@ void JoltRayShape::register_type() {
 
 	for (const JPH::EShapeSubType concrete_sub_type : concrete_sub_types) {
 		JPH::CollisionDispatch::sRegisterCollideShape(
-			JPH::EShapeSubType::UserConvex1,
+			ray_sub_type,
 			concrete_sub_type,
 			collide_ray_vs_shape
 		);
 
 		JPH::CollisionDispatch::sRegisterCollideShape(
 			concrete_sub_type,
-			JPH::EShapeSubType::UserConvex1,
+			ray_sub_type,
 			JPH::CollisionDispatch::sReversedCollideShape
 		);
 	}
 
-	JPH::CollisionDispatch::sRegisterCollideShape(
-		JPH::EShapeSubType::UserConvex1,
-		JPH::EShapeSubType::UserConvex1,
-		collide_noop
-	);
-
-	JPH::CollisionDispatch::sRegisterCastShape(
-		JPH::EShapeSubType::UserConvex1,
-		JPH::EShapeSubType::UserConvex1,
-		cast_noop
-	);
+	JPH::CollisionDispatch::sRegisterCollideShape(ray_sub_type, ray_sub_type, collide_noop);
+	JPH::CollisionDispatch::sRegisterCastShape(ray_sub_type, ray_sub_type, cast_noop);
 }
 
 JPH::AABox JoltRayShape::GetLocalBounds() const {
