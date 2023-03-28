@@ -46,7 +46,11 @@ public:
 		const Vector3& p_origin
 	);
 
-	static JPH::ShapeRefC with_transform(const JPH::Shape* p_shape, const Transform3D& p_transform);
+	static JPH::ShapeRefC with_transform(
+		const JPH::Shape* p_shape,
+		const Transform3D& p_transform,
+		const Vector3& p_scale
+	);
 
 	static JPH::ShapeRefC with_center_of_mass_offset(
 		const JPH::Shape* p_shape,

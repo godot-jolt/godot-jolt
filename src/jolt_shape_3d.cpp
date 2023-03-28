@@ -98,24 +98,22 @@ JPH::ShapeRefC JoltShape3D::with_basis_origin(
 
 JPH::ShapeRefC JoltShape3D::with_transform(
 	const JPH::Shape* p_shape,
-	const Transform3D& p_transform
+	const Transform3D& p_transform,
+	const Vector3& p_scale
 ) {
 	ERR_FAIL_NULL_D(p_shape);
 
 	JPH::ShapeRefC shape = p_shape;
-	Transform3D transform = p_transform;
 
-	if (transform == Transform3D()) {
-		return shape;
+	if (p_scale != Vector3(1.0f, 1.0f, 1.0f)) {
+		shape = with_scale(shape, p_scale);
 	}
 
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-
-	if (try_strip_scale(transform, scale)) {
-		shape = with_scale(shape, scale);
+	if (p_transform != Transform3D()) {
+		shape = with_basis_origin(shape, p_transform.basis, p_transform.origin);
 	}
 
-	return with_basis_origin(shape, transform.basis, transform.origin);
+	return shape;
 }
 
 JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(

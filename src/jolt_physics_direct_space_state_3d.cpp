@@ -789,11 +789,10 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 
 		const JPH::ShapeRefC jolt_shape = shape->try_build();
 
+		const Transform3D& shape_transform = p_body.get_shape_transform(i);
+		const Vector3& shape_scale = p_body.get_shape_scale(i);
 		const Vector3 shape_com = to_godot(jolt_shape->GetCenterOfMass());
-		const Transform3D shape_transform = p_body.get_shape_transform(i);
-		Transform3D shape_transform_com = shape_transform.translated_local(shape_com);
-		Vector3 shape_scale;
-		try_strip_scale(shape_transform_com, shape_scale);
+		const Transform3D shape_transform_com = shape_transform.translated_local(shape_com);
 
 		float shape_safe_fraction = 1.0f;
 		float shape_unsafe_fraction = 1.0f;
