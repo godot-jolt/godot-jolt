@@ -85,15 +85,3 @@ _FORCE_INLINE_ bool try_strip_scale(Basis& p_basis, Vector3& p_scale) {
 _FORCE_INLINE_ bool try_strip_scale(Transform3D& p_transform, Vector3& p_scale) {
 	return try_strip_scale(p_transform.basis, p_scale);
 }
-
-_FORCE_INLINE_ double calculate_physics_step() {
-	// TODO(mihe): Replace these constants with the appropriate singleton calls once
-	// godotengine/godot-cpp#889 is fixed
-	const int32_t ticks_per_second = 60; // Engine::get_physics_ticks_per_second()
-	const double time_scale = 1.0; // Engine::get_time_scale()
-
-	const double step = 1.0 / ticks_per_second;
-	const double step_scaled = step * time_scale;
-
-	return step_scaled;
-}

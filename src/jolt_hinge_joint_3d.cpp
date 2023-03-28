@@ -160,7 +160,11 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_MAX_IMPULSE: {
 			motor_max_impulse = p_value;
 
-			const double max_torque = motor_max_impulse / calculate_physics_step();
+			// HACK(mihe): This will break if the physics time step changes in any way during the
+			// lifetime of this joint, but it can't really be fixed since Godot only provides a max
+			// impulse and not a max force. As far as I can tell this is similarly broken in Godot
+			// Physics as well, so at least we're being consistent.
+			const double max_torque = motor_max_impulse / space->get_last_step();
 
 			JPH::MotorSettings& motor_settings = jolt_constraint->GetMotorSettings();
 			motor_settings.mMinTorqueLimit = (float)-max_torque;
