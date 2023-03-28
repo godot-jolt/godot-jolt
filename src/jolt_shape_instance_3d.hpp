@@ -9,6 +9,7 @@ public:
 		JoltCollisionObject3D* p_parent,
 		JoltShape3D* p_shape,
 		const Transform3D& p_transform = {},
+		const Vector3& p_scale = {1.0f, 1.0f, 1.0f},
 		bool p_disabled = false
 	);
 
@@ -25,6 +26,8 @@ public:
 	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
 	const Transform3D& get_transform() const { return transform; }
+
+	Transform3D get_transform_scaled() const { return transform.scaled_local(scale); }
 
 	void set_transform(const Transform3D& p_transform) { transform = p_transform; }
 

@@ -69,7 +69,7 @@ public:
 
 	void add_shape(
 		JoltShape3D* p_shape,
-		const Transform3D& p_transform,
+		Transform3D p_transform,
 		bool p_disabled,
 		bool p_lock = true
 	);
@@ -95,6 +95,8 @@ public:
 	JoltShape3D* find_shape(const JPH::SubShapeID& p_sub_shape_id) const;
 
 	Transform3D get_shape_transform(int32_t p_index) const;
+
+	Transform3D get_shape_transform_scaled(int32_t p_index) const;
 
 	Vector3 get_shape_scale(int32_t p_index) const;
 
