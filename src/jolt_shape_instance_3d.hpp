@@ -28,6 +28,10 @@ public:
 
 	void set_transform(const Transform3D& p_transform) { transform = p_transform; }
 
+	const Vector3& get_scale() const { return scale; }
+
+	void set_scale(const Vector3& p_scale) { scale = p_scale; }
+
 	bool is_built() const { return jolt_ref != nullptr; }
 
 	bool is_enabled() const { return !disabled; }
@@ -48,6 +52,8 @@ private:
 	inline static uint32_t next_id = 1;
 
 	Transform3D transform;
+
+	Vector3 scale;
 
 	JPH::ShapeRefC jolt_ref;
 

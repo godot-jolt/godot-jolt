@@ -41,7 +41,7 @@ public:
 
 	Transform3D get_transform(bool p_lock = true) const;
 
-	void set_transform(const Transform3D& p_transform, bool p_lock = true);
+	void set_transform(Transform3D p_transform, bool p_lock = true);
 
 	Basis get_basis(bool p_lock = true) const;
 
@@ -96,7 +96,9 @@ public:
 
 	Transform3D get_shape_transform(int32_t p_index) const;
 
-	void set_shape_transform(int32_t p_index, const Transform3D& p_transform, bool p_lock = true);
+	Vector3 get_shape_scale(int32_t p_index) const;
+
+	void set_shape_transform(int32_t p_index, Transform3D p_transform, bool p_lock = true);
 
 	bool is_shape_disabled(int32_t p_index) const;
 

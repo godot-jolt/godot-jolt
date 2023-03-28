@@ -4,11 +4,11 @@ template<typename TCallable>
 JPH::ShapeRefC JoltShape3D::as_compound(TCallable&& p_callable) {
 	JPH::StaticCompoundShapeSettings shape_settings;
 
-	auto add_shape = [&](JPH::ShapeRefC p_shape, Transform3D p_transform) {
-		Vector3 scale(1.0f, 1.0f, 1.0f);
-
-		if (try_strip_scale(p_transform, scale)) {
-			p_shape = with_scale(p_shape, scale);
+	auto add_shape = [&](JPH::ShapeRefC p_shape,
+						 const Transform3D& p_transform,
+						 const Vector3& p_scale) {
+		if (p_scale != Vector3(1.0f, 1.0f, 1.0f)) {
+			p_shape = with_scale(p_shape, p_scale);
 		}
 
 		shape_settings.AddShape(to_jolt(p_transform.origin), to_jolt(p_transform.basis), p_shape);

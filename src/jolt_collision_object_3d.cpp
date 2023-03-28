@@ -72,7 +72,14 @@ Transform3D JoltCollisionObject3D::get_transform(bool p_lock) const {
 	return {to_godot(body->GetRotation()), to_godot(body->GetPosition())};
 }
 
-void JoltCollisionObject3D::set_transform(const Transform3D& p_transform, bool p_lock) {
+void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) {
+	// HACK(mihe): We deliberately discard the scale here since Godot doesn't support scaling
+	// physics bodies and emits node warnings when you try to do so, regardless of what physics
+	// server is being used.
+
+	Vector3 scale;
+	try_strip_scale(p_transform, scale);
+
 	if (space == nullptr) {
 		initial_transform = p_transform;
 		return;
@@ -181,7 +188,8 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
 	if (built_shape_count == 1) {
 		result = JoltShape3D::with_transform(
 			last_built_shape->get_jolt_ref(),
-			last_built_shape->get_transform()
+			last_built_shape->get_transform(),
+			last_built_shape->get_scale()
 		);
 	} else {
 		int32_t shape_index = 0;
@@ -194,7 +202,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
 			const JoltShapeInstance3D& shape = shapes[shape_index++];
 
 			if (shape.is_enabled() && shape.is_built()) {
-				p_add_shape(shape.get_jolt_ref(), shape.get_transform());
+				p_add_shape(shape.get_jolt_ref(), shape.get_transform(), shape.get_scale());
 			}
 
 			return true;
@@ -308,20 +316,30 @@ Transform3D JoltCollisionObject3D::get_shape_transform(int32_t p_index) const {
 	return shapes[p_index].get_transform();
 }
 
+Vector3 JoltCollisionObject3D::get_shape_scale(int32_t p_index) const {
+	ERR_FAIL_INDEX_D(p_index, shapes.size());
+
+	return shapes[p_index].get_scale();
+}
+
 void JoltCollisionObject3D::set_shape_transform(
 	int32_t p_index,
-	const Transform3D& p_transform,
+	Transform3D p_transform,
 	bool p_lock
 ) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
+	Vector3 new_scale;
+	try_strip_scale(p_transform, new_scale);
+
 	JoltShapeInstance3D& shape = shapes[p_index];
 
-	if (shape.get_transform() == p_transform) {
+	if (shape.get_transform() == p_transform && shape.get_scale() == new_scale) {
 		return;
 	}
 
 	shape.set_transform(p_transform);
+	shape.set_scale(new_scale);
 
 	rebuild_shape(p_lock);
 }
