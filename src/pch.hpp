@@ -123,5 +123,6 @@ using namespace godot;
 #include "misc/bind_macros.hpp"
 #include "misc/error_macros.hpp"
 #include "misc/gdclass_macros.hpp"
+#include "misc/scope_guard.hpp"
 #include "misc/type_conversions.hpp"
 #include "misc/utility_functions.hpp"
