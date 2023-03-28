@@ -174,26 +174,36 @@ JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p
 	return shape_result.Get();
 }
 
+void JoltShape3D::shape_changed(bool p_lock) {
+	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
+		owner->rebuild_shape(p_lock);
+	}
+}
+
 Variant JoltWorldBoundaryShape3D::get_data() const {
 	return plane;
 }
 
 void JoltWorldBoundaryShape3D::set_data(const Variant& p_data) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::PLANE);
 
-	set_data((Plane)p_data);
+	initialize((Plane)p_data);
 }
 
-void JoltWorldBoundaryShape3D::set_data(Plane p_plane) {
-	clear();
-
+bool JoltWorldBoundaryShape3D::initialize(Plane p_plane) {
 	if (p_plane == Plane()) {
-		return;
+		return false;
 	}
 
 	plane = p_plane;
+
+	return true;
 }
 
 void JoltWorldBoundaryShape3D::clear() {
@@ -216,6 +226,10 @@ Variant JoltSeparationRayShape3D::get_data() const {
 }
 
 void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
@@ -228,20 +242,20 @@ void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
 	const Variant maybe_slide_on_slope = data.get("slide_on_slope", {});
 	ERR_FAIL_COND(maybe_slide_on_slope.get_type() != Variant::BOOL);
 
-	set_data((float)maybe_length, (bool)maybe_slide_on_slope);
+	initialize((float)maybe_length, (bool)maybe_slide_on_slope);
 }
 
-void JoltSeparationRayShape3D::set_data(float p_length, bool p_slide_on_slope) {
-	clear();
-
+bool JoltSeparationRayShape3D::initialize(float p_length, bool p_slide_on_slope) {
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
 	// letting these remain invalid.
 	if (p_length == 0.0f) {
-		return;
+		return false;
 	}
 
 	length = p_length;
 	slide_on_slope = p_slide_on_slope;
+
+	return true;
 }
 
 void JoltSeparationRayShape3D::clear() {
@@ -272,23 +286,27 @@ Variant JoltSphereShape3D::get_data() const {
 }
 
 void JoltSphereShape3D::set_data(const Variant& p_data) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::FLOAT);
 
-	set_data((float)p_data);
+	initialize((float)p_data);
 }
 
-void JoltSphereShape3D::set_data(float p_radius) {
-	clear();
-
+bool JoltSphereShape3D::initialize(float p_radius) {
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
 	// letting these remain invalid.
 	if (p_radius <= 0.0f) {
-		return;
+		return false;
 	}
 
 	radius = p_radius;
+
+	return true;
 }
 
 void JoltSphereShape3D::clear() {
@@ -318,32 +336,42 @@ Variant JoltBoxShape3D::get_data() const {
 }
 
 void JoltBoxShape3D::set_data(const Variant& p_data) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::VECTOR3);
 
-	set_data((Vector3)p_data);
+	initialize((Vector3)p_data);
 }
 
-void JoltBoxShape3D::set_data(Vector3 p_half_extents) {
+void JoltBoxShape3D::set_margin(float p_margin) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
+	margin = p_margin;
+
+	initialize(half_extents);
+}
+
+bool JoltBoxShape3D::initialize(Vector3 p_half_extents) {
 	const float shortest_axis = p_half_extents[p_half_extents.min_axis_index()];
 
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
 	// letting these remain invalid. We also treat anything smaller than or equal to the margin as
 	// zero-sized since Jolt will emit errors otherwise.
 	if (shortest_axis <= margin) {
-		return;
+		return false;
 	}
 
 	half_extents = p_half_extents;
-}
 
-void JoltBoxShape3D::set_margin(float p_margin) {
-	margin = p_margin;
-
-	set_data(half_extents);
+	return true;
 }
 
 void JoltBoxShape3D::clear() {
@@ -382,6 +410,10 @@ Variant JoltCapsuleShape3D::get_data() const {
 }
 
 void JoltCapsuleShape3D::set_data(const Variant& p_data) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
@@ -394,21 +426,19 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	const Variant maybe_radius = data.get("radius", {});
 	ERR_FAIL_COND(maybe_radius.get_type() != Variant::FLOAT);
 
-	set_data((float)maybe_height, (float)maybe_radius);
+	initialize((float)maybe_height, (float)maybe_radius);
 }
 
-void JoltCapsuleShape3D::set_data(float p_height, float p_radius) {
-	clear();
-
+bool JoltCapsuleShape3D::initialize(float p_height, float p_radius) {
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
 	// letting these remain invalid.
 	if (p_height <= 0.0f || p_radius <= 0.0f) {
-		return;
+		return false;
 	}
 
 	const float half_height = p_height / 2.0f;
 
-	ERR_FAIL_COND_MSG(
+	ERR_FAIL_COND_D_MSG(
 		half_height < p_radius,
 		vformat(
 			"Failed to set shape data for capsule shape with height '%f' and radius '%f'. "
@@ -420,6 +450,8 @@ void JoltCapsuleShape3D::set_data(float p_height, float p_radius) {
 
 	height = p_height;
 	radius = p_radius;
+
+	return true;
 }
 
 void JoltCapsuleShape3D::clear() {
@@ -457,6 +489,10 @@ Variant JoltCylinderShape3D::get_data() const {
 }
 
 void JoltCylinderShape3D::set_data(const Variant& p_data) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
@@ -469,27 +505,33 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 	const Variant maybe_radius = data.get("radius", {});
 	ERR_FAIL_COND(maybe_radius.get_type() != Variant::FLOAT);
 
-	set_data((float)maybe_height, (float)maybe_radius);
+	initialize((float)maybe_height, (float)maybe_radius);
 }
 
-void JoltCylinderShape3D::set_data(float p_height, float p_radius) {
+void JoltCylinderShape3D::set_margin(float p_margin) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
+	margin = p_margin;
+
+	initialize(height, radius);
+}
+
+bool JoltCylinderShape3D::initialize(float p_height, float p_radius) {
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
 	// letting these remain invalid. We also treat anything smaller than the margin as zero-sized
 	// since Jolt will emit errors otherwise.
 	if (p_height < margin || p_radius < margin) {
-		return;
+		return false;
 	}
 
 	height = p_height;
 	radius = p_radius;
-}
 
-void JoltCylinderShape3D::set_margin(float p_margin) {
-	margin = p_margin;
-
-	set_data(height, radius);
+	return true;
 }
 
 void JoltCylinderShape3D::clear() {
@@ -528,29 +570,39 @@ Variant JoltConvexPolygonShape3D::get_data() const {
 }
 
 void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 
-	set_data((PackedVector3Array)p_data);
-}
-
-void JoltConvexPolygonShape3D::set_data(PackedVector3Array p_vertices) {
-	clear();
-
-	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
-	// letting these remain invalid.
-	if (p_vertices.size() < 3) {
-		return;
-	}
-
-	vertices = std::move(p_vertices);
+	initialize((PackedVector3Array)p_data);
 }
 
 void JoltConvexPolygonShape3D::set_margin(float p_margin) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
+	clear();
+
 	margin = p_margin;
 
-	set_data(vertices);
+	initialize(vertices);
+}
+
+bool JoltConvexPolygonShape3D::initialize(PackedVector3Array p_vertices) {
+	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
+	// letting these remain invalid.
+	if (p_vertices.size() < 3) {
+		return false;
+	}
+
+	vertices = std::move(p_vertices);
+
+	return true;
 }
 
 void JoltConvexPolygonShape3D::clear() {
@@ -599,6 +651,10 @@ Variant JoltConcavePolygonShape3D::get_data() const {
 }
 
 void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
@@ -611,23 +667,21 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	const Variant maybe_backface_collision = data.get("backface_collision", {});
 	ERR_FAIL_COND(maybe_backface_collision.get_type() != Variant::BOOL);
 
-	set_data((PackedVector3Array)maybe_faces, (bool)maybe_backface_collision);
+	initialize((PackedVector3Array)maybe_faces, (bool)maybe_backface_collision);
 }
 
-void JoltConcavePolygonShape3D::set_data(PackedVector3Array p_faces, bool p_backface_collision) {
-	clear();
-
+bool JoltConcavePolygonShape3D::initialize(PackedVector3Array p_faces, bool p_backface_collision) {
 	const auto vertex_count = (size_t)p_faces.size();
 
 	// Godot seems to be forgiving about zero-sized shapes, so we try to mimick that by silently
 	// letting these remain invalid.
 	if (vertex_count == 0) {
-		return;
+		return false;
 	}
 
 	const size_t excess_vertex_count = vertex_count % 3;
 
-	ERR_FAIL_COND_MSG(
+	ERR_FAIL_COND_D_MSG(
 		excess_vertex_count != 0,
 		"Failed to set shape data for concave polygon shape with vertex count '{}'. "
 		"Expected a vertex count divisible by 3."
@@ -636,11 +690,13 @@ void JoltConcavePolygonShape3D::set_data(PackedVector3Array p_faces, bool p_back
 	const size_t face_count = vertex_count / 3;
 
 	if (face_count == 0) {
-		return;
+		return false;
 	}
 
 	faces = std::move(p_faces);
 	backface_collision = p_backface_collision;
+
+	return true;
 }
 
 void JoltConcavePolygonShape3D::clear() {
@@ -711,6 +767,10 @@ Variant JoltHeightMapShape3D::get_data() const {
 }
 
 void JoltHeightMapShape3D::set_data(const Variant& p_data) {
+	ON_SCOPE_EXIT {
+		shape_changed();
+	};
+
 	clear();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
@@ -726,20 +786,18 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	const Variant maybe_depth = data.get("depth", {});
 	ERR_FAIL_COND(maybe_depth.get_type() != Variant::INT);
 
-	set_data((PackedFloat32Array)maybe_heights, (int32_t)maybe_width, (int32_t)maybe_depth);
+	initialize((PackedFloat32Array)maybe_heights, (int32_t)maybe_width, (int32_t)maybe_depth);
 }
 
-void JoltHeightMapShape3D::set_data(
+bool JoltHeightMapShape3D::initialize(
 	PackedFloat32Array p_heights,
 	int32_t p_width,
 	int32_t p_depth
 ) {
-	clear();
-
 	const auto height_count = (int32_t)p_heights.size();
 
 	if (height_count == 0) {
-		return;
+		return false;
 	}
 
 	// HACK(mihe): A height map shape will have a width or depth of 2 while it's transitioning from
@@ -747,10 +805,10 @@ void JoltHeightMapShape3D::set_data(
 	// anyone would actually want a height map of such small dimensions, we silently let this remain
 	// invalid in order to not display an error every single time we create a shape of this type.
 	if (p_width <= 2 || p_depth <= 2) {
-		return;
+		return false;
 	}
 
-	ERR_FAIL_COND_MSG(
+	ERR_FAIL_COND_D_MSG(
 		height_count != p_width * p_depth,
 		vformat(
 			"Failed to set shape data for height map shape with width '%d', depth '%d' and height "
@@ -761,7 +819,7 @@ void JoltHeightMapShape3D::set_data(
 		)
 	);
 
-	ERR_FAIL_COND_MSG(
+	ERR_FAIL_COND_D_MSG(
 		p_width != p_depth,
 		vformat(
 			"Failed to set shape data for height map shape with width '%d', depth '%d' and height "
@@ -775,7 +833,7 @@ void JoltHeightMapShape3D::set_data(
 
 	const auto sample_count = (JPH::uint32)p_width;
 
-	ERR_FAIL_COND_MSG(
+	ERR_FAIL_COND_D_MSG(
 		!is_power_of_2(sample_count),
 		vformat(
 			"Failed to set shape data for height map shape with width '%d', depth '%d' and height "
@@ -790,6 +848,8 @@ void JoltHeightMapShape3D::set_data(
 	heights = std::move(p_heights);
 	width = p_width;
 	depth = p_depth;
+
+	return true;
 }
 
 void JoltHeightMapShape3D::clear() {

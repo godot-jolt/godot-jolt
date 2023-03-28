@@ -66,6 +66,8 @@ public:
 protected:
 	virtual JPH::ShapeRefC build(float p_extra_margin) const = 0;
 
+	virtual void shape_changed(bool p_lock = true);
+
 	RID rid;
 
 	JPH::ShapeRefC jolt_ref;
@@ -83,8 +85,6 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
-	void set_data(Plane p_plane);
-
 	float get_margin() const override { return 0.0f; }
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
@@ -92,6 +92,8 @@ public:
 	bool is_valid() const override { return plane != Plane(); }
 
 private:
+	bool initialize(Plane p_plane);
+
 	void clear();
 
 	JPH::ShapeRefC build(float p_extra_margin) const override;
@@ -109,8 +111,6 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
-	void set_data(float p_length, bool p_slide_on_slope);
-
 	float get_margin() const override { return 0.0f; }
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
@@ -118,6 +118,8 @@ public:
 	bool is_valid() const override { return length > 0.0f; }
 
 private:
+	bool initialize(float p_length, bool p_slide_on_slope);
+
 	void clear();
 
 	JPH::ShapeRefC build(float p_extra_margin) const override;
@@ -136,8 +138,6 @@ class JoltSphereShape3D final : public JoltShape3D {
 
 	void set_data(const Variant& p_data) override;
 
-	void set_data(float p_radius);
-
 	float get_margin() const override { return 0.0f; }
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
@@ -145,6 +145,8 @@ class JoltSphereShape3D final : public JoltShape3D {
 	bool is_valid() const override { return radius > 0; }
 
 private:
+	bool initialize(float p_radius);
+
 	void clear();
 
 	JPH::ShapeRefC build(float p_extra_margin) const override;
@@ -162,8 +164,6 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
-	void set_data(Vector3 p_half_extents);
-
 	float get_margin() const override { return margin; }
 
 	void set_margin(float p_margin) override;
@@ -171,6 +171,8 @@ public:
 	bool is_valid() const override { return half_extents.x > 0; }
 
 private:
+	bool initialize(Vector3 p_half_extents);
+
 	void clear();
 
 	JPH::ShapeRefC build(float p_extra_margin) const override;
@@ -190,8 +192,6 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
-	void set_data(float p_height, float p_radius);
-
 	float get_margin() const override { return 0.0f; }
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
@@ -199,6 +199,8 @@ public:
 	bool is_valid() const override { return radius > 0; }
 
 private:
+	bool initialize(float p_height, float p_radius);
+
 	void clear();
 
 	JPH::ShapeRefC build(float p_extra_margin) const override;
@@ -218,8 +220,6 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
-	void set_data(float p_height, float p_radius);
-
 	float get_margin() const override { return margin; }
 
 	void set_margin(float p_margin) override;
@@ -227,6 +227,8 @@ public:
 	bool is_valid() const override { return radius > 0; }
 
 private:
+	bool initialize(float p_height, float p_radius);
+
 	void clear();
 
 	JPH::ShapeRefC build(float p_extra_margin) const override;
@@ -248,8 +250,6 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
-	void set_data(PackedVector3Array p_vertices);
-
 	float get_margin() const override { return margin; }
 
 	void set_margin(float p_margin) override;
@@ -257,6 +257,8 @@ public:
 	bool is_valid() const override { return !vertices.is_empty(); }
 
 private:
+	bool initialize(PackedVector3Array p_vertices);
+
 	void clear();
 
 	JPH::ShapeRefC build(float p_extra_margin) const override;
@@ -276,8 +278,6 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
-	void set_data(PackedVector3Array p_faces, bool p_backface_collision);
-
 	float get_margin() const override { return 0.0f; }
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
@@ -285,6 +285,8 @@ public:
 	bool is_valid() const override { return !faces.is_empty(); }
 
 private:
+	bool initialize(PackedVector3Array p_faces, bool p_backface_collision);
+
 	void clear();
 
 	JPH::ShapeRefC build(float p_extra_margin) const override;
@@ -304,8 +306,6 @@ public:
 
 	void set_data(const Variant& p_data) override;
 
-	void set_data(PackedFloat32Array p_heights, int32_t p_width, int32_t p_depth);
-
 	float get_margin() const override { return 0.0f; }
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
@@ -313,6 +313,8 @@ public:
 	bool is_valid() const override { return width > 0; }
 
 private:
+	bool initialize(PackedFloat32Array p_heights, int32_t p_width, int32_t p_depth);
+
 	void clear();
 
 	JPH::ShapeRefC build(float p_extra_margin) const override;
