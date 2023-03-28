@@ -315,7 +315,7 @@ Transform3D JoltPhysicsServer3D::_area_get_shape_transform(const RID& p_area, in
 	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
-	return area->get_shape_transform(p_shape_idx);
+	return area->get_shape_transform_scaled(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_area_remove_shape(const RID& p_area, int32_t p_shape_idx) {
@@ -568,7 +568,7 @@ Transform3D JoltPhysicsServer3D::_body_get_shape_transform(const RID& p_body, in
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	return body->get_shape_transform(p_shape_idx);
+	return body->get_shape_transform_scaled(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int32_t p_shape_idx) {

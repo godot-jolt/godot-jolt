@@ -6,9 +6,11 @@ JoltShapeInstance3D::JoltShapeInstance3D(
 	JoltCollisionObject3D* p_parent,
 	JoltShape3D* p_shape,
 	const Transform3D& p_transform,
+	const Vector3& p_scale,
 	bool p_disabled
 )
 	: transform(p_transform)
+	, scale(p_scale)
 	, parent(p_parent)
 	, shape(p_shape)
 	, disabled(p_disabled) {
@@ -51,6 +53,7 @@ bool JoltShapeInstance3D::try_build() {
 JoltShapeInstance3D& JoltShapeInstance3D::operator=(JoltShapeInstance3D&& p_other) noexcept {
 	if (this != &p_other) {
 		transform = p_other.transform;
+		scale = p_other.scale;
 		parent = std::exchange(p_other.parent, nullptr);
 		shape = std::exchange(p_other.shape, nullptr);
 		jolt_ref = std::move(p_other.jolt_ref);

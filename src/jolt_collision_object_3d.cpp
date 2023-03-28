@@ -243,11 +243,14 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 
 void JoltCollisionObject3D::add_shape(
 	JoltShape3D* p_shape,
-	const Transform3D& p_transform,
+	Transform3D p_transform,
 	bool p_disabled,
 	bool p_lock
 ) {
-	shapes.emplace_back(this, p_shape, p_transform, p_disabled);
+	Vector3 scale;
+	try_strip_scale(p_transform, scale);
+
+	shapes.emplace_back(this, p_shape, p_transform, scale, p_disabled);
 
 	rebuild_shape(p_lock);
 }
@@ -314,6 +317,12 @@ Transform3D JoltCollisionObject3D::get_shape_transform(int32_t p_index) const {
 	ERR_FAIL_INDEX_D(p_index, shapes.size());
 
 	return shapes[p_index].get_transform();
+}
+
+Transform3D JoltCollisionObject3D::get_shape_transform_scaled(int32_t p_index) const {
+	ERR_FAIL_INDEX_D(p_index, shapes.size());
+
+	return shapes[p_index].get_transform_scaled();
 }
 
 Vector3 JoltCollisionObject3D::get_shape_scale(int32_t p_index) const {
