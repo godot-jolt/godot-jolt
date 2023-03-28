@@ -516,8 +516,9 @@ bool JoltBody3D::has_collision_exception(const RID& p_excepted_body, bool p_lock
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
 
-	const auto* group_filter =
-		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter());
+	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
+		body->GetCollisionGroup().GetGroupFilter()
+	);
 
 	return group_filter != nullptr && group_filter->has_exception(p_excepted_body);
 }
@@ -526,8 +527,9 @@ TypedArray<RID> JoltBody3D::get_collision_exceptions(bool p_lock) const {
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
 
-	const auto* group_filter =
-		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter());
+	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
+		body->GetCollisionGroup().GetGroupFilter()
+	);
 
 	if (group_filter == nullptr) {
 		return {};
@@ -856,8 +858,9 @@ void JoltBody3D::create_in_space(bool p_lock) {
 	settings.mLinearVelocity = to_jolt(initial_linear_velocity);
 	settings.mAngularVelocity = to_jolt(initial_angular_velocity);
 	settings.mAllowDynamicOrKinematic = true;
-	settings.mMotionQuality =
-		ccd_enabled ? JPH::EMotionQuality::LinearCast : JPH::EMotionQuality::Discrete;
+	settings.mMotionQuality = ccd_enabled
+		? JPH::EMotionQuality::LinearCast
+		: JPH::EMotionQuality::Discrete;
 	settings.mAllowSleeping = allowed_sleep;
 	settings.mFriction = friction;
 	settings.mRestitution = bounce;

@@ -135,8 +135,9 @@ void JoltArea3D::set_param(PhysicsServer3D::AreaParameter p_param, const Variant
 }
 
 JPH::BroadPhaseLayer JoltArea3D::get_broad_phase_layer() const {
-	return monitorable ? JoltBroadPhaseLayer::AREA_DETECTABLE
-					   : JoltBroadPhaseLayer::AREA_UNDETECTABLE;
+	return monitorable
+		? JoltBroadPhaseLayer::AREA_DETECTABLE
+		: JoltBroadPhaseLayer::AREA_UNDETECTABLE;
 }
 
 void JoltArea3D::set_body_monitor_callback(const Callable& p_callback) {
