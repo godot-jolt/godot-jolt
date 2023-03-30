@@ -614,14 +614,12 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 
 	JoltMotionShape motion_shape(static_cast<const JPH::ConvexShape&>(p_jolt_shape));
 
-	JoltQueryCollectorAny<JPH::CollideShapeCollector> collide_collector;
-
 	auto collides = [&](const JPH::Body& p_other_body, float p_fraction) {
 		motion_shape.set_motion(motion_local * p_fraction);
 
 		const JPH::TransformedShape other_shape = p_other_body.GetTransformedShape();
 
-		collide_collector.reset();
+		JoltQueryCollectorAny<JPH::CollideShapeCollector> collide_collector;
 
 		JPH::CollisionDispatch::sCollideShapeVsShape(
 			&motion_shape,
