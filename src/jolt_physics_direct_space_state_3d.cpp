@@ -551,13 +551,13 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 	float& p_closest_safe,
 	float& p_closest_unsafe
 ) const {
+	p_closest_safe = 1.0f;
+	p_closest_unsafe = 1.0f;
+
 	ERR_FAIL_COND_D_MSG(
 		p_jolt_shape.GetType() != JPH::EShapeType::Convex,
 		"Shape-casting with non-convex shapes is not supported by Godot Jolt."
 	);
-
-	p_closest_safe = 1.0f;
-	p_closest_unsafe = 1.0f;
 
 	const float motion_length = p_motion.length();
 
