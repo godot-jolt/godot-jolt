@@ -469,12 +469,13 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	bool p_collide_separation_ray,
 	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
+	p_margin = max(p_margin, 0.0001f);
+	p_max_collisions = min(p_max_collisions, 32);
+
 	// HACK(mihe): We deliberately discard the scale here since Godot doesn't support scaling
 	// physics bodies and emits node warnings when you try to do so, regardless of what physics
 	// server is being used.
 	Transform3D transform = Math::normalized(p_transform);
-
-	p_margin = max(p_margin, 0.0001f);
 
 	const Vector3 direction = p_motion.normalized();
 
@@ -503,7 +504,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 			transform.translated(p_motion * unsafe_fraction),
 			direction,
 			p_margin,
-			min(p_max_collisions, 32),
+			p_max_collisions,
 			p_result->collisions,
 			p_result->collision_count
 		);
