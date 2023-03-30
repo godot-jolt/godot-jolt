@@ -25,11 +25,11 @@ private:
 
 		~Job();
 
-		void queue();
-
-		void push_completed();
+		static void push_completed(Job* p_job);
 
 		static Job* pop_completed();
+
+		void queue();
 
 		Job& operator=(const Job& p_other) = delete;
 

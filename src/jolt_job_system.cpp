@@ -38,24 +38,13 @@ JoltJobSystem::Job::~Job() {
 	}
 }
 
-void JoltJobSystem::Job::queue() {
-	AddRef();
-
-	// HACK(mihe): Ideally we would use Jolt's actual job name here, but I'd rather not incur the
-	// overhead of a memory allocation or thread-safe lookup every time we create/queue a task. So
-	// instead we use the same cached description for all of them.
-	static const String description("JoltPhysics3D");
-
-	task_id = WorkerThreadPool::get_singleton()->add_native_task(&execute, this, true, description);
-}
-
-void JoltJobSystem::Job::push_completed() {
+void JoltJobSystem::Job::push_completed(Job* p_job) {
 	Job* prev_head = nullptr;
 
 	do {
 		prev_head = completed_head;
-		completed_next = prev_head;
-	} while (!completed_head.compare_exchange_weak(prev_head, this));
+		p_job->completed_next = prev_head;
+	} while (!completed_head.compare_exchange_weak(prev_head, p_job));
 }
 
 JoltJobSystem::Job* JoltJobSystem::Job::pop_completed() {
@@ -70,6 +59,17 @@ JoltJobSystem::Job* JoltJobSystem::Job::pop_completed() {
 	} while (!completed_head.compare_exchange_weak(prev_head, prev_head->completed_next));
 
 	return prev_head;
+}
+
+void JoltJobSystem::Job::queue() {
+	AddRef();
+
+	// HACK(mihe): Ideally we would use Jolt's actual job name here, but I'd rather not incur the
+	// overhead of a memory allocation or thread-safe lookup every time we create/queue a task. So
+	// instead we use the same cached description for all of them.
+	static const String description("JoltPhysics3D");
+
+	task_id = WorkerThreadPool::get_singleton()->add_native_task(&execute, this, true, description);
 }
 
 void JoltJobSystem::Job::execute(void* p_user_data) {
@@ -130,5 +130,5 @@ void JoltJobSystem::QueueJobs(JPH::JobSystem::Job** p_jobs, JPH::uint p_job_coun
 }
 
 void JoltJobSystem::FreeJob(JPH::JobSystem::Job* p_job) {
-	static_cast<Job*>(p_job)->push_completed();
+	Job::push_completed(static_cast<Job*>(p_job));
 }
