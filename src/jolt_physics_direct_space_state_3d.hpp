@@ -134,7 +134,7 @@ private:
 		const Transform3D& p_transform,
 		const Vector3& p_direction,
 		float p_margin,
-		Vector3& p_recover_motion
+		Vector3& p_recovery
 	) const;
 
 	bool body_motion_cast(

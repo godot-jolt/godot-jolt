@@ -476,19 +476,12 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 
 	p_margin = max(p_margin, 0.0001f);
 
-	const Vector3 motion_direction = p_motion.normalized();
+	const Vector3 direction = p_motion.normalized();
 
-	Vector3 recover_motion;
+	Vector3 recovery;
+	const bool recovered = body_motion_recover(p_body, transform, direction, p_margin, recovery);
 
-	const bool recovered = body_motion_recover(
-		p_body,
-		transform,
-		motion_direction,
-		p_margin,
-		recover_motion
-	);
-
-	transform.origin += recover_motion;
+	transform.origin += recovery;
 
 	float safe_fraction = 1.0f;
 	float unsafe_fraction = 1.0f;
@@ -508,7 +501,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		collided = body_motion_collide(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),
-			motion_direction,
+			direction,
 			p_margin,
 			min(p_max_collisions, 32),
 			p_result->collisions,
@@ -519,13 +512,13 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	if (collided) {
 		const PhysicsServer3DExtensionMotionCollision& deepest = p_result->collisions[0];
 
-		p_result->travel = recover_motion + p_motion * safe_fraction;
+		p_result->travel = recovery + p_motion * safe_fraction;
 		p_result->remainder = p_motion - p_motion * safe_fraction;
 		p_result->collision_depth = deepest.depth;
 		p_result->collision_safe_fraction = safe_fraction;
 		p_result->collision_unsafe_fraction = unsafe_fraction;
 	} else {
-		p_result->travel = recover_motion + p_motion;
+		p_result->travel = recovery + p_motion;
 		p_result->remainder = Vector3();
 		p_result->collision_depth = 0.0f;
 		p_result->collision_safe_fraction = 1.0f;
@@ -715,7 +708,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	const Transform3D& p_transform,
 	const Vector3& p_direction,
 	float p_margin,
-	Vector3& p_recover_motion
+	Vector3& p_recovery
 ) const {
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
@@ -789,7 +782,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 			break;
 		}
 
-		p_recover_motion += recovery;
+		p_recovery += recovery;
 		transform_com.origin += recovery;
 	}
 
