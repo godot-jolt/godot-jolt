@@ -101,7 +101,7 @@ JPH::JobHandle JoltJobSystem::CreateJob(
 		}
 
 		WARN_PRINT_ONCE(
-			"Job system exceed maximum number of jobs. "
+			"Job system exceeded maximum number of jobs. "
 			"Waiting for jobs to become available. "
 			"Consider increasing maximum number of jobs."
 		);
