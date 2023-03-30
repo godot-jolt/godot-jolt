@@ -67,7 +67,7 @@ void JoltJobSystem::Job::queue() {
 	// HACK(mihe): Ideally we would use Jolt's actual job name here, but I'd rather not incur the
 	// overhead of a memory allocation or thread-safe lookup every time we create/queue a task. So
 	// instead we use the same cached description for all of them.
-	static const String description("JoltPhysics3D");
+	static const String description("JoltPhysics");
 
 	task_id = WorkerThreadPool::get_singleton()->add_native_task(&execute, this, true, description);
 }
