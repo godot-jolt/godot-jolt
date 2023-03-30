@@ -11,6 +11,13 @@
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
 
+namespace {
+
+constexpr int32_t GDJOLT_MOTION_RECOVERY_ITERATIONS = 4;
+constexpr float GDJOLT_MOTION_RECOVERY_SPEED = 0.4f;
+
+} // namespace
+
 JoltPhysicsDirectSpaceState3D::JoltPhysicsDirectSpaceState3D(JoltSpace3D* p_space)
 	: space(p_space) { }
 
@@ -221,6 +228,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		query_filter,
 		query_filter,
 		JPH::ShapeFilter(),
+		true,
 		*p_closest_safe,
 		*p_closest_unsafe
 	);
@@ -465,6 +473,8 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	Vector3 scale(1.0f, 1.0f, 1.0f);
 	try_strip_scale(transform, scale);
 
+	p_margin = max(p_margin, 0.0001f);
+
 	const Vector3 motion_direction = p_motion.normalized();
 
 	Vector3 recover_motion;
@@ -477,6 +487,8 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		p_margin,
 		recover_motion
 	);
+
+	transform.origin += recover_motion;
 
 	float safe_fraction = 1.0f;
 	float unsafe_fraction = 1.0f;
@@ -535,6 +547,7 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 	const JPH::ObjectLayerFilter& p_object_layer_filter,
 	const JPH::BodyFilter& p_body_filter,
 	const JPH::ShapeFilter& p_shape_filter,
+	bool p_ignore_overlaps,
 	float& p_closest_safe,
 	float& p_closest_unsafe
 ) const {
@@ -555,6 +568,7 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 		p_object_layer_filter,
 		p_body_filter,
 		p_shape_filter,
+		p_ignore_overlaps,
 		p_closest_safe,
 		p_closest_unsafe
 	);
@@ -569,6 +583,7 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 	const JPH::ObjectLayerFilter& p_object_layer_filter,
 	const JPH::BodyFilter& p_body_filter,
 	const JPH::ShapeFilter& p_shape_filter,
+	bool p_ignore_overlaps,
 	float& p_closest_safe,
 	float& p_closest_unsafe
 ) const {
@@ -656,7 +671,7 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 			continue;
 		}
 
-		if (collides(*other_jolt_body, 0.0f)) {
+		if (p_ignore_overlaps && collides(*other_jolt_body, 0.0f)) {
 			continue;
 		}
 
@@ -699,7 +714,7 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 
 bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	const JoltBody3D& p_body,
-	Transform3D& p_transform,
+	const Transform3D& p_transform,
 	const Vector3& p_scale,
 	const Vector3& p_direction,
 	float p_margin,
@@ -708,7 +723,8 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	const Transform3D transform_com = p_transform.translated_local(center_of_mass);
+	Transform3D transform_com = p_transform.translated_local(center_of_mass);
+	const Vector3& base_offset = transform_com.origin;
 
 	JPH::CollideShapeSettings settings;
 	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
@@ -717,17 +733,19 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 
 	const JoltMotionFilter3D motion_filter(p_body);
 
+	JoltQueryCollectorAnyMulti<JPH::CollideShapeCollector, 32> collector;
+
 	bool recovered = false;
 
-	for (int32_t i = 0; i < 4; ++i) {
-		JoltQueryCollectorClosest<JPH::CollideShapeCollector> collector;
+	for (int32_t i = 0; i < GDJOLT_MOTION_RECOVERY_ITERATIONS; ++i) {
+		collector.reset();
 
 		space->get_narrow_phase_query().CollideShape(
 			jolt_shape,
 			to_jolt(p_scale),
 			to_jolt(transform_com),
 			settings,
-			to_jolt(transform_com.origin),
+			to_jolt(base_offset),
 			collector,
 			motion_filter,
 			motion_filter,
@@ -739,32 +757,43 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 			break;
 		}
 
-		const JPH::CollideShapeResult& hit = collector.get_hit();
+		recovered = true;
 
-		const float depth = hit.mPenetrationDepth + p_margin;
+		Vector3 recovery;
 
-		// HACK(mihe): An arbitrary number that's meant to prevent issues where recovery ends up
-		// being too great and thereby preventing `body_motion_collide` from actually hitting
-		// anything. Stems from godotengine/godot#52953.
-		const float magic_depth = p_margin * 0.05f;
+		for (int32_t j = 0; j < collector.get_hit_count(); ++j) {
+			const JPH::CollideShapeResult& hit = collector.get_hit(j);
 
-		if (depth <= magic_depth) {
+			// HACK(mihe): I don't believe this can happen while we're using a max separation
+			// distance, but even if it did we'd have no choice but to skip this recovery since we'd
+			// have no way of adding back the margin to our contact point. Either way, I'd prefer to
+			// receive a report about it if it does happen, hence the error.
+			ERR_CONTINUE(hit.mPenetrationAxis.LengthSq() == 0.0f);
+
+			const Vector3 penetration_axis = to_godot(hit.mPenetrationAxis.Normalized());
+			const Vector3 margin_offset = penetration_axis * p_margin;
+
+			const Vector3 point_on_1 = base_offset + to_godot(hit.mContactPointOn1) + margin_offset;
+			const Vector3 point_on_2 = base_offset + to_godot(hit.mContactPointOn2);
+
+			const float distance_to_1 = penetration_axis.dot(point_on_1 + recovery);
+			const float distance_to_2 = penetration_axis.dot(point_on_2);
+
+			const float penetration_depth = distance_to_1 - distance_to_2;
+
+			if (penetration_depth <= 0.0f) {
+				continue;
+			}
+
+			recovery -= penetration_axis * penetration_depth * GDJOLT_MOTION_RECOVERY_SPEED;
+		}
+
+		if (recovery == Vector3()) {
 			break;
 		}
 
-		const Vector3 contact_normal = to_godot(-hit.mPenetrationAxis.Normalized());
-
-		// HACK(mihe): Another arbitrary number that's meant to prevent issues where recovery ends
-		// up being too great and thereby preventing `body_motion_collide` from actually hitting
-		// anything. Stems from godotengine/godot#46148.
-		const float magic_fraction = 0.4f;
-
-		const Vector3 recover_motion = contact_normal * (depth - magic_depth) * magic_fraction;
-
-		p_recover_motion += recover_motion;
-		p_transform.origin += recover_motion;
-
-		recovered = true;
+		p_recover_motion += recovery;
+		transform_com.origin += recovery;
 	}
 
 	return recovered;
@@ -813,6 +842,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 			motion_filter,
 			motion_filter,
 			motion_filter,
+			false,
 			shape_safe_fraction,
 			shape_unsafe_fraction
 		);
