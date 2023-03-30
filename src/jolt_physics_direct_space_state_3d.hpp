@@ -102,20 +102,6 @@ public:
 
 private:
 	bool cast_motion(
-		JoltShape3D& p_shape,
-		double p_margin,
-		const Transform3D& p_transform,
-		const Vector3& p_motion,
-		const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
-		const JPH::ObjectLayerFilter& p_object_layer_filter,
-		const JPH::BodyFilter& p_body_filter,
-		const JPH::ShapeFilter& p_shape_filter,
-		bool p_ignore_overlaps,
-		float& p_closest_safe,
-		float& p_closest_unsafe
-	) const;
-
-	bool cast_motion(
 		const JPH::Shape& p_jolt_shape,
 		const Transform3D& p_transform_com,
 		const Vector3& p_scale,

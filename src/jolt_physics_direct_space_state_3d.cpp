@@ -216,13 +216,21 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
+	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
+	ERR_FAIL_NULL_D(jolt_shape);
+
+	Vector3 scale;
+	const Transform3D transform = Math::normalized(p_transform, scale);
+	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
+	Transform3D transform_com = transform.translated_local(center_of_mass);
+
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
 	return cast_motion(
-		*shape,
-		p_margin,
-		p_transform,
+		*jolt_shape,
+		transform_com,
+		scale,
 		p_motion,
 		query_filter,
 		query_filter,
@@ -528,42 +536,6 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	}
 
 	return collided;
-}
-
-bool JoltPhysicsDirectSpaceState3D::cast_motion(
-	JoltShape3D& p_shape,
-	double p_margin,
-	const Transform3D& p_transform,
-	const Vector3& p_motion,
-	const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
-	const JPH::ObjectLayerFilter& p_object_layer_filter,
-	const JPH::BodyFilter& p_body_filter,
-	const JPH::ShapeFilter& p_shape_filter,
-	bool p_ignore_overlaps,
-	float& p_closest_safe,
-	float& p_closest_unsafe
-) const {
-	const JPH::ShapeRefC jolt_shape = p_shape.try_build((float)p_margin);
-	ERR_FAIL_NULL_D(jolt_shape);
-
-	Vector3 scale;
-	const Transform3D transform = Math::normalized(p_transform, scale);
-	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = transform.translated_local(center_of_mass);
-
-	return cast_motion(
-		*jolt_shape,
-		transform_com,
-		scale,
-		p_motion,
-		p_broad_phase_layer_filter,
-		p_object_layer_filter,
-		p_body_filter,
-		p_shape_filter,
-		p_ignore_overlaps,
-		p_closest_safe,
-		p_closest_unsafe
-	);
 }
 
 bool JoltPhysicsDirectSpaceState3D::cast_motion(
