@@ -784,6 +784,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 		}
 
 		const JPH::ShapeRefC jolt_shape = shape->try_build();
+		ERR_FAIL_NULL_D(jolt_shape);
 
 		const Transform3D& shape_transform = p_body.get_shape_transform(i);
 		const Vector3& shape_scale = p_body.get_shape_scale(i);
