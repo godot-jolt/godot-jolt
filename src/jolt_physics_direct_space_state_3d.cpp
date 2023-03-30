@@ -469,8 +469,10 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	bool p_collide_separation_ray,
 	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
-	Vector3 scale;
-	Transform3D transform = Math::normalized(p_transform, scale);
+	// HACK(mihe): We deliberately discard the scale here since Godot doesn't support scaling
+	// physics bodies and emits node warnings when you try to do so, regardless of what physics
+	// server is being used.
+	Transform3D transform = Math::normalized(p_transform);
 
 	p_margin = max(p_margin, 0.0001f);
 
@@ -481,7 +483,6 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	const bool recovered = body_motion_recover(
 		p_body,
 		transform,
-		scale,
 		motion_direction,
 		p_margin,
 		recover_motion
@@ -495,7 +496,6 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	const bool hit = body_motion_cast(
 		p_body,
 		transform,
-		scale,
 		p_motion,
 		p_collide_separation_ray,
 		safe_fraction,
@@ -508,7 +508,6 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		collided = body_motion_collide(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),
-			scale,
 			motion_direction,
 			p_margin,
 			min(p_max_collisions, 32),
@@ -714,7 +713,6 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	const JoltBody3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_scale,
 	const Vector3& p_direction,
 	float p_margin,
 	Vector3& p_recover_motion
@@ -741,7 +739,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 
 		space->get_narrow_phase_query().CollideShape(
 			jolt_shape,
-			to_jolt(p_scale),
+			JPH::Vec3::sReplicate(1.0f),
 			to_jolt(transform_com),
 			settings,
 			to_jolt(base_offset),
@@ -801,7 +799,6 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 	const JoltBody3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_scale,
 	const Vector3& p_motion,
 	bool p_collide_separation_ray,
 	float& p_safe_fraction,
@@ -835,7 +832,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 		collided |= cast_motion(
 			*jolt_shape,
 			p_transform * shape_transform_com,
-			p_scale * shape_scale,
+			shape_scale,
 			p_motion,
 			motion_filter,
 			motion_filter,
@@ -856,7 +853,6 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 	const JoltBody3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_scale,
 	const Vector3& p_direction,
 	float p_margin,
 	int32_t p_max_collisions,
@@ -881,7 +877,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 
 	space->get_narrow_phase_query().CollideShape(
 		jolt_shape,
-		to_jolt(p_scale),
+		JPH::Vec3::sReplicate(1.0f),
 		to_jolt(transform_com),
 		settings,
 		to_jolt(base_offset),

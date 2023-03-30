@@ -132,7 +132,6 @@ private:
 	bool body_motion_recover(
 		const JoltBody3D& p_body,
 		const Transform3D& p_transform,
-		const Vector3& p_scale,
 		const Vector3& p_direction,
 		float p_margin,
 		Vector3& p_recover_motion
@@ -141,7 +140,6 @@ private:
 	bool body_motion_cast(
 		const JoltBody3D& p_body,
 		const Transform3D& p_transform,
-		const Vector3& p_scale,
 		const Vector3& p_motion,
 		bool p_collide_separation_ray,
 		float& p_safe_fraction,
@@ -151,7 +149,6 @@ private:
 	bool body_motion_collide(
 		const JoltBody3D& p_body,
 		const Transform3D& p_transform,
-		const Vector3& p_scale,
 		const Vector3& p_direction,
 		float p_margin,
 		int32_t p_max_collisions,
