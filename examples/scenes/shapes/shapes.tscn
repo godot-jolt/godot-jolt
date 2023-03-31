@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://bhi3ock8sqppl"]
+[gd_scene load_steps=11 format=3 uid="uid://bhi3ock8sqppl"]
 
 [ext_resource type="Environment" uid="uid://cgl5t5rlv6o6v" path="res://scenes/common/environments/default.tres" id="1_3khfi"]
 [ext_resource type="Script" path="res://scenes/common/scripts/free_look_camera.gd" id="1_uh1hw"]
 [ext_resource type="PackedScene" uid="uid://csdhohsaec6yg" path="res://scenes/shapes/entities/sphere/sphere.tscn" id="3_4mmy4"]
+[ext_resource type="PackedScene" uid="uid://boging3dkleyk" path="res://scenes/shapes/entities/separation_rays/separation_rays.tscn" id="3_rnu5g"]
 [ext_resource type="PackedScene" uid="uid://bwdap6iekb8rq" path="res://scenes/shapes/entities/box/box.tscn" id="4_tqif0"]
 [ext_resource type="PackedScene" uid="uid://c466gt3ufxlxl" path="res://scenes/shapes/entities/capsule/capsule.tscn" id="5_h3oln"]
 [ext_resource type="PackedScene" uid="uid://dc0dbimb6mrup" path="res://scenes/shapes/entities/cylinder/cylinder.tscn" id="6_tlkvd"]
@@ -27,6 +28,9 @@ script = ExtResource("1_uh1hw")
 
 [node name="DebugGeometry" type="JoltDebugGeometry3D" parent="."]
 visible = false
+
+[node name="SeparationRays" parent="." instance=ExtResource("3_rnu5g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.5, 0)
 
 [node name="Sphere" parent="." instance=ExtResource("3_4mmy4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11, 0)
