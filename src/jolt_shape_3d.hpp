@@ -30,8 +30,6 @@ public:
 
 	virtual void set_margin(float p_margin) = 0;
 
-	virtual bool is_valid() const = 0;
-
 	JPH::ShapeRefC try_build(float p_extra_margin = 0.0f);
 
 	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
@@ -70,7 +68,7 @@ public:
 protected:
 	virtual JPH::ShapeRefC build(float p_extra_margin) const = 0;
 
-	virtual void shape_changed(bool p_lock = true);
+	virtual void rebuild(bool p_lock = true);
 
 	RID rid;
 
@@ -93,13 +91,7 @@ public:
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
 
-	bool is_valid() const override { return plane != Plane(); }
-
 private:
-	bool initialize(Plane p_plane);
-
-	void clear();
-
 	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	Plane plane;
@@ -119,13 +111,9 @@ public:
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
 
-	bool is_valid() const override { return length > 0.0f; }
+	String to_string() const;
 
 private:
-	bool initialize(float p_length, bool p_slide_on_slope);
-
-	void clear();
-
 	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float length = 0.0f;
@@ -146,13 +134,9 @@ class JoltSphereShape3D final : public JoltShape3D {
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
 
-	bool is_valid() const override { return radius > 0; }
+	String to_string() const;
 
 private:
-	bool initialize(float p_radius);
-
-	void clear();
-
 	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float radius = 0.0f;
@@ -172,13 +156,9 @@ public:
 
 	void set_margin(float p_margin) override;
 
-	bool is_valid() const override { return half_extents.x > 0; }
+	String to_string() const;
 
 private:
-	bool initialize(Vector3 p_half_extents);
-
-	void clear();
-
 	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	Vector3 half_extents;
@@ -200,13 +180,9 @@ public:
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
 
-	bool is_valid() const override { return radius > 0; }
+	String to_string() const;
 
 private:
-	bool initialize(float p_height, float p_radius);
-
-	void clear();
-
 	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float height = 0.0f;
@@ -228,13 +204,9 @@ public:
 
 	void set_margin(float p_margin) override;
 
-	bool is_valid() const override { return radius > 0; }
+	String to_string() const;
 
 private:
-	bool initialize(float p_height, float p_radius);
-
-	void clear();
-
 	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	float height = 0.0f;
@@ -258,13 +230,9 @@ public:
 
 	void set_margin(float p_margin) override;
 
-	bool is_valid() const override { return !vertices.is_empty(); }
+	String to_string() const;
 
 private:
-	bool initialize(PackedVector3Array p_vertices);
-
-	void clear();
-
 	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	PackedVector3Array vertices;
@@ -286,13 +254,9 @@ public:
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
 
-	bool is_valid() const override { return !faces.is_empty(); }
+	String to_string() const;
 
 private:
-	bool initialize(PackedVector3Array p_faces, bool p_backface_collision);
-
-	void clear();
-
 	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	PackedVector3Array faces;
@@ -314,13 +278,9 @@ public:
 
 	void set_margin([[maybe_unused]] float p_margin) override { }
 
-	bool is_valid() const override { return width > 0; }
+	String to_string() const;
 
 private:
-	bool initialize(PackedFloat32Array p_heights, int32_t p_width, int32_t p_depth);
-
-	void clear();
-
 	JPH::ShapeRefC build(float p_extra_margin) const override;
 
 	PackedFloat32Array heights;
