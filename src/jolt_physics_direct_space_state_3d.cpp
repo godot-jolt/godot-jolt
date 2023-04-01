@@ -205,7 +205,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	PhysicsServer3DExtensionShapeRestInfo* p_info
 ) {
 	// HACK(mihe): This rest info parameter doesn't seem to be used anywhere within Godot, and isn't
-	// exposed in the bindings, so this will be unsupported until anyone actually needs it
+	// exposed in the bindings, so this will be unsupported until anyone actually needs it.
 	ERR_FAIL_COND_D_MSG(
 		p_info != nullptr,
 		"Providing rest info as part of a shape-cast is not supported by Godot Jolt."
@@ -480,7 +480,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	p_margin = max(p_margin, 0.0001f);
 	p_max_collisions = min(p_max_collisions, 32);
 
-	// HACK(mihe): We deliberately discard the scale here since Godot doesn't support scaling
+	// NOTE(mihe): We deliberately discard the scale here since Godot doesn't support scaling
 	// physics bodies and emits node warnings when you try to do so, regardless of what physics
 	// server is being used.
 	Transform3D transform = Math::normalized(p_transform);

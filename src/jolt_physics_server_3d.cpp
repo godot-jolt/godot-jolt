@@ -1353,7 +1353,7 @@ void JoltPhysicsServer3D::_joint_make_hinge_simple(
 	[[maybe_unused]] const Vector3& p_axis_b
 ) {
 	// HACK(mihe): This method doesn't seem to be used anywhere within Godot, and isn't exposed in
-	// the bindings, so this will be unsupported until anyone actually needs it
+	// the bindings, so this will be unsupported until anyone actually needs it.
 	ERR_FAIL_MSG("Simple hinge joints are not supported by Godot Jolt.");
 }
 

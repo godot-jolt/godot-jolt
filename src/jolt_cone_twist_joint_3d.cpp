@@ -169,7 +169,7 @@ void JoltConeTwistJoint3D::spans_changed() {
 		jolt_constraint->SetPlaneHalfConeAngle(JPH::JPH_PI);
 
 		// HACK(mihe): As far as I can tell this emulates the behavior of Godot Physics, where the
-		// twist axis becomes unbounded if the swing span is a nonsensical value
+		// twist axis becomes unbounded if the swing span is a nonsensical value.
 		jolt_constraint->SetTwistMinAngle(-JPH::JPH_PI);
 		jolt_constraint->SetTwistMaxAngle(JPH::JPH_PI);
 	}

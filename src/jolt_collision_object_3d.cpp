@@ -73,7 +73,7 @@ Transform3D JoltCollisionObject3D::get_transform(bool p_lock) const {
 }
 
 void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) {
-	// HACK(mihe): We deliberately discard the scale here since Godot doesn't support scaling
+	// NOTE(mihe): We deliberately discard the scale here since Godot doesn't support scaling
 	// physics bodies and emits node warnings when you try to do so, regardless of what physics
 	// server is being used.
 	Math::normalize(p_transform);
