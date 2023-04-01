@@ -147,10 +147,10 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
+	Vector3 scale;
+	const Transform3D transform = Math::normalized(p_transform, scale);
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = p_transform.translated_local(center_of_mass);
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform_com, scale);
+	const Transform3D transform_com = transform.translated_local(center_of_mass);
 
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
@@ -258,10 +258,10 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
+	Vector3 scale;
+	const Transform3D transform = Math::normalized(p_transform, scale);
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = p_transform.translated_local(center_of_mass);
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform_com, scale);
+	const Transform3D transform_com = transform.translated_local(center_of_mass);
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -316,10 +316,10 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
+	Vector3 scale;
+	const Transform3D transform = Math::normalized(p_transform, scale);
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = p_transform.translated_local(center_of_mass);
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform_com, scale);
+	const Transform3D transform_com = transform.translated_local(center_of_mass);
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -469,9 +469,8 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	bool p_collide_separation_ray,
 	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
-	Transform3D transform = p_transform;
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform, scale);
+	Vector3 scale;
+	Transform3D transform = Math::normalized(p_transform, scale);
 
 	p_margin = max(p_margin, 0.0001f);
 
@@ -554,10 +553,10 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 	const JPH::ShapeRefC jolt_shape = p_shape.try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
+	Vector3 scale;
+	const Transform3D transform = Math::normalized(p_transform, scale);
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = p_transform.translated_local(center_of_mass);
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform_com, scale);
+	Transform3D transform_com = transform.translated_local(center_of_mass);
 
 	return cast_motion(
 		*jolt_shape,

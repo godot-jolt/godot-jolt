@@ -76,9 +76,7 @@ void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) 
 	// HACK(mihe): We deliberately discard the scale here since Godot doesn't support scaling
 	// physics bodies and emits node warnings when you try to do so, regardless of what physics
 	// server is being used.
-
-	Vector3 scale;
-	try_strip_scale(p_transform, scale);
+	Math::normalize(p_transform);
 
 	if (space == nullptr) {
 		initial_transform = p_transform;
@@ -248,7 +246,7 @@ void JoltCollisionObject3D::add_shape(
 	bool p_lock
 ) {
 	Vector3 scale;
-	try_strip_scale(p_transform, scale);
+	Math::normalize(p_transform, scale);
 
 	shapes.emplace_back(this, p_shape, p_transform, scale, p_disabled);
 
@@ -339,7 +337,7 @@ void JoltCollisionObject3D::set_shape_transform(
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	Vector3 new_scale;
-	try_strip_scale(p_transform, new_scale);
+	Math::normalize(p_transform, new_scale);
 
 	JoltShapeInstance3D& shape = shapes[p_index];
 

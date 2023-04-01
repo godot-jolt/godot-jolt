@@ -51,37 +51,3 @@ _FORCE_INLINE_ void memdelete_safely(TType*& p_ptr) {
 		p_ptr = nullptr;
 	}
 }
-
-_FORCE_INLINE_ bool try_strip_scale(Basis& p_basis, Vector3& p_scale) {
-	p_scale = Vector3(1.0f, 1.0f, 1.0f);
-
-	Vector3 x = p_basis.get_column(Vector3::AXIS_X);
-	Vector3 y = p_basis.get_column(Vector3::AXIS_Y);
-	Vector3 z = p_basis.get_column(Vector3::AXIS_Z);
-
-	const Vector3 scale_squared(x.length_squared(), y.length_squared(), z.length_squared());
-
-	if (p_scale == scale_squared) {
-		return false;
-	}
-
-	p_scale = Vector3(
-		Math::sqrt(scale_squared.x),
-		Math::sqrt(scale_squared.y),
-		Math::sqrt(scale_squared.z)
-	);
-
-	x /= p_scale.x;
-	y /= p_scale.y;
-	z /= p_scale.z;
-
-	p_basis.set_column(Vector3::AXIS_X, x);
-	p_basis.set_column(Vector3::AXIS_Y, y);
-	p_basis.set_column(Vector3::AXIS_Z, z);
-
-	return true;
-}
-
-_FORCE_INLINE_ bool try_strip_scale(Transform3D& p_transform, Vector3& p_scale) {
-	return try_strip_scale(p_transform.basis, p_scale);
-}
