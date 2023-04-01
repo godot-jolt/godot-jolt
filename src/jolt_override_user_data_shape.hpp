@@ -1,5 +1,7 @@
 #pragma once
 
+#include "jolt_custom_shape_types.hpp"
+
 class JoltOverrideUserDataShapeSettings final : public JPH::DecoratedShapeSettings {
 public:
 	JoltOverrideUserDataShapeSettings() = default;
@@ -18,13 +20,13 @@ public:
 	static void register_type();
 
 	JoltOverrideUserDataShape()
-		: DecoratedShape(JPH::EShapeSubType::User2) { }
+		: DecoratedShape(JoltShapeSubType::OVERRIDE_USER_DATA) { }
 
 	JoltOverrideUserDataShape(
 		const JoltOverrideUserDataShapeSettings& p_settings,
 		ShapeResult& p_result
 	)
-		: DecoratedShape(JPH::EShapeSubType::User2, p_settings, p_result) {
+		: DecoratedShape(JoltShapeSubType::OVERRIDE_USER_DATA, p_settings, p_result) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
 		}

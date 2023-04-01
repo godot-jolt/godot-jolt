@@ -1,5 +1,7 @@
 #pragma once
 
+#include "jolt_custom_shape_types.hpp"
+
 class JoltEmptyShapeSettings final : public JPH::ShapeSettings {
 public:
 	JoltEmptyShapeSettings() = default;
@@ -12,10 +14,10 @@ public:
 	static void register_type();
 
 	JoltEmptyShape()
-		: Shape(JPH::EShapeType::User1, JPH::EShapeSubType::User1) { }
+		: Shape(JoltShapeType::EMPTY, JoltShapeSubType::EMPTY) { }
 
 	JoltEmptyShape(const JoltEmptyShapeSettings& p_settings, ShapeResult& p_result)
-		: Shape(JPH::EShapeType::User1, JPH::EShapeSubType::User1, p_settings, p_result) {
+		: Shape(JoltShapeType::EMPTY, JoltShapeSubType::EMPTY, p_settings, p_result) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
 		}
