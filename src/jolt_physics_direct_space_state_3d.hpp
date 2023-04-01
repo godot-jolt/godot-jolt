@@ -102,20 +102,6 @@ public:
 
 private:
 	bool cast_motion(
-		JoltShape3D& p_shape,
-		double p_margin,
-		const Transform3D& p_transform,
-		const Vector3& p_motion,
-		const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
-		const JPH::ObjectLayerFilter& p_object_layer_filter,
-		const JPH::BodyFilter& p_body_filter,
-		const JPH::ShapeFilter& p_shape_filter,
-		bool p_ignore_overlaps,
-		float& p_closest_safe,
-		float& p_closest_unsafe
-	) const;
-
-	bool cast_motion(
 		const JPH::Shape& p_jolt_shape,
 		const Transform3D& p_transform_com,
 		const Vector3& p_scale,
@@ -132,16 +118,14 @@ private:
 	bool body_motion_recover(
 		const JoltBody3D& p_body,
 		const Transform3D& p_transform,
-		const Vector3& p_scale,
 		const Vector3& p_direction,
 		float p_margin,
-		Vector3& p_recover_motion
+		Vector3& p_recovery
 	) const;
 
 	bool body_motion_cast(
 		const JoltBody3D& p_body,
 		const Transform3D& p_transform,
-		const Vector3& p_scale,
 		const Vector3& p_motion,
 		bool p_collide_separation_ray,
 		float& p_safe_fraction,
@@ -151,7 +135,6 @@ private:
 	bool body_motion_collide(
 		const JoltBody3D& p_body,
 		const Transform3D& p_transform,
-		const Vector3& p_scale,
 		const Vector3& p_direction,
 		float p_margin,
 		int32_t p_max_collisions,

@@ -39,7 +39,7 @@ private:
 	bool ShouldCollide(JPH::ObjectLayer p_encoded_layer1, JPH::BroadPhaseLayer p_broad_phase_layer2)
 		const override;
 
-	JPH::ObjectLayer next_object_layer = 0;
+	JPH::ObjectLayer next_object_layer = 1;
 
 	HashMap<uint64_t, JPH::ObjectLayer> layers_by_collision;
 

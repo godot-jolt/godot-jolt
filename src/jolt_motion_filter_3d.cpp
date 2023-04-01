@@ -3,6 +3,7 @@
 #include "jolt_body_3d.hpp"
 #include "jolt_broad_phase_layer.hpp"
 #include "jolt_collision_object_3d.hpp"
+#include "jolt_custom_shape_types.hpp"
 #include "jolt_motion_shape.hpp"
 #include "jolt_physics_server_3d.hpp"
 #include "jolt_shape_3d.hpp"
@@ -77,5 +78,5 @@ bool JoltMotionFilter3D::ShouldCollide(
 	const auto* motion_shape1 = static_cast<const JoltMotionShape*>(p_shape1);
 	const JPH::ConvexShape& actual_shape1 = motion_shape1->get_inner_shape();
 
-	return actual_shape1.GetSubType() != JPH::EShapeSubType::UserConvex1;
+	return actual_shape1.GetSubType() != JoltShapeSubType::RAY;
 }

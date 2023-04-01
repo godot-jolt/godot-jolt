@@ -132,7 +132,7 @@ class JoltQueryCollectorClosestMulti final : public TBase {
 public:
 	using Hit = typename TBase::ResultType;
 
-	explicit JoltQueryCollectorClosestMulti(int32_t p_max_hits)
+	explicit JoltQueryCollectorClosestMulti(int32_t p_max_hits = TInlineCapacity)
 		: max_hits(p_max_hits) { }
 
 	bool had_hit() const { return hits.size() > 0; }

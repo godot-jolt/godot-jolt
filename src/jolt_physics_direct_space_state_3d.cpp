@@ -147,10 +147,10 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
+	Vector3 scale;
+	const Transform3D transform = Math::normalized(p_transform, scale);
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = p_transform.translated_local(center_of_mass);
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform_com, scale);
+	const Transform3D transform_com = transform.translated_local(center_of_mass);
 
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
@@ -205,7 +205,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	PhysicsServer3DExtensionShapeRestInfo* p_info
 ) {
 	// HACK(mihe): This rest info parameter doesn't seem to be used anywhere within Godot, and isn't
-	// exposed in the bindings, so this will be unsupported until anyone actually needs it
+	// exposed in the bindings, so this will be unsupported until anyone actually needs it.
 	ERR_FAIL_COND_D_MSG(
 		p_info != nullptr,
 		"Providing rest info as part of a shape-cast is not supported by Godot Jolt."
@@ -216,13 +216,21 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
+	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
+	ERR_FAIL_NULL_D(jolt_shape);
+
+	Vector3 scale;
+	const Transform3D transform = Math::normalized(p_transform, scale);
+	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
+	Transform3D transform_com = transform.translated_local(center_of_mass);
+
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
 	return cast_motion(
-		*shape,
-		p_margin,
-		p_transform,
+		*jolt_shape,
+		transform_com,
+		scale,
 		p_motion,
 		query_filter,
 		query_filter,
@@ -258,10 +266,10 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
+	Vector3 scale;
+	const Transform3D transform = Math::normalized(p_transform, scale);
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = p_transform.translated_local(center_of_mass);
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform_com, scale);
+	const Transform3D transform_com = transform.translated_local(center_of_mass);
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -316,10 +324,10 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	const JPH::ShapeRefC jolt_shape = shape->try_build((float)p_margin);
 	ERR_FAIL_NULL_D(jolt_shape);
 
+	Vector3 scale;
+	const Transform3D transform = Math::normalized(p_transform, scale);
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = p_transform.translated_local(center_of_mass);
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform_com, scale);
+	const Transform3D transform_com = transform.translated_local(center_of_mass);
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -469,26 +477,20 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	bool p_collide_separation_ray,
 	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
-	Transform3D transform = p_transform;
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform, scale);
-
 	p_margin = max(p_margin, 0.0001f);
+	p_max_collisions = min(p_max_collisions, 32);
 
-	const Vector3 motion_direction = p_motion.normalized();
+	// NOTE(mihe): We deliberately discard the scale here since Godot doesn't support scaling
+	// physics bodies and emits node warnings when you try to do so, regardless of what physics
+	// server is being used.
+	Transform3D transform = Math::normalized(p_transform);
 
-	Vector3 recover_motion;
+	const Vector3 direction = p_motion.normalized();
 
-	const bool recovered = body_motion_recover(
-		p_body,
-		transform,
-		scale,
-		motion_direction,
-		p_margin,
-		recover_motion
-	);
+	Vector3 recovery;
+	const bool recovered = body_motion_recover(p_body, transform, direction, p_margin, recovery);
 
-	transform.origin += recover_motion;
+	transform.origin += recovery;
 
 	float safe_fraction = 1.0f;
 	float unsafe_fraction = 1.0f;
@@ -496,7 +498,6 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	const bool hit = body_motion_cast(
 		p_body,
 		transform,
-		scale,
 		p_motion,
 		p_collide_separation_ray,
 		safe_fraction,
@@ -509,10 +510,9 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		collided = body_motion_collide(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),
-			scale,
-			motion_direction,
+			direction,
 			p_margin,
-			min(p_max_collisions, 32),
+			p_max_collisions,
 			p_result->collisions,
 			p_result->collision_count
 		);
@@ -521,13 +521,13 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	if (collided) {
 		const PhysicsServer3DExtensionMotionCollision& deepest = p_result->collisions[0];
 
-		p_result->travel = recover_motion + p_motion * safe_fraction;
+		p_result->travel = recovery + p_motion * safe_fraction;
 		p_result->remainder = p_motion - p_motion * safe_fraction;
 		p_result->collision_depth = deepest.depth;
 		p_result->collision_safe_fraction = safe_fraction;
 		p_result->collision_unsafe_fraction = unsafe_fraction;
 	} else {
-		p_result->travel = recover_motion + p_motion;
+		p_result->travel = recovery + p_motion;
 		p_result->remainder = Vector3();
 		p_result->collision_depth = 0.0f;
 		p_result->collision_safe_fraction = 1.0f;
@@ -536,42 +536,6 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	}
 
 	return collided;
-}
-
-bool JoltPhysicsDirectSpaceState3D::cast_motion(
-	JoltShape3D& p_shape,
-	double p_margin,
-	const Transform3D& p_transform,
-	const Vector3& p_motion,
-	const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
-	const JPH::ObjectLayerFilter& p_object_layer_filter,
-	const JPH::BodyFilter& p_body_filter,
-	const JPH::ShapeFilter& p_shape_filter,
-	bool p_ignore_overlaps,
-	float& p_closest_safe,
-	float& p_closest_unsafe
-) const {
-	const JPH::ShapeRefC jolt_shape = p_shape.try_build((float)p_margin);
-	ERR_FAIL_NULL_D(jolt_shape);
-
-	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = p_transform.translated_local(center_of_mass);
-	Vector3 scale(1.0f, 1.0f, 1.0f);
-	try_strip_scale(transform_com, scale);
-
-	return cast_motion(
-		*jolt_shape,
-		transform_com,
-		scale,
-		p_motion,
-		p_broad_phase_layer_filter,
-		p_object_layer_filter,
-		p_body_filter,
-		p_shape_filter,
-		p_ignore_overlaps,
-		p_closest_safe,
-		p_closest_unsafe
-	);
 }
 
 bool JoltPhysicsDirectSpaceState3D::cast_motion(
@@ -587,13 +551,13 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 	float& p_closest_safe,
 	float& p_closest_unsafe
 ) const {
+	p_closest_safe = 1.0f;
+	p_closest_unsafe = 1.0f;
+
 	ERR_FAIL_COND_D_MSG(
 		p_jolt_shape.GetType() != JPH::EShapeType::Convex,
 		"Shape-casting with non-convex shapes is not supported by Godot Jolt."
 	);
-
-	p_closest_safe = 1.0f;
-	p_closest_unsafe = 1.0f;
 
 	const float motion_length = p_motion.length();
 
@@ -622,14 +586,12 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 
 	JoltMotionShape motion_shape(static_cast<const JPH::ConvexShape&>(p_jolt_shape));
 
-	JoltQueryCollectorAny<JPH::CollideShapeCollector> collide_collector;
-
 	auto collides = [&](const JPH::Body& p_other_body, float p_fraction) {
 		motion_shape.set_motion(motion_local * p_fraction);
 
 		const JPH::TransformedShape other_shape = p_other_body.GetTransformedShape();
 
-		collide_collector.reset();
+		JoltQueryCollectorAny<JPH::CollideShapeCollector> collide_collector;
 
 		JPH::CollisionDispatch::sCollideShapeVsShape(
 			&motion_shape,
@@ -715,10 +677,9 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	const JoltBody3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_scale,
 	const Vector3& p_direction,
 	float p_margin,
-	Vector3& p_recover_motion
+	Vector3& p_recovery
 ) const {
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
@@ -742,7 +703,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 
 		space->get_narrow_phase_query().CollideShape(
 			jolt_shape,
-			to_jolt(p_scale),
+			JPH::Vec3::sReplicate(1.0f),
 			to_jolt(transform_com),
 			settings,
 			to_jolt(base_offset),
@@ -792,7 +753,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 			break;
 		}
 
-		p_recover_motion += recovery;
+		p_recovery += recovery;
 		transform_com.origin += recovery;
 	}
 
@@ -802,7 +763,6 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 	const JoltBody3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_scale,
 	const Vector3& p_motion,
 	bool p_collide_separation_ray,
 	float& p_safe_fraction,
@@ -824,6 +784,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 		}
 
 		const JPH::ShapeRefC jolt_shape = shape->try_build();
+		ERR_FAIL_NULL_D(jolt_shape);
 
 		const Transform3D& shape_transform = p_body.get_shape_transform(i);
 		const Vector3& shape_scale = p_body.get_shape_scale(i);
@@ -836,7 +797,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 		collided |= cast_motion(
 			*jolt_shape,
 			p_transform * shape_transform_com,
-			p_scale * shape_scale,
+			shape_scale,
 			p_motion,
 			motion_filter,
 			motion_filter,
@@ -857,7 +818,6 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 	const JoltBody3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_scale,
 	const Vector3& p_direction,
 	float p_margin,
 	int32_t p_max_collisions,
@@ -882,7 +842,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 
 	space->get_narrow_phase_query().CollideShape(
 		jolt_shape,
-		to_jolt(p_scale),
+		JPH::Vec3::sReplicate(1.0f),
 		to_jolt(transform_com),
 		settings,
 		to_jolt(base_offset),

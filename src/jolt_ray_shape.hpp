@@ -1,5 +1,7 @@
 #pragma once
 
+#include "jolt_custom_shape_types.hpp"
+
 class JoltRayShapeSettings final : public JPH::ConvexShapeSettings {
 public:
 	JoltRayShapeSettings() = default;
@@ -27,10 +29,10 @@ public:
 	static void register_type();
 
 	JoltRayShape()
-		: JPH::ConvexShape(JPH::EShapeSubType::UserConvex1) { }
+		: JPH::ConvexShape(JoltShapeSubType::RAY) { }
 
 	JoltRayShape(const JoltRayShapeSettings& p_settings, JPH::Shape::ShapeResult& p_result)
-		: JPH::ConvexShape(JPH::EShapeSubType::UserConvex1, p_settings, p_result)
+		: JPH::ConvexShape(JoltShapeSubType::RAY, p_settings, p_result)
 		, slide_on_slope(p_settings.slide_on_slope)
 		, length(p_settings.length)
 		, material(p_settings.material) {
@@ -44,7 +46,7 @@ public:
 		bool p_slide_on_slope,
 		const JPH::PhysicsMaterial* p_material = nullptr
 	)
-		: JPH::ConvexShape(JPH::EShapeSubType::UserConvex1)
+		: JPH::ConvexShape(JoltShapeSubType::RAY)
 		, slide_on_slope(p_slide_on_slope)
 		, length(p_length)
 		, material(p_material) { }
