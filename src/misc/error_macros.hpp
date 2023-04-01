@@ -13,7 +13,7 @@
 #define ERR_FAIL_D() ERR_FAIL_V({})
 #define ERR_FAIL_D_MSG(m_msg) ERR_FAIL_V_MSG({}, m_msg)
 
-#define GDJOLT_MSG_NOT_IMPL vformat("Not implemented: %s", __FUNCTION__)
+#define GDJOLT_MSG_NOT_IMPL vformat("%s is not implemented in Godot Jolt.", __FUNCTION__)
 #define ERR_FAIL_NOT_IMPL() ERR_FAIL_MSG(GDJOLT_MSG_NOT_IMPL)
 #define ERR_FAIL_V_NOT_IMPL(m_retval) ERR_FAIL_V_MSG(m_retval, GDJOLT_MSG_NOT_IMPL)
 #define ERR_FAIL_D_NOT_IMPL() ERR_FAIL_D_MSG(GDJOLT_MSG_NOT_IMPL)
