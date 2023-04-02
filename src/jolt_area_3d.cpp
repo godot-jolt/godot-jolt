@@ -396,11 +396,11 @@ void JoltArea3D::report_event(
 	p_callback.callv(arguments);
 }
 
-void JoltArea3D::create_in_space(bool p_lock) {
-	JPH::BodyCreationSettings settings = create_begin();
+void JoltArea3D::create_in_space() {
+	create_begin();
 
-	settings.mIsSensor = true;
-	settings.mUseManifoldReduction = false;
+	jolt_settings->mIsSensor = true;
+	jolt_settings->mUseManifoldReduction = false;
 
-	create_end(settings, p_lock);
+	create_end();
 }

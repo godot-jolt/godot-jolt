@@ -181,7 +181,9 @@ JPH::BroadPhaseLayer JoltBody3D::get_broad_phase_layer() const {
 }
 
 bool JoltBody3D::get_sleep_state(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	if (space == nullptr) {
+		return initial_sleep_state;
+	}
 
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
@@ -195,28 +197,36 @@ void JoltBody3D::set_sleep_state(bool p_enabled, bool p_lock) {
 		return;
 	}
 
+	JPH::BodyInterface& body_iface = space->get_body_iface(p_lock);
+
 	if (p_enabled) {
-		space->get_body_iface(p_lock).DeactivateBody(jolt_id);
+		body_iface.DeactivateBody(jolt_id);
 	} else {
-		space->get_body_iface(p_lock).ActivateBody(jolt_id);
+		body_iface.ActivateBody(jolt_id);
 	}
 }
 
-void JoltBody3D::set_can_sleep(bool p_enabled, bool p_lock) {
-	if (p_enabled == allowed_sleep) {
-		return;
+bool JoltBody3D::can_sleep(bool p_lock) const {
+	if (space == nullptr) {
+		return jolt_settings->mAllowSleeping;
 	}
 
-	allowed_sleep = p_enabled;
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
 
+	return body->GetAllowSleeping();
+}
+
+void JoltBody3D::set_can_sleep(bool p_enabled, bool p_lock) {
 	if (space == nullptr) {
+		jolt_settings->mAllowSleeping = p_enabled;
 		return;
 	}
 
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->SetAllowSleeping(allowed_sleep);
+	body->SetAllowSleeping(p_enabled);
 }
 
 Basis JoltBody3D::get_principal_inertia_axes(bool p_lock) const {
@@ -266,7 +276,7 @@ Basis JoltBody3D::get_inverse_inertia_tensor(bool p_lock) const {
 
 void JoltBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
 	if (space == nullptr) {
-		initial_linear_velocity = p_velocity;
+		jolt_settings->mLinearVelocity = to_jolt(p_velocity);
 		return;
 	}
 
@@ -278,7 +288,7 @@ void JoltBody3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
 
 void JoltBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
 	if (space == nullptr) {
-		initial_angular_velocity = p_velocity;
+		jolt_settings->mAngularVelocity = to_jolt(p_velocity);
 		return;
 	}
 
@@ -291,7 +301,12 @@ void JoltBody3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
 void JoltBody3D::set_axis_velocity(const Vector3& p_axis_velocity, bool p_lock) {
 	const Vector3 axis = p_axis_velocity.normalized();
 
-	if (space != nullptr) {
+	if (space == nullptr) {
+		Vector3 linear_velocity = to_godot(jolt_settings->mLinearVelocity);
+		linear_velocity -= axis * axis.dot(linear_velocity);
+		linear_velocity += p_axis_velocity;
+		jolt_settings->mLinearVelocity = to_jolt(linear_velocity);
+	} else {
 		const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 		ERR_FAIL_COND(body.is_invalid());
 
@@ -299,11 +314,6 @@ void JoltBody3D::set_axis_velocity(const Vector3& p_axis_velocity, bool p_lock) 
 		linear_velocity -= axis * axis.dot(linear_velocity);
 		linear_velocity += p_axis_velocity;
 		set_linear_velocity(linear_velocity, false);
-	} else {
-		Vector3 linear_velocity = initial_linear_velocity;
-		linear_velocity -= axis * axis.dot(linear_velocity);
-		linear_velocity += p_axis_velocity;
-		initial_linear_velocity = linear_velocity;
 	}
 }
 
@@ -585,9 +595,9 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 		gravity += space->get_default_area()->compute_gravity(position);
 	}
 
-	gravity *= gravity_scale;
-
 	JPH::MotionProperties& motion_properties = *jolt_body->GetMotionPropertiesUnchecked();
+
+	gravity *= motion_properties.GetGravityFactor();
 
 	motion_properties.SetLinearVelocityClamped(
 		motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
@@ -677,21 +687,29 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 	mode_changed(false);
 }
 
-void JoltBody3D::set_ccd_enabled(bool p_enable, bool p_lock) {
-	if (p_enable == ccd_enabled) {
-		return;
+bool JoltBody3D::is_ccd_enabled(bool p_lock) const {
+	if (space == nullptr) {
+		return jolt_settings->mMotionQuality == JPH::EMotionQuality::LinearCast;
 	}
 
-	ccd_enabled = p_enable;
+	JPH::BodyInterface& body_iface = space->get_body_iface(p_lock);
+
+	return body_iface.GetMotionQuality(jolt_id) == JPH::EMotionQuality::LinearCast;
+}
+
+void JoltBody3D::set_ccd_enabled(bool p_enable, bool p_lock) {
+	const JPH::EMotionQuality motion_quality = p_enable
+		? JPH::EMotionQuality::LinearCast
+		: JPH::EMotionQuality::Discrete;
 
 	if (space == nullptr) {
+		jolt_settings->mMotionQuality = motion_quality;
 		return;
 	}
 
-	space->get_body_iface(p_lock).SetMotionQuality(
-		jolt_id,
-		ccd_enabled ? JPH::EMotionQuality::LinearCast : JPH::EMotionQuality::Discrete
-	);
+	JPH::BodyInterface& body_iface = space->get_body_iface(p_lock);
+
+	body_iface.SetMotionQuality(jolt_id, motion_quality);
 }
 
 void JoltBody3D::set_mass(float p_mass, bool p_lock) {
@@ -708,6 +726,17 @@ void JoltBody3D::set_inertia(const Vector3& p_inertia, bool p_lock) {
 	}
 }
 
+float JoltBody3D::get_bounce(bool p_lock) const {
+	if (space == nullptr) {
+		return jolt_settings->mRestitution;
+	}
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return body->GetRestitution();
+}
+
 void JoltBody3D::set_bounce(float p_bounce, bool p_lock) {
 	if (p_bounce < 0.0f || p_bounce > 1.0f) {
 		WARN_PRINT(
@@ -718,20 +747,26 @@ void JoltBody3D::set_bounce(float p_bounce, bool p_lock) {
 		p_bounce = clamp(p_bounce, 0.0f, 1.0f);
 	}
 
-	if (p_bounce == bounce) {
-		return;
-	}
-
-	bounce = p_bounce;
-
 	if (space == nullptr) {
+		jolt_settings->mRestitution = p_bounce;
 		return;
 	}
 
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->SetRestitution(bounce);
+	body->SetRestitution(p_bounce);
+}
+
+float JoltBody3D::get_friction(bool p_lock) const {
+	if (space == nullptr) {
+		return jolt_settings->mFriction;
+	}
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return body->GetFriction();
 }
 
 void JoltBody3D::set_friction(float p_friction, bool p_lock) {
@@ -744,20 +779,38 @@ void JoltBody3D::set_friction(float p_friction, bool p_lock) {
 		p_friction = 0;
 	}
 
-	if (p_friction == friction) {
-		return;
-	}
-
-	friction = p_friction;
-
 	if (space == nullptr) {
+		jolt_settings->mFriction = p_friction;
 		return;
 	}
 
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->SetFriction(friction);
+	body->SetRestitution(p_friction);
+}
+
+float JoltBody3D::get_gravity_scale(bool p_lock) const {
+	if (space == nullptr) {
+		return jolt_settings->mGravityFactor;
+	}
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return body->GetMotionPropertiesUnchecked()->GetGravityFactor();
+}
+
+void JoltBody3D::set_gravity_scale(float p_scale, bool p_lock) {
+	if (space == nullptr) {
+		jolt_settings->mGravityFactor = p_scale;
+		return;
+	}
+
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
+
+	body->GetMotionPropertiesUnchecked()->SetGravityFactor(p_scale);
 }
 
 void JoltBody3D::set_linear_damp(float p_damp, bool p_lock) {
@@ -852,23 +905,14 @@ JPH::EMotionType JoltBody3D::get_motion_type() const {
 	}
 }
 
-void JoltBody3D::create_in_space(bool p_lock) {
-	JPH::BodyCreationSettings settings = create_begin();
+void JoltBody3D::create_in_space() {
+	create_begin();
 
-	settings.mLinearVelocity = to_jolt(initial_linear_velocity);
-	settings.mAngularVelocity = to_jolt(initial_angular_velocity);
-	settings.mAllowDynamicOrKinematic = true;
-	settings.mMotionQuality = ccd_enabled
-		? JPH::EMotionQuality::LinearCast
-		: JPH::EMotionQuality::Discrete;
-	settings.mAllowSleeping = allowed_sleep;
-	settings.mFriction = friction;
-	settings.mRestitution = bounce;
-	settings.mGravityFactor = gravity_scale;
-	settings.mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
-	settings.mMassPropertiesOverride = calculate_mass_properties(*settings.GetShape());
+	jolt_settings->mAllowDynamicOrKinematic = true;
+	jolt_settings->mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
+	jolt_settings->mMassPropertiesOverride = calculate_mass_properties(*jolt_settings->GetShape());
 
-	JPH::Body* body = create_end(settings, p_lock);
+	JPH::Body* body = create_end();
 
 	// HACK(mihe): Since group filters don't grant us access to user data we are instead forced
 	// abuse the collision group to carry the upper and lower bits of our RID, which we can then
@@ -880,8 +924,8 @@ void JoltBody3D::create_in_space(bool p_lock) {
 
 	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
 
-	areas_changed(p_lock);
-	axis_lock_changed(p_lock);
+	areas_changed(false);
+	axis_lock_changed(false);
 }
 
 void JoltBody3D::destroy_in_space(bool p_lock) {

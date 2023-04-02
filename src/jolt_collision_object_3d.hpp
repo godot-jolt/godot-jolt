@@ -7,6 +7,8 @@ class JoltShape3D;
 
 class JoltCollisionObject3D {
 public:
+	JoltCollisionObject3D();
+
 	virtual ~JoltCollisionObject3D() = 0;
 
 	RID get_rid() const { return rid; }
@@ -45,11 +47,7 @@ public:
 
 	Basis get_basis(bool p_lock = true) const;
 
-	void set_basis(const Basis& p_basis, bool p_lock = true);
-
 	Vector3 get_position(bool p_lock = true) const;
-
-	void set_position(const Vector3& p_position, bool p_lock = true);
 
 	Vector3 get_center_of_mass(bool p_lock = true) const;
 
@@ -129,17 +127,17 @@ protected:
 
 	virtual JPH::EMotionType get_motion_type() const = 0;
 
-	virtual void create_in_space(bool p_lock = true) = 0;
-
-	virtual void destroy_in_space(bool p_lock = true);
+	virtual void create_in_space() = 0;
 
 	virtual void add_to_space(bool p_lock = true);
 
 	virtual void remove_from_space(bool p_lock = true);
 
-	JPH::BodyCreationSettings create_begin();
+	virtual void destroy_in_space(bool p_lock = true);
 
-	JPH::Body* create_end(const JPH::BodyCreationSettings& p_settings, bool p_lock = true);
+	void create_begin();
+
+	JPH::Body* create_end();
 
 	void object_layer_changed(bool p_lock = true);
 
@@ -155,6 +153,8 @@ protected:
 
 	JPH::BodyID jolt_id;
 
+	JPH::BodyCreationSettings* jolt_settings = new JPH::BodyCreationSettings();
+
 	JPH::ShapeRefC jolt_shape;
 
 	JPH::ShapeRefC previous_jolt_shape;
@@ -168,6 +168,4 @@ protected:
 	LocalVector<JoltShapeInstance3D> shapes;
 
 	bool ray_pickable = false;
-
-	Transform3D initial_transform;
 };

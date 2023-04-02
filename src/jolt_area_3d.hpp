@@ -159,7 +159,7 @@ private:
 
 	JPH::EMotionType get_motion_type() const override { return JPH::EMotionType::Kinematic; }
 
-	void create_in_space(bool p_lock = true) override;
+	void create_in_space() override;
 
 	void body_monitoring_changed();
 
