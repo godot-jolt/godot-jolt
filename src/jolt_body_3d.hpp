@@ -58,7 +58,7 @@ public:
 
 	void set_sleep_state(bool p_enabled, bool p_lock = true);
 
-	bool can_sleep() const { return allowed_sleep; }
+	bool can_sleep(bool p_lock = true) const;
 
 	void set_can_sleep(bool p_enabled, bool p_lock = true);
 
@@ -164,7 +164,7 @@ public:
 
 	bool is_rigid() const { return is_rigid_free() || is_rigid_linear(); }
 
-	bool is_ccd_enabled() const { return ccd_enabled; }
+	bool is_ccd_enabled(bool p_lock = true) const;
 
 	void set_ccd_enabled(bool p_enable, bool p_lock = true);
 
@@ -176,17 +176,17 @@ public:
 
 	void set_inertia(const Vector3& p_inertia, bool p_lock = true);
 
-	float get_bounce() const { return bounce; }
+	float get_bounce(bool p_lock = true) const;
 
 	void set_bounce(float p_bounce, bool p_lock = true);
 
-	float get_friction() const { return friction; }
+	float get_friction(bool p_lock = true) const;
 
 	void set_friction(float p_friction, bool p_lock = true);
 
-	float get_gravity_scale() const { return gravity_scale; }
+	float get_gravity_scale(bool p_lock = true) const;
 
-	void set_gravity_scale(float p_scale) { gravity_scale = p_scale; }
+	void set_gravity_scale(float p_scale, bool p_lock = true);
 
 	Vector3 get_gravity() const { return gravity; }
 
@@ -221,7 +221,7 @@ private:
 
 	JPH::EMotionType get_motion_type() const override;
 
-	void create_in_space(bool p_lock = true) override;
+	void create_in_space() override;
 
 	void destroy_in_space(bool p_lock = true) override;
 
@@ -251,25 +251,15 @@ private:
 
 	DampMode angular_damp_mode = PhysicsServer3D::BODY_DAMP_MODE_COMBINE;
 
-	bool ccd_enabled = false;
-
 	float mass = 1.0f;
 
 	Vector3 inertia;
-
-	float bounce = 0.0f;
-
-	float friction = 1.0f;
-
-	float gravity_scale = 1.0f;
 
 	float linear_damp = 0.0f;
 
 	float angular_damp = 0.0f;
 
 	bool initial_sleep_state = false;
-
-	bool allowed_sleep = true;
 
 	bool custom_center_of_mass = false;
 
@@ -280,10 +270,6 @@ private:
 	LocalVector<Contact> contacts;
 
 	LocalVector<JoltArea3D*> areas;
-
-	Vector3 initial_linear_velocity;
-
-	Vector3 initial_angular_velocity;
 
 	Vector3 center_of_mass_custom;
 

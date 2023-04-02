@@ -5,7 +5,18 @@
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
 
-JoltCollisionObject3D::~JoltCollisionObject3D() = default;
+JoltCollisionObject3D::JoltCollisionObject3D() {
+	jolt_settings->mAllowSleeping = true;
+	jolt_settings->mFriction = 1.0f;
+	jolt_settings->mRestitution = 0.0f;
+	jolt_settings->mLinearDamping = 0.0f;
+	jolt_settings->mAngularDamping = 0.0f;
+	jolt_settings->mGravityFactor = 1.0f;
+}
+
+JoltCollisionObject3D::~JoltCollisionObject3D() {
+	delete_safely(jolt_settings);
+}
 
 GodotObject* JoltCollisionObject3D::get_instance() const {
 	return internal::gde_interface->object_get_instance_from_id(instance_id);
@@ -31,15 +42,20 @@ void JoltCollisionObject3D::set_space(JoltSpace3D* p_space, bool p_lock) {
 	}
 
 	if (space != nullptr) {
-		remove_from_space(p_lock);
-		destroy_in_space(p_lock);
+		const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+		ERR_FAIL_COND(body.is_invalid());
+
+		jolt_settings = new JPH::BodyCreationSettings(body->GetBodyCreationSettings());
+
+		remove_from_space(false);
+		destroy_in_space(false);
 	}
 
 	space = p_space;
 
 	if (space != nullptr) {
-		create_in_space(p_lock);
-		add_to_space(p_lock);
+		create_in_space();
+		add_to_space();
 	}
 }
 
@@ -64,7 +80,9 @@ void JoltCollisionObject3D::set_collision_mask(uint32_t p_mask, bool p_lock) {
 }
 
 Transform3D JoltCollisionObject3D::get_transform(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	if (space == nullptr) {
+		return {to_godot(jolt_settings->mRotation), to_godot(jolt_settings->mPosition)};
+	}
 
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
@@ -79,7 +97,8 @@ void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) 
 	Math::normalize(p_transform);
 
 	if (space == nullptr) {
-		initial_transform = p_transform;
+		jolt_settings->mPosition = to_jolt(p_transform.origin);
+		jolt_settings->mRotation = to_jolt(p_transform.basis);
 		return;
 	}
 
@@ -92,7 +111,9 @@ void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) 
 }
 
 Basis JoltCollisionObject3D::get_basis(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	if (space == nullptr) {
+		return to_godot(jolt_settings->mRotation);
+	}
 
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
@@ -100,33 +121,15 @@ Basis JoltCollisionObject3D::get_basis(bool p_lock) const {
 	return to_godot(body->GetRotation());
 }
 
-void JoltCollisionObject3D::set_basis(const Basis& p_basis, bool p_lock) {
-	if (space == nullptr) {
-		initial_transform.basis = p_basis;
-		return;
-	}
-
-	space->get_body_iface(p_lock)
-		.SetRotation(jolt_id, to_jolt(p_basis), JPH::EActivation::DontActivate);
-}
-
 Vector3 JoltCollisionObject3D::get_position(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	if (space == nullptr) {
+		return to_godot(jolt_settings->mPosition);
+	}
 
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	return to_godot(body->GetPosition());
-}
-
-void JoltCollisionObject3D::set_position(const Vector3& p_position, bool p_lock) {
-	if (space == nullptr) {
-		initial_transform.origin = p_position;
-		return;
-	}
-
-	space->get_body_iface(p_lock)
-		.SetPosition(jolt_id, to_jolt(p_position), JPH::EActivation::DontActivate);
 }
 
 Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
@@ -139,7 +142,9 @@ Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
 }
 
 Vector3 JoltCollisionObject3D::get_linear_velocity(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	if (space == nullptr) {
+		return to_godot(jolt_settings->mLinearVelocity);
+	}
 
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
@@ -148,7 +153,9 @@ Vector3 JoltCollisionObject3D::get_linear_velocity(bool p_lock) const {
 }
 
 Vector3 JoltCollisionObject3D::get_angular_velocity(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	if (space == nullptr) {
+		return to_godot(jolt_settings->mAngularVelocity);
+	}
 
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
@@ -375,21 +382,7 @@ void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled,
 	rebuild_shape(p_lock);
 }
 
-void JoltCollisionObject3D::destroy_in_space(bool p_lock) {
-	if (space == nullptr) {
-		return;
-	}
-
-	space->get_body_iface(p_lock).DestroyBody(jolt_id);
-
-	set_jolt_id({});
-}
-
 void JoltCollisionObject3D::add_to_space(bool p_lock) {
-	if (space == nullptr) {
-		return;
-	}
-
 	space->get_body_iface(p_lock).AddBody(
 		jolt_id,
 		get_initial_sleep_state() ? JPH::EActivation::DontActivate : JPH::EActivation::Activate
@@ -397,11 +390,13 @@ void JoltCollisionObject3D::add_to_space(bool p_lock) {
 }
 
 void JoltCollisionObject3D::remove_from_space(bool p_lock) {
-	if (space == nullptr) {
-		return;
-	}
-
 	space->get_body_iface(p_lock).RemoveBody(jolt_id);
+}
+
+void JoltCollisionObject3D::destroy_in_space(bool p_lock) {
+	space->get_body_iface(p_lock).DestroyBody(jolt_id);
+
+	set_jolt_id({});
 }
 
 void JoltCollisionObject3D::pre_step([[maybe_unused]] float p_step) { }
@@ -411,32 +406,32 @@ void JoltCollisionObject3D::post_step([[maybe_unused]] float p_step) {
 }
 
 JPH::ObjectLayer JoltCollisionObject3D::get_object_layer() const {
-	ERR_FAIL_NULL_D(space);
+	if (space == nullptr) {
+		return jolt_settings->mObjectLayer;
+	}
 
 	return space->map_to_object_layer(get_broad_phase_layer(), collision_layer, collision_mask);
 }
 
-JPH::BodyCreationSettings JoltCollisionObject3D::create_begin() {
+void JoltCollisionObject3D::create_begin() {
 	jolt_shape = try_build_shape();
 
 	if (jolt_shape == nullptr) {
 		jolt_shape = new JoltEmptyShape();
 	}
 
-	return {
-		jolt_shape,
-		to_jolt(initial_transform.origin),
-		to_jolt(initial_transform.basis),
-		get_motion_type(),
-		get_object_layer()};
+	jolt_settings->mObjectLayer = get_object_layer();
+	jolt_settings->mMotionType = get_motion_type();
+	jolt_settings->SetShape(jolt_shape);
 }
 
-JPH::Body* JoltCollisionObject3D::create_end(
-	const JPH::BodyCreationSettings& p_settings,
-	bool p_lock
-) {
-	JPH::BodyInterface& body_iface = space->get_body_iface(p_lock);
-	JPH::Body* body = body_iface.CreateBody(p_settings);
+JPH::Body* JoltCollisionObject3D::create_end() {
+	ON_SCOPE_EXIT {
+		delete_safely(jolt_settings);
+	};
+
+	JPH::BodyInterface& body_iface = space->get_body_iface(false);
+	JPH::Body* body = body_iface.CreateBody(*jolt_settings);
 
 	body->SetUserData(reinterpret_cast<JPH::uint64>(this));
 
