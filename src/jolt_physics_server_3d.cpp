@@ -655,20 +655,18 @@ uint32_t JoltPhysicsServer3D::_body_get_collision_mask(const RID& p_body) const 
 	return body->get_collision_mask();
 }
 
-void JoltPhysicsServer3D::_body_set_collision_priority(
-	[[maybe_unused]] const RID& p_body,
-	double p_priority
-) {
-	if (!Math::is_equal_approx(p_priority, 1.0)) {
-		WARN_PRINT(
-			"Collision priority is not supported by Godot Jolt. "
-			"Any value will be treated as a value of 1."
-		);
-	}
+void JoltPhysicsServer3D::_body_set_collision_priority(const RID& p_body, double p_priority) {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_collision_priority((float)p_priority);
 }
 
-double JoltPhysicsServer3D::_body_get_collision_priority([[maybe_unused]] const RID& p_body) const {
-	return 1.0;
+double JoltPhysicsServer3D::_body_get_collision_priority(const RID& p_body) const {
+	JoltBody3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return (float)body->get_collision_priority();
 }
 
 void JoltPhysicsServer3D::_body_set_user_flags(

@@ -718,11 +718,27 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 			break;
 		}
 
+		const int32_t hit_count = collector.get_hit_count();
+
+		float combined_priority = 0.0;
+
+		for (int j = 0; j < hit_count; j++) {
+			const JPH::CollideShapeResult& hit = collector.get_hit(j);
+
+			const JoltReadableBody3D other_jolt_body = space->read_body(hit.mBodyID2);
+			const JoltBody3D* other_body = other_jolt_body.as_body();
+			ERR_CONTINUE(other_body == nullptr);
+
+			combined_priority += other_body->get_collision_priority();
+		}
+
+		const float average_priority = max(combined_priority / (float)hit_count, CMP_EPSILON);
+
 		recovered = true;
 
 		Vector3 recovery;
 
-		for (int32_t j = 0; j < collector.get_hit_count(); ++j) {
+		for (int32_t j = 0; j < hit_count; ++j) {
 			const JPH::CollideShapeResult& hit = collector.get_hit(j);
 
 			// HACK(mihe): I don't believe this can happen while we're using a max separation
@@ -746,7 +762,16 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 				continue;
 			}
 
-			recovery -= penetration_axis * penetration_depth * GDJOLT_MOTION_RECOVERY_SPEED;
+			const JoltReadableBody3D other_jolt_body = space->read_body(hit.mBodyID2);
+			const JoltBody3D* other_body = other_jolt_body.as_body();
+			ERR_CONTINUE(other_body == nullptr);
+
+			const float recovery_distance = penetration_depth * GDJOLT_MOTION_RECOVERY_SPEED;
+			const float other_priority = other_body->get_collision_priority();
+			const float other_priority_normalized = other_priority / average_priority;
+			const float scaled_recovery_distance = recovery_distance * other_priority_normalized;
+
+			recovery -= penetration_axis * scaled_recovery_distance;
 		}
 
 		if (recovery == Vector3()) {

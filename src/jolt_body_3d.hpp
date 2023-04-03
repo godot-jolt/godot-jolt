@@ -202,6 +202,10 @@ public:
 
 	float get_total_angular_damp(bool p_lock = true) const;
 
+	float get_collision_priority() const { return collision_priority; }
+
+	void set_collision_priority(float p_priority) { collision_priority = p_priority; }
+
 	DampMode get_linear_damp_mode() const { return linear_damp_mode; }
 
 	void set_linear_damp_mode(DampMode p_mode) { linear_damp_mode = p_mode; }
@@ -258,6 +262,8 @@ private:
 	float linear_damp = 0.0f;
 
 	float angular_damp = 0.0f;
+
+	float collision_priority = 1.0f;
 
 	bool initial_sleep_state = false;
 
