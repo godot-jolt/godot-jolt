@@ -26,13 +26,9 @@ void JoltShape3D::remove_self(bool p_lock) {
 	}
 }
 
-JPH::ShapeRefC JoltShape3D::try_build(float p_extra_margin) {
-	if (p_extra_margin > 0.0f) {
-		return build(p_extra_margin);
-	}
-
+JPH::ShapeRefC JoltShape3D::try_build() {
 	if (jolt_ref == nullptr) {
-		jolt_ref = build(0.0f);
+		jolt_ref = build();
 	}
 
 	return jolt_ref;
@@ -190,7 +186,7 @@ void JoltWorldBoundaryShape3D::set_data(const Variant& p_data) {
 	plane = p_data;
 }
 
-JPH::ShapeRefC JoltWorldBoundaryShape3D::build([[maybe_unused]] float p_extra_margin) const {
+JPH::ShapeRefC JoltWorldBoundaryShape3D::build() const {
 	ERR_FAIL_D_MSG(
 		"WorldBoundaryShape3D is not supported by Godot Jolt. "
 		"Consider using one or more reasonably sized BoxShape3D instead."
@@ -229,9 +225,7 @@ String JoltSeparationRayShape3D::to_string() const {
 	return vformat("{length=%f slide_on_slope=%s}", length, slide_on_slope);
 }
 
-JPH::ShapeRefC JoltSeparationRayShape3D::build(float p_extra_margin) const {
-	ERR_FAIL_COND_D(p_extra_margin < 0.0f);
-
+JPH::ShapeRefC JoltSeparationRayShape3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		length <= 0.0f,
 		vformat(
@@ -241,7 +235,7 @@ JPH::ShapeRefC JoltSeparationRayShape3D::build(float p_extra_margin) const {
 		)
 	);
 
-	const JoltRayShapeSettings shape_settings(length + p_extra_margin, slide_on_slope);
+	const JoltRayShapeSettings shape_settings(length, slide_on_slope);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -277,9 +271,7 @@ String JoltSphereShape3D::to_string() const {
 	return vformat("{radius=%f}", radius);
 }
 
-JPH::ShapeRefC JoltSphereShape3D::build(float p_extra_margin) const {
-	ERR_FAIL_COND_D(p_extra_margin < 0.0f);
-
+JPH::ShapeRefC JoltSphereShape3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		radius <= 0.0f,
 		vformat(
@@ -289,7 +281,7 @@ JPH::ShapeRefC JoltSphereShape3D::build(float p_extra_margin) const {
 		)
 	);
 
-	const JPH::SphereShapeSettings shape_settings(radius + p_extra_margin);
+	const JPH::SphereShapeSettings shape_settings(radius);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -335,9 +327,7 @@ String JoltBoxShape3D::to_string() const {
 	return vformat("{half_extents=%v margin=%f}", half_extents, margin);
 }
 
-JPH::ShapeRefC JoltBoxShape3D::build(float p_extra_margin) const {
-	ERR_FAIL_COND_D(p_extra_margin < 0.0f);
-
+JPH::ShapeRefC JoltBoxShape3D::build() const {
 	const float shortest_axis = half_extents[half_extents.min_axis_index()];
 
 	ERR_FAIL_COND_D_MSG(
@@ -349,13 +339,7 @@ JPH::ShapeRefC JoltBoxShape3D::build(float p_extra_margin) const {
 		)
 	);
 
-	const Vector3 padded_half_extents(
-		half_extents.x + p_extra_margin,
-		half_extents.y + p_extra_margin,
-		half_extents.z + p_extra_margin
-	);
-
-	const JPH::BoxShapeSettings shape_settings(to_jolt(padded_half_extents), margin);
+	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -403,9 +387,7 @@ String JoltCapsuleShape3D::to_string() const {
 	return vformat("{height=%f radius=%f}", height, radius);
 }
 
-JPH::ShapeRefC JoltCapsuleShape3D::build(float p_extra_margin) const {
-	ERR_FAIL_COND_D(p_extra_margin < 0.0f);
-
+JPH::ShapeRefC JoltCapsuleShape3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		radius <= 0.0f,
 		vformat(
@@ -436,11 +418,7 @@ JPH::ShapeRefC JoltCapsuleShape3D::build(float p_extra_margin) const {
 	const float half_height = height / 2.0f;
 	const float cylinder_height = half_height - radius;
 
-	const JPH::CapsuleShapeSettings shape_settings(
-		cylinder_height + p_extra_margin,
-		radius + p_extra_margin
-	);
-
+	const JPH::CapsuleShapeSettings shape_settings(cylinder_height, radius);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -498,9 +476,7 @@ String JoltCylinderShape3D::to_string() const {
 	return vformat("{height=%f radius=%f margin=%f}", height, radius, margin);
 }
 
-JPH::ShapeRefC JoltCylinderShape3D::build(float p_extra_margin) const {
-	ERR_FAIL_COND_D(p_extra_margin < 0.0f);
-
+JPH::ShapeRefC JoltCylinderShape3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		height < margin * 2.0f,
 		vformat(
@@ -521,12 +497,7 @@ JPH::ShapeRefC JoltCylinderShape3D::build(float p_extra_margin) const {
 
 	const float half_height = height / 2.0f;
 
-	const JPH::CylinderShapeSettings shape_settings(
-		half_height + p_extra_margin,
-		radius + p_extra_margin,
-		margin
-	);
-
+	const JPH::CylinderShapeSettings shape_settings(half_height, radius, margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -572,9 +543,7 @@ String JoltConvexPolygonShape3D::to_string() const {
 	return vformat("{vertex_count=%d margin=%f}", vertices.size(), margin);
 }
 
-JPH::ShapeRefC JoltConvexPolygonShape3D::build(float p_extra_margin) const {
-	ERR_FAIL_COND_D(p_extra_margin < 0.0f);
-
+JPH::ShapeRefC JoltConvexPolygonShape3D::build() const {
 	const auto vertex_count = (int32_t)vertices.size();
 
 	ERR_FAIL_COND_D_MSG(
@@ -593,11 +562,7 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::build(float p_extra_margin) const {
 	const Vector3* vertices_end = vertices_begin + vertex_count;
 
 	for (const Vector3* vertex = vertices_begin; vertex != vertices_end; ++vertex) {
-		JPH::Vec3& jolt_vertex = jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
-
-		if (p_extra_margin > 0.0f) {
-			jolt_vertex += jolt_vertex.NormalizedOr(JPH::Vec3::sZero()) * p_extra_margin;
-		}
+		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
 	}
 
 	const JPH::ConvexHullShapeSettings shape_settings(jolt_vertices, margin);
@@ -648,9 +613,7 @@ String JoltConcavePolygonShape3D::to_string() const {
 	return vformat("{vertex_count=%d}", faces.size());
 }
 
-JPH::ShapeRefC JoltConcavePolygonShape3D::build(float p_extra_margin) const {
-	ERR_FAIL_COND_D(p_extra_margin != 0.0f);
-
+JPH::ShapeRefC JoltConcavePolygonShape3D::build() const {
 	const auto vertex_count = (int32_t)faces.size();
 	const int32_t face_count = vertex_count / 3;
 	const int32_t excess_vertex_count = vertex_count % 3;
@@ -752,9 +715,7 @@ String JoltHeightMapShape3D::to_string() const {
 	return vformat("{height_count=%d width=%d depth=%d}", heights.size(), width, depth);
 }
 
-JPH::ShapeRefC JoltHeightMapShape3D::build(float p_extra_margin) const {
-	ERR_FAIL_COND_D(p_extra_margin != 0.0f);
-
+JPH::ShapeRefC JoltHeightMapShape3D::build() const {
 	const auto height_count = (int32_t)heights.size();
 
 	// NOTE(mihe): This somewhat arbitrary limit depends on what the block size is set to, which by

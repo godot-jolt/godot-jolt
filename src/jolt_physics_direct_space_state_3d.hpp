@@ -106,11 +106,12 @@ private:
 		const Transform3D& p_transform_com,
 		const Vector3& p_scale,
 		const Vector3& p_motion,
+		bool p_ignore_overlaps,
+		const JPH::CollideShapeSettings& p_settings,
 		const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
 		const JPH::ObjectLayerFilter& p_object_layer_filter,
 		const JPH::BodyFilter& p_body_filter,
 		const JPH::ShapeFilter& p_shape_filter,
-		bool p_ignore_overlaps,
 		float& p_closest_safe,
 		float& p_closest_unsafe
 	) const;
