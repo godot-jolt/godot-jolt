@@ -295,7 +295,7 @@ void JoltArea3D::area_monitoring_changed() {
 }
 
 void JoltArea3D::monitorable_changed(bool p_lock) {
-	object_layer_changed(p_lock);
+	update_object_layer(p_lock);
 }
 
 void JoltArea3D::add_shape_pair(
