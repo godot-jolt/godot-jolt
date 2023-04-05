@@ -41,6 +41,8 @@ void JoltCollisionObject3D::set_space(JoltSpace3D* p_space, bool p_lock) {
 		return;
 	}
 
+	space_changing(p_lock);
+
 	if (space != nullptr) {
 		const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 		ERR_FAIL_COND(body.is_invalid());
@@ -57,6 +59,8 @@ void JoltCollisionObject3D::set_space(JoltSpace3D* p_space, bool p_lock) {
 		create_in_space();
 		add_to_space();
 	}
+
+	space_changed(p_lock);
 }
 
 void JoltCollisionObject3D::set_collision_layer(uint32_t p_layer, bool p_lock) {
@@ -440,7 +444,7 @@ JPH::Body* JoltCollisionObject3D::create_end() {
 	return body;
 }
 
-void JoltCollisionObject3D::object_layer_changed(bool p_lock) {
+void JoltCollisionObject3D::update_object_layer(bool p_lock) {
 	if (space == nullptr) {
 		return;
 	}
@@ -449,9 +453,9 @@ void JoltCollisionObject3D::object_layer_changed(bool p_lock) {
 }
 
 void JoltCollisionObject3D::collision_layer_changed(bool p_lock) {
-	object_layer_changed(p_lock);
+	update_object_layer(p_lock);
 }
 
 void JoltCollisionObject3D::collision_mask_changed(bool p_lock) {
-	object_layer_changed(p_lock);
+	update_object_layer(p_lock);
 }
