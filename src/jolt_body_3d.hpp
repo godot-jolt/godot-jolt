@@ -54,9 +54,13 @@ public:
 		force_integration_userdata = p_userdata;
 	}
 
-	bool get_sleep_state(bool p_lock = true) const;
+	bool is_sleeping(bool p_lock = true) const;
 
-	void set_sleep_state(bool p_enabled, bool p_lock = true);
+	void set_is_sleeping(bool p_enabled, bool p_lock = true);
+
+	void put_to_sleep(bool p_lock = true) { set_is_sleeping(true, p_lock); }
+
+	void wake_up(bool p_lock = true) { set_is_sleeping(false, p_lock); }
 
 	bool can_sleep(bool p_lock = true) const;
 
@@ -116,19 +120,19 @@ public:
 
 	void apply_torque_impulse(const Vector3& p_impulse, bool p_lock = true);
 
-	void add_constant_central_force(const Vector3& p_force);
+	void add_constant_central_force(const Vector3& p_force, bool p_lock = true);
 
 	void add_constant_force(const Vector3& p_force, const Vector3& p_position, bool p_lock = true);
 
-	void add_constant_torque(const Vector3& p_torque);
+	void add_constant_torque(const Vector3& p_torque, bool p_lock = true);
 
 	Vector3 get_constant_force() const;
 
-	void set_constant_force(const Vector3& p_force);
+	void set_constant_force(const Vector3& p_force, bool p_lock = true);
 
 	Vector3 get_constant_torque() const;
 
-	void set_constant_torque(const Vector3& p_torque);
+	void set_constant_torque(const Vector3& p_torque, bool p_lock = true);
 
 	void add_collision_exception(const RID& p_excepted_body, bool p_lock = true);
 
@@ -221,8 +225,6 @@ public:
 	bool are_axes_locked() const { return locked_axes != 0; }
 
 private:
-	bool get_initial_sleep_state() const override { return initial_sleep_state; }
-
 	JPH::EMotionType get_motion_type() const override;
 
 	void create_in_space() override;
@@ -249,6 +251,10 @@ private:
 
 	void areas_changed(bool p_lock = true);
 
+	void transform_changed(bool p_lock = true) override;
+
+	void motion_changed(bool p_lock = true);
+
 	void axis_lock_changed(bool p_lock = true);
 
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
@@ -266,8 +272,6 @@ private:
 	float angular_damp = 0.0f;
 
 	float collision_priority = 1.0f;
-
-	bool initial_sleep_state = false;
 
 	bool custom_center_of_mass = false;
 

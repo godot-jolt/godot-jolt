@@ -103,6 +103,7 @@ void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) 
 	if (space == nullptr) {
 		jolt_settings->mPosition = to_jolt(p_transform.origin);
 		jolt_settings->mRotation = to_jolt(p_transform.basis);
+		transform_changed(p_lock);
 		return;
 	}
 
@@ -112,6 +113,8 @@ void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) 
 		to_jolt(p_transform.basis),
 		JPH::EActivation::DontActivate
 	);
+
+	transform_changed(p_lock);
 }
 
 Basis JoltCollisionObject3D::get_basis(bool p_lock) const {
@@ -242,10 +245,12 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 		jolt_shape = new JoltEmptyShape();
 	}
 
-	JPH::BodyInterface& body_iface = space->get_body_iface(false);
+	if (jolt_shape == previous_jolt_shape) {
+		return;
+	}
 
-	body_iface.SetObjectLayer(jolt_id, get_object_layer());
-	body_iface.SetShape(jolt_id, jolt_shape, false, JPH::EActivation::DontActivate);
+	space->get_body_iface(false)
+		.SetShape(jolt_id, jolt_shape, false, JPH::EActivation::DontActivate);
 
 	shapes_changed(false);
 }
@@ -387,10 +392,10 @@ void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled,
 }
 
 void JoltCollisionObject3D::add_to_space(bool p_lock) {
-	space->get_body_iface(p_lock).AddBody(
-		jolt_id,
-		get_initial_sleep_state() ? JPH::EActivation::DontActivate : JPH::EActivation::Activate
-	);
+	// HACK(mihe): Since `BODY_STATE_TRANSFORM` will be set right after creation it's more or less
+	// impossible to have a body be sleeping when created, so we default to always starting out as
+	// active.
+	space->get_body_iface(p_lock).AddBody(jolt_id, JPH::EActivation::Activate);
 }
 
 void JoltCollisionObject3D::remove_from_space(bool p_lock) {
