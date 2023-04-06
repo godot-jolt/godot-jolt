@@ -123,8 +123,6 @@ protected:
 
 	virtual Vector3 get_center_of_mass_custom() const = 0;
 
-	virtual bool get_initial_sleep_state() const = 0;
-
 	virtual JPH::EMotionType get_motion_type() const = 0;
 
 	virtual void create_in_space() = 0;
@@ -150,6 +148,8 @@ protected:
 	virtual void space_changing([[maybe_unused]] bool p_lock = true) { }
 
 	virtual void space_changed([[maybe_unused]] bool p_lock = true) { }
+
+	virtual void transform_changed([[maybe_unused]] bool p_lock = true) { }
 
 	RID rid;
 

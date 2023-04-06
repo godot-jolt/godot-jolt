@@ -162,12 +162,12 @@ void JoltPhysicsDirectBodyState3D::_set_constant_torque(const Vector3& p_torque)
 
 bool JoltPhysicsDirectBodyState3D::_is_sleeping() const {
 	QUIET_FAIL_NULL_D_ED(body);
-	return body->get_sleep_state();
+	return body->is_sleeping();
 }
 
 void JoltPhysicsDirectBodyState3D::_set_sleep_state(bool p_enabled) {
 	QUIET_FAIL_NULL_ED(body);
-	body->set_sleep_state(p_enabled);
+	body->set_is_sleeping(p_enabled);
 }
 
 int32_t JoltPhysicsDirectBodyState3D::_get_contact_count() const {
