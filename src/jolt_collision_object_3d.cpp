@@ -2,6 +2,7 @@
 
 #include "jolt_empty_shape.hpp"
 #include "jolt_layer_mapper.hpp"
+#include "jolt_project_settings.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
 
@@ -441,6 +442,15 @@ JPH::Body* JoltCollisionObject3D::create_end() {
 
 	JPH::BodyInterface& body_iface = space->get_body_iface(false);
 	JPH::Body* body = body_iface.CreateBody(*jolt_settings);
+
+	if (unlikely(body == nullptr)) {
+		CRASH_NOW_MSG(vformat(
+			"Failed to create Jolt body. "
+			"Consider increasing maximum number of bodies. "
+			"Maximum number of bodies is currently set to %d.",
+			JoltProjectSettings::get_max_bodies()
+		));
+	}
 
 	body->SetUserData(reinterpret_cast<JPH::uint64>(this));
 

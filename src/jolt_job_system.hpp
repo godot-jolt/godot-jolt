@@ -63,4 +63,6 @@ private:
 	inline static JoltJobSystem* singleton = nullptr;
 
 	FreeList<Job> jobs;
+
+	int32_t thread_count = 0;
 };

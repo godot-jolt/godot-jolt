@@ -6,15 +6,10 @@
 #include "jolt_joint_3d.hpp"
 #include "jolt_layer_mapper.hpp"
 #include "jolt_physics_direct_space_state_3d.hpp"
+#include "jolt_project_settings.hpp"
 #include "jolt_temp_allocator.hpp"
 
 namespace {
-
-constexpr uint32_t GDJOLT_TEMP_CAPACITY = 8 * 1024 * 1024;
-constexpr uint32_t GDJOLT_MAX_BODIES = 8192;
-constexpr uint32_t GDJOLT_BODY_MUTEX_COUNT = 0; // 0 = default
-constexpr uint32_t GDJOLT_MAX_BODY_PAIRS = 65536;
-constexpr uint32_t GDJOLT_MAX_CONTACT_CONSTRAINTS = 8192;
 
 constexpr double GDJOLT_SPACE_CONTACT_RECYCLE_RADIUS = 0.01;
 constexpr double GDJOLT_SPACE_CONTACT_MAX_SEPARATION = 0.05;
@@ -22,32 +17,39 @@ constexpr double GDJOLT_SPACE_CONTACT_MAX_ALLOWED_PENETRATION = 0.01;
 constexpr double GDJOLT_SPACE_CONTACT_DEFAULT_BIAS = 0.8;
 constexpr double GDJOLT_SPACE_SLEEP_THRESHOLD_LINEAR = 0.1;
 constexpr double GDJOLT_SPACE_SLEEP_THRESHOLD_ANGULAR = 8.0 * Math_PI / 180;
-constexpr double GDJOLT_SPACE_TIME_BEFORE_SLEEP = 0.5;
 constexpr double GDJOLT_SPACE_SOLVER_ITERATIONS = 8;
 
 } // namespace
 
 JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	: job_system(p_job_system)
-	, temp_allocator(new JoltTempAllocator(GDJOLT_TEMP_CAPACITY))
+	, temp_allocator(new JoltTempAllocator())
 	, layer_mapper(new JoltLayerMapper())
 	, contact_listener(new JoltContactListener(this))
 	, physics_system(new JPH::PhysicsSystem())
 	, body_accessor(this) {
 	physics_system->Init(
-		GDJOLT_MAX_BODIES,
-		GDJOLT_BODY_MUTEX_COUNT,
-		GDJOLT_MAX_BODY_PAIRS,
-		GDJOLT_MAX_CONTACT_CONSTRAINTS,
+		(JPH::uint)JoltProjectSettings::get_max_bodies(),
+		0,
+		(JPH::uint)JoltProjectSettings::get_max_body_pairs(),
+		(JPH::uint)JoltProjectSettings::get_max_contact_constraints(),
 		*layer_mapper,
 		*layer_mapper,
 		*layer_mapper
 	);
 
-	JPH::PhysicsSettings physics_settings;
-	physics_settings.mDeterministicSimulation = false;
+	JPH::PhysicsSettings settings;
+	settings.mBaumgarte = JoltProjectSettings::get_stabilization_factor();
+	settings.mSpeculativeContactDistance = JoltProjectSettings::get_contact_distance();
+	settings.mPenetrationSlop = JoltProjectSettings::get_contact_penetration();
+	settings.mNumVelocitySteps = JoltProjectSettings::get_velocity_iterations();
+	settings.mNumPositionSteps = JoltProjectSettings::get_position_iterations();
+	settings.mTimeBeforeSleep = JoltProjectSettings::get_sleep_time_threshold();
+	settings.mPointVelocitySleepThreshold = JoltProjectSettings::get_sleep_velocity_threshold();
+	settings.mDeterministicSimulation = JoltProjectSettings::is_more_deterministic();
+	settings.mAllowSleeping = JoltProjectSettings::is_sleep_enabled();
 
-	physics_system->SetPhysicsSettings(physics_settings);
+	physics_system->SetPhysicsSettings(settings);
 	physics_system->SetGravity(JPH::Vec3::sZero());
 	physics_system->SetContactListener(contact_listener);
 }
@@ -126,7 +128,7 @@ double JoltSpace3D::get_param(PhysicsServer3D::SpaceParameter p_param) const {
 			return GDJOLT_SPACE_SLEEP_THRESHOLD_ANGULAR;
 		}
 		case PhysicsServer3D::SPACE_PARAM_BODY_TIME_TO_SLEEP: {
-			return GDJOLT_SPACE_TIME_BEFORE_SLEEP;
+			return JoltProjectSettings::get_sleep_time_threshold();
 		}
 		case PhysicsServer3D::SPACE_PARAM_SOLVER_ITERATIONS: {
 			return GDJOLT_SPACE_SOLVER_ITERATIONS;

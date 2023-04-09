@@ -1,10 +1,12 @@
 #pragma once
 
+#include "jolt_project_settings.hpp"
+
 class JoltTempAllocator final : public JPH::TempAllocator {
 public:
-	explicit JoltTempAllocator(size_t p_capacity)
-		: base(static_cast<uint8_t*>(JPH::Allocate(p_capacity)))
-		, capacity(p_capacity) { }
+	explicit JoltTempAllocator()
+		: capacity((uint64_t)JoltProjectSettings::get_max_temp_memory_b())
+		, base(static_cast<uint8_t*>(JPH::Allocate((size_t)capacity))) { }
 
 	~JoltTempAllocator() override { JPH::Free(base); }
 
@@ -15,18 +17,19 @@ public:
 
 		p_size = align_up(p_size, 16U);
 
-		const size_t new_top = top + p_size;
+		const uint64_t new_top = top + p_size;
 
 		void* ptr = nullptr;
 
 		if (new_top <= capacity) {
 			ptr = base + top;
 		} else {
-			WARN_PRINT_ONCE(
-				"Temporary memory allocator exceeded capacity. "
+			WARN_PRINT_ONCE(vformat(
+				"Temporary memory allocator exceeded capacity of %d MiB. "
 				"Falling back to slower general-purpose allocator. "
-				"Consider increasing temporary memory capacity."
-			);
+				"Consider increasing maximum temporary memory. ",
+				JoltProjectSettings::get_max_temp_memory_mib()
+			));
 
 			ptr = JPH::Allocate(p_size);
 		}
@@ -43,7 +46,7 @@ public:
 
 		p_size = align_up(p_size, 16U);
 
-		const size_t new_top = top - p_size;
+		const uint64_t new_top = top - p_size;
 
 		if (top <= capacity) {
 			if (base + new_top != p_ptr) {
@@ -57,9 +60,9 @@ public:
 	}
 
 private:
+	uint64_t capacity = 0;
+
+	uint64_t top = 0;
+
 	uint8_t* base = nullptr;
-
-	size_t capacity = 0;
-
-	size_t top = 0;
 };

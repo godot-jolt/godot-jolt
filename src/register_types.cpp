@@ -4,6 +4,7 @@
 #include "jolt_physics_direct_space_state_3d.hpp"
 #include "jolt_physics_server_3d.hpp"
 #include "jolt_physics_server_factory_3d.hpp"
+#include "jolt_project_settings.hpp"
 
 #include <mimalloc-new-delete.h>
 
@@ -31,6 +32,8 @@ void on_initialize(ModuleInitializationLevel p_level) {
 			);
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			JoltProjectSettings::register_settings();
+
 			ClassDB::register_class<JoltDebugGeometry3D>();
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
