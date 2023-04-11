@@ -26,6 +26,7 @@
 #include <godot_cpp/classes/physics_server3d_extension_shape_result.hpp>
 #include <godot_cpp/classes/physics_server3d_manager.hpp>
 #include <godot_cpp/classes/physics_server3d_rendering_server_handler.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/classes/viewport.hpp>

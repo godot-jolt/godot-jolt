@@ -6,17 +6,11 @@
 #include "jolt_motion_filter_3d.hpp"
 #include "jolt_motion_shape.hpp"
 #include "jolt_physics_server_3d.hpp"
+#include "jolt_project_settings.hpp"
 #include "jolt_query_collectors.hpp"
 #include "jolt_query_filter_3d.hpp"
 #include "jolt_shape_3d.hpp"
 #include "jolt_space_3d.hpp"
-
-namespace {
-
-constexpr int32_t GDJOLT_MOTION_RECOVERY_ITERATIONS = 4;
-constexpr float GDJOLT_MOTION_RECOVERY_SPEED = 0.4f;
-
-} // namespace
 
 JoltPhysicsDirectSpaceState3D::JoltPhysicsDirectSpaceState3D(JoltSpace3D* p_space)
 	: space(p_space) { }
@@ -702,6 +696,9 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	float p_margin,
 	Vector3& p_recovery
 ) const {
+	const int32_t recovery_iterations = JoltProjectSettings::get_kinematic_recovery_iterations();
+	const float recovery_speed = JoltProjectSettings::get_kinematic_recovery_speed();
+
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
 	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
@@ -719,7 +716,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 
 	bool recovered = false;
 
-	for (int32_t i = 0; i < GDJOLT_MOTION_RECOVERY_ITERATIONS; ++i) {
+	for (int32_t i = 0; i < recovery_iterations; ++i) {
 		collector.reset();
 
 		space->get_narrow_phase_query().CollideShape(
@@ -787,7 +784,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 			const JoltBody3D* other_body = other_jolt_body.as_body();
 			ERR_CONTINUE(other_body == nullptr);
 
-			const float recovery_distance = penetration_depth * GDJOLT_MOTION_RECOVERY_SPEED;
+			const float recovery_distance = penetration_depth * recovery_speed;
 			const float other_priority = other_body->get_collision_priority();
 			const float other_priority_normalized = other_priority / average_priority;
 			const float scaled_recovery_distance = recovery_distance * other_priority_normalized;

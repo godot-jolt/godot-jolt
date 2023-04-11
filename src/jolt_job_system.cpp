@@ -1,16 +1,19 @@
 #include "jolt_job_system.hpp"
 
-namespace {
-
-constexpr int32_t GDJOLT_MAX_BARRIERS = 8;
-constexpr int32_t GDJOLT_MAX_JOBS = 2048;
-
-} // namespace
+#include "jolt_project_settings.hpp"
 
 JoltJobSystem::JoltJobSystem()
-	: JPH::JobSystemWithBarrier(GDJOLT_MAX_BARRIERS)
-	, jobs(GDJOLT_MAX_JOBS) {
+	: JPH::JobSystemWithBarrier(JPH::cMaxPhysicsBarriers)
+	, jobs(JPH::cMaxPhysicsJobs) {
 	singleton = this;
+
+	const int32_t max_threads = JoltProjectSettings::get_max_threads();
+
+	if (max_threads != -1) {
+		thread_count = max_threads;
+	} else {
+		thread_count = OS::get_singleton()->get_processor_count();
+	}
 }
 
 void JoltJobSystem::pre_step() {
@@ -80,9 +83,7 @@ void JoltJobSystem::Job::execute(void* p_user_data) {
 }
 
 int JoltJobSystem::GetMaxConcurrency() const {
-	// HACK(mihe): Ideally we would use `WorkerThreadPool::get_thread_count` here, but that method
-	// is unfortunately not exposed in the bindings.
-	return OS::get_singleton()->get_processor_count();
+	return thread_count;
 }
 
 JPH::JobHandle JoltJobSystem::CreateJob(
