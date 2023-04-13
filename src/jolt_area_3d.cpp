@@ -266,36 +266,67 @@ void JoltArea3D::call_queries() {
 	flush_events(areas_by_id, area_monitor_callback);
 }
 
-void JoltArea3D::body_monitoring_changed() {
-	const bool monitoring = has_body_monitor_callback();
+void JoltArea3D::space_changing([[maybe_unused]] bool p_lock) {
+	if (space != nullptr) {
+		// HACK(mihe): Ideally we would rely on our contact listener to report all the exits when we
+		// move between (or out of) spaces, but because our Jolt body is going to be destroyed when
+		// we leave this space the contact listener won't be able to retrieve the corresponding area
+		// and as such cannot report any exits, so we're forced to do it manually instead.
+		force_bodies_exited();
+		force_areas_exited();
+	}
+}
 
-	for (auto& [id, body] : bodies_by_id) {
-		for (const auto& [id_pair, index_pair] : body.shape_pairs) {
-			if (monitoring) {
-				body.pending_added.push_back(index_pair);
-			} else {
-				body.pending_removed.push_back(index_pair);
-			}
-		}
+void JoltArea3D::body_monitoring_changed() {
+	if (has_body_monitor_callback()) {
+		force_bodies_entered();
+	} else {
+		force_bodies_exited();
 	}
 }
 
 void JoltArea3D::area_monitoring_changed() {
-	const bool monitoring = has_area_monitor_callback();
-
-	for (auto& [id, area] : areas_by_id) {
-		for (const auto& [id_pair, index_pair] : area.shape_pairs) {
-			if (monitoring) {
-				area.pending_added.push_back(index_pair);
-			} else {
-				area.pending_removed.push_back(index_pair);
-			}
-		}
+	if (has_area_monitor_callback()) {
+		force_areas_entered();
+	} else {
+		force_areas_exited();
 	}
 }
 
 void JoltArea3D::monitorable_changed(bool p_lock) {
 	update_object_layer(p_lock);
+}
+
+void JoltArea3D::force_bodies_entered() {
+	for (auto& [id, body] : bodies_by_id) {
+		for (const auto& [id_pair, index_pair] : body.shape_pairs) {
+			body.pending_added.push_back(index_pair);
+		}
+	}
+}
+
+void JoltArea3D::force_bodies_exited() {
+	for (auto& [id, body] : bodies_by_id) {
+		for (const auto& [id_pair, index_pair] : body.shape_pairs) {
+			body.pending_removed.push_back(index_pair);
+		}
+	}
+}
+
+void JoltArea3D::force_areas_entered() {
+	for (auto& [id, area] : areas_by_id) {
+		for (const auto& [id_pair, index_pair] : area.shape_pairs) {
+			area.pending_added.push_back(index_pair);
+		}
+	}
+}
+
+void JoltArea3D::force_areas_exited() {
+	for (auto& [id, area] : areas_by_id) {
+		for (const auto& [id_pair, index_pair] : area.shape_pairs) {
+			area.pending_removed.push_back(index_pair);
+		}
+	}
 }
 
 void JoltArea3D::add_shape_pair(
