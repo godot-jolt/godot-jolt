@@ -159,11 +159,21 @@ private:
 
 	void create_in_space() override;
 
+	void space_changing(bool p_lock = true) override;
+
 	void body_monitoring_changed();
 
 	void area_monitoring_changed();
 
 	void monitorable_changed(bool p_lock = true);
+
+	void force_bodies_entered();
+
+	void force_bodies_exited();
+
+	void force_areas_entered();
+
+	void force_areas_exited();
 
 	void add_shape_pair(
 		Overlap& p_overlap,
