@@ -742,7 +742,15 @@ void JoltBody3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
+	if (motion_type == JPH::EMotionType::Static) {
+		put_to_sleep(false);
+	}
+
 	body->SetMotionType(motion_type);
+
+	if (motion_type != JPH::EMotionType::Static) {
+		wake_up(false);
+	}
 
 	if (motion_type == JPH::EMotionType::Kinematic) {
 		body->SetLinearVelocity(JPH::Vec3::sZero());
