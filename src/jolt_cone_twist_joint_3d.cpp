@@ -29,15 +29,21 @@ JoltConeTwistJoint3D::JoltConeTwistJoint3D(
 	const JoltWritableBody3D jolt_body_b = bodies[1];
 	ERR_FAIL_COND(jolt_body_b.is_invalid());
 
-	const JPH::Shape& jolt_shape_a = *jolt_body_a->GetShape();
-	const JPH::Shape& jolt_shape_b = *jolt_body_b->GetShape();
+	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+	const JoltCollisionObject3D& object_b = *jolt_body_b.as_object();
+
+	const JPH::Vec3 point_scaled_a = to_jolt(p_local_ref_a.origin * object_a.get_scale());
+	const JPH::Vec3 point_scaled_b = to_jolt(p_local_ref_b.origin * object_b.get_scale());
+
+	const JPH::Vec3 com_scaled_a = jolt_body_a->GetShape()->GetCenterOfMass();
+	const JPH::Vec3 com_scaled_b = jolt_body_b->GetShape()->GetCenterOfMass();
 
 	JPH::SwingTwistConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPosition1 = to_jolt(p_local_ref_a.origin) - jolt_shape_a.GetCenterOfMass();
+	constraint_settings.mPosition1 = point_scaled_a - com_scaled_a;
 	constraint_settings.mTwistAxis1 = to_jolt(-p_local_ref_a.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPlaneAxis1 = to_jolt(-p_local_ref_a.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mPosition2 = to_jolt(p_local_ref_b.origin) - jolt_shape_b.GetCenterOfMass();
+	constraint_settings.mPosition2 = point_scaled_b - com_scaled_b;
 	constraint_settings.mTwistAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPlaneAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_Z));
 
@@ -57,14 +63,19 @@ JoltConeTwistJoint3D::JoltConeTwistJoint3D(
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	const JPH::Shape& jolt_shape_a = *jolt_body_a->GetShape();
+	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+
+	const JPH::Vec3 point_scaled_a = to_jolt(p_local_ref_a.origin * object_a.get_scale());
+	const JPH::Vec3 point_scaled_b = to_jolt(p_local_ref_b.origin);
+
+	const JPH::Vec3 com_scaled_a = jolt_body_a->GetShape()->GetCenterOfMass();
 
 	JPH::SwingTwistConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPosition1 = to_jolt(p_local_ref_a.origin) - jolt_shape_a.GetCenterOfMass();
+	constraint_settings.mPosition1 = point_scaled_a - com_scaled_a;
 	constraint_settings.mTwistAxis1 = to_jolt(-p_local_ref_a.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPlaneAxis1 = to_jolt(-p_local_ref_a.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mPosition2 = to_jolt(p_local_ref_b.origin);
+	constraint_settings.mPosition2 = point_scaled_b;
 	constraint_settings.mTwistAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPlaneAxis2 = to_jolt(-p_local_ref_b.basis.get_column(Vector3::AXIS_Z));
 

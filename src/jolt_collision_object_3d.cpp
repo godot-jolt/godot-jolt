@@ -84,7 +84,7 @@ void JoltCollisionObject3D::set_collision_mask(uint32_t p_mask, bool p_lock) {
 	collision_mask_changed(p_lock);
 }
 
-Transform3D JoltCollisionObject3D::get_transform(bool p_lock) const {
+Transform3D JoltCollisionObject3D::get_transform_unscaled(bool p_lock) const {
 	if (space == nullptr) {
 		return {to_godot(jolt_settings->mRotation), to_godot(jolt_settings->mPosition)};
 	}
@@ -95,11 +95,23 @@ Transform3D JoltCollisionObject3D::get_transform(bool p_lock) const {
 	return {to_godot(body->GetRotation()), to_godot(body->GetPosition())};
 }
 
+Transform3D JoltCollisionObject3D::get_transform_scaled(bool p_lock) const {
+	return get_transform_unscaled(p_lock).scaled_local(scale);
+}
+
 void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) {
-	// NOTE(mihe): We deliberately discard the scale here since Godot doesn't support scaling
-	// physics bodies and emits node warnings when you try to do so, regardless of what physics
-	// server is being used.
-	Math::normalize(p_transform);
+	Vector3 new_scale;
+	Math::normalize(p_transform, new_scale);
+
+	// HACK(mihe): Ideally we would do an exact comparison here, but that would likely mismatch
+	// quite often due to the nature of floating-point numbers. This does mean that the transform we
+	// get back won't necessarily be the same one we set. We could solve this by storing the scale
+	// regardless of approximate equality, but then we run the risk of many small changes creating a
+	// large discrepancy between the transform reported and the one actually used by Jolt.
+	if (!scale.is_equal_approx(new_scale)) {
+		scale = new_scale;
+		rebuild_shape(p_lock);
+	}
 
 	if (space == nullptr) {
 		jolt_settings->mPosition = to_jolt(p_transform.origin);
@@ -147,6 +159,12 @@ Vector3 JoltCollisionObject3D::get_center_of_mass(bool p_lock) const {
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	return to_godot(body->GetCenterOfMassPosition());
+}
+
+Vector3 JoltCollisionObject3D::get_center_of_mass_local(bool p_lock) const {
+	ERR_FAIL_NULL_D(space);
+
+	return get_transform_scaled(p_lock).xform_inv(get_center_of_mass(p_lock));
 }
 
 Vector3 JoltCollisionObject3D::get_linear_velocity(bool p_lock) const {
@@ -201,7 +219,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
 	if (built_shape_count == 1) {
 		result = JoltShape3D::with_transform(
 			last_built_shape->get_jolt_ref(),
-			last_built_shape->get_transform(),
+			last_built_shape->get_transform_unscaled(),
 			last_built_shape->get_scale()
 		);
 	} else {
@@ -215,7 +233,11 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
 			const JoltShapeInstance3D& shape = shapes[shape_index++];
 
 			if (shape.is_enabled() && shape.is_built()) {
-				p_add_shape(shape.get_jolt_ref(), shape.get_transform(), shape.get_scale());
+				p_add_shape(
+					shape.get_jolt_ref(),
+					shape.get_transform_unscaled(),
+					shape.get_scale()
+				);
 			}
 
 			return true;
@@ -224,6 +246,10 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
 
 	if (has_custom_center_of_mass()) {
 		result = JoltShape3D::with_center_of_mass(result, get_center_of_mass_custom());
+	}
+
+	if (scale != Vector3(1.0f, 1.0f, 1.0f)) {
+		result = JoltShape3D::with_scale(result, scale);
 	}
 
 	return result;
@@ -262,10 +288,10 @@ void JoltCollisionObject3D::add_shape(
 	bool p_disabled,
 	bool p_lock
 ) {
-	Vector3 scale;
-	Math::normalize(p_transform, scale);
+	Vector3 shape_scale;
+	Math::normalize(p_transform, shape_scale);
 
-	shapes.emplace_back(this, p_shape, p_transform, scale, p_disabled);
+	shapes.emplace_back(this, p_shape, p_transform, shape_scale, p_disabled);
 
 	rebuild_shape(p_lock);
 }
@@ -328,10 +354,10 @@ JoltShape3D* JoltCollisionObject3D::find_shape(const JPH::SubShapeID& p_sub_shap
 	return shape_index != -1 ? shapes[shape_index].get_shape() : nullptr;
 }
 
-Transform3D JoltCollisionObject3D::get_shape_transform(int32_t p_index) const {
+Transform3D JoltCollisionObject3D::get_shape_transform_unscaled(int32_t p_index) const {
 	ERR_FAIL_INDEX_D(p_index, shapes.size());
 
-	return shapes[p_index].get_transform();
+	return shapes[p_index].get_transform_unscaled();
 }
 
 Transform3D JoltCollisionObject3D::get_shape_transform_scaled(int32_t p_index) const {
@@ -358,7 +384,7 @@ void JoltCollisionObject3D::set_shape_transform(
 
 	JoltShapeInstance3D& shape = shapes[p_index];
 
-	if (shape.get_transform() == p_transform && shape.get_scale() == new_scale) {
+	if (shape.get_transform_unscaled() == p_transform && shape.get_scale() == new_scale) {
 		return;
 	}
 

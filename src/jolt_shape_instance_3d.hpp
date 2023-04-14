@@ -25,7 +25,7 @@ public:
 
 	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
-	const Transform3D& get_transform() const { return transform; }
+	const Transform3D& get_transform_unscaled() const { return transform; }
 
 	Transform3D get_transform_scaled() const { return transform.scaled_local(scale); }
 
