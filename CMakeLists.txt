@@ -16,7 +16,7 @@ include(GodotJoltExternalJolt)
 include(GodotJoltExternalMimalloc)
 
 set(source_dir ${CMAKE_CURRENT_LIST_DIR}/src)
-set(pch_file ${source_dir}/pch.hpp)
+set(pch_file ${source_dir}/precompiled.hpp)
 
 file(GLOB_RECURSE godot-jolt_SOURCES CONFIGURE_DEPENDS ${source_dir}/*.cpp)
 file(GLOB_RECURSE godot-jolt_HEADERS CONFIGURE_DEPENDS ${source_dir}/*.hpp)
