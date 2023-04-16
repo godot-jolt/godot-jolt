@@ -127,6 +127,7 @@ private:
 	bool body_motion_cast(
 		const JoltBody3D& p_body,
 		const Transform3D& p_transform,
+		const Vector3& p_scale,
 		const Vector3& p_motion,
 		bool p_collide_separation_ray,
 		float& p_safe_fraction,

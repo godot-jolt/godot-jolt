@@ -45,7 +45,7 @@ JoltBody3D::~JoltBody3D() {
 Variant JoltBody3D::get_state(PhysicsServer3D::BodyState p_state) {
 	switch (p_state) {
 		case PhysicsServer3D::BODY_STATE_TRANSFORM: {
-			return get_transform();
+			return get_transform_scaled();
 		}
 		case PhysicsServer3D::BODY_STATE_LINEAR_VELOCITY: {
 			return get_linear_velocity();

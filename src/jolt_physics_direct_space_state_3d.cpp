@@ -143,8 +143,8 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 
 	Vector3 scale;
 	const Transform3D transform = Math::normalized(p_transform, scale);
-	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	const Transform3D transform_com = transform.translated_local(center_of_mass);
+	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
+	const Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = (float)p_margin;
@@ -218,8 +218,8 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	Vector3 scale;
 	const Transform3D transform = Math::normalized(p_transform, scale);
-	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = transform.translated_local(center_of_mass);
+	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
+	Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = (float)p_margin;
@@ -271,8 +271,8 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 
 	Vector3 scale;
 	const Transform3D transform = Math::normalized(p_transform, scale);
-	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	const Transform3D transform_com = transform.translated_local(center_of_mass);
+	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
+	const Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = (float)p_margin;
@@ -337,8 +337,8 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 
 	Vector3 scale;
 	const Transform3D transform = Math::normalized(p_transform, scale);
-	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	const Transform3D transform_com = transform.translated_local(center_of_mass);
+	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
+	const Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = (float)p_margin;
@@ -494,10 +494,8 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	p_margin = max(p_margin, 0.0001f);
 	p_max_collisions = min(p_max_collisions, 32);
 
-	// NOTE(mihe): We deliberately discard the scale here since Godot doesn't support scaling
-	// physics bodies and emits node warnings when you try to do so, regardless of what physics
-	// server is being used.
-	Transform3D transform = Math::normalized(p_transform);
+	Vector3 scale;
+	Transform3D transform = Math::normalized(p_transform, scale);
 
 	const Vector3 direction = p_motion.normalized();
 
@@ -512,6 +510,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	const bool hit = body_motion_cast(
 		p_body,
 		transform,
+		scale,
 		p_motion,
 		p_collide_separation_ray,
 		safe_fraction,
@@ -701,14 +700,15 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
-	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	Transform3D transform_com = p_transform.translated_local(center_of_mass);
-	const Vector3& base_offset = transform_com.origin;
+	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
+	Transform3D transform_com = p_transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
 	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
 	settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
 	settings.mMaxSeparationDistance = p_margin;
+
+	const Vector3& base_offset = transform_com.origin;
 
 	const JoltMotionFilter3D motion_filter(p_body);
 
@@ -806,11 +806,14 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 	const JoltBody3D& p_body,
 	const Transform3D& p_transform,
+	const Vector3& p_scale,
 	const Vector3& p_motion,
 	bool p_collide_separation_ray,
 	float& p_safe_fraction,
 	float& p_unsafe_fraction
 ) const {
+	const Transform3D body_transform = p_transform.scaled_local(p_scale);
+
 	const JPH::CollideShapeSettings settings;
 
 	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
@@ -831,18 +834,21 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 		const JPH::ShapeRefC jolt_shape = shape->try_build();
 		ERR_FAIL_NULL_D(jolt_shape);
 
-		const Transform3D& shape_transform = p_body.get_shape_transform(i);
-		const Vector3& shape_scale = p_body.get_shape_scale(i);
-		const Vector3 shape_com = to_godot(jolt_shape->GetCenterOfMass());
-		const Transform3D shape_transform_com = shape_transform.translated_local(shape_com);
+		Vector3 scale;
+
+		const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
+		const Transform3D transform_local = p_body.get_shape_transform_scaled(i);
+		const Transform3D transform_com_local = transform_local.translated_local(com_scaled);
+		const Transform3D transform_com = body_transform * transform_com_local;
+		const Transform3D transform_com_unscaled = Math::normalized(transform_com, scale);
 
 		float shape_safe_fraction = 1.0f;
 		float shape_unsafe_fraction = 1.0f;
 
 		collided |= cast_motion(
 			*jolt_shape,
-			p_transform * shape_transform_com,
-			shape_scale,
+			transform_com_unscaled,
+			scale,
 			p_motion,
 			false,
 			settings,
@@ -872,8 +878,8 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 ) const {
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
-	const Vector3 center_of_mass = to_godot(jolt_shape->GetCenterOfMass());
-	const Transform3D transform_com = p_transform.translated_local(center_of_mass);
+	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
+	const Transform3D transform_com = p_transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
 	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;

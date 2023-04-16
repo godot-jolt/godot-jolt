@@ -31,13 +31,19 @@ JoltPinJoint3D::JoltPinJoint3D(
 	const JoltWritableBody3D jolt_body_b = bodies[1];
 	ERR_FAIL_COND(jolt_body_b.is_invalid());
 
-	const JPH::Shape& jolt_shape_a = *jolt_body_a->GetShape();
-	const JPH::Shape& jolt_shape_b = *jolt_body_b->GetShape();
+	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+	const JoltCollisionObject3D& object_b = *jolt_body_b.as_object();
+
+	const JPH::Vec3 point_scaled_a = to_jolt(local_a * object_a.get_scale());
+	const JPH::Vec3 point_scaled_b = to_jolt(local_b * object_b.get_scale());
+
+	const JPH::Vec3 com_scaled_a = jolt_body_a->GetShape()->GetCenterOfMass();
+	const JPH::Vec3 com_scaled_b = jolt_body_b->GetShape()->GetCenterOfMass();
 
 	JPH::PointConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPoint1 = to_jolt(local_a) - jolt_shape_a.GetCenterOfMass();
-	constraint_settings.mPoint2 = to_jolt(local_b) - jolt_shape_b.GetCenterOfMass();
+	constraint_settings.mPoint1 = point_scaled_a - com_scaled_a;
+	constraint_settings.mPoint2 = point_scaled_b - com_scaled_b;
 
 	jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
 
@@ -57,12 +63,17 @@ JoltPinJoint3D::JoltPinJoint3D(
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	const JPH::Shape& jolt_shape_a = *jolt_body_a->GetShape();
+	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+
+	const JPH::Vec3 point_scaled_a = to_jolt(local_a * object_a.get_scale());
+	const JPH::Vec3 point_scaled_b = to_jolt(local_b);
+
+	const JPH::Vec3 com_scaled_a = jolt_body_a->GetShape()->GetCenterOfMass();
 
 	JPH::PointConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPoint1 = to_jolt(local_a) - jolt_shape_a.GetCenterOfMass();
-	constraint_settings.mPoint2 = to_jolt(local_b);
+	constraint_settings.mPoint1 = point_scaled_a - com_scaled_a;
+	constraint_settings.mPoint2 = point_scaled_b;
 
 	jolt_ref = constraint_settings.Create(*jolt_body_a, JPH::Body::sFixedToWorld);
 
@@ -70,23 +81,27 @@ JoltPinJoint3D::JoltPinJoint3D(
 }
 
 void JoltPinJoint3D::set_local_a(const Vector3& p_local_a, bool p_lock) {
+	local_a = p_local_a;
+
 	auto* jolt_constraint = static_cast<JPH::PointConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
 	const JoltReadableBody3D jolt_body_a = space->read_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	const JPH::Shape& jolt_shape_a = *jolt_body_a->GetShape();
+	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+	const JPH::Vec3 point_scaled_a = to_jolt(local_a * object_a.get_scale());
+	const JPH::Vec3 com_scaled_a = jolt_body_a->GetShape()->GetCenterOfMass();
 
 	jolt_constraint->SetPoint1(
 		JPH::EConstraintSpace::LocalToBodyCOM,
-		to_jolt(p_local_a) - jolt_shape_a.GetCenterOfMass()
+		point_scaled_a - com_scaled_a
 	);
-
-	local_a = p_local_a;
 }
 
 void JoltPinJoint3D::set_local_b(const Vector3& p_local_b, bool p_lock) {
+	local_b = p_local_b;
+
 	auto* jolt_constraint = static_cast<JPH::PointConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
@@ -94,17 +109,17 @@ void JoltPinJoint3D::set_local_b(const Vector3& p_local_b, bool p_lock) {
 		const JoltReadableBody3D jolt_body_b = space->read_body(*body_b, p_lock);
 		ERR_FAIL_COND(jolt_body_b.is_invalid());
 
-		const JPH::Shape& jolt_shape_b = *jolt_body_b->GetShape();
+		const JoltCollisionObject3D& object_b = *jolt_body_b.as_object();
+		const JPH::Vec3 point_scaled_b = to_jolt(local_b * object_b.get_scale());
+		const JPH::Vec3 com_scaled_b = jolt_body_b->GetShape()->GetCenterOfMass();
 
 		jolt_constraint->SetPoint2(
 			JPH::EConstraintSpace::LocalToBodyCOM,
-			to_jolt(p_local_b) - jolt_shape_b.GetCenterOfMass()
+			point_scaled_b - com_scaled_b
 		);
 	} else {
-		jolt_constraint->SetPoint2(JPH::EConstraintSpace::LocalToBodyCOM, to_jolt(p_local_b));
+		jolt_constraint->SetPoint2(JPH::EConstraintSpace::LocalToBodyCOM, to_jolt(local_b));
 	}
-
-	local_b = p_local_b;
 }
 
 double JoltPinJoint3D::get_param(PhysicsServer3D::PinJointParam p_param) {

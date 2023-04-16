@@ -41,15 +41,21 @@ public:
 
 	void set_collision_mask(uint32_t p_mask, bool p_lock = true);
 
-	Transform3D get_transform(bool p_lock = true) const;
+	Transform3D get_transform_unscaled(bool p_lock = true) const;
+
+	Transform3D get_transform_scaled(bool p_lock = true) const;
 
 	void set_transform(Transform3D p_transform, bool p_lock = true);
+
+	Vector3 get_scale() const { return scale; }
 
 	Basis get_basis(bool p_lock = true) const;
 
 	Vector3 get_position(bool p_lock = true) const;
 
 	Vector3 get_center_of_mass(bool p_lock = true) const;
+
+	Vector3 get_center_of_mass_local(bool p_lock = true) const;
 
 	Vector3 get_linear_velocity(bool p_lock = true) const;
 
@@ -92,7 +98,7 @@ public:
 
 	JoltShape3D* find_shape(const JPH::SubShapeID& p_sub_shape_id) const;
 
-	Transform3D get_shape_transform(int32_t p_index) const;
+	Transform3D get_shape_transform_unscaled(int32_t p_index) const;
 
 	Transform3D get_shape_transform_scaled(int32_t p_index) const;
 
@@ -168,6 +174,8 @@ protected:
 	uint32_t collision_layer = 1;
 
 	uint32_t collision_mask = 1;
+
+	Vector3 scale = {1.0f, 1.0f, 1.0f};
 
 	LocalVector<JoltShapeInstance3D> shapes;
 

@@ -33,13 +33,10 @@ JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D(
 	[[maybe_unused]] const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a, p_body_b) {
-	const JPH::BodyID body_ids[] = {body_a->get_jolt_id(), body_b->get_jolt_id()};
-	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, count_of(body_ids), p_lock);
-
-	world_ref = body_a->get_transform(false) * p_local_ref_a;
-
-	rebuild(false);
+	: JoltJoint3D(p_space, p_body_a, p_body_b)
+	, world_ref(body_a->get_transform_scaled(p_lock) * p_local_ref_a) {
+	world_ref.orthonormalize();
+	rebuild(p_lock);
 }
 
 JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D(
@@ -51,10 +48,7 @@ JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D(
 )
 	: JoltJoint3D(p_space, p_body_a)
 	, world_ref(p_local_ref_b) {
-	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
-	ERR_FAIL_COND(jolt_body_a.is_invalid());
-
-	rebuild(false);
+	rebuild(p_lock);
 }
 
 double JoltGeneric6DOFJoint3D::get_param(

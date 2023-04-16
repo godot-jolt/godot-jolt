@@ -34,12 +34,6 @@ JPH::ShapeRefC JoltShape3D::try_build() {
 	return jolt_ref;
 }
 
-Vector3 JoltShape3D::get_center_of_mass() const {
-	ERR_FAIL_NULL_D(jolt_ref);
-
-	return to_godot(jolt_ref->GetCenterOfMass());
-}
-
 JPH::ShapeRefC JoltShape3D::with_scale(const JPH::Shape* p_shape, const Vector3& p_scale) {
 	ERR_FAIL_NULL_D(p_shape);
 

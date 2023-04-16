@@ -29,7 +29,7 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass() const {
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass_local() const {
 	QUIET_FAIL_NULL_D_ED(body);
-	return body->get_transform().xform_inv(body->get_center_of_mass());
+	return body->get_center_of_mass_local();
 }
 
 Basis JoltPhysicsDirectBodyState3D::_get_principal_inertia_axes() const {
@@ -79,7 +79,7 @@ void JoltPhysicsDirectBodyState3D::_set_transform(const Transform3D& p_transform
 
 Transform3D JoltPhysicsDirectBodyState3D::_get_transform() const {
 	QUIET_FAIL_NULL_D_ED(body);
-	return body->get_transform();
+	return body->get_transform_scaled();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_velocity_at_local_position(

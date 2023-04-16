@@ -394,7 +394,7 @@ Transform3D JoltPhysicsServer3D::_area_get_transform(const RID& p_area) const {
 	JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
-	return area->get_transform();
+	return area->get_transform_scaled();
 }
 
 void JoltPhysicsServer3D::_area_set_collision_mask(const RID& p_area, uint32_t p_mask) {
