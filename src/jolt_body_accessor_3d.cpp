@@ -111,6 +111,7 @@ JoltBodyReader3D::JoltBodyReader3D(const JoltSpace3D* p_space)
 	: JoltBodyAccessor3D(p_space) { }
 
 const JPH::Body* JoltBodyReader3D::try_get(const JPH::BodyID& p_id) const {
+	ERR_FAIL_COND_D(p_id.IsInvalid());
 	ERR_FAIL_COND_D(not_acquired());
 	return lock_iface->TryGetBody(p_id);
 }
@@ -138,6 +139,7 @@ JoltBodyWriter3D::JoltBodyWriter3D(const JoltSpace3D* p_space)
 	: JoltBodyAccessor3D(p_space) { }
 
 JPH::Body* JoltBodyWriter3D::try_get(const JPH::BodyID& p_id) const {
+	ERR_FAIL_COND_D(p_id.IsInvalid());
 	ERR_FAIL_COND_D(not_acquired());
 	return lock_iface->TryGetBody(p_id);
 }
