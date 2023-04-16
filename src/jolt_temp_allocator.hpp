@@ -25,9 +25,9 @@ public:
 			ptr = base + top;
 		} else {
 			WARN_PRINT_ONCE(vformat(
-				"Temporary memory allocator exceeded capacity of %d MiB. "
+				"Godot Jolt's temporary memory allocator exceeded capacity of %d MiB. "
 				"Falling back to slower general-purpose allocator. "
-				"Consider increasing maximum temporary memory. ",
+				"Consider increasing maximum temporary memory in project settings.",
 				JoltProjectSettings::get_max_temp_memory_mib()
 			));
 

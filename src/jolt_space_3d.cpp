@@ -67,7 +67,38 @@ void JoltSpace3D::step(float p_step) {
 
 	pre_step(p_step);
 
-	physics_system->Update(p_step, 1, 1, temp_allocator, job_system);
+	switch (physics_system->Update(p_step, 1, 1, temp_allocator, job_system)) {
+		case JPH::EPhysicsUpdateError::None: {
+			// All good!
+		} break;
+
+		case JPH::EPhysicsUpdateError::ManifoldCacheFull: {
+			WARN_PRINT_ONCE(vformat(
+				"Jolt's manifold cache exceeded capacity and contacts were ignored. "
+				"Consider increasing maximum number of contact constraints in project settings. "
+				"Maximum number of contact constraints is currently set to %d.",
+				JoltProjectSettings::get_max_contact_constraints()
+			));
+		} break;
+
+		case JPH::EPhysicsUpdateError::BodyPairCacheFull: {
+			WARN_PRINT_ONCE(vformat(
+				"Jolt's body pair cache exceeded capacity and contacts were ignored. "
+				"Consider increasing maximum number of body pairs in project settings. "
+				"Maximum number of body pairs is currently set to %d.",
+				JoltProjectSettings::get_max_body_pairs()
+			));
+		} break;
+
+		case JPH::EPhysicsUpdateError::ContactConstraintsFull: {
+			WARN_PRINT_ONCE(vformat(
+				"Jolt's contact constraint buffer exceeded capacity and contacts were ignored. "
+				"Consider increasing maximum number of contact constraints in project settings. "
+				"Maximum number of contact constraints is currently set to %d.",
+				JoltProjectSettings::get_max_contact_constraints()
+			));
+		} break;
+	}
 
 	post_step(p_step);
 

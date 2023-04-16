@@ -102,9 +102,8 @@ JPH::JobHandle JoltJobSystem::CreateJob(
 		}
 
 		WARN_PRINT_ONCE(
-			"Job system exceeded maximum number of jobs. "
-			"Waiting for jobs to become available. "
-			"Consider increasing maximum number of jobs."
+			"Godot Jolt's job system exceeded maximum number of jobs. This should not happen. "
+			"Waiting for jobs to become available."
 		);
 
 		OS::get_singleton()->delay_usec(100);

@@ -469,14 +469,15 @@ JPH::Body* JoltCollisionObject3D::create_end() {
 	JPH::BodyInterface& body_iface = space->get_body_iface(false);
 	JPH::Body* body = body_iface.CreateBody(*jolt_settings);
 
-	if (unlikely(body == nullptr)) {
-		CRASH_NOW_MSG(vformat(
+	ERR_FAIL_NULL_D_MSG(
+		body,
+		vformat(
 			"Failed to create Jolt body. "
-			"Consider increasing maximum number of bodies. "
+			"Consider increasing maximum number of bodies in project settings. "
 			"Maximum number of bodies is currently set to %d.",
 			JoltProjectSettings::get_max_bodies()
-		));
-	}
+		)
+	);
 
 	body->SetUserData(reinterpret_cast<JPH::uint64>(this));
 

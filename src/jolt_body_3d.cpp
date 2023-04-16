@@ -988,6 +988,7 @@ void JoltBody3D::create_in_space() {
 	jolt_settings->mMassPropertiesOverride = calculate_mass_properties(*jolt_settings->GetShape());
 
 	JPH::Body* body = create_end();
+	ERR_FAIL_NULL(body);
 
 	// HACK(mihe): Since group filters don't grant us access to user data we are instead forced
 	// abuse the collision group to carry the upper and lower bits of our RID, which we can then
