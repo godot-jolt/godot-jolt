@@ -630,18 +630,18 @@ TypedArray<RID> JoltBody3D::get_collision_exceptions(bool p_lock) const {
 	return result;
 }
 
-void JoltBody3D::add_area(JoltArea3D* p_area) {
+void JoltBody3D::add_area(JoltArea3D* p_area, bool p_lock) {
 	areas.ordered_insert(p_area, [](JoltArea3D* p_lhs, JoltArea3D* p_rhs) {
 		return p_lhs->get_priority() > p_rhs->get_priority();
 	});
 
-	areas_changed();
+	areas_changed(p_lock);
 }
 
-void JoltBody3D::remove_area(JoltArea3D* p_area) {
+void JoltBody3D::remove_area(JoltArea3D* p_area, bool p_lock) {
 	areas.erase(p_area);
 
-	areas_changed();
+	areas_changed(p_lock);
 }
 
 void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
