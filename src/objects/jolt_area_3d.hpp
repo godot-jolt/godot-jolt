@@ -169,11 +169,11 @@ private:
 
 	void force_bodies_entered();
 
-	void force_bodies_exited();
+	void force_bodies_exited(bool p_remove);
 
 	void force_areas_entered();
 
-	void force_areas_exited();
+	void force_areas_exited(bool p_remove);
 
 	void add_shape_pair(
 		Overlap& p_overlap,
@@ -198,6 +198,10 @@ private:
 		int32_t p_other_shape_index,
 		int32_t p_self_shape_index
 	) const;
+
+	void notify_body_entered(const JPH::BodyID& p_body_id, bool p_lock = true);
+
+	void notify_body_exited(const JPH::BodyID& p_body_id, bool p_lock = true);
 
 	bool monitorable = false;
 

@@ -142,9 +142,9 @@ public:
 
 	TypedArray<RID> get_collision_exceptions(bool p_lock = true) const;
 
-	void add_area(JoltArea3D* p_area);
+	void add_area(JoltArea3D* p_area, bool p_lock = true);
 
-	void remove_area(JoltArea3D* p_area);
+	void remove_area(JoltArea3D* p_area, bool p_lock = true);
 
 	void integrate_forces(float p_step, bool p_lock = true);
 

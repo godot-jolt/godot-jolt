@@ -193,11 +193,7 @@ void JoltArea3D::body_shape_entered(
 	Overlap& overlap = bodies_by_id[p_body_id];
 
 	if (overlap.shape_pairs.size() == 0) {
-		const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
-		JoltBody3D* body = jolt_body.as_body();
-		ERR_FAIL_NULL(body);
-
-		body->add_area(this);
+		notify_body_entered(p_body_id, false);
 	}
 
 	add_shape_pair(overlap, p_body_id, p_other_shape_id, p_self_shape_id);
@@ -219,12 +215,7 @@ bool JoltArea3D::body_shape_exited(
 	}
 
 	if (overlap->shape_pairs.size() == 0) {
-		const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
-		JoltBody3D* body = jolt_body.as_body();
-
-		if (body != nullptr) {
-			body->remove_area(this);
-		}
+		notify_body_exited(p_body_id, false);
 	}
 
 	return true;
@@ -272,8 +263,8 @@ void JoltArea3D::space_changing([[maybe_unused]] bool p_lock) {
 		// move between (or out of) spaces, but because our Jolt body is going to be destroyed when
 		// we leave this space the contact listener won't be able to retrieve the corresponding area
 		// and as such cannot report any exits, so we're forced to do it manually instead.
-		force_bodies_exited();
-		force_areas_exited();
+		force_bodies_exited(true);
+		force_areas_exited(true);
 	}
 }
 
@@ -281,7 +272,7 @@ void JoltArea3D::body_monitoring_changed() {
 	if (has_body_monitor_callback()) {
 		force_bodies_entered();
 	} else {
-		force_bodies_exited();
+		force_bodies_exited(false);
 	}
 }
 
@@ -289,7 +280,7 @@ void JoltArea3D::area_monitoring_changed() {
 	if (has_area_monitor_callback()) {
 		force_areas_entered();
 	} else {
-		force_areas_exited();
+		force_areas_exited(false);
 	}
 }
 
@@ -305,10 +296,15 @@ void JoltArea3D::force_bodies_entered() {
 	}
 }
 
-void JoltArea3D::force_bodies_exited() {
+void JoltArea3D::force_bodies_exited(bool p_remove) {
 	for (auto& [id, body] : bodies_by_id) {
 		for (const auto& [id_pair, index_pair] : body.shape_pairs) {
 			body.pending_removed.push_back(index_pair);
+		}
+
+		if (p_remove) {
+			body.shape_pairs.clear();
+			notify_body_exited(id);
 		}
 	}
 }
@@ -321,10 +317,14 @@ void JoltArea3D::force_areas_entered() {
 	}
 }
 
-void JoltArea3D::force_areas_exited() {
+void JoltArea3D::force_areas_exited(bool p_remove) {
 	for (auto& [id, area] : areas_by_id) {
 		for (const auto& [id_pair, index_pair] : area.shape_pairs) {
 			area.pending_removed.push_back(index_pair);
+		}
+
+		if (p_remove) {
+			area.shape_pairs.clear();
 		}
 	}
 }
@@ -425,6 +425,24 @@ void JoltArea3D::report_event(
 	arguments[4] = p_self_shape_index;
 
 	p_callback.callv(arguments);
+}
+
+void JoltArea3D::notify_body_entered(const JPH::BodyID& p_body_id, bool p_lock) {
+	const JoltReadableBody3D jolt_body = space->read_body(p_body_id, p_lock);
+
+	JoltBody3D* body = jolt_body.as_body();
+	QUIET_FAIL_NULL(body);
+
+	body->add_area(this, false);
+}
+
+void JoltArea3D::notify_body_exited(const JPH::BodyID& p_body_id, bool p_lock) {
+	const JoltReadableBody3D jolt_body = space->read_body(p_body_id, p_lock);
+
+	JoltBody3D* body = jolt_body.as_body();
+	QUIET_FAIL_NULL(body);
+
+	body->remove_area(this, false);
 }
 
 void JoltArea3D::create_in_space() {
