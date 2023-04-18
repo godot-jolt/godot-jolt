@@ -612,6 +612,11 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::build() const {
 	const int32_t face_count = vertex_count / 3;
 	const int32_t excess_vertex_count = vertex_count % 3;
 
+	// HACK(mihe): We can't emit an error for a vertex count of 0 because of things like CSGShape3D
+	// which has its proper initialization deferred, leading to errors being emitted for every
+	// single one that's created
+	QUIET_FAIL_COND_D(vertex_count == 0);
+
 	ERR_FAIL_COND_D_MSG(
 		vertex_count < 3,
 		vformat(
