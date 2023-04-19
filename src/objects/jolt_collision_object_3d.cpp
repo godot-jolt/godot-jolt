@@ -466,8 +466,7 @@ JPH::Body* JoltCollisionObject3D::create_end() {
 		delete_safely(jolt_settings);
 	};
 
-	JPH::BodyInterface& body_iface = space->get_body_iface(false);
-	JPH::Body* body = body_iface.CreateBody(*jolt_settings);
+	JPH::Body* body = space->get_body_iface(false).CreateBody(*jolt_settings);
 
 	ERR_FAIL_NULL_D_MSG(
 		body,
