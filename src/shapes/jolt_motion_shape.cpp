@@ -30,10 +30,8 @@ private:
 
 JPH::AABox JoltMotionShape::GetLocalBounds() const {
 	JPH::AABox aabb = inner_shape.GetLocalBounds();
-
 	JPH::AABox aabb_translated = aabb;
 	aabb_translated.Translate(motion);
-
 	aabb.Encapsulate(aabb_translated);
 
 	return aabb;
