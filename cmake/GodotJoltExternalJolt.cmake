@@ -25,7 +25,7 @@ set(dev_definitions
 	JPH_DEBUG_RENDERER
 )
 
-GodotJoltExternalLibrary_Add(jolt "${configurations}"
+gdjolt_add_external_library(jolt "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/jolt.git
 	GIT_COMMIT 3d36f7aea85fcea4b0de5404c953e40db0a749ba
 	LANGUAGE CXX

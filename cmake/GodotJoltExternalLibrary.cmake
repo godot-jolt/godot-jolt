@@ -3,7 +3,7 @@ include_guard()
 include(ExternalProject)
 include(GodotJoltUtilities)
 
-function(GodotJoltExternalLibrary_Add library_name library_configs)
+function(gdjolt_add_external_library library_name library_configs)
 	# Declare our initial arguments
 
 	set(one_value_args
