@@ -13,9 +13,9 @@ public:
 		JPH::CollisionGroup::SubGroupID p_sub_group_id
 	);
 
-	void add_exception(const RID& p_exception) { exceptions.push_back(p_exception); }
+	void add_exception(const RID& p_exception) const { exceptions.push_back(p_exception); }
 
-	void remove_exception(const RID& p_exception) { exceptions.erase(p_exception); }
+	void remove_exception(const RID& p_exception) const { exceptions.erase(p_exception); }
 
 	bool has_exception(const RID& p_exception) const { return exceptions.find(p_exception) >= 0; }
 
@@ -27,5 +27,5 @@ private:
 	bool CanCollide(const JPH::CollisionGroup& p_first, const JPH::CollisionGroup& p_second)
 		const override;
 
-	InlineVector<RID, 1> exceptions;
+	mutable InlineVector<RID, 1> exceptions;
 };

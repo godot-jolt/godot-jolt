@@ -561,9 +561,8 @@ void JoltBody3D::add_collision_exception(const RID& p_excepted_body, bool p_lock
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-	auto* group_filter = const_cast<JoltGroupFilterRID*>(
-		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter())
+	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
+		body->GetCollisionGroup().GetGroupFilter()
 	);
 
 	if (group_filter == nullptr) {
@@ -578,9 +577,8 @@ void JoltBody3D::remove_collision_exception(const RID& p_excepted_body, bool p_l
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-	auto* group_filter = const_cast<JoltGroupFilterRID*>(
-		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter())
+	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
+		body->GetCollisionGroup().GetGroupFilter()
 	);
 
 	if (group_filter == nullptr) {
