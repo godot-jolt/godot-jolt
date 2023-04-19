@@ -650,7 +650,7 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 
 	gravity = Vector3();
 
-	const Vector3 position = get_position(false);
+	const Vector3 position = to_godot(jolt_body->GetPosition());
 
 	bool gravity_done = false;
 
