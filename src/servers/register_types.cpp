@@ -17,7 +17,7 @@ void on_initialize(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_SERVERS: {
-			initialize_jolt_hooks();
+			jolt_initialize();
 
 			ClassDB::register_class<JoltPhysicsDirectBodyState3D>();
 			ClassDB::register_class<JoltPhysicsDirectSpaceState3D>();
@@ -47,7 +47,8 @@ void on_terminate(ModuleInitializationLevel p_level) {
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_SERVERS: {
 			memdelete_safely(server_factory);
-			deinitialize_jolt_hooks();
+
+			jolt_deinitialize();
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
 		} break;
