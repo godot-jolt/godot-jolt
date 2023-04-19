@@ -47,6 +47,7 @@ public:
 
 	_FORCE_INLINE_ void erase(const TElement& p_value) {
 		auto new_end = std::remove(begin(), end(), p_value);
+
 		if (new_end != end()) {
 			impl.erase(new_end, end());
 		}
