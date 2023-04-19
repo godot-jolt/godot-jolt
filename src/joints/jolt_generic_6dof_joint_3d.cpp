@@ -5,23 +5,23 @@
 
 namespace {
 
-constexpr double GDJOLT_G6DOF_LIN_LIMIT_SOFTNESS = 0.7;
-constexpr double GDJOLT_G6DOF_LIN_RESTITUTION = 0.5;
-constexpr double GDJOLT_G6DOF_LIN_DAMPING = 1.0;
+constexpr double DEFAULT_LINEAR_LIMIT_SOFTNESS = 0.7;
+constexpr double DEFAULT_LINEAR_RESTITUTION = 0.5;
+constexpr double DEFAULT_LINEAR_DAMPING = 1.0;
 
-constexpr double GDJOLT_G6DOF_LIN_SPRING_STIFFNESS = 0.01;
-constexpr double GDJOLT_G6DOF_LIN_SPRING_DAMPING = 0.01;
-constexpr double GDJOLT_G6DOF_LIN_SPRING_EQUILIBRIUM_POINT = 0.0;
+constexpr double DEFAULT_LINEAR_SPRING_STIFFNESS = 0.01;
+constexpr double DEFAULT_LINEAR_SPRING_DAMPING = 0.01;
+constexpr double DEFAULT_LINEAR_SPRING_EQUILIBRIUM_POINT = 0.0;
 
-constexpr double GDJOLT_G6DOF_ANG_LIMIT_SOFTNESS = 0.5;
-constexpr double GDJOLT_G6DOF_ANG_DAMPING = 1.0;
-constexpr double GDJOLT_G6DOF_ANG_RESTITUTION = 0.0;
-constexpr double GDJOLT_G6DOF_ANG_FORCE_LIMIT = 0.0;
-constexpr double GDJOLT_G6DOF_ANG_ERP = 0.5;
+constexpr double DEFAULT_ANGULAR_LIMIT_SOFTNESS = 0.5;
+constexpr double DEFAULT_ANGULAR_DAMPING = 1.0;
+constexpr double DEFAULT_ANGULAR_RESTITUTION = 0.0;
+constexpr double DEFAULT_ANGULAR_FORCE_LIMIT = 0.0;
+constexpr double DEFAULT_ANGULAR_ERP = 0.5;
 
-constexpr double GDJOLT_G6DOF_ANG_SPRING_STIFFNESS = 0.0;
-constexpr double GDJOLT_G6DOF_ANG_SPRING_DAMPING = 0.0;
-constexpr double GDJOLT_G6DOF_ANG_SPRING_EQUILIBRIUM_POINT = 0.0;
+constexpr double DEFAULT_ANGULAR_SPRING_STIFFNESS = 0.0;
+constexpr double DEFAULT_ANGULAR_SPRING_DAMPING = 0.0;
+constexpr double DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT = 0.0;
 
 } // namespace
 
@@ -66,13 +66,13 @@ double JoltGeneric6DOFJoint3D::get_param(
 			return limit_upper[axis_lin];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SOFTNESS: {
-			return GDJOLT_G6DOF_LIN_LIMIT_SOFTNESS;
+			return DEFAULT_LINEAR_LIMIT_SOFTNESS;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_RESTITUTION: {
-			return GDJOLT_G6DOF_LIN_RESTITUTION;
+			return DEFAULT_LINEAR_RESTITUTION;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_DAMPING: {
-			return GDJOLT_G6DOF_LIN_DAMPING;
+			return DEFAULT_LINEAR_DAMPING;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_MOTOR_TARGET_VELOCITY: {
 			return motor_velocity[axis_lin];
@@ -81,13 +81,13 @@ double JoltGeneric6DOFJoint3D::get_param(
 			return motor_limit[axis_lin];
 		}
 		case 7: /* G6DOF_JOINT_LINEAR_SPRING_STIFFNESS */ {
-			return GDJOLT_G6DOF_LIN_SPRING_STIFFNESS;
+			return DEFAULT_LINEAR_SPRING_STIFFNESS;
 		}
 		case 8: /* G6DOF_JOINT_LINEAR_SPRING_DAMPING */ {
-			return GDJOLT_G6DOF_LIN_SPRING_DAMPING;
+			return DEFAULT_LINEAR_SPRING_DAMPING;
 		}
 		case 9: /* G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT */ {
-			return GDJOLT_G6DOF_LIN_SPRING_EQUILIBRIUM_POINT;
+			return DEFAULT_LINEAR_SPRING_EQUILIBRIUM_POINT;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LOWER_LIMIT: {
 			return limit_lower[axis_ang];
@@ -96,19 +96,19 @@ double JoltGeneric6DOFJoint3D::get_param(
 			return limit_upper[axis_ang];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LIMIT_SOFTNESS: {
-			return GDJOLT_G6DOF_ANG_LIMIT_SOFTNESS;
+			return DEFAULT_ANGULAR_LIMIT_SOFTNESS;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_DAMPING: {
-			return GDJOLT_G6DOF_ANG_DAMPING;
+			return DEFAULT_ANGULAR_DAMPING;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_RESTITUTION: {
-			return GDJOLT_G6DOF_ANG_RESTITUTION;
+			return DEFAULT_ANGULAR_RESTITUTION;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_FORCE_LIMIT: {
-			return GDJOLT_G6DOF_ANG_FORCE_LIMIT;
+			return DEFAULT_ANGULAR_FORCE_LIMIT;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_ERP: {
-			return GDJOLT_G6DOF_ANG_ERP;
+			return DEFAULT_ANGULAR_ERP;
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_TARGET_VELOCITY: {
 			return motor_velocity[axis_ang];
@@ -117,13 +117,13 @@ double JoltGeneric6DOFJoint3D::get_param(
 			return motor_limit[axis_ang];
 		}
 		case 19: /* G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS */ {
-			return GDJOLT_G6DOF_ANG_SPRING_STIFFNESS;
+			return DEFAULT_ANGULAR_SPRING_STIFFNESS;
 		}
 		case 20: /* G6DOF_JOINT_ANGULAR_SPRING_DAMPING */ {
-			return GDJOLT_G6DOF_ANG_SPRING_DAMPING;
+			return DEFAULT_ANGULAR_SPRING_DAMPING;
 		}
 		case 21: /* G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT */ {
-			return GDJOLT_G6DOF_ANG_SPRING_EQUILIBRIUM_POINT;
+			return DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT;
 		}
 		default: {
 			ERR_FAIL_D_MSG(vformat("Unhandled 6DOF joint parameter: '%d'", p_param));
@@ -153,7 +153,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SOFTNESS: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_LIMIT_SOFTNESS)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_LIMIT_SOFTNESS)) {
 				WARN_PRINT(
 					"Generic 6DOF joint linear limit softness is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -161,7 +161,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_RESTITUTION: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_RESTITUTION)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_RESTITUTION)) {
 				WARN_PRINT(
 					"Generic 6DOF joint linear restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -169,7 +169,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_DAMPING: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_DAMPING)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_DAMPING)) {
 				WARN_PRINT(
 					"Generic 6DOF joint linear damping is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -191,7 +191,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			jolt_constraint->GetMotorSettings((JoltAxis)axis_lin).SetForceLimit((float)p_value);
 		} break;
 		case 7: /* G6DOF_JOINT_LINEAR_SPRING_STIFFNESS */ {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_SPRING_STIFFNESS)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_STIFFNESS)) {
 				WARN_PRINT(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -199,7 +199,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case 8: /* G6DOF_JOINT_LINEAR_SPRING_DAMPING */ {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_SPRING_DAMPING)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_DAMPING)) {
 				WARN_PRINT(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -207,7 +207,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case 9: /* G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT */ {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_LIN_SPRING_EQUILIBRIUM_POINT)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_EQUILIBRIUM_POINT)) {
 				WARN_PRINT(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -223,7 +223,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LIMIT_SOFTNESS: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_LIMIT_SOFTNESS)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_LIMIT_SOFTNESS)) {
 				WARN_PRINT(
 					"Generic 6DOF joint angular limit softness is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -231,7 +231,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_DAMPING: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_DAMPING)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_DAMPING)) {
 				WARN_PRINT(
 					"Generic 6DOF joint angular damping is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -239,7 +239,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_RESTITUTION: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_RESTITUTION)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_RESTITUTION)) {
 				WARN_PRINT(
 					"Generic 6DOF joint angular restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -247,7 +247,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_FORCE_LIMIT: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_FORCE_LIMIT)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_FORCE_LIMIT)) {
 				WARN_PRINT(
 					"Generic 6DOF angular force limit is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -255,7 +255,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_ERP: {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_ERP)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_ERP)) {
 				WARN_PRINT(
 					"Generic 6DOF angular ERP is not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -277,7 +277,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			jolt_constraint->GetMotorSettings((JoltAxis)axis_ang).SetTorqueLimit((float)p_value);
 		} break;
 		case 19: /* G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS */ {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_SPRING_STIFFNESS)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_STIFFNESS)) {
 				WARN_PRINT(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -285,7 +285,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case 20: /* G6DOF_JOINT_ANGULAR_SPRING_DAMPING */ {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_SPRING_DAMPING)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_DAMPING)) {
 				WARN_PRINT(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."
@@ -293,7 +293,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 			}
 		} break;
 		case 21: /* G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT */ {
-			if (!Math::is_equal_approx(p_value, GDJOLT_G6DOF_ANG_SPRING_EQUILIBRIUM_POINT)) {
+			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT)) {
 				WARN_PRINT(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored."

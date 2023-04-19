@@ -5,7 +5,7 @@
 
 namespace {
 
-constexpr int32_t GDJOLT_JOINT_DEFAULT_SOLVER_PRIORITY = 1;
+constexpr int32_t DEFAULT_SOLVER_PRIORITY = 1;
 
 } // namespace
 
@@ -21,11 +21,11 @@ JoltJoint3D::~JoltJoint3D() {
 }
 
 int32_t JoltJoint3D::get_solver_priority() const {
-	return GDJOLT_JOINT_DEFAULT_SOLVER_PRIORITY;
+	return DEFAULT_SOLVER_PRIORITY;
 }
 
 void JoltJoint3D::set_solver_priority(int32_t p_priority) {
-	if (p_priority != GDJOLT_JOINT_DEFAULT_SOLVER_PRIORITY) {
+	if (p_priority != DEFAULT_SOLVER_PRIORITY) {
 		WARN_PRINT(
 			"Joint solver priority is not supported by Godot Jolt. "
 			"Any such value will be ignored."
