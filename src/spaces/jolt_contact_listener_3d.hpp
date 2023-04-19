@@ -3,7 +3,7 @@
 class JoltCollisionObject3D;
 class JoltSpace3D;
 
-class JoltContactListener final : public JPH::ContactListener {
+class JoltContactListener3D final : public JPH::ContactListener {
 	using Mutex = std::mutex;
 
 	using MutexLock = std::unique_lock<Mutex>;
@@ -53,7 +53,7 @@ class JoltContactListener final : public JPH::ContactListener {
 	using ManifoldsByShapePair = HashMap<JPH::SubShapeIDPair, Manifold, ShapePairHasher>;
 
 public:
-	explicit JoltContactListener(JoltSpace3D* p_space)
+	explicit JoltContactListener3D(JoltSpace3D* p_space)
 		: space(p_space) { }
 
 	void listen_for(JoltCollisionObject3D* p_object);
