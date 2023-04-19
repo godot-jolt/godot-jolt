@@ -432,7 +432,7 @@ void JoltCollisionObject3D::remove_from_space(bool p_lock) {
 void JoltCollisionObject3D::destroy_in_space(bool p_lock) {
 	space->get_body_iface(p_lock).DestroyBody(jolt_id);
 
-	set_jolt_id({});
+	jolt_id = {};
 }
 
 void JoltCollisionObject3D::pre_step([[maybe_unused]] float p_step) { }
@@ -480,7 +480,7 @@ JPH::Body* JoltCollisionObject3D::create_end() {
 
 	body->SetUserData(reinterpret_cast<JPH::uint64>(this));
 
-	set_jolt_id(body->GetID());
+	jolt_id = body->GetID();
 
 	return body;
 }

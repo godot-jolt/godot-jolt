@@ -21,8 +21,6 @@ public:
 
 	JPH::BodyID get_jolt_id() const { return jolt_id; }
 
-	void set_jolt_id(JPH::BodyID p_jolt_id) { jolt_id = p_jolt_id; }
-
 	GodotObject* get_instance() const;
 
 	Object* get_instance_unsafe() const;
