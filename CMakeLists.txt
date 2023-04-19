@@ -6,7 +6,6 @@ include(GodotJoltPrelude)
 
 project(godot-jolt
 	VERSION 0.1.0
-	DESCRIPTION "Godot Engine extension that integrates Jolt Physics."
 	LANGUAGES CXX
 )
 
