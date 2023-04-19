@@ -149,15 +149,11 @@ public:
 	bool is_invalid() const { return body == nullptr; }
 
 	JoltCollisionObject3D* as_object() const {
-		if (body != nullptr) {
-			return reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
-		} else {
-			return nullptr;
-		}
+		return reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
 	}
 
 	JoltBody3D* as_body() const {
-		if (body != nullptr && !body->IsSensor()) {
+		if (!body->IsSensor()) {
 			return reinterpret_cast<JoltBody3D*>(body->GetUserData());
 		} else {
 			return nullptr;
@@ -165,7 +161,7 @@ public:
 	}
 
 	JoltArea3D* as_area() const {
-		if (body != nullptr && body->IsSensor()) {
+		if (body->IsSensor()) {
 			return reinterpret_cast<JoltArea3D*>(body->GetUserData());
 		} else {
 			return nullptr;
