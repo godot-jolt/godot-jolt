@@ -48,7 +48,7 @@ bool jolt_assert(const char* p_expr, const char* p_msg, const char* p_file, uint
 
 #endif // JPH_ENABLE_ASSERTS
 
-void initialize_jolt_hooks() {
+void jolt_initialize() {
 	JPH::Allocate = &jolt_alloc;
 	JPH::Free = &jolt_free;
 	JPH::AlignedAllocate = &jolt_aligned_alloc;
@@ -56,7 +56,9 @@ void initialize_jolt_hooks() {
 
 	JPH::Trace = &jolt_trace;
 
-	JPH_IF_ENABLE_ASSERTS(JPH::AssertFailed = jolt_assert;)
+#ifdef JPH_ENABLE_ASSERTS
+	JPH::AssertFailed = jolt_assert;
+#endif // JPH_ENABLE_ASSERTS
 
 	JPH::Factory::sInstance = new JPH::Factory();
 
@@ -67,7 +69,7 @@ void initialize_jolt_hooks() {
 	JoltOverrideUserDataShape::register_type();
 }
 
-void deinitialize_jolt_hooks() {
+void jolt_deinitialize() {
 	JPH::UnregisterTypes();
 
 	delete_safely(JPH::Factory::sInstance);

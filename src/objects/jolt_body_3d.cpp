@@ -339,7 +339,7 @@ void JoltBody3D::set_center_of_mass_custom(const Vector3& p_center_of_mass, bool
 	custom_center_of_mass = true;
 	center_of_mass_custom = p_center_of_mass;
 
-	rebuild_shape(p_lock);
+	build_shape(p_lock);
 }
 
 void JoltBody3D::add_contact(
@@ -561,9 +561,8 @@ void JoltBody3D::add_collision_exception(const RID& p_excepted_body, bool p_lock
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-	auto* group_filter = const_cast<JoltGroupFilterRID*>(
-		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter())
+	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
+		body->GetCollisionGroup().GetGroupFilter()
 	);
 
 	if (group_filter == nullptr) {
@@ -578,9 +577,8 @@ void JoltBody3D::remove_collision_exception(const RID& p_excepted_body, bool p_l
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-	auto* group_filter = const_cast<JoltGroupFilterRID*>(
-		static_cast<const JoltGroupFilterRID*>(body->GetCollisionGroup().GetGroupFilter())
+	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
+		body->GetCollisionGroup().GetGroupFilter()
 	);
 
 	if (group_filter == nullptr) {
@@ -650,7 +648,7 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 
 	gravity = Vector3();
 
-	const Vector3 position = get_position(false);
+	const Vector3 position = to_godot(jolt_body->GetPosition());
 
 	bool gravity_done = false;
 
@@ -770,8 +768,8 @@ bool JoltBody3D::is_ccd_enabled(bool p_lock) const {
 	return body_iface.GetMotionQuality(jolt_id) == JPH::EMotionQuality::LinearCast;
 }
 
-void JoltBody3D::set_ccd_enabled(bool p_enable, bool p_lock) {
-	const JPH::EMotionQuality motion_quality = p_enable
+void JoltBody3D::set_ccd_enabled(bool p_enabled, bool p_lock) {
+	const JPH::EMotionQuality motion_quality = p_enabled
 		? JPH::EMotionQuality::LinearCast
 		: JPH::EMotionQuality::Discrete;
 
@@ -1161,7 +1159,7 @@ void JoltBody3D::mode_changed(bool p_lock) {
 	wake_up(p_lock);
 }
 
-void JoltBody3D::shapes_changed(bool p_lock) {
+void JoltBody3D::shapes_built(bool p_lock) {
 	update_mass_properties(p_lock);
 	wake_up(p_lock);
 }

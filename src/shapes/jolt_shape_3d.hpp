@@ -32,6 +32,8 @@ public:
 
 	JPH::ShapeRefC try_build();
 
+	void destroy() { jolt_ref = nullptr; }
+
 	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
 	static JPH::ShapeRefC with_scale(const JPH::Shape* p_shape, const Vector3& p_scale);
@@ -66,7 +68,7 @@ public:
 protected:
 	virtual JPH::ShapeRefC build() const = 0;
 
-	virtual void rebuild(bool p_lock = true);
+	virtual void invalidated(bool p_lock = true);
 
 	RID rid;
 

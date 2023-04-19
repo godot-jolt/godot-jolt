@@ -25,7 +25,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	: job_system(p_job_system)
 	, temp_allocator(new JoltTempAllocator())
 	, layer_mapper(new JoltLayerMapper())
-	, contact_listener(new JoltContactListener(this))
+	, contact_listener(new JoltContactListener3D(this))
 	, physics_system(new JPH::PhysicsSystem())
 	, body_accessor(this) {
 	physics_system->Init(

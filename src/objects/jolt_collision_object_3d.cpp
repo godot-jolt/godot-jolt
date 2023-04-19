@@ -101,7 +101,7 @@ Transform3D JoltCollisionObject3D::get_transform_scaled(bool p_lock) const {
 
 void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) {
 	Vector3 new_scale;
-	Math::normalize(p_transform, new_scale);
+	Math::decompose(p_transform, new_scale);
 
 	// HACK(mihe): Ideally we would do an exact comparison here, but that would likely mismatch
 	// quite often due to the nature of floating-point numbers. This does mean that the transform we
@@ -110,7 +110,7 @@ void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) 
 	// large discrepancy between the transform reported and the one actually used by Jolt.
 	if (!scale.is_equal_approx(new_scale)) {
 		scale = new_scale;
-		rebuild_shape(p_lock);
+		shapes_changed(p_lock);
 	}
 
 	if (space == nullptr) {
@@ -255,9 +255,9 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
 	return result;
 }
 
-void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
+void JoltCollisionObject3D::build_shape(bool p_lock) {
 	if (space == nullptr) {
-		shapes_changed(p_lock);
+		shapes_built(p_lock);
 		return;
 	}
 
@@ -279,7 +279,7 @@ void JoltCollisionObject3D::rebuild_shape(bool p_lock) {
 	space->get_body_iface(false)
 		.SetShape(jolt_id, jolt_shape, false, JPH::EActivation::DontActivate);
 
-	shapes_changed(false);
+	shapes_built(false);
 }
 
 void JoltCollisionObject3D::add_shape(
@@ -289,11 +289,11 @@ void JoltCollisionObject3D::add_shape(
 	bool p_lock
 ) {
 	Vector3 shape_scale;
-	Math::normalize(p_transform, shape_scale);
+	Math::decompose(p_transform, shape_scale);
 
 	shapes.emplace_back(this, p_shape, p_transform, shape_scale, p_disabled);
 
-	rebuild_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
@@ -301,7 +301,7 @@ void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
 		return p_instance.get_shape() == p_shape;
 	});
 
-	rebuild_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
@@ -309,7 +309,7 @@ void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
 
 	shapes.remove_at(p_index);
 
-	rebuild_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 JoltShape3D* JoltCollisionObject3D::get_shape(int32_t p_index) const {
@@ -323,13 +323,13 @@ void JoltCollisionObject3D::set_shape(int32_t p_index, JoltShape3D* p_shape, boo
 
 	shapes[p_index] = JoltShapeInstance3D(this, p_shape);
 
-	rebuild_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 void JoltCollisionObject3D::clear_shapes(bool p_lock) {
 	shapes.clear();
 
-	rebuild_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 int32_t JoltCollisionObject3D::find_shape_index(uint32_t p_shape_instance_id) const {
@@ -380,7 +380,7 @@ void JoltCollisionObject3D::set_shape_transform(
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	Vector3 new_scale;
-	Math::normalize(p_transform, new_scale);
+	Math::decompose(p_transform, new_scale);
 
 	JoltShapeInstance3D& shape = shapes[p_index];
 
@@ -391,7 +391,7 @@ void JoltCollisionObject3D::set_shape_transform(
 	shape.set_transform(p_transform);
 	shape.set_scale(new_scale);
 
-	rebuild_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 bool JoltCollisionObject3D::is_shape_disabled(int32_t p_index) const {
@@ -415,7 +415,7 @@ void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled,
 		shape.enable();
 	}
 
-	rebuild_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 void JoltCollisionObject3D::add_to_space(bool p_lock) {
@@ -432,7 +432,7 @@ void JoltCollisionObject3D::remove_from_space(bool p_lock) {
 void JoltCollisionObject3D::destroy_in_space(bool p_lock) {
 	space->get_body_iface(p_lock).DestroyBody(jolt_id);
 
-	set_jolt_id({});
+	jolt_id = {};
 }
 
 void JoltCollisionObject3D::pre_step([[maybe_unused]] float p_step) { }
@@ -466,8 +466,7 @@ JPH::Body* JoltCollisionObject3D::create_end() {
 		delete_safely(jolt_settings);
 	};
 
-	JPH::BodyInterface& body_iface = space->get_body_iface(false);
-	JPH::Body* body = body_iface.CreateBody(*jolt_settings);
+	JPH::Body* body = space->get_body_iface(false).CreateBody(*jolt_settings);
 
 	ERR_FAIL_NULL_D_MSG(
 		body,
@@ -481,7 +480,7 @@ JPH::Body* JoltCollisionObject3D::create_end() {
 
 	body->SetUserData(reinterpret_cast<JPH::uint64>(this));
 
-	set_jolt_id(body->GetID());
+	jolt_id = body->GetID();
 
 	return body;
 }
@@ -500,4 +499,8 @@ void JoltCollisionObject3D::collision_layer_changed(bool p_lock) {
 
 void JoltCollisionObject3D::collision_mask_changed(bool p_lock) {
 	update_object_layer(p_lock);
+}
+
+void JoltCollisionObject3D::shapes_changed(bool p_lock) {
+	build_shape(p_lock);
 }

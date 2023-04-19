@@ -75,13 +75,13 @@ public:
 
 private:
 #ifdef JPH_DEBUG_RENDERER
-	JoltDebugRenderer* debug_renderer = nullptr;
+	JoltDebugRenderer3D* debug_renderer = nullptr;
 
 	RID mesh;
 
 	Ref<StandardMaterial3D> default_material;
 
-	JoltDebugRenderer::DrawSettings draw_settings;
+	JoltDebugRenderer3D::DrawSettings draw_settings;
 #endif // JPH_DEBUG_RENDERER
 };
 

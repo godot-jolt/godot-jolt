@@ -170,7 +170,7 @@ public:
 
 	bool is_ccd_enabled(bool p_lock = true) const;
 
-	void set_ccd_enabled(bool p_enable, bool p_lock = true);
+	void set_ccd_enabled(bool p_enabled, bool p_lock = true);
 
 	float get_mass() const { return mass; }
 
@@ -243,7 +243,7 @@ private:
 
 	void mode_changed(bool p_lock = true);
 
-	void shapes_changed(bool p_lock) override;
+	void shapes_built(bool p_lock) override;
 
 	void space_changing(bool p_lock = true) override;
 

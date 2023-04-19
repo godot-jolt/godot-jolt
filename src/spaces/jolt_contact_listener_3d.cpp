@@ -16,11 +16,11 @@ JPH::SubShapeIDPair pair_contact(
 
 } // namespace
 
-void JoltContactListener::listen_for(JoltCollisionObject3D* p_object) {
+void JoltContactListener3D::listen_for(JoltCollisionObject3D* p_object) {
 	listening_for.insert(p_object->get_jolt_id());
 }
 
-void JoltContactListener::pre_step() {
+void JoltContactListener3D::pre_step() {
 	listening_for.clear();
 
 #ifdef DEBUG_ENABLED
@@ -28,14 +28,14 @@ void JoltContactListener::pre_step() {
 #endif // DEBUG_ENABLED
 }
 
-void JoltContactListener::post_step() {
+void JoltContactListener3D::post_step() {
 	flush_contacts();
 	flush_area_shifts();
 	flush_area_exits();
 	flush_area_enters();
 }
 
-void JoltContactListener::OnContactAdded(
+void JoltContactListener3D::OnContactAdded(
 	const JPH::Body& p_body1,
 	const JPH::Body& p_body2,
 	const JPH::ContactManifold& p_manifold,
@@ -61,7 +61,7 @@ void JoltContactListener::OnContactAdded(
 	}
 }
 
-void JoltContactListener::OnContactPersisted(
+void JoltContactListener3D::OnContactPersisted(
 	const JPH::Body& p_body1,
 	const JPH::Body& p_body2,
 	const JPH::ContactManifold& p_manifold,
@@ -82,7 +82,7 @@ void JoltContactListener::OnContactPersisted(
 	update_contacts(p_body1, p_body2, p_manifold, p_settings);
 }
 
-void JoltContactListener::OnContactRemoved(const JPH::SubShapeIDPair& p_shape_pair) {
+void JoltContactListener3D::OnContactRemoved(const JPH::SubShapeIDPair& p_shape_pair) {
 	const MutexLock write_lock(write_mutex);
 
 	if (area_overlaps.erase(p_shape_pair)) {
@@ -92,11 +92,11 @@ void JoltContactListener::OnContactRemoved(const JPH::SubShapeIDPair& p_shape_pa
 	}
 }
 
-bool JoltContactListener::is_listening_for(const JPH::Body& p_body) {
+bool JoltContactListener3D::is_listening_for(const JPH::Body& p_body) {
 	return listening_for.has(p_body.GetID());
 }
 
-void JoltContactListener::update_contacts(
+void JoltContactListener3D::update_contacts(
 	const JPH::Body& p_body1,
 	const JPH::Body& p_body2,
 	const JPH::ContactManifold& p_manifold,
@@ -161,7 +161,7 @@ void JoltContactListener::update_contacts(
 	}
 }
 
-void JoltContactListener::flush_contacts() {
+void JoltContactListener3D::flush_contacts() {
 	for (auto&& [shape_pair, manifold] : manifolds_by_shape_pair) {
 		const JPH::BodyID body_ids[] = {shape_pair.GetBody1ID(), shape_pair.GetBody2ID()};
 
@@ -213,7 +213,7 @@ void JoltContactListener::flush_contacts() {
 	}
 }
 
-void JoltContactListener::flush_area_enters() {
+void JoltContactListener3D::flush_area_enters() {
 	for (const JPH::SubShapeIDPair& shape_pair : area_enters) {
 		const JPH::BodyID& body_id1 = shape_pair.GetBody1ID();
 		const JPH::BodyID& body_id2 = shape_pair.GetBody2ID();
@@ -257,7 +257,7 @@ void JoltContactListener::flush_area_enters() {
 	area_enters.clear();
 }
 
-void JoltContactListener::flush_area_shifts() {
+void JoltContactListener3D::flush_area_shifts() {
 	for (const JPH::SubShapeIDPair& shape_pair : area_overlaps) {
 		auto is_shifted = [&](const JPH::BodyID& p_body_id, const JPH::SubShapeID& p_sub_shape_id) {
 			const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
@@ -286,7 +286,7 @@ void JoltContactListener::flush_area_shifts() {
 	}
 }
 
-void JoltContactListener::flush_area_exits() {
+void JoltContactListener3D::flush_area_exits() {
 	for (const JPH::SubShapeIDPair& shape_pair : area_exits) {
 		const JPH::BodyID& body_id1 = shape_pair.GetBody1ID();
 		const JPH::BodyID& body_id2 = shape_pair.GetBody2ID();
@@ -330,7 +330,7 @@ void JoltContactListener::flush_area_exits() {
 
 #ifdef DEBUG_ENABLED
 
-void JoltContactListener::add_debug_contacts(const JPH::ContactManifold& p_manifold) {
+void JoltContactListener3D::add_debug_contacts(const JPH::ContactManifold& p_manifold) {
 	const int64_t max_count = debug_contacts.size();
 
 	if (max_count == 0) {

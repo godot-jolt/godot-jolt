@@ -4,7 +4,7 @@
 
 class JoltArea3D;
 class JoltCollisionObject3D;
-class JoltContactListener;
+class JoltContactListener3D;
 class JoltJoint3D;
 class JoltLayerMapper;
 class JoltPhysicsDirectSpaceState3D;
@@ -111,7 +111,7 @@ private:
 
 	JoltLayerMapper* layer_mapper = nullptr;
 
-	JoltContactListener* contact_listener = nullptr;
+	JoltContactListener3D* contact_listener = nullptr;
 
 	JPH::PhysicsSystem* physics_system = nullptr;
 

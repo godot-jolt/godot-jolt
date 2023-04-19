@@ -158,9 +158,9 @@ JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p
 	return shape_result.Get();
 }
 
-void JoltShape3D::rebuild(bool p_lock) {
+void JoltShape3D::invalidated(bool p_lock) {
 	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
-		owner->rebuild_shape(p_lock);
+		owner->shapes_changed(p_lock);
 	}
 }
 
@@ -170,10 +170,10 @@ Variant JoltWorldBoundaryShape3D::get_data() const {
 
 void JoltWorldBoundaryShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::PLANE);
 
@@ -196,10 +196,10 @@ Variant JoltSeparationRayShape3D::get_data() const {
 
 void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -251,10 +251,10 @@ Variant JoltSphereShape3D::get_data() const {
 
 void JoltSphereShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::FLOAT);
 
@@ -297,10 +297,10 @@ Variant JoltBoxShape3D::get_data() const {
 
 void JoltBoxShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::VECTOR3);
 
@@ -309,10 +309,10 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 
 void JoltBoxShape3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	margin = p_margin;
 }
@@ -358,10 +358,10 @@ Variant JoltCapsuleShape3D::get_data() const {
 
 void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -437,10 +437,10 @@ Variant JoltCylinderShape3D::get_data() const {
 
 void JoltCylinderShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -458,10 +458,10 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 
 void JoltCylinderShape3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	margin = p_margin;
 }
@@ -513,10 +513,10 @@ Variant JoltConvexPolygonShape3D::get_data() const {
 
 void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 
@@ -525,10 +525,10 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 
 void JoltConvexPolygonShape3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	margin = p_margin;
 }
@@ -584,10 +584,10 @@ Variant JoltConcavePolygonShape3D::get_data() const {
 
 void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -687,10 +687,10 @@ Variant JoltHeightMapShape3D::get_data() const {
 
 void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
