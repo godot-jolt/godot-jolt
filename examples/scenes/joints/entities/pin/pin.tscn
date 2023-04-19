@@ -13,9 +13,6 @@ node_a = NodePath("../Box_Upper")
 
 [node name="Box_Upper" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-mass = 0.1
-linear_damp = 1.0
-angular_damp = 1.0
 
 [node name="Shape" type="CollisionShape3D" parent="Box_Upper"]
 shape = SubResource("BoxShape3D_wm2kd")
@@ -52,9 +49,6 @@ node_b = NodePath("../Box_Lower")
 
 [node name="Box_Lower" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
-mass = 0.1
-linear_damp = 1.0
-angular_damp = 1.0
 
 [node name="Shape" type="CollisionShape3D" parent="Box_Lower"]
 shape = SubResource("BoxShape3D_wm2kd")
