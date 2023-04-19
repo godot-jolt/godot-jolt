@@ -1,6 +1,6 @@
 include_guard()
 
-include(GodotJoltConfigs)
+include(GodotJoltConfigurations)
 include(GodotJoltOptions)
 
 # Set EP_BASE so we get a nicer directory structure for external projects
