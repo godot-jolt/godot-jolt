@@ -34,7 +34,6 @@ jobs:
         uses: ./.github/actions/cmake-configure
         with:
           platform: ${{ matrix.platform }}
-          editor: ${{ matrix.editor }}
 
       - name: Build
         uses: ./.github/actions/cmake-build
