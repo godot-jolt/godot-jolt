@@ -169,11 +169,11 @@ private:
 
 	void force_bodies_entered();
 
-	void force_bodies_exited(bool p_remove);
+	void force_bodies_exited(bool p_remove, bool p_lock = true);
 
 	void force_areas_entered();
 
-	void force_areas_exited(bool p_remove);
+	void force_areas_exited(bool p_remove, bool p_lock = true);
 
 	void add_shape_pair(
 		Overlap& p_overlap,

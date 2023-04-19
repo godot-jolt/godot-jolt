@@ -257,14 +257,14 @@ void JoltArea3D::call_queries() {
 	flush_events(areas_by_id, area_monitor_callback);
 }
 
-void JoltArea3D::space_changing([[maybe_unused]] bool p_lock) {
+void JoltArea3D::space_changing(bool p_lock) {
 	if (space != nullptr) {
 		// HACK(mihe): Ideally we would rely on our contact listener to report all the exits when we
 		// move between (or out of) spaces, but because our Jolt body is going to be destroyed when
 		// we leave this space the contact listener won't be able to retrieve the corresponding area
 		// and as such cannot report any exits, so we're forced to do it manually instead.
-		force_bodies_exited(true);
-		force_areas_exited(true);
+		force_bodies_exited(true, p_lock);
+		force_areas_exited(true, p_lock);
 	}
 }
 
@@ -296,7 +296,7 @@ void JoltArea3D::force_bodies_entered() {
 	}
 }
 
-void JoltArea3D::force_bodies_exited(bool p_remove) {
+void JoltArea3D::force_bodies_exited(bool p_remove, bool p_lock) {
 	for (auto& [id, body] : bodies_by_id) {
 		for (const auto& [id_pair, index_pair] : body.shape_pairs) {
 			body.pending_removed.push_back(index_pair);
@@ -304,7 +304,7 @@ void JoltArea3D::force_bodies_exited(bool p_remove) {
 
 		if (p_remove) {
 			body.shape_pairs.clear();
-			notify_body_exited(id);
+			notify_body_exited(id, p_lock);
 		}
 	}
 }
@@ -317,7 +317,7 @@ void JoltArea3D::force_areas_entered() {
 	}
 }
 
-void JoltArea3D::force_areas_exited(bool p_remove) {
+void JoltArea3D::force_areas_exited(bool p_remove, [[maybe_unused]] bool p_lock) {
 	for (auto& [id, area] : areas_by_id) {
 		for (const auto& [id_pair, index_pair] : area.shape_pairs) {
 			area.pending_removed.push_back(index_pair);
