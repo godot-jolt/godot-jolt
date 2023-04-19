@@ -158,7 +158,7 @@ JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p
 	return shape_result.Get();
 }
 
-void JoltShape3D::rebuild(bool p_lock) {
+void JoltShape3D::invalidated(bool p_lock) {
 	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
 		owner->shapes_changed(p_lock);
 	}
@@ -170,7 +170,7 @@ Variant JoltWorldBoundaryShape3D::get_data() const {
 
 void JoltWorldBoundaryShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -196,7 +196,7 @@ Variant JoltSeparationRayShape3D::get_data() const {
 
 void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -251,7 +251,7 @@ Variant JoltSphereShape3D::get_data() const {
 
 void JoltSphereShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -297,7 +297,7 @@ Variant JoltBoxShape3D::get_data() const {
 
 void JoltBoxShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -309,7 +309,7 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 
 void JoltBoxShape3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -358,7 +358,7 @@ Variant JoltCapsuleShape3D::get_data() const {
 
 void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -437,7 +437,7 @@ Variant JoltCylinderShape3D::get_data() const {
 
 void JoltCylinderShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -458,7 +458,7 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 
 void JoltCylinderShape3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -513,7 +513,7 @@ Variant JoltConvexPolygonShape3D::get_data() const {
 
 void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -525,7 +525,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 
 void JoltConvexPolygonShape3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -584,7 +584,7 @@ Variant JoltConcavePolygonShape3D::get_data() const {
 
 void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();
@@ -687,7 +687,7 @@ Variant JoltHeightMapShape3D::get_data() const {
 
 void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		rebuild();
+		invalidated();
 	};
 
 	destroy();

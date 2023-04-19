@@ -68,7 +68,7 @@ public:
 protected:
 	virtual JPH::ShapeRefC build() const = 0;
 
-	virtual void rebuild(bool p_lock = true);
+	virtual void invalidated(bool p_lock = true);
 
 	RID rid;
 
