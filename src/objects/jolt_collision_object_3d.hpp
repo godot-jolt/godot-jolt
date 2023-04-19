@@ -119,6 +119,8 @@ public:
 	virtual bool generates_contacts() const = 0;
 
 protected:
+	friend class JoltShape3D;
+
 	virtual JPH::BroadPhaseLayer get_broad_phase_layer() const = 0;
 
 	JPH::ObjectLayer get_object_layer() const;
@@ -146,6 +148,8 @@ protected:
 	virtual void collision_layer_changed(bool p_lock = true);
 
 	virtual void collision_mask_changed(bool p_lock = true);
+
+	virtual void shapes_changed(bool p_lock = true);
 
 	virtual void shapes_built([[maybe_unused]] bool p_lock = true) { }
 

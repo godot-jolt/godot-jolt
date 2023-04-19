@@ -110,7 +110,7 @@ void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) 
 	// large discrepancy between the transform reported and the one actually used by Jolt.
 	if (!scale.is_equal_approx(new_scale)) {
 		scale = new_scale;
-		build_shape(p_lock);
+		shapes_changed(p_lock);
 	}
 
 	if (space == nullptr) {
@@ -293,7 +293,7 @@ void JoltCollisionObject3D::add_shape(
 
 	shapes.emplace_back(this, p_shape, p_transform, shape_scale, p_disabled);
 
-	build_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
@@ -301,7 +301,7 @@ void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
 		return p_instance.get_shape() == p_shape;
 	});
 
-	build_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
@@ -309,7 +309,7 @@ void JoltCollisionObject3D::remove_shape(int32_t p_index, bool p_lock) {
 
 	shapes.remove_at(p_index);
 
-	build_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 JoltShape3D* JoltCollisionObject3D::get_shape(int32_t p_index) const {
@@ -323,13 +323,13 @@ void JoltCollisionObject3D::set_shape(int32_t p_index, JoltShape3D* p_shape, boo
 
 	shapes[p_index] = JoltShapeInstance3D(this, p_shape);
 
-	build_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 void JoltCollisionObject3D::clear_shapes(bool p_lock) {
 	shapes.clear();
 
-	build_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 int32_t JoltCollisionObject3D::find_shape_index(uint32_t p_shape_instance_id) const {
@@ -391,7 +391,7 @@ void JoltCollisionObject3D::set_shape_transform(
 	shape.set_transform(p_transform);
 	shape.set_scale(new_scale);
 
-	build_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 bool JoltCollisionObject3D::is_shape_disabled(int32_t p_index) const {
@@ -415,7 +415,7 @@ void JoltCollisionObject3D::set_shape_disabled(int32_t p_index, bool p_disabled,
 		shape.enable();
 	}
 
-	build_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 void JoltCollisionObject3D::add_to_space(bool p_lock) {
@@ -499,4 +499,8 @@ void JoltCollisionObject3D::collision_layer_changed(bool p_lock) {
 
 void JoltCollisionObject3D::collision_mask_changed(bool p_lock) {
 	update_object_layer(p_lock);
+}
+
+void JoltCollisionObject3D::shapes_changed(bool p_lock) {
+	build_shape(p_lock);
 }
