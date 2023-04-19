@@ -82,7 +82,7 @@ void JoltDebugGeometry3D::_bind_methods() {
 #ifdef JPH_DEBUG_RENDERER
 
 JoltDebugGeometry3D::JoltDebugGeometry3D()
-	: debug_renderer(JoltDebugRenderer::acquire())
+	: debug_renderer(JoltDebugRenderer3D::acquire())
 	, mesh(RenderingServer::get_singleton()->mesh_create()) {
 	set_base(mesh);
 
@@ -99,7 +99,7 @@ JoltDebugGeometry3D::~JoltDebugGeometry3D() {
 		RenderingServer::get_singleton()->free_rid(mesh);
 	}
 
-	JoltDebugRenderer::release(debug_renderer);
+	JoltDebugRenderer3D::release(debug_renderer);
 }
 
 #else // JPH_DEBUG_RENDERER
