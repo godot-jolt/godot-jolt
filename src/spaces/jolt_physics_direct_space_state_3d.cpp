@@ -403,10 +403,10 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 	ERR_FAIL_COND_D(object->get_space() != space);
 
 	const JoltReadableBody3D body = space->read_body(*object);
-	const JPH::TransformedShape shape = body->GetTransformedShape();
+	const JPH::TransformedShape root_shape = body->GetTransformedShape();
 
 	JoltQueryCollectorAll<JPH::TransformedShapeCollector, 32> collector;
-	shape.CollectTransformedShapes(body->GetWorldSpaceBounds(), collector);
+	root_shape.CollectTransformedShapes(body->GetWorldSpaceBounds(), collector);
 
 	const JPH::Vec3 point = to_jolt(p_point);
 
@@ -416,37 +416,37 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 	bool found_point = false;
 
 	for (int32_t i = 0; i < collector.get_hit_count(); ++i) {
-		const JPH::TransformedShape& sub_shape_transformed = collector.get_hit(i);
-		const JPH::Shape& sub_shape = *sub_shape_transformed.mShape;
+		const JPH::TransformedShape& shape_transformed = collector.get_hit(i);
+		const JPH::Shape& shape = *shape_transformed.mShape;
 
-		if (sub_shape.GetType() != JPH::EShapeType::Convex) {
+		if (shape.GetType() != JPH::EShapeType::Convex) {
 			continue;
 		}
 
-		const auto& sub_shape_convex = static_cast<const JPH::ConvexShape&>(sub_shape);
+		const auto& shape_convex = static_cast<const JPH::ConvexShape&>(shape);
 
 		JPH::GJKClosestPoint gjk;
 
 		// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
 		JPH::ConvexShape::SupportBuffer shape_support_buffer;
 
-		const JPH::ConvexShape::Support* shape_support = sub_shape_convex.GetSupportFunction(
+		const JPH::ConvexShape::Support* shape_support = shape_convex.GetSupportFunction(
 			JPH::ConvexShape::ESupportMode::IncludeConvexRadius,
 			shape_support_buffer,
-			sub_shape_transformed.GetShapeScale()
+			shape_transformed.GetShapeScale()
 		);
 
-		const JPH::Quat& sub_shape_rotation = sub_shape_transformed.mShapeRotation;
-		const JPH::Vec3& sub_shape_pos_com = sub_shape_transformed.mShapePositionCOM;
-		const JPH::Mat44 sub_shape_3x3 = JPH::RMat44::sRotation(sub_shape_rotation);
-		const JPH::Vec3 sub_shape_com_local = sub_shape.GetCenterOfMass();
-		const JPH::Vec3 sub_shape_com = sub_shape_3x3.Multiply3x3(sub_shape_com_local);
-		const JPH::Vec3 sub_shape_pos = sub_shape_pos_com - sub_shape_com;
-		const JPH::Mat44 sub_shape_4x4 = sub_shape_3x3.PostTranslated(sub_shape_pos);
-		const JPH::Mat44 sub_shape_4x4_inv = sub_shape_4x4.InversedRotationTranslation();
+		const JPH::Quat& shape_rotation = shape_transformed.mShapeRotation;
+		const JPH::Vec3& shape_pos_com = shape_transformed.mShapePositionCOM;
+		const JPH::Mat44 shape_3x3 = JPH::RMat44::sRotation(shape_rotation);
+		const JPH::Vec3 shape_com_local = shape.GetCenterOfMass();
+		const JPH::Vec3 shape_com = shape_3x3.Multiply3x3(shape_com_local);
+		const JPH::Vec3 shape_pos = shape_pos_com - shape_com;
+		const JPH::Mat44 shape_4x4 = shape_3x3.PostTranslated(shape_pos);
+		const JPH::Mat44 shape_4x4_inv = shape_4x4.InversedRotationTranslation();
 
 		JPH::PointConvexSupport point_support = {};
-		point_support.mPoint = sub_shape_4x4_inv * point;
+		point_support.mPoint = shape_4x4_inv * point;
 
 		JPH::Vec3 separating_axis = JPH::Vec3::sAxisX();
 		JPH::Vec3 point_on_a = JPH::Vec3::sZero();
@@ -470,7 +470,7 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 
 		if (distance_sq < closest_distance_sq) {
 			closest_distance_sq = distance_sq;
-			closest_point = sub_shape_4x4 * point_on_a;
+			closest_point = shape_4x4 * point_on_a;
 			found_point = true;
 		}
 	}
