@@ -32,6 +32,8 @@ public:
 
 	JPH::ShapeRefC try_build();
 
+	void destroy() { jolt_ref = nullptr; }
+
 	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
 	static JPH::ShapeRefC with_scale(const JPH::Shape* p_shape, const Vector3& p_scale);

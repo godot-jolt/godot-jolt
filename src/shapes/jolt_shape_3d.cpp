@@ -173,7 +173,7 @@ void JoltWorldBoundaryShape3D::set_data(const Variant& p_data) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::PLANE);
 
@@ -199,7 +199,7 @@ void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -254,7 +254,7 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::FLOAT);
 
@@ -300,7 +300,7 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::VECTOR3);
 
@@ -312,7 +312,7 @@ void JoltBoxShape3D::set_margin(float p_margin) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	margin = p_margin;
 }
@@ -361,7 +361,7 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -440,7 +440,7 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -461,7 +461,7 @@ void JoltCylinderShape3D::set_margin(float p_margin) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	margin = p_margin;
 }
@@ -516,7 +516,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 
@@ -528,7 +528,7 @@ void JoltConvexPolygonShape3D::set_margin(float p_margin) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	margin = p_margin;
 }
@@ -587,7 +587,7 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
@@ -690,7 +690,7 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 		rebuild();
 	};
 
-	jolt_ref = nullptr;
+	destroy();
 
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
