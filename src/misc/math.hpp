@@ -2,7 +2,7 @@
 
 namespace godot::Math {
 
-_FORCE_INLINE_ void normalize(Basis& p_basis, Vector3& p_scale) {
+_FORCE_INLINE_ void decompose(Basis& p_basis, Vector3& p_scale) {
 	p_scale = Vector3(1.0f, 1.0f, 1.0f);
 
 	Vector3 x = p_basis.get_column(Vector3::AXIS_X);
@@ -30,37 +30,37 @@ _FORCE_INLINE_ void normalize(Basis& p_basis, Vector3& p_scale) {
 	p_basis.set_column(Vector3::AXIS_Z, z);
 }
 
-_FORCE_INLINE_ void normalize(Transform3D& p_transform, Vector3& p_scale) {
-	normalize(p_transform.basis, p_scale);
+_FORCE_INLINE_ void decompose(Transform3D& p_transform, Vector3& p_scale) {
+	decompose(p_transform.basis, p_scale);
 }
 
-_FORCE_INLINE_ void normalize(Basis& p_basis) {
+_FORCE_INLINE_ void decompose(Basis& p_basis) {
 	Vector3 scale;
-	normalize(p_basis, scale);
+	decompose(p_basis, scale);
 }
 
-_FORCE_INLINE_ void normalize(Transform3D& p_transform) {
+_FORCE_INLINE_ void decompose(Transform3D& p_transform) {
 	Vector3 scale;
-	normalize(p_transform, scale);
+	decompose(p_transform, scale);
 }
 
-[[nodiscard]] _FORCE_INLINE_ Basis normalized(Basis p_basis, Vector3& p_scale) {
-	normalize(p_basis, p_scale);
+[[nodiscard]] _FORCE_INLINE_ Basis decomposed(Basis p_basis, Vector3& p_scale) {
+	decompose(p_basis, p_scale);
 	return p_basis;
 }
 
-[[nodiscard]] _FORCE_INLINE_ Transform3D normalized(Transform3D p_transform, Vector3& p_scale) {
-	normalize(p_transform, p_scale);
+[[nodiscard]] _FORCE_INLINE_ Transform3D decomposed(Transform3D p_transform, Vector3& p_scale) {
+	decompose(p_transform, p_scale);
 	return p_transform;
 }
 
-[[nodiscard]] _FORCE_INLINE_ Basis normalized(Basis p_basis) {
-	normalize(p_basis);
+[[nodiscard]] _FORCE_INLINE_ Basis decomposed(Basis p_basis) {
+	decompose(p_basis);
 	return p_basis;
 }
 
-[[nodiscard]] _FORCE_INLINE_ Transform3D normalized(Transform3D p_transform) {
-	normalize(p_transform);
+[[nodiscard]] _FORCE_INLINE_ Transform3D decomposed(Transform3D p_transform) {
+	decompose(p_transform);
 	return p_transform;
 }
 

@@ -142,7 +142,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	ERR_FAIL_NULL_D(jolt_shape);
 
 	Vector3 scale;
-	const Transform3D transform = Math::normalized(p_transform, scale);
+	const Transform3D transform = Math::decomposed(p_transform, scale);
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
@@ -217,7 +217,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	ERR_FAIL_NULL_D(jolt_shape);
 
 	Vector3 scale;
-	const Transform3D transform = Math::normalized(p_transform, scale);
+	const Transform3D transform = Math::decomposed(p_transform, scale);
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	Transform3D transform_com = transform.translated_local(com_scaled);
 
@@ -270,7 +270,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	ERR_FAIL_NULL_D(jolt_shape);
 
 	Vector3 scale;
-	const Transform3D transform = Math::normalized(p_transform, scale);
+	const Transform3D transform = Math::decomposed(p_transform, scale);
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
@@ -336,7 +336,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	ERR_FAIL_NULL_D(jolt_shape);
 
 	Vector3 scale;
-	const Transform3D transform = Math::normalized(p_transform, scale);
+	const Transform3D transform = Math::decomposed(p_transform, scale);
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
@@ -495,7 +495,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	p_max_collisions = min(p_max_collisions, 32);
 
 	Vector3 scale;
-	Transform3D transform = Math::normalized(p_transform, scale);
+	Transform3D transform = Math::decomposed(p_transform, scale);
 
 	const Vector3 direction = p_motion.normalized();
 
@@ -840,7 +840,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 		const Transform3D transform_local = p_body.get_shape_transform_scaled(i);
 		const Transform3D transform_com_local = transform_local.translated_local(com_scaled);
 		const Transform3D transform_com = body_transform * transform_com_local;
-		const Transform3D transform_com_unscaled = Math::normalized(transform_com, scale);
+		const Transform3D transform_com_unscaled = Math::decomposed(transform_com, scale);
 
 		float shape_safe_fraction = 1.0f;
 		float shape_unsafe_fraction = 1.0f;

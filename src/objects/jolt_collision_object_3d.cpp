@@ -101,7 +101,7 @@ Transform3D JoltCollisionObject3D::get_transform_scaled(bool p_lock) const {
 
 void JoltCollisionObject3D::set_transform(Transform3D p_transform, bool p_lock) {
 	Vector3 new_scale;
-	Math::normalize(p_transform, new_scale);
+	Math::decompose(p_transform, new_scale);
 
 	// HACK(mihe): Ideally we would do an exact comparison here, but that would likely mismatch
 	// quite often due to the nature of floating-point numbers. This does mean that the transform we
@@ -289,7 +289,7 @@ void JoltCollisionObject3D::add_shape(
 	bool p_lock
 ) {
 	Vector3 shape_scale;
-	Math::normalize(p_transform, shape_scale);
+	Math::decompose(p_transform, shape_scale);
 
 	shapes.emplace_back(this, p_shape, p_transform, shape_scale, p_disabled);
 
@@ -380,7 +380,7 @@ void JoltCollisionObject3D::set_shape_transform(
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	Vector3 new_scale;
-	Math::normalize(p_transform, new_scale);
+	Math::decompose(p_transform, new_scale);
 
 	JoltShapeInstance3D& shape = shapes[p_index];
 
