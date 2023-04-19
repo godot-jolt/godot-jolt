@@ -170,7 +170,7 @@ public:
 
 	bool is_ccd_enabled(bool p_lock = true) const;
 
-	void set_ccd_enabled(bool p_enable, bool p_lock = true);
+	void set_ccd_enabled(bool p_enabled, bool p_lock = true);
 
 	float get_mass() const { return mass; }
 

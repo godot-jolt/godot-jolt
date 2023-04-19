@@ -770,8 +770,8 @@ bool JoltBody3D::is_ccd_enabled(bool p_lock) const {
 	return body_iface.GetMotionQuality(jolt_id) == JPH::EMotionQuality::LinearCast;
 }
 
-void JoltBody3D::set_ccd_enabled(bool p_enable, bool p_lock) {
-	const JPH::EMotionQuality motion_quality = p_enable
+void JoltBody3D::set_ccd_enabled(bool p_enabled, bool p_lock) {
+	const JPH::EMotionQuality motion_quality = p_enabled
 		? JPH::EMotionQuality::LinearCast
 		: JPH::EMotionQuality::Discrete;
 

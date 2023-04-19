@@ -110,7 +110,7 @@ public:
 
 	bool is_ray_pickable() const { return ray_pickable; }
 
-	void set_ray_pickable(bool p_enable) { ray_pickable = p_enable; }
+	void set_ray_pickable(bool p_enabled) { ray_pickable = p_enabled; }
 
 	virtual void pre_step(float p_step);
 
