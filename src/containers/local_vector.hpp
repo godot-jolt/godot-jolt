@@ -56,7 +56,11 @@ public:
 	_FORCE_INLINE_ int32_t erase_if(TPredicate&& p_pred) {
 		const auto new_end = std::remove_if(begin(), end(), std::forward<TPredicate>(p_pred));
 		const auto count = (int32_t)std::distance(new_end, end());
-		impl.erase(new_end, end());
+
+		if (new_end != end()) {
+			impl.erase(new_end, end());
+		}
+
 		return count;
 	}
 
