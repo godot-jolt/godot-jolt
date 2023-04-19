@@ -339,7 +339,7 @@ void JoltBody3D::set_center_of_mass_custom(const Vector3& p_center_of_mass, bool
 	custom_center_of_mass = true;
 	center_of_mass_custom = p_center_of_mass;
 
-	rebuild_shape(p_lock);
+	build_shape(p_lock);
 }
 
 void JoltBody3D::add_contact(

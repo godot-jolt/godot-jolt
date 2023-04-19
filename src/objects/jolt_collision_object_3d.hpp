@@ -63,7 +63,7 @@ public:
 
 	JPH::ShapeRefC try_build_shape();
 
-	void rebuild_shape(bool p_lock = true);
+	void build_shape(bool p_lock = true);
 
 	const JPH::Shape* get_jolt_shape() const { return jolt_shape; }
 

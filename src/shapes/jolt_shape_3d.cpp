@@ -160,7 +160,7 @@ JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p
 
 void JoltShape3D::rebuild(bool p_lock) {
 	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
-		owner->rebuild_shape(p_lock);
+		owner->build_shape(p_lock);
 	}
 }
 
