@@ -1,47 +1,7 @@
 include_guard()
 
 include(ExternalProject)
-
-function(cmake_args_to_script variable args)
-	set(arg_pattern [[^(.+)=(.*)$]])
-
-	set(script_content "")
-	set(script_line "")
-	set(arg_rest "")
-
-	foreach(element IN LISTS args)
-		if(element MATCHES [[^-D(.*)]])
-			set(arg ${CMAKE_MATCH_1})
-
-			if(NOT script_line STREQUAL "")
-				string(APPEND script_line "${arg_rest}\" CACHE INTERNAL \"\")")
-				string(APPEND script_content "${script_line}\n")
-
-				set(script_line "")
-				set(arg_rest "")
-			endif()
-
-			if(arg MATCHES ${arg_pattern})
-				set(arg_name ${CMAKE_MATCH_1})
-				set(arg_value ${CMAKE_MATCH_2})
-				set(script_line "set(${arg_name} \"${arg_value}")
-			endif()
-		else()
-			string(APPEND arg_rest "\\\;${element}")
-		endif()
-	endforeach()
-
-	if(NOT script_line STREQUAL "")
-		string(APPEND script_line "${arg_rest}\" CACHE INTERNAL \"\")")
-		string(APPEND script_content "${script_line}\n")
-	endif()
-
-	set(${variable} ${script_content} PARENT_SCOPE)
-endfunction()
-
-macro(escape_separator variable output_variable)
-	string(REPLACE ";" $<SEMICOLON> ${output_variable} "${${variable}}")
-endmacro()
+include(GodotJoltUtilities)
 
 function(GodotJoltExternalLibrary_Add library_name library_configs)
 	# Declare our initial arguments
@@ -243,7 +203,7 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 	endif()
 
 	set(cache_file ${tmp_dir}/${library_name}-cache.cmake)
-	cmake_args_to_script(cache_file_content "${cmake_cache_args}")
+	gdjolt_args_to_script(cache_file_content "${cmake_cache_args}")
 	file(CONFIGURE OUTPUT ${cache_file} CONTENT ${cache_file_content})
 
 	# We pass CMAKE_BUILD_TYPE through the command-line like normal since we need its generator
@@ -326,8 +286,8 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 
 	# Set up the target properties
 
-	escape_separator(library_configs library_configs_)
-	escape_separator(arg_INCLUDE_DIRECTORIES include_directories_)
+	gdjolt_escape_separator(library_configs library_configs_)
+	gdjolt_escape_separator(arg_INCLUDE_DIRECTORIES include_directories_)
 
 	set(target_properties
 		IMPORTED_LINK_INTERFACE_LANGUAGES ${arg_LANGUAGE}
@@ -358,7 +318,7 @@ function(GodotJoltExternalLibrary_Add library_name library_configs)
 	string(SUBSTRING ${arg_GIT_COMMIT} 0 10 short_commit)
 	list(APPEND compile_definitions GDJOLT_EXTERNAL_${library_name_identifier}=${short_commit})
 
-	escape_separator(compile_definitions compile_definitions_)
+	gdjolt_escape_separator(compile_definitions compile_definitions_)
 	list(APPEND target_properties INTERFACE_COMPILE_DEFINITIONS "${compile_definitions_}")
 
 	# Add the target property that maps library configurations to project configurations. For
