@@ -143,9 +143,9 @@ protected:
 
 	void update_object_layer(bool p_lock = true);
 
-	void collision_layer_changed(bool p_lock = true);
+	virtual void collision_layer_changed(bool p_lock = true);
 
-	void collision_mask_changed(bool p_lock = true);
+	virtual void collision_mask_changed(bool p_lock = true);
 
 	virtual void shapes_changed([[maybe_unused]] bool p_lock = true) { }
 
