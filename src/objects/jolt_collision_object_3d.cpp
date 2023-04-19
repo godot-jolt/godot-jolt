@@ -257,7 +257,7 @@ JPH::ShapeRefC JoltCollisionObject3D::try_build_shape() {
 
 void JoltCollisionObject3D::build_shape(bool p_lock) {
 	if (space == nullptr) {
-		shapes_changed(p_lock);
+		shapes_built(p_lock);
 		return;
 	}
 
@@ -279,7 +279,7 @@ void JoltCollisionObject3D::build_shape(bool p_lock) {
 	space->get_body_iface(false)
 		.SetShape(jolt_id, jolt_shape, false, JPH::EActivation::DontActivate);
 
-	shapes_changed(false);
+	shapes_built(false);
 }
 
 void JoltCollisionObject3D::add_shape(

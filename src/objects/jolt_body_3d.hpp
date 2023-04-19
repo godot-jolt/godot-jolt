@@ -243,7 +243,7 @@ private:
 
 	void mode_changed(bool p_lock = true);
 
-	void shapes_changed(bool p_lock) override;
+	void shapes_built(bool p_lock) override;
 
 	void space_changing(bool p_lock = true) override;
 

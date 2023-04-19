@@ -147,7 +147,7 @@ protected:
 
 	virtual void collision_mask_changed(bool p_lock = true);
 
-	virtual void shapes_changed([[maybe_unused]] bool p_lock = true) { }
+	virtual void shapes_built([[maybe_unused]] bool p_lock = true) { }
 
 	virtual void space_changing([[maybe_unused]] bool p_lock = true) { }
 

@@ -1159,7 +1159,7 @@ void JoltBody3D::mode_changed(bool p_lock) {
 	wake_up(p_lock);
 }
 
-void JoltBody3D::shapes_changed(bool p_lock) {
+void JoltBody3D::shapes_built(bool p_lock) {
 	update_mass_properties(p_lock);
 	wake_up(p_lock);
 }
