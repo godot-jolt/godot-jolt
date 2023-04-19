@@ -3,7 +3,7 @@ include_guard()
 include(ExternalProject)
 include(GodotJoltUtilities)
 
-function(gdjolt_add_external_library library_name library_configs)
+function(gj_add_external_library library_name library_configs)
 	# Declare our initial arguments
 
 	set(one_value_args
@@ -22,7 +22,7 @@ function(gdjolt_add_external_library library_name library_configs)
 
 	# Add a `LIBRARY_CONFIG_<CONFIG>` argument for each of the project's configurations
 
-	foreach(project_config IN LISTS GDJOLT_CONFIGURATIONS)
+	foreach(project_config IN LISTS GJ_CONFIGURATIONS)
 		string(TOUPPER ${project_config} project_config_upper)
 		list(APPEND one_value_args LIBRARY_CONFIG_${project_config_upper})
 	endforeach()
@@ -89,7 +89,7 @@ function(gdjolt_add_external_library library_name library_configs)
 	# Set up mappings between configurations. For library config `Foo` that maps to project config
 	# `Bar` we get `set(project_config_Foo Bar)` and `set(library_config_Bar Foo)`.
 
-	foreach(project_config IN LISTS GDJOLT_CONFIGURATIONS)
+	foreach(project_config IN LISTS GJ_CONFIGURATIONS)
 		string(TOUPPER ${project_config} project_config_upper)
 		set(library_config ${arg_LIBRARY_CONFIG_${project_config_upper}})
 		set(library_config_${project_config} ${library_config})
@@ -101,7 +101,7 @@ function(gdjolt_add_external_library library_name library_configs)
 
 	set(library_config_current "")
 
-	foreach(project_config IN LISTS GDJOLT_CONFIGURATIONS)
+	foreach(project_config IN LISTS GJ_CONFIGURATIONS)
 		set(condition $<CONFIG:${project_config}>)
 		set(library_config ${library_config_${project_config}})
 		string(APPEND library_config_current $<${condition}:${library_config}>)
@@ -112,7 +112,7 @@ function(gdjolt_add_external_library library_name library_configs)
 
 	get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
-	foreach(project_config IN LISTS GDJOLT_CONFIGURATIONS)
+	foreach(project_config IN LISTS GJ_CONFIGURATIONS)
 		if(is_multi_config)
 			set(library_config ${library_config_${project_config}})
 			set(output_dir_${project_config} ${binary_dir}/${library_config})
@@ -133,7 +133,7 @@ function(gdjolt_add_external_library library_name library_configs)
 	# Set up the output names. For library config `Foo` that map to project config `Bar` we get
 	# `set(output_name_Bar ${arg_OUTPUT_NAME_FOO})`.
 
-	foreach(project_config IN LISTS GDJOLT_CONFIGURATIONS)
+	foreach(project_config IN LISTS GJ_CONFIGURATIONS)
 		set(library_config ${library_config_${project_config}})
 		string(TOUPPER ${library_config} library_config_upper)
 		string(CONCAT output_name_${project_config}
@@ -148,7 +148,7 @@ function(gdjolt_add_external_library library_name library_configs)
 
 	set(output_name_current "")
 
-	foreach(project_config IN LISTS GDJOLT_CONFIGURATIONS)
+	foreach(project_config IN LISTS GJ_CONFIGURATIONS)
 		set(condition $<CONFIG:${project_config}>)
 		set(output_name ${output_name_${project_config}})
 		string(APPEND output_name_current $<${condition}:${output_name}>)
@@ -157,7 +157,7 @@ function(gdjolt_add_external_library library_name library_configs)
 	# Set up the CMake arguments, most of which go through an "initial cache file" in order to defer
 	# evaluation of generator expressions to the external project
 
-	set(use_static_crt $<BOOL:${GDJOLT_STATIC_RUNTIME_LIBRARY}>)
+	set(use_static_crt $<BOOL:${GJ_STATIC_RUNTIME_LIBRARY}>)
 	set(msvcrt_debug $<$<CONFIG:${library_config_Debug},${library_config_EditorDebug}>:Debug>)
 	set(msvcrt_dll $<$<NOT:${use_static_crt}>:DLL>)
 	set(msvcrt MultiThreaded${msvcrt_debug}${msvcrt_dll})
@@ -203,7 +203,7 @@ function(gdjolt_add_external_library library_name library_configs)
 	endif()
 
 	set(cache_file ${tmp_dir}/${library_name}-cache.cmake)
-	gdjolt_args_to_script(cache_file_content "${cmake_cache_args}")
+	gj_args_to_script(cache_file_content "${cmake_cache_args}")
 	file(CONFIGURE OUTPUT ${cache_file} CONTENT ${cache_file_content})
 
 	# We pass CMAKE_BUILD_TYPE through the command-line like normal since we need its generator
@@ -286,8 +286,8 @@ function(gdjolt_add_external_library library_name library_configs)
 
 	# Set up the target properties
 
-	gdjolt_escape_separator(library_configs library_configs_)
-	gdjolt_escape_separator(arg_INCLUDE_DIRECTORIES include_directories_)
+	gj_escape_separator(library_configs library_configs_)
+	gj_escape_separator(arg_INCLUDE_DIRECTORIES include_directories_)
 
 	set(target_properties
 		IMPORTED_LINK_INTERFACE_LANGUAGES ${arg_LANGUAGE}
@@ -299,7 +299,7 @@ function(gdjolt_add_external_library library_name library_configs)
 
 	set(compile_definitions ${arg_COMPILE_DEFINITIONS})
 
-	foreach(project_config IN LISTS GDJOLT_CONFIGURATIONS)
+	foreach(project_config IN LISTS GJ_CONFIGURATIONS)
 		set(library_config ${library_config_${project_config}})
 		string(TOUPPER ${library_config} library_config_upper)
 		set(condition $<CONFIG:${project_config}>)
@@ -316,15 +316,15 @@ function(gdjolt_add_external_library library_name library_configs)
 	string(MAKE_C_IDENTIFIER ${library_name} library_name_identifier)
 	string(TOUPPER ${library_name_identifier} library_name_identifier)
 	string(SUBSTRING ${arg_GIT_COMMIT} 0 10 short_commit)
-	list(APPEND compile_definitions GDJOLT_EXTERNAL_${library_name_identifier}=${short_commit})
+	list(APPEND compile_definitions GJ_EXTERNAL_${library_name_identifier}=${short_commit})
 
-	gdjolt_escape_separator(compile_definitions compile_definitions_)
+	gj_escape_separator(compile_definitions compile_definitions_)
 	list(APPEND target_properties INTERFACE_COMPILE_DEFINITIONS "${compile_definitions_}")
 
 	# Add the target property that maps library configurations to project configurations. For
 	# project config `Foo` that maps to library config `Bar` we get `MAP_IMPORTED_CONFIG_FOO Bar`.
 
-	foreach(project_config IN LISTS GDJOLT_CONFIGURATIONS)
+	foreach(project_config IN LISTS GJ_CONFIGURATIONS)
 		string(TOUPPER ${project_config} project_config_upper)
 		set(library_config ${library_config_${project_config}})
 		list(APPEND target_properties MAP_IMPORTED_CONFIG_${project_config_upper} ${library_config})

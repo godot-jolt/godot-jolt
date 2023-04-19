@@ -23,7 +23,7 @@ if(DEFINED ENV{CFLAGS})
 	set(c_flags "$ENV{CFLAGS} ${c_flags}")
 endif()
 
-gdjolt_add_external_library(mimalloc "${configurations}"
+gj_add_external_library(mimalloc "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/mimalloc.git
 	GIT_COMMIT 3e313478d91c04ac5821743688ce55fc27432c4f
 	LANGUAGE C
@@ -32,7 +32,7 @@ gdjolt_add_external_library(mimalloc "${configurations}"
 		<SOURCE_DIR>/include
 	CMAKE_CACHE_ARGS
 		-DCMAKE_C_FLAGS=${c_flags}
-		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO=${GDJOLT_INTERPROCEDURAL_OPTIMIZATION}
+		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO=${GJ_INTERPROCEDURAL_OPTIMIZATION}
 		-DMI_OVERRIDE=FALSE
 		-DMI_USE_CXX=FALSE
 		-DMI_OSX_INTERPOSE=FALSE

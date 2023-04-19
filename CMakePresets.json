@@ -127,14 +127,14 @@
       "name": "x64-base",
       "hidden": true,
       "cacheVariables": {
-        "GDJOLT_TARGET_ARCHITECTURES": "x64"
+        "GJ_TARGET_ARCHITECTURES": "x64"
       }
     },
     {
       "name": "x86-base",
       "hidden": true,
       "cacheVariables": {
-        "GDJOLT_TARGET_ARCHITECTURES": "x86"
+        "GJ_TARGET_ARCHITECTURES": "x86"
       }
     },
     {
