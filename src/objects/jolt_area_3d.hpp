@@ -159,22 +159,6 @@ private:
 
 	void create_in_space() override;
 
-	void space_changing(bool p_lock = true) override;
-
-	void body_monitoring_changed();
-
-	void area_monitoring_changed();
-
-	void monitorable_changed(bool p_lock = true);
-
-	void force_bodies_entered();
-
-	void force_bodies_exited(bool p_remove, bool p_lock = true);
-
-	void force_areas_entered();
-
-	void force_areas_exited(bool p_remove, bool p_lock = true);
-
 	void add_shape_pair(
 		Overlap& p_overlap,
 		const JPH::BodyID& p_body_id,
@@ -202,6 +186,22 @@ private:
 	void notify_body_entered(const JPH::BodyID& p_body_id, bool p_lock = true);
 
 	void notify_body_exited(const JPH::BodyID& p_body_id, bool p_lock = true);
+
+	void force_bodies_entered();
+
+	void force_bodies_exited(bool p_remove, bool p_lock = true);
+
+	void force_areas_entered();
+
+	void force_areas_exited(bool p_remove, bool p_lock = true);
+
+	void space_changing(bool p_lock = true) override;
+
+	void body_monitoring_changed();
+
+	void area_monitoring_changed();
+
+	void monitorable_changed(bool p_lock = true);
 
 	bool monitorable = false;
 
