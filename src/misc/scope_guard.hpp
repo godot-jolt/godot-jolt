@@ -1,8 +1,8 @@
 #pragma once
 
-#define GDJOLT_CONCATENATE_IMPL(m_a, m_b) m_a##m_b
-#define GDJOLT_CONCATENATE(m_a, m_b) GDJOLT_CONCATENATE_IMPL(m_a, m_b)
-#define GDJOLT_UNIQUE_IDENTIFIER(m_prefix) GDJOLT_CONCATENATE(m_prefix, __COUNTER__)
+#define GJ_CONCATENATE_IMPL(m_a, m_b) m_a##m_b
+#define GJ_CONCATENATE(m_a, m_b) GJ_CONCATENATE_IMPL(m_a, m_b)
+#define GJ_UNIQUE_IDENTIFIER(m_prefix) GJ_CONCATENATE(m_prefix, __COUNTER__)
 
 template<typename TCallable>
 class ScopeGuard {
@@ -41,4 +41,4 @@ struct ScopeGuardHelper {
 };
 
 // NOLINTNEXTLINE(bugprone-macro-parentheses)
-#define ON_SCOPE_EXIT auto GDJOLT_UNIQUE_IDENTIFIER(scope_guard) = ScopeGuardHelper() + [&]
+#define ON_SCOPE_EXIT auto GJ_UNIQUE_IDENTIFIER(scope_guard) = ScopeGuardHelper() + [&]

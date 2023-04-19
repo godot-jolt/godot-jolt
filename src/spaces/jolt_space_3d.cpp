@@ -11,13 +11,13 @@
 
 namespace {
 
-constexpr double GDJOLT_SPACE_CONTACT_RECYCLE_RADIUS = 0.01;
-constexpr double GDJOLT_SPACE_CONTACT_MAX_SEPARATION = 0.05;
-constexpr double GDJOLT_SPACE_CONTACT_MAX_ALLOWED_PENETRATION = 0.01;
-constexpr double GDJOLT_SPACE_CONTACT_DEFAULT_BIAS = 0.8;
-constexpr double GDJOLT_SPACE_SLEEP_THRESHOLD_LINEAR = 0.1;
-constexpr double GDJOLT_SPACE_SLEEP_THRESHOLD_ANGULAR = 8.0 * Math_PI / 180;
-constexpr double GDJOLT_SPACE_SOLVER_ITERATIONS = 8;
+constexpr double DEFAULT_CONTACT_RECYCLE_RADIUS = 0.01;
+constexpr double DEFAULT_CONTACT_MAX_SEPARATION = 0.05;
+constexpr double DEFAULT_CONTACT_MAX_ALLOWED_PENETRATION = 0.01;
+constexpr double DEFAULT_CONTACT_DEFAULT_BIAS = 0.8;
+constexpr double DEFAULT_SLEEP_THRESHOLD_LINEAR = 0.1;
+constexpr double DEFAULT_SLEEP_THRESHOLD_ANGULAR = 8.0 * Math_PI / 180;
+constexpr double DEFAULT_SOLVER_ITERATIONS = 8;
 
 } // namespace
 
@@ -141,28 +141,28 @@ void JoltSpace3D::call_queries() {
 double JoltSpace3D::get_param(PhysicsServer3D::SpaceParameter p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::SPACE_PARAM_CONTACT_RECYCLE_RADIUS: {
-			return GDJOLT_SPACE_CONTACT_RECYCLE_RADIUS;
+			return DEFAULT_CONTACT_RECYCLE_RADIUS;
 		}
 		case PhysicsServer3D::SPACE_PARAM_CONTACT_MAX_SEPARATION: {
-			return GDJOLT_SPACE_CONTACT_MAX_SEPARATION;
+			return DEFAULT_CONTACT_MAX_SEPARATION;
 		}
 		case PhysicsServer3D::SPACE_PARAM_CONTACT_MAX_ALLOWED_PENETRATION: {
-			return GDJOLT_SPACE_CONTACT_MAX_ALLOWED_PENETRATION;
+			return DEFAULT_CONTACT_MAX_ALLOWED_PENETRATION;
 		}
 		case PhysicsServer3D::SPACE_PARAM_CONTACT_DEFAULT_BIAS: {
-			return GDJOLT_SPACE_CONTACT_DEFAULT_BIAS;
+			return DEFAULT_CONTACT_DEFAULT_BIAS;
 		}
 		case PhysicsServer3D::SPACE_PARAM_BODY_LINEAR_VELOCITY_SLEEP_THRESHOLD: {
-			return GDJOLT_SPACE_SLEEP_THRESHOLD_LINEAR;
+			return DEFAULT_SLEEP_THRESHOLD_LINEAR;
 		}
 		case PhysicsServer3D::SPACE_PARAM_BODY_ANGULAR_VELOCITY_SLEEP_THRESHOLD: {
-			return GDJOLT_SPACE_SLEEP_THRESHOLD_ANGULAR;
+			return DEFAULT_SLEEP_THRESHOLD_ANGULAR;
 		}
 		case PhysicsServer3D::SPACE_PARAM_BODY_TIME_TO_SLEEP: {
 			return JoltProjectSettings::get_sleep_time_threshold();
 		}
 		case PhysicsServer3D::SPACE_PARAM_SOLVER_ITERATIONS: {
-			return GDJOLT_SPACE_SOLVER_ITERATIONS;
+			return DEFAULT_SOLVER_ITERATIONS;
 		}
 		default: {
 			ERR_FAIL_D_MSG(vformat("Unhandled space parameter: '%d'", p_param));

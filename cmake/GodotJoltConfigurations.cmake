@@ -2,7 +2,7 @@ include_guard()
 
 include(GodotJoltUtilities)
 
-set(GDJOLT_CONFIGURATIONS
+set(GJ_CONFIGURATIONS
 	Debug
 	Development
 	Distribution
@@ -19,14 +19,14 @@ if(is_multi_config)
 	endif()
 
 	if(PROJECT_IS_TOP_LEVEL)
-		set(CMAKE_CONFIGURATION_TYPES ${GDJOLT_CONFIGURATIONS} CACHE STRING
+		set(CMAKE_CONFIGURATION_TYPES ${GJ_CONFIGURATIONS} CACHE STRING
 			"Semicolon separated list of supported configuration types."
 			FORCE
 		)
 	endif()
 
 	foreach(config IN LISTS CMAKE_CONFIGURATION_TYPES)
-		if(NOT config IN_LIST GDJOLT_CONFIGURATIONS)
+		if(NOT config IN_LIST GJ_CONFIGURATIONS)
 			message(FATAL_ERROR "Unsupported configuration: '${config}'.")
 		endif()
 	endforeach()
@@ -39,23 +39,23 @@ else()
 		message(FATAL_ERROR "No build type specified.")
 	endif()
 
-	if(NOT CMAKE_BUILD_TYPE IN_LIST GDJOLT_CONFIGURATIONS)
+	if(NOT CMAKE_BUILD_TYPE IN_LIST GJ_CONFIGURATIONS)
 		message(FATAL_ERROR "Unsupported build type: '${CMAKE_BUILD_TYPE}'.")
 	endif()
 
 	if(PROJECT_IS_TOP_LEVEL)
-		set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${GDJOLT_CONFIGURATIONS})
+		set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${GJ_CONFIGURATIONS})
 	endif()
 endif()
 
-gdjolt_duplicate_config(RelWithDebInfo Development)
-gdjolt_duplicate_config(RelWithDebInfo Distribution)
-gdjolt_duplicate_config(Debug EditorDebug)
-gdjolt_duplicate_config(Development EditorDevelopment)
-gdjolt_duplicate_config(Distribution EditorDistribution)
+gj_duplicate_config(RelWithDebInfo Development)
+gj_duplicate_config(RelWithDebInfo Distribution)
+gj_duplicate_config(Debug EditorDebug)
+gj_duplicate_config(Development EditorDevelopment)
+gj_duplicate_config(Distribution EditorDistribution)
 
 if(PROJECT_IS_TOP_LEVEL)
-	gdjolt_remove_config(MinSizeRel)
-	gdjolt_remove_config(Release)
-	gdjolt_remove_config(RelWithDebInfo)
+	gj_remove_config(MinSizeRel)
+	gj_remove_config(Release)
+	gj_remove_config(RelWithDebInfo)
 endif()

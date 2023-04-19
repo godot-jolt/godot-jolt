@@ -44,9 +44,9 @@ else()
 	message(FATAL_ERROR "Unhandled system name: '${CMAKE_SYSTEM_NAME}'.")
 endif()
 
-if(GDJOLT_TARGET_ARCHITECTURES STREQUAL x86)
+if(GJ_TARGET_ARCHITECTURES STREQUAL x86)
 	set(suffix_arch -x86)
-elseif(GDJOLT_TARGET_ARCHITECTURES STREQUAL x64)
+elseif(GJ_TARGET_ARCHITECTURES STREQUAL x64)
 	set(suffix_arch -x64)
 else()
 	set(suffix_arch "")
@@ -55,15 +55,15 @@ endif()
 set(suffix_editor $<${is_editor_config}:-editor>)
 set(suffix ${suffix_platform}${suffix_arch}${suffix_editor})
 
-set(use_static_crt $<BOOL:${GDJOLT_STATIC_RUNTIME_LIBRARY}>)
+set(use_static_crt $<BOOL:${GJ_STATIC_RUNTIME_LIBRARY}>)
 set(msvcrt_debug $<$<CONFIG:Debug,EditorDebug>:Debug>)
 set(msvcrt_dll $<$<NOT:${use_static_crt}>:DLL>)
 set(msvcrt MultiThreaded${msvcrt_debug}${msvcrt_dll})
 
-set(target_avx512 $<STREQUAL:${GDJOLT_X86_INSTRUCTION_SET},AVX512>)
-set(target_avx2 $<STREQUAL:${GDJOLT_X86_INSTRUCTION_SET},AVX2>)
-set(target_avx $<STREQUAL:${GDJOLT_X86_INSTRUCTION_SET},AVX>)
-set(target_sse2 $<STREQUAL:${GDJOLT_X86_INSTRUCTION_SET},SSE2>)
+set(target_avx512 $<STREQUAL:${GJ_X86_INSTRUCTION_SET},AVX512>)
+set(target_avx2 $<STREQUAL:${GJ_X86_INSTRUCTION_SET},AVX2>)
+set(target_avx $<STREQUAL:${GJ_X86_INSTRUCTION_SET},AVX>)
+set(target_sse2 $<STREQUAL:${GJ_X86_INSTRUCTION_SET},SSE2>)
 
 set(is_msvc_like $<BOOL:${MSVC}>)
 set(is_msvc_cl $<CXX_COMPILER_ID:MSVC>)
@@ -78,10 +78,10 @@ set_target_properties(godot-jolt PROPERTIES
 	PREFIX ""
 	INCLUDE_DIRECTORIES ${source_dir}
 	MSVC_RUNTIME_LIBRARY ${msvcrt}
-	INTERPROCEDURAL_OPTIMIZATION_DEVELOPMENT ${GDJOLT_INTERPROCEDURAL_OPTIMIZATION}
-	INTERPROCEDURAL_OPTIMIZATION_DISTRIBUTION ${GDJOLT_INTERPROCEDURAL_OPTIMIZATION}
-	INTERPROCEDURAL_OPTIMIZATION_EDITORDEVELOPMENT ${GDJOLT_INTERPROCEDURAL_OPTIMIZATION}
-	INTERPROCEDURAL_OPTIMIZATION_EDITORDISTRIBUTION ${GDJOLT_INTERPROCEDURAL_OPTIMIZATION}
+	INTERPROCEDURAL_OPTIMIZATION_DEVELOPMENT ${GJ_INTERPROCEDURAL_OPTIMIZATION}
+	INTERPROCEDURAL_OPTIMIZATION_DISTRIBUTION ${GJ_INTERPROCEDURAL_OPTIMIZATION}
+	INTERPROCEDURAL_OPTIMIZATION_EDITORDEVELOPMENT ${GJ_INTERPROCEDURAL_OPTIMIZATION}
+	INTERPROCEDURAL_OPTIMIZATION_EDITORDISTRIBUTION ${GJ_INTERPROCEDURAL_OPTIMIZATION}
 	FRAMEWORK TRUE
 	MACOSX_FRAMEWORK_IDENTIFIER "org.godotjolt.\${PRODUCT_NAME:rfc1034identifier}"
 	MACOSX_FRAMEWORK_BUNDLE_VERSION ${CMAKE_PROJECT_VERSION}
@@ -97,7 +97,7 @@ target_compile_definitions(godot-jolt
 	PRIVATE $<IF:${is_debug_config},_DEBUG,NDEBUG>
 )
 
-if(GDJOLT_PRECOMPILE_HEADERS)
+if(GJ_PRECOMPILE_HEADERS)
 	target_precompile_headers(godot-jolt
 		PRIVATE ${pch_file}
 	)
@@ -142,14 +142,14 @@ if(MSVC)
 		PRIVATE $<${is_distribution_config}:/PDBALTPATH:${pdb_file_name}> # Strip PDB path
 	)
 else()
-	set(use_avx512 $<BOOL:${GDJOLT_USE_AVX512}>)
-	set(use_avx2 $<BOOL:${GDJOLT_USE_AVX2}>)
-	set(use_bmi1 $<BOOL:${GDJOLT_USE_BMI1}>)
-	set(use_fma3 $<BOOL:${GDJOLT_USE_FMA3}>)
-	set(use_f16c $<BOOL:${GDJOLT_USE_F16C}>)
-	set(use_avx $<BOOL:${GDJOLT_USE_AVX}>)
-	set(use_sse4_2 $<BOOL:${GDJOLT_USE_SSE4_2}>)
-	set(use_sse2 $<BOOL:${GDJOLT_USE_SSE2}>)
+	set(use_avx512 $<BOOL:${GJ_USE_AVX512}>)
+	set(use_avx2 $<BOOL:${GJ_USE_AVX2}>)
+	set(use_bmi1 $<BOOL:${GJ_USE_BMI1}>)
+	set(use_fma3 $<BOOL:${GJ_USE_FMA3}>)
+	set(use_f16c $<BOOL:${GJ_USE_F16C}>)
+	set(use_avx $<BOOL:${GJ_USE_AVX}>)
+	set(use_sse4_2 $<BOOL:${GJ_USE_SSE4_2}>)
+	set(use_sse2 $<BOOL:${GJ_USE_SSE2}>)
 
 	target_compile_options(godot-jolt
 		PRIVATE -Wall # Enable common warnings

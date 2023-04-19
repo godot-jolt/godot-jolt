@@ -20,9 +20,9 @@ or GUI application. Alternatively you can use the [presets](#presets) described 
 
 These are the project-specific CMake options that are available. They are only relevant if you
 decide *not* to use the presets described [below](#presets), but you can also override the presets'
-defaults by passing `-DGDJOLT_SOME_VARIABLE=VALUE` to CMake.
+defaults by passing `-DGJ_SOME_VARIABLE=VALUE` to CMake.
 
-- `GDJOLT_X86_INSTRUCTION_SET`
+- `GJ_X86_INSTRUCTION_SET`
   - Sets the minimum required CPU instruction set when compiling for x86.
   - ⚠️ This flag is not available on Apple platforms, due to universal binaries not supporting it.
   - Possible values are [`NONE`, `SSE2`, `AVX`, `AVX2`, `AVX512`]
@@ -30,16 +30,16 @@ defaults by passing `-DGDJOLT_SOME_VARIABLE=VALUE` to CMake.
     - This is to conform with Godot, which doesn't utilize anything newer than SSE2.
     - There will be separate releases on GitHub for each of the instruction sets.
       - Alternatively all will be bundled and loaded based on `CPUID`.
-- `GDJOLT_INTERPROCEDURAL_OPTIMIZATION`
+- `GJ_INTERPROCEDURAL_OPTIMIZATION`
   - Enables interprocedural optimizations for any optimized builds, also known as link-time
     optimizations or link-time code generation.
   - Default is `TRUE`.
-- `GDJOLT_PRECOMPILE_HEADERS`
+- `GJ_PRECOMPILE_HEADERS`
   - Enables precompiling of header files that don't change often, like external ones, which speeds
     up compilations.
   - Disabling this will make it so any precompiled headers gets force-included instead.
   - Default is `TRUE`.
-- `GDJOLT_STATIC_RUNTIME_LIBRARY`
+- `GJ_STATIC_RUNTIME_LIBRARY`
   - Whether to statically link against the platform-specific C++ runtime, for added portability.
   - ⚠️ This flag is not available on Apple platforms.
   - Default is `TRUE`.
@@ -217,7 +217,7 @@ To see if you have any linting errors:
 
 ```pwsh
 # Generate build files, and disable precompiled headers to prevent compatibility issues
-cmake --preset windows-clangcl-x64 -DGDJOLT_PRECOMPILE_HEADERS=NO
+cmake --preset windows-clangcl-x64 -DGJ_PRECOMPILE_HEADERS=NO
 
 # Build any configuration, so that we fetch and prepare all of our dependencies
 cmake --build --preset windows-clangcl-x64-editor-debug

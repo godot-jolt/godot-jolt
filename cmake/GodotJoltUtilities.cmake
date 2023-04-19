@@ -1,10 +1,10 @@
 include_guard()
 
-macro(gdjolt_escape_separator variable output_variable)
+macro(gj_escape_separator variable output_variable)
 	string(REPLACE ";" $<SEMICOLON> ${output_variable} "${${variable}}")
 endmacro()
 
-macro(gdjolt_duplicate_config src dst)
+macro(gj_duplicate_config src dst)
 	string(TOUPPER ${src} src_upper)
 	string(TOUPPER ${dst} dst_upper)
 
@@ -45,7 +45,7 @@ macro(gdjolt_duplicate_config src dst)
 	endif()
 endmacro()
 
-macro(gdjolt_remove_config name)
+macro(gj_remove_config name)
 	string(TOUPPER ${name} name_upper)
 
 	unset(CMAKE_CXX_FLAGS_${name_upper} CACHE)
@@ -59,7 +59,7 @@ macro(gdjolt_remove_config name)
 	endif()
 endmacro()
 
-function(gdjolt_args_to_script variable args)
+function(gj_args_to_script variable args)
 	set(arg_pattern [[^(.+)=(.*)$]])
 
 	set(script_content "")

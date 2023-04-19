@@ -6,8 +6,8 @@
 
 namespace {
 
-constexpr int64_t GDJOLT_DEBUG_VERTEX_STRIDE = sizeof(Vector3);
-constexpr int64_t GDJOLT_DEBUG_ATTRIBUTE_STRIDE = sizeof(uint32_t);
+constexpr int64_t DEBUG_VERTEX_STRIDE = sizeof(Vector3);
+constexpr int64_t DEBUG_ATTRIBUTE_STRIDE = sizeof(uint32_t);
 
 } // namespace
 
@@ -109,8 +109,8 @@ int32_t JoltDebugRenderer3D::submit(const RID& p_mesh) {
 	if (triangle_count > 0) {
 		const int64_t vertex_count = (int64_t)triangle_count * 3;
 
-		triangle_vertices.resize(vertex_count * GDJOLT_DEBUG_VERTEX_STRIDE);
-		triangle_attributes.resize(vertex_count * GDJOLT_DEBUG_ATTRIBUTE_STRIDE);
+		triangle_vertices.resize(vertex_count * DEBUG_VERTEX_STRIDE);
+		triangle_attributes.resize(vertex_count * DEBUG_ATTRIBUTE_STRIDE);
 
 		Dictionary triangles_surface_data;
 		triangles_surface_data["format"] = vertex_format;
@@ -132,8 +132,8 @@ int32_t JoltDebugRenderer3D::submit(const RID& p_mesh) {
 	if (line_count > 0) {
 		const int64_t vertex_count = (int64_t)line_count * 2;
 
-		line_vertices.resize(vertex_count * GDJOLT_DEBUG_VERTEX_STRIDE);
-		line_attributes.resize(vertex_count * GDJOLT_DEBUG_ATTRIBUTE_STRIDE);
+		line_vertices.resize(vertex_count * DEBUG_VERTEX_STRIDE);
+		line_attributes.resize(vertex_count * DEBUG_ATTRIBUTE_STRIDE);
 
 		Dictionary lines_surface_data;
 		lines_surface_data["format"] = vertex_format;
@@ -310,8 +310,8 @@ void JoltDebugRenderer3D::reserve_triangles(int32_t p_extra_capacity) {
 	triangle_capacity += p_extra_capacity;
 
 	const int64_t vertex_count = (int64_t)triangle_capacity * 3;
-	triangle_vertices.resize(vertex_count * GDJOLT_DEBUG_VERTEX_STRIDE);
-	triangle_attributes.resize(vertex_count * GDJOLT_DEBUG_ATTRIBUTE_STRIDE);
+	triangle_vertices.resize(vertex_count * DEBUG_VERTEX_STRIDE);
+	triangle_attributes.resize(vertex_count * DEBUG_ATTRIBUTE_STRIDE);
 }
 
 void JoltDebugRenderer3D::reserve_lines(int32_t p_extra_capacity) {
@@ -322,8 +322,8 @@ void JoltDebugRenderer3D::reserve_lines(int32_t p_extra_capacity) {
 	line_capacity += p_extra_capacity;
 
 	const int64_t vertex_count = (int64_t)line_capacity * 2;
-	line_vertices.resize(vertex_count * GDJOLT_DEBUG_VERTEX_STRIDE);
-	line_attributes.resize(vertex_count * GDJOLT_DEBUG_ATTRIBUTE_STRIDE);
+	line_vertices.resize(vertex_count * DEBUG_VERTEX_STRIDE);
+	line_attributes.resize(vertex_count * DEBUG_ATTRIBUTE_STRIDE);
 }
 
 void JoltDebugRenderer3D::add_triangle(
