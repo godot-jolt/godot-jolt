@@ -759,12 +759,6 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 		for (int32_t j = 0; j < hit_count; ++j) {
 			const JPH::CollideShapeResult& hit = collector.get_hit(j);
 
-			// HACK(mihe): I don't believe this can happen while we're using a max separation
-			// distance, but even if it did we'd have no choice but to skip this recovery since we'd
-			// have no way of adding back the margin to our contact point. Either way, I'd prefer to
-			// receive a report about it if it does happen, hence the error.
-			ERR_CONTINUE(hit.mPenetrationAxis.LengthSq() == 0.0f);
-
 			const Vector3 penetration_axis = to_godot(hit.mPenetrationAxis.Normalized());
 			const Vector3 margin_offset = penetration_axis * p_margin;
 
