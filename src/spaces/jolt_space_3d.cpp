@@ -229,40 +229,49 @@ void JoltSpace3D::set_param(
 	}
 }
 
-JPH::BodyInterface& JoltSpace3D::get_body_iface(bool p_locked) {
+JPH::BodyInterface& JoltSpace3D::get_body_iface([[maybe_unused]] bool p_locked) {
+#ifndef GJ_CONFIG_DISTRIBUTION
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetBodyInterface();
-	} else {
-		return physics_system->GetBodyInterfaceNoLock();
 	}
+#endif // GJ_CONFIG_DISTRIBUTION
+
+	return physics_system->GetBodyInterfaceNoLock();
 }
 
-const JPH::BodyInterface& JoltSpace3D::get_body_iface(bool p_locked) const {
+const JPH::BodyInterface& JoltSpace3D::get_body_iface([[maybe_unused]] bool p_locked) const {
+#ifndef GJ_CONFIG_DISTRIBUTION
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetBodyInterface();
-	} else {
-		return physics_system->GetBodyInterfaceNoLock();
 	}
+#endif // GJ_CONFIG_DISTRIBUTION
+
+	return physics_system->GetBodyInterfaceNoLock();
 }
 
-const JPH::BodyLockInterface& JoltSpace3D::get_lock_iface(bool p_locked) const {
+const JPH::BodyLockInterface& JoltSpace3D::get_lock_iface([[maybe_unused]] bool p_locked) const {
+#ifndef GJ_CONFIG_DISTRIBUTION
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetBodyLockInterface();
-	} else {
-		return physics_system->GetBodyLockInterfaceNoLock();
 	}
+#endif // GJ_CONFIG_DISTRIBUTION
+
+	return physics_system->GetBodyLockInterfaceNoLock();
 }
 
 const JPH::BroadPhaseQuery& JoltSpace3D::get_broad_phase_query() const {
 	return physics_system->GetBroadPhaseQuery();
 }
 
-const JPH::NarrowPhaseQuery& JoltSpace3D::get_narrow_phase_query(bool p_locked) const {
+const JPH::NarrowPhaseQuery& JoltSpace3D::get_narrow_phase_query([[maybe_unused]] bool p_locked
+) const {
+#ifndef GJ_CONFIG_DISTRIBUTION
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetNarrowPhaseQuery();
-	} else {
-		return physics_system->GetNarrowPhaseQueryNoLock();
 	}
+#endif // GJ_CONFIG_DISTRIBUTION
+
+	return physics_system->GetNarrowPhaseQueryNoLock();
 }
 
 JPH::ObjectLayer JoltSpace3D::map_to_object_layer(
