@@ -23,9 +23,13 @@ Prerequisites:
 ⚠️ These commands will build binaries for 64-bit systems. If you instead wish to build binaries for
 32-bit systems then replace `x64` with `x86`.
 
-⚠️ Either of these need to be run from one of Visual Studio's [Native Tools Command Prompt][cmd] for
-CMake to find the correct toolchain. Make sure you pick the one appropriate for your target
+⚠️ Either of these need to be run from one of Visual Studio's "[Native Tools Command Prompt][cmd]"
+for CMake to find the correct toolchain. Make sure you pick the one appropriate for your target
 architecture (x64 or x86).
+
+⚠️Visual Studio's "Developer Command Prompt" or "Developer PowerShell" will not work when targeting
+64-bit systems due to them defaulting to a 32-bit toolchain. Use the "x64 Native Tools Command
+Prompt" instead.
 
 Using Microsoft Visual C++:
 
