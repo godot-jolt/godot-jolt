@@ -31,8 +31,9 @@ target_link_libraries(godot-jolt
 
 set(is_editor_config $<CONFIG:EditorDebug,EditorDevelopment,EditorDistribution>)
 set(is_debug_config $<CONFIG:Debug,EditorDebug>)
-set(is_optimized_config $<CONFIG:Development,Distribution,EditorDevelopment,EditorDistribution>)
+set(is_development_config $<CONFIG:Development,EditorDevelopment>)
 set(is_distribution_config $<CONFIG:Distribution,EditorDistribution>)
+set(is_optimized_config $<OR:${is_development_config},${is_distribution_config}>)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
 	set(suffix_platform -windows)
@@ -95,6 +96,10 @@ target_compile_features(godot-jolt
 
 target_compile_definitions(godot-jolt
 	PRIVATE $<IF:${is_debug_config},_DEBUG,NDEBUG>
+	PRIVATE $<${is_debug_config}:GJ_CONFIG_DEBUG>
+	PRIVATE $<${is_development_config}:GJ_CONFIG_DEVELOPMENT>
+	PRIVATE $<${is_distribution_config}:GJ_CONFIG_DISTRIBUTION>
+	PRIVATE $<${is_editor_config}:GJ_CONFIG_EDITOR>
 )
 
 if(GJ_PRECOMPILE_HEADERS)

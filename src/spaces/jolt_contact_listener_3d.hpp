@@ -62,7 +62,7 @@ public:
 
 	void post_step();
 
-#ifdef DEBUG_ENABLED
+#ifdef GJ_CONFIG_EDITOR
 	const PackedVector3Array& get_debug_contacts() const { return debug_contacts; }
 
 	int32_t get_debug_contact_count() const { return debug_contact_count; }
@@ -70,7 +70,7 @@ public:
 	int32_t get_max_debug_contacts() const { return (int32_t)debug_contacts.size(); }
 
 	void set_max_debug_contacts(int32_t p_count) { debug_contacts.resize(p_count); }
-#endif // DEBUG_ENABLED
+#endif // GJ_CONFIG_EDITOR
 
 private:
 	void OnContactAdded(
@@ -106,9 +106,9 @@ private:
 
 	void flush_area_exits();
 
-#ifdef DEBUG_ENABLED
+#ifdef GJ_CONFIG_EDITOR
 	void add_debug_contacts(const JPH::ContactManifold& p_manifold);
-#endif // DEBUG_ENABLED
+#endif // GJ_CONFIG_EDITOR
 
 	ManifoldsByShapePair manifolds_by_shape_pair;
 
@@ -124,9 +124,9 @@ private:
 
 	JoltSpace3D* space = nullptr;
 
-#ifdef DEBUG_ENABLED
+#ifdef GJ_CONFIG_EDITOR
 	PackedVector3Array debug_contacts;
 
 	std::atomic<int32_t> debug_contact_count = 0;
-#endif // DEBUG_ENABLED
+#endif // GJ_CONFIG_EDITOR
 };
