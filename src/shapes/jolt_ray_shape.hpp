@@ -11,17 +11,17 @@ public:
 		bool p_slide_on_slope,
 		const JPH::PhysicsMaterial* p_material = nullptr
 	)
-		: slide_on_slope(p_slide_on_slope)
+		: material(p_material)
 		, length(p_length)
-		, material(p_material) { }
+		, slide_on_slope(p_slide_on_slope) { }
 
 	JPH::ShapeSettings::ShapeResult Create() const override;
 
-	bool slide_on_slope = false;
+	JPH::RefConst<JPH::PhysicsMaterial> material;
 
 	float length = 1.0f;
 
-	JPH::RefConst<JPH::PhysicsMaterial> material;
+	bool slide_on_slope = false;
 };
 
 class JoltRayShape final : public JPH::ConvexShape {
@@ -33,9 +33,9 @@ public:
 
 	JoltRayShape(const JoltRayShapeSettings& p_settings, JPH::Shape::ShapeResult& p_result)
 		: JPH::ConvexShape(JoltShapeSubType::RAY, p_settings, p_result)
-		, slide_on_slope(p_settings.slide_on_slope)
+		, material(p_settings.material)
 		, length(p_settings.length)
-		, material(p_settings.material) {
+		, slide_on_slope(p_settings.slide_on_slope) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
 		}
@@ -47,9 +47,9 @@ public:
 		const JPH::PhysicsMaterial* p_material = nullptr
 	)
 		: JPH::ConvexShape(JoltShapeSubType::RAY)
-		, slide_on_slope(p_slide_on_slope)
+		, material(p_material)
 		, length(p_length)
-		, material(p_material) { }
+		, slide_on_slope(p_slide_on_slope) { }
 
 	JPH::AABox GetLocalBounds() const override;
 
@@ -130,9 +130,9 @@ public:
 		JPH::Vec3Arg p_scale
 	) const override;
 
-	bool slide_on_slope = false;
+	JPH::RefConst<JPH::PhysicsMaterial> material;
 
 	float length = 0.0f;
 
-	JPH::RefConst<JPH::PhysicsMaterial> material;
+	bool slide_on_slope = false;
 };

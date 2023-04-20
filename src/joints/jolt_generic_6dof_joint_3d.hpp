@@ -60,9 +60,7 @@ public:
 private:
 	void rebuild(bool p_lock = true);
 
-	bool use_limits[AXIS_COUNT] = {};
-
-	bool motor_enabled[AXIS_COUNT] = {};
+	Transform3D world_ref;
 
 	double limit_lower[AXIS_COUNT] = {};
 
@@ -72,5 +70,7 @@ private:
 
 	double motor_limit[AXIS_COUNT] = {};
 
-	Transform3D world_ref;
+	bool use_limits[AXIS_COUNT] = {};
+
+	bool motor_enabled[AXIS_COUNT] = {};
 };

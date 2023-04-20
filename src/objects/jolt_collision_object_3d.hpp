@@ -159,11 +159,15 @@ protected:
 
 	virtual void transform_changed([[maybe_unused]] bool p_lock = true) { }
 
+	LocalVector<JoltShapeInstance3D> shapes;
+
+	Vector3 scale = {1.0f, 1.0f, 1.0f};
+
 	RID rid;
 
 	ObjectID instance_id;
 
-	JPH::BodyID jolt_id;
+	JoltSpace3D* space = nullptr;
 
 	JPH::BodyCreationSettings* jolt_settings = new JPH::BodyCreationSettings();
 
@@ -171,15 +175,11 @@ protected:
 
 	JPH::ShapeRefC previous_jolt_shape;
 
-	JoltSpace3D* space = nullptr;
+	JPH::BodyID jolt_id;
 
 	uint32_t collision_layer = 1;
 
 	uint32_t collision_mask = 1;
-
-	Vector3 scale = {1.0f, 1.0f, 1.0f};
-
-	LocalVector<JoltShapeInstance3D> shapes;
 
 	bool ray_pickable = false;
 };

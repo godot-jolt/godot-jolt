@@ -36,15 +36,15 @@ class JoltArea3D final : public JoltCollisionObject3D {
 	};
 
 	struct Overlap {
-		ObjectID instance_id;
-
-		RID rid;
-
-		InlineVector<ShapeIndexPair, 1> pending_removed;
+		HashMap<ShapeIDPair, ShapeIndexPair, ShapeIDPair> shape_pairs;
 
 		InlineVector<ShapeIndexPair, 1> pending_added;
 
-		HashMap<ShapeIDPair, ShapeIndexPair, ShapeIDPair> shape_pairs;
+		InlineVector<ShapeIndexPair, 1> pending_removed;
+
+		RID rid;
+
+		ObjectID instance_id;
 	};
 
 	using OverlapsById = HashMap<JPH::BodyID, Overlap, BodyIDHasher>;
@@ -203,9 +203,15 @@ private:
 
 	void monitorable_changed(bool p_lock = true);
 
-	bool monitorable = false;
+	OverlapsById bodies_by_id;
 
-	bool point_gravity = false;
+	OverlapsById areas_by_id;
+
+	Vector3 gravity_vector = {0, -1, 0};
+
+	Callable body_monitor_callback;
+
+	Callable area_monitor_callback;
 
 	float priority = 0.0f;
 
@@ -223,13 +229,7 @@ private:
 
 	OverrideMode angular_damp_mode = PhysicsServer3D::AREA_SPACE_OVERRIDE_DISABLED;
 
-	Vector3 gravity_vector = {0, -1, 0};
+	bool monitorable = false;
 
-	Callable body_monitor_callback;
-
-	Callable area_monitor_callback;
-
-	OverlapsById bodies_by_id;
-
-	OverlapsById areas_by_id;
+	bool point_gravity = false;
 };
