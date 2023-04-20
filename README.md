@@ -14,10 +14,12 @@ lack of support for `SoftBody3D` amongst other things.
 
 You can track the progress of this work [here][cpb].
 
-## Platforms
+## Compatibility
 
-Godot Jolt aims to support most platforms that Godot can be deployed to. Currently only the major
-desktop platforms are supported. These include:
+Godot Jolt only supports the current stable version of Godot 4 and might not work with other
+versions due to potential API differences in the GDExtension API.
+
+Currently only the major desktop platforms are supported. These include:
 
 - Windows (x86-64, x86)
 - Linux (x86-64, x86)

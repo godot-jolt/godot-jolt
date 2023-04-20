@@ -14,6 +14,7 @@ This document contains instructions for how to build Godot Jolt from source.
 
 Prerequisites:
 
+- Git 2.25 or newer
 - CMake 3.22 or newer
 - Python 3.8 or newer
 - Visual Studio 2022 (with the "Desktop development with C++" workload)
@@ -51,6 +52,7 @@ cmake --build --preset windows-clangcl-x64-editor-distribution
 
 Prerequisites:
 
+- Git 2.25 or newer
 - CMake 3.22 or newer
 - Python 3.8 or newer
 - GCC 11 or newer
@@ -80,6 +82,7 @@ cmake --build --preset linux-gcc-x64-editor-distribution
 
 Prerequisites:
 
+- Git 2.25 or newer
 - CMake 3.22 or newer
 - Python 3.8 or newer
 - Xcode 14.1 or equivalent Xcode Command Line Tools
