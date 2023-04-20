@@ -103,6 +103,8 @@ private:
 
 	void post_step(float p_step);
 
+	JoltBodyWriter3D body_accessor;
+
 	RID rid;
 
 	JPH::JobSystem* job_system = nullptr;
@@ -114,8 +116,6 @@ private:
 	JoltContactListener3D* contact_listener = nullptr;
 
 	JPH::PhysicsSystem* physics_system = nullptr;
-
-	JoltBodyWriter3D body_accessor;
 
 	JoltPhysicsDirectSpaceState3D* direct_state = nullptr;
 

@@ -22,12 +22,12 @@ constexpr double DEFAULT_SOLVER_ITERATIONS = 8;
 } // namespace
 
 JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
-	: job_system(p_job_system)
+	: body_accessor(this)
+	, job_system(p_job_system)
 	, temp_allocator(new JoltTempAllocator())
 	, layer_mapper(new JoltLayerMapper())
 	, contact_listener(new JoltContactListener3D(this))
-	, physics_system(new JPH::PhysicsSystem())
-	, body_accessor(this) {
+	, physics_system(new JPH::PhysicsSystem()) {
 	physics_system->Init(
 		(JPH::uint)JoltProjectSettings::get_max_bodies(),
 		0,

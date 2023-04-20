@@ -568,14 +568,6 @@ public:
 	JoltJoint3D* get_joint(const RID& p_rid) const { return joint_owner.get_or_null(p_rid); }
 
 private:
-	bool active = true;
-
-	bool flushing_queries = false;
-
-	JoltJobSystem* job_system = nullptr;
-
-	HashSet<JoltSpace3D*> active_spaces;
-
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
 
 	mutable RID_PtrOwner<JoltArea3D> area_owner;
@@ -585,4 +577,12 @@ private:
 	mutable RID_PtrOwner<JoltShape3D> shape_owner;
 
 	mutable RID_PtrOwner<JoltJoint3D> joint_owner;
+
+	HashSet<JoltSpace3D*> active_spaces;
+
+	JoltJobSystem* job_system = nullptr;
+
+	bool active = true;
+
+	bool flushing_queries = false;
 };

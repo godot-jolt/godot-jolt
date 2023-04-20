@@ -7,6 +7,8 @@ class JoltSpace3D;
 class JoltDebugRenderer3D final : public JPH::DebugRenderer {
 public:
 	struct DrawSettings {
+		JPH::BodyManager::EShapeColor color_scheme = JPH::BodyManager::EShapeColor::ShapeTypeColor;
+
 		bool draw_bodies = true;
 
 		bool draw_shapes = true;
@@ -26,8 +28,6 @@ public:
 		bool draw_constraint_limits = false;
 
 		bool draw_as_wireframe = true;
-
-		JPH::BodyManager::EShapeColor color_scheme = JPH::BodyManager::EShapeColor::ShapeTypeColor;
 	};
 
 	static JoltDebugRenderer3D* acquire();
@@ -97,13 +97,9 @@ private:
 
 	inline static int32_t ref_count = 0;
 
-	int32_t triangle_capacity = 0;
+	AABB triangles_aabb;
 
-	int32_t triangle_count = 0;
-
-	int32_t line_capacity = 0;
-
-	int32_t line_count = 0;
+	AABB lines_aabb;
 
 	PackedByteArray triangle_vertices;
 
@@ -113,11 +109,15 @@ private:
 
 	PackedByteArray line_attributes;
 
-	AABB triangles_aabb;
-
-	AABB lines_aabb;
-
 	JPH::Vec3 camera_position = {0, 0, 0};
+
+	int32_t triangle_capacity = 0;
+
+	int32_t triangle_count = 0;
+
+	int32_t line_capacity = 0;
+
+	int32_t line_count = 0;
 };
 
 #endif // JPH_DEBUG_RENDERER

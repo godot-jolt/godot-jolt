@@ -40,9 +40,9 @@ private:
 
 		inline static std::atomic<Job*> completed_head = nullptr;
 
-		std::atomic<Job*> completed_next = nullptr;
-
 		int64_t task_id = -1;
+
+		std::atomic<Job*> completed_next = nullptr;
 	};
 
 	int GetMaxConcurrency() const override;

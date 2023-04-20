@@ -70,11 +70,11 @@ protected:
 
 	virtual void invalidated(bool p_lock = true);
 
+	HashMap<JoltCollisionObject3D*, int32_t> ref_counts_by_owner;
+
 	RID rid;
 
 	JPH::ShapeRefC jolt_ref;
-
-	HashMap<JoltCollisionObject3D*, int32_t> ref_counts_by_owner;
 };
 
 class JoltWorldBoundaryShape3D final : public JoltShape3D {

@@ -110,19 +110,19 @@ private:
 	void add_debug_contacts(const JPH::ContactManifold& p_manifold);
 #endif // DEBUG_ENABLED
 
-	JoltSpace3D* space = nullptr;
-
-	Mutex write_mutex;
+	ManifoldsByShapePair manifolds_by_shape_pair;
 
 	BodyIDs listening_for;
-
-	ManifoldsByShapePair manifolds_by_shape_pair;
 
 	Overlaps area_overlaps;
 
 	Overlaps area_enters;
 
 	Overlaps area_exits;
+
+	Mutex write_mutex;
+
+	JoltSpace3D* space = nullptr;
 
 #ifdef DEBUG_ENABLED
 	PackedVector3Array debug_contacts;

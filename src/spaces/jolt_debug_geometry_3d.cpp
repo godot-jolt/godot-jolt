@@ -82,8 +82,8 @@ void JoltDebugGeometry3D::_bind_methods() {
 #ifdef JPH_DEBUG_RENDERER
 
 JoltDebugGeometry3D::JoltDebugGeometry3D()
-	: debug_renderer(JoltDebugRenderer3D::acquire())
-	, mesh(RenderingServer::get_singleton()->mesh_create()) {
+	: mesh(RenderingServer::get_singleton()->mesh_create())
+	, debug_renderer(JoltDebugRenderer3D::acquire()) {
 	set_base(mesh);
 
 	set_cast_shadows_setting(GeometryInstance3D::SHADOW_CASTING_SETTING_OFF);
