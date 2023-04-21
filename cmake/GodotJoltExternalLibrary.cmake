@@ -183,6 +183,7 @@ function(gdj_add_external_library library_name library_configs)
 		-DCMAKE_POLICY_DEFAULT_CMP0069=NEW # Allows use of INTERPROCEDURAL_OPTIMIZATION
 		-DCMAKE_POLICY_DEFAULT_CMP0091=NEW # Allows use of MSVC_RUNTIME_LIBRARY
 		-DCMAKE_MSVC_RUNTIME_LIBRARY=${msvcrt}
+		-DCMAKE_CXX_VISIBILITY_PRESET=hidden
 		${log_level_arg}
 		${arg_CMAKE_CACHE_ARGS}
 	)
