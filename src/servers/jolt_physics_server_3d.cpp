@@ -189,35 +189,35 @@ void JoltPhysicsServer3D::_space_set_debug_contacts(
 	[[maybe_unused]] const RID& p_space,
 	[[maybe_unused]] int32_t p_max_contacts
 ) {
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL(space);
 
 	space->set_max_debug_contacts(p_max_contacts);
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR
 }
 
 PackedVector3Array JoltPhysicsServer3D::_space_get_contacts([[maybe_unused]] const RID& p_space
 ) const {
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
 
 	return space->get_debug_contacts();
-#else // GJ_CONFIG_EDITOR
+#else // GDJ_CONFIG_EDITOR
 	return {};
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR
 }
 
 int32_t JoltPhysicsServer3D::_space_get_contact_count([[maybe_unused]] const RID& p_space) const {
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
 
 	return space->get_debug_contact_count();
-#else // GJ_CONFIG_EDITOR
+#else // GDJ_CONFIG_EDITOR
 	return 0;
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR
 }
 
 RID JoltPhysicsServer3D::_area_create() {
@@ -988,14 +988,14 @@ PhysicsDirectBodyState3D* JoltPhysicsServer3D::_body_get_direct_state(const RID&
 }
 
 RID JoltPhysicsServer3D::_soft_body_create() {
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 	// HACK(mihe): The editor needs to have a usable body in order for the documentation generation
 	// to not emit errors when doing stuff like attaching instance IDs, so we just give it a regular
 	// body instead.
 	return _body_create();
-#else // GJ_CONFIG_EDITOR
+#else // GDJ_CONFIG_EDITOR
 	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR
 }
 
 void JoltPhysicsServer3D::_soft_body_update_rendering_server(

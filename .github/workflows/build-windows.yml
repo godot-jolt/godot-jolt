@@ -26,7 +26,7 @@ jobs:
         include:
           - platform: windows-clangcl
             arch: x86
-            args: -DGJ_INTERPROCEDURAL_OPTIMIZATION=FALSE
+            args: -DGDJ_INTERPROCEDURAL_OPTIMIZATION=FALSE
 
     steps:
       - name: Checkout code

@@ -71,23 +71,23 @@ and link to that instead of your local one.
 
 These are the project-specific CMake options that are available. They are only relevant if you
 decide *not* to use the presets described [below](#presets), but you can also override the presets'
-defaults by passing `-DGJ_SOME_VARIABLE=VALUE` to CMake.
+defaults by passing `-DGDJ_SOME_VARIABLE=VALUE` to CMake.
 
-- `GJ_X86_INSTRUCTION_SET`
+- `GDJ_X86_INSTRUCTION_SET`
   - Sets the minimum required CPU instruction set when compiling for x86.
   - ⚠️ This flag is not available on Apple platforms, due to universal binaries not supporting it.
   - Possible values are [`NONE`, `SSE2`, `AVX`, `AVX2`, `AVX512`]
   - Default is `SSE2`
-- `GJ_INTERPROCEDURAL_OPTIMIZATION`
+- `GDJ_INTERPROCEDURAL_OPTIMIZATION`
   - Enables interprocedural optimizations for any optimized builds, also known as link-time
     optimizations or link-time code generation.
   - Default is `TRUE`.
-- `GJ_PRECOMPILE_HEADERS`
+- `GDJ_PRECOMPILE_HEADERS`
   - Enables precompiling of header files that don't change often, like external ones, which speeds
     up compilations.
   - Disabling this will make it so any precompiled headers gets force-included instead.
   - Default is `TRUE`.
-- `GJ_STATIC_RUNTIME_LIBRARY`
+- `GDJ_STATIC_RUNTIME_LIBRARY`
   - Whether to statically link against the platform-specific C++ runtime, for added portability.
   - ⚠️ This flag is not available on Apple platforms.
   - Default is `TRUE`.
@@ -265,7 +265,7 @@ To see if you have any linting errors:
 
 ```pwsh
 # Generate build files, and disable precompiled headers to prevent compatibility issues
-cmake --preset windows-clangcl-x64 -DGJ_PRECOMPILE_HEADERS=NO
+cmake --preset windows-clangcl-x64 -DGDJ_PRECOMPILE_HEADERS=NO
 
 # Build any configuration, so that we fetch and prepare all of our dependencies
 cmake --build --preset windows-clangcl-x64-editor-debug

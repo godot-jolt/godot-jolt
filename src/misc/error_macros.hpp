@@ -13,12 +13,12 @@
 #define ERR_FAIL_D() ERR_FAIL_V({})
 #define ERR_FAIL_D_MSG(m_msg) ERR_FAIL_V_MSG({}, m_msg)
 
-#define GJ_MSG_NOT_IMPL vformat("%s is not implemented in Godot Jolt.", __FUNCTION__)
-#define ERR_FAIL_NOT_IMPL() ERR_FAIL_MSG(GJ_MSG_NOT_IMPL)
-#define ERR_FAIL_V_NOT_IMPL(m_retval) ERR_FAIL_V_MSG(m_retval, GJ_MSG_NOT_IMPL)
-#define ERR_FAIL_D_NOT_IMPL() ERR_FAIL_D_MSG(GJ_MSG_NOT_IMPL)
-#define ERR_BREAK_NOT_IMPL(m_cond) ERR_BREAK_MSG(m_cond, GJ_MSG_NOT_IMPL)
-#define ERR_CONTINUE_NOT_IMPL(m_cond) ERR_CONTINUE_MSG(m_cond, GJ_MSG_NOT_IMPL)
+#define GDJ_MSG_NOT_IMPL vformat("%s is not implemented in Godot Jolt.", __FUNCTION__)
+#define ERR_FAIL_NOT_IMPL() ERR_FAIL_MSG(GDJ_MSG_NOT_IMPL)
+#define ERR_FAIL_V_NOT_IMPL(m_retval) ERR_FAIL_V_MSG(m_retval, GDJ_MSG_NOT_IMPL)
+#define ERR_FAIL_D_NOT_IMPL() ERR_FAIL_D_MSG(GDJ_MSG_NOT_IMPL)
+#define ERR_BREAK_NOT_IMPL(m_cond) ERR_BREAK_MSG(m_cond, GDJ_MSG_NOT_IMPL)
+#define ERR_CONTINUE_NOT_IMPL(m_cond) ERR_CONTINUE_MSG(m_cond, GDJ_MSG_NOT_IMPL)
 
 // clang-format on
 
@@ -59,7 +59,7 @@
 #define QUIET_FAIL_UNSIGNED_INDEX_V(m_index, m_size, m_retval) QUIET_FAIL_COND_V((m_index) >= (m_size), m_retval)
 #define QUIET_FAIL_UNSIGNED_INDEX_D(m_index, m_size) QUIET_FAIL_UNSIGNED_INDEX_V(m_index, m_size, {})
 
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 
 #define QUIET_FAIL_COND_D_ED(m_cond, m_retval) QUIET_FAIL_COND_D(m_cond, m_retval)
 #define QUIET_FAIL_NULL_ED(m_param) QUIET_FAIL_NULL(m_param)
@@ -74,7 +74,7 @@
 #define QUIET_BREAK_ED(m_cond) QUIET_BREAK(m_cond)
 #define QUIET_CONTINUE_ED(m_cond) QUIET_CONTINUE(m_cond)
 
-#else // GJ_CONFIG_EDITOR
+#else // GDJ_CONFIG_EDITOR
 
 #define QUIET_FAIL_COND_D_ED(m_cond, m_retval)
 #define QUIET_FAIL_NULL_ED(m_param)
@@ -89,4 +89,4 @@
 #define QUIET_BREAK_ED(m_cond)
 #define QUIET_CONTINUE_ED(m_cond)
 
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR
