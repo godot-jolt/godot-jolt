@@ -29,29 +29,29 @@ target_link_libraries(godot-jolt
 	godot-jolt::mimalloc
 )
 
+set(is_windows $<STREQUAL:${CMAKE_SYSTEM_NAME},Windows>)
+set(is_linux $<STREQUAL:${CMAKE_SYSTEM_NAME},Linux>)
+set(is_macos $<STREQUAL:${CMAKE_SYSTEM_NAME},Darwin>)
+
+set(is_x86 $<STREQUAL:${GJ_TARGET_ARCHITECTURES},x86>)
+set(is_x64 $<STREQUAL:${GJ_TARGET_ARCHITECTURES},x64>)
+
 set(is_editor_config $<CONFIG:EditorDebug,EditorDevelopment,EditorDistribution>)
 set(is_debug_config $<CONFIG:Debug,EditorDebug>)
 set(is_development_config $<CONFIG:Development,EditorDevelopment>)
 set(is_distribution_config $<CONFIG:Distribution,EditorDistribution>)
 set(is_optimized_config $<OR:${is_development_config},${is_distribution_config}>)
 
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-	set(suffix_platform _windows)
-elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
-	set(suffix_platform _linux)
-elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-	set(suffix_platform _macos)
-else()
-	message(FATAL_ERROR "Unhandled system name: '${CMAKE_SYSTEM_NAME}'.")
-endif()
+string(CONCAT suffix_platform
+	$<${is_windows}:_windows>
+	$<${is_linux}:_linux>
+	$<${is_macos}:_macos>
+)
 
-if(GJ_TARGET_ARCHITECTURES STREQUAL x86)
-	set(suffix_arch _x86)
-elseif(GJ_TARGET_ARCHITECTURES STREQUAL x64)
-	set(suffix_arch _x64)
-else()
-	set(suffix_arch "")
-endif()
+string(CONCAT suffix_arch
+	$<${is_x86}:_x86>
+	$<${is_x64}:_x64>
+)
 
 set(suffix_editor $<${is_editor_config}:_editor>)
 set(suffix ${suffix_platform}${suffix_arch}${suffix_editor})
@@ -95,11 +95,14 @@ target_compile_features(godot-jolt
 )
 
 target_compile_definitions(godot-jolt
-	PRIVATE $<IF:${is_debug_config},_DEBUG,NDEBUG>
+	PRIVATE $<${is_windows}:GJ_PLATFORM_WINDOWS>
+	PRIVATE $<${is_linux}:GJ_PLATFORM_LINUX>
+	PRIVATE $<${is_macos}:GJ_PLATFORM_MACOS>
 	PRIVATE $<${is_debug_config}:GJ_CONFIG_DEBUG>
 	PRIVATE $<${is_development_config}:GJ_CONFIG_DEVELOPMENT>
 	PRIVATE $<${is_distribution_config}:GJ_CONFIG_DISTRIBUTION>
 	PRIVATE $<${is_editor_config}:GJ_CONFIG_EDITOR>
+	PRIVATE $<IF:${is_debug_config},_DEBUG,NDEBUG>
 )
 
 if(GJ_PRECOMPILE_HEADERS)
