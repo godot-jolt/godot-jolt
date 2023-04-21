@@ -49,8 +49,8 @@ string(CONCAT suffix_platform
 )
 
 string(CONCAT suffix_arch
-	$<${is_x86}:_x86>
-	$<${is_x64}:_x64>
+	$<${is_x86}:-x86>
+	$<${is_x64}:-x64>
 )
 
 set(suffix_editor $<${is_editor_config}:_editor>)
