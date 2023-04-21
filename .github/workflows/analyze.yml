@@ -52,7 +52,7 @@ jobs:
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}
-          args: -DGJ_PRECOMPILE_HEADERS=FALSE
+          args: -DGDJ_PRECOMPILE_HEADERS=FALSE
 
       - name: Build
         uses: ./.github/actions/cmake-build

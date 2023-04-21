@@ -33,8 +33,8 @@ set(is_windows $<STREQUAL:${CMAKE_SYSTEM_NAME},Windows>)
 set(is_linux $<STREQUAL:${CMAKE_SYSTEM_NAME},Linux>)
 set(is_macos $<STREQUAL:${CMAKE_SYSTEM_NAME},Darwin>)
 
-set(is_x86 $<STREQUAL:${GJ_TARGET_ARCHITECTURES},x86>)
-set(is_x64 $<STREQUAL:${GJ_TARGET_ARCHITECTURES},x64>)
+set(is_x86 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},x86>)
+set(is_x64 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},x64>)
 
 set(is_editor_config $<CONFIG:EditorDebug,EditorDevelopment,EditorDistribution>)
 set(is_debug_config $<CONFIG:Debug,EditorDebug>)
@@ -56,15 +56,15 @@ string(CONCAT suffix_arch
 set(suffix_editor $<${is_editor_config}:_editor>)
 set(suffix ${suffix_platform}${suffix_arch}${suffix_editor})
 
-set(use_static_crt $<BOOL:${GJ_STATIC_RUNTIME_LIBRARY}>)
+set(use_static_crt $<BOOL:${GDJ_STATIC_RUNTIME_LIBRARY}>)
 set(msvcrt_debug $<$<CONFIG:Debug,EditorDebug>:Debug>)
 set(msvcrt_dll $<$<NOT:${use_static_crt}>:DLL>)
 set(msvcrt MultiThreaded${msvcrt_debug}${msvcrt_dll})
 
-set(target_avx512 $<STREQUAL:${GJ_X86_INSTRUCTION_SET},AVX512>)
-set(target_avx2 $<STREQUAL:${GJ_X86_INSTRUCTION_SET},AVX2>)
-set(target_avx $<STREQUAL:${GJ_X86_INSTRUCTION_SET},AVX>)
-set(target_sse2 $<STREQUAL:${GJ_X86_INSTRUCTION_SET},SSE2>)
+set(target_avx512 $<STREQUAL:${GDJ_X86_INSTRUCTION_SET},AVX512>)
+set(target_avx2 $<STREQUAL:${GDJ_X86_INSTRUCTION_SET},AVX2>)
+set(target_avx $<STREQUAL:${GDJ_X86_INSTRUCTION_SET},AVX>)
+set(target_sse2 $<STREQUAL:${GDJ_X86_INSTRUCTION_SET},SSE2>)
 
 set(is_msvc_like $<BOOL:${MSVC}>)
 set(is_msvc_cl $<CXX_COMPILER_ID:MSVC>)
@@ -79,10 +79,10 @@ set_target_properties(godot-jolt PROPERTIES
 	PREFIX ""
 	INCLUDE_DIRECTORIES ${source_dir}
 	MSVC_RUNTIME_LIBRARY ${msvcrt}
-	INTERPROCEDURAL_OPTIMIZATION_DEVELOPMENT ${GJ_INTERPROCEDURAL_OPTIMIZATION}
-	INTERPROCEDURAL_OPTIMIZATION_DISTRIBUTION ${GJ_INTERPROCEDURAL_OPTIMIZATION}
-	INTERPROCEDURAL_OPTIMIZATION_EDITORDEVELOPMENT ${GJ_INTERPROCEDURAL_OPTIMIZATION}
-	INTERPROCEDURAL_OPTIMIZATION_EDITORDISTRIBUTION ${GJ_INTERPROCEDURAL_OPTIMIZATION}
+	INTERPROCEDURAL_OPTIMIZATION_DEVELOPMENT ${GDJ_INTERPROCEDURAL_OPTIMIZATION}
+	INTERPROCEDURAL_OPTIMIZATION_DISTRIBUTION ${GDJ_INTERPROCEDURAL_OPTIMIZATION}
+	INTERPROCEDURAL_OPTIMIZATION_EDITORDEVELOPMENT ${GDJ_INTERPROCEDURAL_OPTIMIZATION}
+	INTERPROCEDURAL_OPTIMIZATION_EDITORDISTRIBUTION ${GDJ_INTERPROCEDURAL_OPTIMIZATION}
 	FRAMEWORK TRUE
 	MACOSX_FRAMEWORK_IDENTIFIER "org.godotjolt.\${PRODUCT_NAME:rfc1034identifier}"
 	MACOSX_FRAMEWORK_BUNDLE_VERSION ${CMAKE_PROJECT_VERSION}
@@ -95,17 +95,17 @@ target_compile_features(godot-jolt
 )
 
 target_compile_definitions(godot-jolt
-	PRIVATE $<${is_windows}:GJ_PLATFORM_WINDOWS>
-	PRIVATE $<${is_linux}:GJ_PLATFORM_LINUX>
-	PRIVATE $<${is_macos}:GJ_PLATFORM_MACOS>
-	PRIVATE $<${is_debug_config}:GJ_CONFIG_DEBUG>
-	PRIVATE $<${is_development_config}:GJ_CONFIG_DEVELOPMENT>
-	PRIVATE $<${is_distribution_config}:GJ_CONFIG_DISTRIBUTION>
-	PRIVATE $<${is_editor_config}:GJ_CONFIG_EDITOR>
+	PRIVATE $<${is_windows}:GDJ_PLATFORM_WINDOWS>
+	PRIVATE $<${is_linux}:GDJ_PLATFORM_LINUX>
+	PRIVATE $<${is_macos}:GDJ_PLATFORM_MACOS>
+	PRIVATE $<${is_debug_config}:GDJ_CONFIG_DEBUG>
+	PRIVATE $<${is_development_config}:GDJ_CONFIG_DEVELOPMENT>
+	PRIVATE $<${is_distribution_config}:GDJ_CONFIG_DISTRIBUTION>
+	PRIVATE $<${is_editor_config}:GDJ_CONFIG_EDITOR>
 	PRIVATE $<IF:${is_debug_config},_DEBUG,NDEBUG>
 )
 
-if(GJ_PRECOMPILE_HEADERS)
+if(GDJ_PRECOMPILE_HEADERS)
 	target_precompile_headers(godot-jolt
 		PRIVATE ${pch_file}
 	)
@@ -150,14 +150,14 @@ if(MSVC)
 		PRIVATE $<${is_distribution_config}:/PDBALTPATH:${pdb_file_name}> # Strip PDB path
 	)
 else()
-	set(use_avx512 $<BOOL:${GJ_USE_AVX512}>)
-	set(use_avx2 $<BOOL:${GJ_USE_AVX2}>)
-	set(use_bmi1 $<BOOL:${GJ_USE_BMI1}>)
-	set(use_fma3 $<BOOL:${GJ_USE_FMA3}>)
-	set(use_f16c $<BOOL:${GJ_USE_F16C}>)
-	set(use_avx $<BOOL:${GJ_USE_AVX}>)
-	set(use_sse4_2 $<BOOL:${GJ_USE_SSE4_2}>)
-	set(use_sse2 $<BOOL:${GJ_USE_SSE2}>)
+	set(use_avx512 $<BOOL:${GDJ_USE_AVX512}>)
+	set(use_avx2 $<BOOL:${GDJ_USE_AVX2}>)
+	set(use_bmi1 $<BOOL:${GDJ_USE_BMI1}>)
+	set(use_fma3 $<BOOL:${GDJ_USE_FMA3}>)
+	set(use_f16c $<BOOL:${GDJ_USE_F16C}>)
+	set(use_avx $<BOOL:${GDJ_USE_AVX}>)
+	set(use_sse4_2 $<BOOL:${GDJ_USE_SSE4_2}>)
+	set(use_sse2 $<BOOL:${GDJ_USE_SSE2}>)
 
 	target_compile_options(godot-jolt
 		PRIVATE -Wall # Enable common warnings

@@ -127,14 +127,14 @@
       "name": "x64-base",
       "hidden": true,
       "cacheVariables": {
-        "GJ_TARGET_ARCHITECTURES": "x64"
+        "GDJ_TARGET_ARCHITECTURES": "x64"
       }
     },
     {
       "name": "x86-base",
       "hidden": true,
       "cacheVariables": {
-        "GJ_TARGET_ARCHITECTURES": "x86"
+        "GDJ_TARGET_ARCHITECTURES": "x86"
       }
     },
     {

@@ -23,9 +23,9 @@ void JoltContactListener3D::listen_for(JoltCollisionObject3D* p_object) {
 void JoltContactListener3D::pre_step() {
 	listening_for.clear();
 
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 	debug_contact_count = 0;
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR
 }
 
 void JoltContactListener3D::post_step() {
@@ -41,9 +41,9 @@ void JoltContactListener3D::OnContactAdded(
 	const JPH::ContactManifold& p_manifold,
 	JPH::ContactSettings& p_settings
 ) {
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 	add_debug_contacts(p_manifold);
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR
 
 	if (!is_listening_for(p_body1) && !is_listening_for(p_body2)) {
 		return;
@@ -67,9 +67,9 @@ void JoltContactListener3D::OnContactPersisted(
 	const JPH::ContactManifold& p_manifold,
 	JPH::ContactSettings& p_settings
 ) {
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 	add_debug_contacts(p_manifold);
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR
 
 	if (p_body1.IsSensor() || p_body2.IsSensor()) {
 		return;
@@ -328,7 +328,7 @@ void JoltContactListener3D::flush_area_exits() {
 	area_exits.clear();
 }
 
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 
 void JoltContactListener3D::add_debug_contacts(const JPH::ContactManifold& p_manifold) {
 	const int64_t max_count = debug_contacts.size();
@@ -364,4 +364,4 @@ void JoltContactListener3D::add_debug_contacts(const JPH::ContactManifold& p_man
 	}
 }
 
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR

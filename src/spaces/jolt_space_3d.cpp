@@ -230,31 +230,31 @@ void JoltSpace3D::set_param(
 }
 
 JPH::BodyInterface& JoltSpace3D::get_body_iface([[maybe_unused]] bool p_locked) {
-#ifndef GJ_CONFIG_DISTRIBUTION
+#ifndef GDJ_CONFIG_DISTRIBUTION
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetBodyInterface();
 	}
-#endif // GJ_CONFIG_DISTRIBUTION
+#endif // GDJ_CONFIG_DISTRIBUTION
 
 	return physics_system->GetBodyInterfaceNoLock();
 }
 
 const JPH::BodyInterface& JoltSpace3D::get_body_iface([[maybe_unused]] bool p_locked) const {
-#ifndef GJ_CONFIG_DISTRIBUTION
+#ifndef GDJ_CONFIG_DISTRIBUTION
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetBodyInterface();
 	}
-#endif // GJ_CONFIG_DISTRIBUTION
+#endif // GDJ_CONFIG_DISTRIBUTION
 
 	return physics_system->GetBodyInterfaceNoLock();
 }
 
 const JPH::BodyLockInterface& JoltSpace3D::get_lock_iface([[maybe_unused]] bool p_locked) const {
-#ifndef GJ_CONFIG_DISTRIBUTION
+#ifndef GDJ_CONFIG_DISTRIBUTION
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetBodyLockInterface();
 	}
-#endif // GJ_CONFIG_DISTRIBUTION
+#endif // GDJ_CONFIG_DISTRIBUTION
 
 	return physics_system->GetBodyLockInterfaceNoLock();
 }
@@ -265,11 +265,11 @@ const JPH::BroadPhaseQuery& JoltSpace3D::get_broad_phase_query() const {
 
 const JPH::NarrowPhaseQuery& JoltSpace3D::get_narrow_phase_query([[maybe_unused]] bool p_locked
 ) const {
-#ifndef GJ_CONFIG_DISTRIBUTION
+#ifndef GDJ_CONFIG_DISTRIBUTION
 	if (p_locked && body_accessor.not_acquired()) {
 		return physics_system->GetNarrowPhaseQuery();
 	}
-#endif // GJ_CONFIG_DISTRIBUTION
+#endif // GDJ_CONFIG_DISTRIBUTION
 
 	return physics_system->GetNarrowPhaseQueryNoLock();
 }
@@ -354,7 +354,7 @@ void JoltSpace3D::remove_joint(JoltJoint3D* p_joint) {
 	remove_joint(p_joint->get_jolt_ref());
 }
 
-#ifdef GJ_CONFIG_EDITOR
+#ifdef GDJ_CONFIG_EDITOR
 
 const PackedVector3Array& JoltSpace3D::get_debug_contacts() const {
 	return contact_listener->get_debug_contacts();
@@ -372,7 +372,7 @@ void JoltSpace3D::set_max_debug_contacts(int32_t p_count) {
 	contact_listener->set_max_debug_contacts(p_count);
 }
 
-#endif // GJ_CONFIG_EDITOR
+#endif // GDJ_CONFIG_EDITOR
 
 void JoltSpace3D::pre_step(float p_step) {
 	body_accessor.acquire_all(true);

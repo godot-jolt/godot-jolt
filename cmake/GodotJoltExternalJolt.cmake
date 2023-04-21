@@ -8,14 +8,14 @@ set(configurations
 	Distribution
 )
 
-set(use_avx512 $<BOOL:${GJ_USE_AVX512}>)
-set(use_avx2 $<BOOL:${GJ_USE_AVX2}>)
-set(use_bmi1 $<BOOL:${GJ_USE_BMI1}>)
-set(use_fma3 $<BOOL:${GJ_USE_FMA3}>)
-set(use_f16c $<BOOL:${GJ_USE_F16C}>)
-set(use_avx $<BOOL:${GJ_USE_AVX}>)
-set(use_sse4_2 $<BOOL:${GJ_USE_SSE4_2}>)
-set(use_sse4_2 $<BOOL:${GJ_USE_SSE4_2}>)
+set(use_avx512 $<BOOL:${GDJ_USE_AVX512}>)
+set(use_avx2 $<BOOL:${GDJ_USE_AVX2}>)
+set(use_bmi1 $<BOOL:${GDJ_USE_BMI1}>)
+set(use_fma3 $<BOOL:${GDJ_USE_FMA3}>)
+set(use_f16c $<BOOL:${GDJ_USE_F16C}>)
+set(use_avx $<BOOL:${GDJ_USE_AVX}>)
+set(use_sse4_2 $<BOOL:${GDJ_USE_SSE4_2}>)
+set(use_sse4_2 $<BOOL:${GDJ_USE_SSE4_2}>)
 
 set(is_msvc_cl $<CXX_COMPILER_ID:MSVC>)
 
@@ -25,7 +25,7 @@ set(dev_definitions
 	JPH_DEBUG_RENDERER
 )
 
-gj_add_external_library(jolt "${configurations}"
+gdj_add_external_library(jolt "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/jolt.git
 	GIT_COMMIT 3d36f7aea85fcea4b0de5404c953e40db0a749ba
 	LANGUAGE CXX
@@ -53,17 +53,17 @@ gj_add_external_library(jolt "${configurations}"
 		-DTARGET_SAMPLES=FALSE
 		-DTARGET_UNIT_TESTS=FALSE
 		-DTARGET_VIEWER=FALSE
-		-DINTERPROCEDURAL_OPTIMIZATION=${GJ_INTERPROCEDURAL_OPTIMIZATION}
-		-DUSE_AVX512=${GJ_USE_AVX512}
-		-DUSE_AVX2=${GJ_USE_AVX2}
-		-DUSE_LZCNT=${GJ_USE_BMI1}
-		-DUSE_TZCNT=${GJ_USE_BMI1}
-		-DUSE_FMADD=${GJ_USE_FMA3}
-		-DUSE_F16C=${GJ_USE_F16C}
-		-DUSE_AVX=${GJ_USE_AVX}
-		-DUSE_SSE4_2=${GJ_USE_SSE4_2}
-		-DUSE_SSE4_1=${GJ_USE_SSE4_2}
-		-DUSE_STATIC_MSVC_RUNTIME_LIBRARY=${GJ_STATIC_RUNTIME_LIBRARY}
+		-DINTERPROCEDURAL_OPTIMIZATION=${GDJ_INTERPROCEDURAL_OPTIMIZATION}
+		-DUSE_AVX512=${GDJ_USE_AVX512}
+		-DUSE_AVX2=${GDJ_USE_AVX2}
+		-DUSE_LZCNT=${GDJ_USE_BMI1}
+		-DUSE_TZCNT=${GDJ_USE_BMI1}
+		-DUSE_FMADD=${GDJ_USE_FMA3}
+		-DUSE_F16C=${GDJ_USE_F16C}
+		-DUSE_AVX=${GDJ_USE_AVX}
+		-DUSE_SSE4_2=${GDJ_USE_SSE4_2}
+		-DUSE_SSE4_1=${GDJ_USE_SSE4_2}
+		-DUSE_STATIC_MSVC_RUNTIME_LIBRARY=${GDJ_STATIC_RUNTIME_LIBRARY}
 	LIBRARY_CONFIG_DEBUG Debug
 	LIBRARY_CONFIG_DEVELOPMENT Release
 	LIBRARY_CONFIG_DISTRIBUTION Distribution
