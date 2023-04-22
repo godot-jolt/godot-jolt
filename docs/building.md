@@ -18,19 +18,20 @@ Prerequisites:
 - CMake 3.22 or newer
 - Python 3.8 or newer
 - Visual Studio 2022 (with the "Desktop development with C++" workload)
+  - You can also use the more lightweight "Build Tools for Visual Studio 2022" instead
 - (Optional) Visual Studio's [clang-cl][ccl] component
   - If you wish to compile with LLVM/clang-cl instead of Visual C++
 
 ⚠️ These commands will build binaries for 64-bit systems. If you instead wish to build binaries for
 32-bit systems then replace `x64` with `x86`.
 
-⚠️ Either of these need to be run from one of Visual Studio's "[Native Tools Command Prompt][cmd]"
-for CMake to find the correct toolchain. Make sure you pick the one appropriate for your target
-architecture (x64 or x86).
+⚠️ These commands must be run from one of Visual Studio's "[Native Tools Command Prompt][cmd]" in
+order for CMake to find the correct toolchain. Make sure you pick the one appropriate for your
+target architecture (x64 or x86).
 
-⚠️Visual Studio's "Developer Command Prompt" or "Developer PowerShell" will not work when targeting
-64-bit systems due to them defaulting to a 32-bit toolchain. Use the "x64 Native Tools Command
-Prompt" instead.
+⚠️ Visual Studio's "Developer Command Prompt" and "Developer PowerShell" will not work when
+targeting x64 due to them using to an x86 toolchain. Use the "x64 Native Tools Command Prompt"
+instead.
 
 Using Microsoft Visual C++:
 
@@ -62,20 +63,20 @@ Prerequisites:
 ⚠️ These commands will build binaries for 64-bit systems. If you instead wish to build binaries for
 32-bit systems then replace `x64` with `x86`.
 
-Using Clang:
-
-```pwsh
-cmake --preset linux-clang-x64
-cmake --build --preset linux-clang-x64-distribution
-cmake --build --preset linux-clang-x64-editor-distribution
-```
-
 Using GCC:
 
 ```pwsh
 cmake --preset linux-gcc-x64
 cmake --build --preset linux-gcc-x64-distribution
 cmake --build --preset linux-gcc-x64-editor-distribution
+```
+
+Using Clang:
+
+```pwsh
+cmake --preset linux-clang-x64
+cmake --build --preset linux-clang-x64-distribution
+cmake --build --preset linux-clang-x64-editor-distribution
 ```
 
 ## Building on macOS
