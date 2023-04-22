@@ -193,6 +193,63 @@ else()
 	)
 endif()
 
+if(MSVC)
+	set(debug_symbols ${pdb_file})
+elseif(APPLE)
+	if(GDJ_INTERPROCEDURAL_OPTIMIZATION)
+		# HACK(mihe): When compiling with LTO enabled on macOS we need to tell its linker not to
+		# discard the temporary object files that it generates during LTO, otherwise we won't be
+		# able to map the source files when we actually try to debug with these symbols.
+		# https://clang.llvm.org/docs/CommandGuide/clang.html#cmdoption-flto
+		set(lto_path ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/lto/godot-jolt)
+		target_link_options(godot-jolt PRIVATE -Wl,-object_path_lto,${lto_path})
+	endif()
+
+	find_program(DSYMUTIL_EXECUTABLE dsymutil REQUIRED)
+	mark_as_advanced(DSYMUTIL_EXECUTABLE)
+
+	find_program(STRIP_EXECUTABLE strip REQUIRED)
+	mark_as_advanced(STRIP_EXECUTABLE)
+
+	set(dylib_file $<TARGET_FILE:godot-jolt>)
+	set(framework_dir $<TARGET_BUNDLE_DIR:godot-jolt>)
+	set(dsym_dir ${framework_dir}.dSYM)
+
+	set(cmd_copy_symbols ${DSYMUTIL_EXECUTABLE} ${dylib_file} -o ${dsym_dir})
+	set(cmd_strip_symbols ${STRIP_EXECUTABLE} -Sx ${dylib_file})
+
+	add_custom_command(
+		TARGET godot-jolt POST_BUILD
+		COMMAND "$<${is_distribution_config}:${cmd_copy_symbols}>"
+		COMMAND "$<${is_distribution_config}:${cmd_strip_symbols}>"
+		COMMAND_EXPAND_LISTS
+		VERBATIM
+	)
+
+	set(debug_symbols ${dsym_dir})
+else()
+	find_program(OBJCOPY_EXECUTABLE objcopy REQUIRED)
+	mark_as_advanced(OBJCOPY_EXECUTABLE)
+
+	set(so_file $<TARGET_FILE:godot-jolt>)
+	set(debug_file ${so_file}.debug)
+
+	set(cmd_copy_symbols ${OBJCOPY_EXECUTABLE} --only-keep-debug ${so_file} ${debug_file})
+	set(cmd_strip_symbols ${OBJCOPY_EXECUTABLE} --strip-debug --strip-unneeded ${so_file})
+	set(cmd_link_symbols ${OBJCOPY_EXECUTABLE} --add-gnu-debuglink=${debug_file} ${so_file})
+
+	add_custom_command(
+		TARGET godot-jolt POST_BUILD
+		COMMAND "$<${is_distribution_config}:${cmd_copy_symbols}>"
+		COMMAND "$<${is_distribution_config}:${cmd_strip_symbols}>"
+		COMMAND "$<${is_distribution_config}:${cmd_link_symbols}>"
+		COMMAND_EXPAND_LISTS
+		VERBATIM
+	)
+
+	set(debug_symbols ${debug_file})
+endif()
+
 install(
 	TARGETS godot-jolt
 	RUNTIME DESTINATION bin
@@ -200,14 +257,8 @@ install(
 	FRAMEWORK DESTINATION bin
 )
 
-if(MSVC)
-	# Non-distribution configurations will have the (default) PDB absolute paths embedded in them,
-	# so we don't need to copy this file for a debugger to find them, since we're likely developing
-	# locally anyway
-	install(
-		FILES ${pdb_file}
-		CONFIGURATIONS Distribution EditorDistribution
-		DESTINATION bin
-		OPTIONAL
-	)
-endif()
+install(
+	FILES ${debug_symbols}
+	CONFIGURATIONS Distribution EditorDistribution
+	DESTINATION bin
+)
