@@ -17,6 +17,8 @@ constexpr char CONTACT_PENETRATION[] = "physics/jolt_3d/solver/contact_allowed_p
 
 constexpr char MORE_DETERMINISTIC[] = "physics/jolt_3d/simulation/more_deterministic";
 
+constexpr char MAX_LINEAR_VELOCITY[] = "physics/jolt_3d/limits/max_linear_velocity";
+constexpr char MAX_ANGULAR_VELOCITY[] = "physics/jolt_3d/limits/max_angular_velocity";
 constexpr char MAX_BODIES[] = "physics/jolt_3d/limits/max_bodies";
 constexpr char MAX_PAIRS[] = "physics/jolt_3d/limits/max_body_pairs";
 constexpr char MAX_CONTACTS[] = "physics/jolt_3d/limits/max_contact_constraints";
@@ -121,6 +123,8 @@ void JoltProjectSettings::register_settings() {
 
 	register_setting_plain(MORE_DETERMINISTIC, false);
 
+	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, "0,500,or_greater,suffix:m/s");
+	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,or_greater,suffix:°/s");
 	register_setting_ranged(MAX_BODIES, 10240, "1,10240,or_greater", true);
 	register_setting_ranged(MAX_PAIRS, 65536, "8,65536,or_greater");
 	register_setting_ranged(MAX_CONTACTS, 20480, "8,20480,or_greater");
@@ -179,6 +183,16 @@ float JoltProjectSettings::get_contact_penetration() {
 
 bool JoltProjectSettings::is_more_deterministic() {
 	static const auto value = get_setting<bool>(MORE_DETERMINISTIC);
+	return value;
+}
+
+float JoltProjectSettings::get_max_linear_velocity() {
+	static const auto value = get_setting<float>(MAX_LINEAR_VELOCITY);
+	return value;
+}
+
+float JoltProjectSettings::get_max_angular_velocity() {
+	static const auto value = Math::deg_to_rad(get_setting<float>(MAX_ANGULAR_VELOCITY));
 	return value;
 }
 

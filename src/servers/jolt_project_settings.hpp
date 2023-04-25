@@ -26,6 +26,10 @@ public:
 
 	static bool is_more_deterministic();
 
+	static float get_max_linear_velocity();
+
+	static float get_max_angular_velocity();
+
 	static int32_t get_max_bodies();
 
 	static int32_t get_max_body_pairs();

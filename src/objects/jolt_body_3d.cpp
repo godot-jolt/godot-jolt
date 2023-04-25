@@ -3,6 +3,7 @@
 #include "objects/jolt_area_3d.hpp"
 #include "objects/jolt_group_filter_rid.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
+#include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
@@ -982,6 +983,8 @@ void JoltBody3D::create_in_space() {
 	create_begin();
 
 	jolt_settings->mAllowDynamicOrKinematic = true;
+	jolt_settings->mMaxLinearVelocity = JoltProjectSettings::get_max_linear_velocity();
+	jolt_settings->mMaxAngularVelocity = JoltProjectSettings::get_max_angular_velocity();
 	jolt_settings->mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
 	jolt_settings->mMassPropertiesOverride = calculate_mass_properties(*jolt_settings->GetShape());
 
