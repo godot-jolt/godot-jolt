@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
+set(source_dir ${CMAKE_CURRENT_LIST_DIR}/src)
+set(cmake_dir ${CMAKE_CURRENT_LIST_DIR}/cmake)
+set(templates_dir ${cmake_dir}/templates)
+
+list(APPEND CMAKE_MODULE_PATH ${cmake_dir})
 
 include(GodotJoltPrelude)
 
@@ -14,11 +18,27 @@ include(GodotJoltExternalGodotCpp)
 include(GodotJoltExternalJolt)
 include(GodotJoltExternalMimalloc)
 
-set(source_dir ${CMAKE_CURRENT_LIST_DIR}/src)
-set(pch_file ${source_dir}/precompiled.hpp)
+gdj_get_build_id(PROJECT_VERSION_BUILD)
+
+set(PROJECT_TITLE "Godot Jolt")
+set(PROJECT_DESCRIPTION "Godot extension that integrates the Jolt physics engine")
+set(PROJECT_COPYRIGHT "Copyright (c) 2022 Mikael Hermansson and Godot Jolt contributors")
+set(PROJECT_VERSION_STATUS "dev")
+set(PROJECT_VERSION_WITH_STATUS ${PROJECT_VERSION}-${PROJECT_VERSION_STATUS})
+set(PROJECT_VERSION_WITH_BUILD ${PROJECT_VERSION_WITH_STATUS}+${PROJECT_VERSION_BUILD})
 
 file(GLOB_RECURSE godot-jolt_SOURCES CONFIGURE_DEPENDS ${source_dir}/*.cpp)
 file(GLOB_RECURSE godot-jolt_HEADERS CONFIGURE_DEPENDS ${source_dir}/*.hpp)
+
+set(pch_file ${source_dir}/precompiled.hpp)
+
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+	gdj_generate_rc_file(rc_file)
+	list(APPEND godot-jolt_SOURCES ${rc_file})
+elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
+	gdj_generate_info_file(info_file)
+	list(APPEND godot-jolt_SOURCES ${info_file})
+endif()
 
 add_library(godot-jolt SHARED ${godot-jolt_SOURCES} ${godot-jolt_HEADERS})
 add_library(godot-jolt::godot-jolt ALIAS godot-jolt)
@@ -77,6 +97,9 @@ set(macro_prefix_option -fmacro-prefix-map=${source_dir}=.)
 set_target_properties(godot-jolt PROPERTIES
 	OUTPUT_NAME godot-jolt${suffix}
 	PREFIX ""
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION}
+	NO_SONAME TRUE
 	INCLUDE_DIRECTORIES ${source_dir}
 	MSVC_RUNTIME_LIBRARY ${msvcrt}
 	CXX_VISIBILITY_PRESET hidden
@@ -85,10 +108,7 @@ set_target_properties(godot-jolt PROPERTIES
 	INTERPROCEDURAL_OPTIMIZATION_EDITORDEVELOPMENT ${GDJ_INTERPROCEDURAL_OPTIMIZATION}
 	INTERPROCEDURAL_OPTIMIZATION_EDITORDISTRIBUTION ${GDJ_INTERPROCEDURAL_OPTIMIZATION}
 	FRAMEWORK TRUE
-	MACOSX_FRAMEWORK_IDENTIFIER "org.godotjolt.\${PRODUCT_NAME:rfc1034identifier}"
-	MACOSX_FRAMEWORK_BUNDLE_VERSION ${CMAKE_PROJECT_VERSION}
-	MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${CMAKE_PROJECT_VERSION}
-	MACOSX_FRAMEWORK_ICON_FILE ""
+	MACOSX_FRAMEWORK_INFO_PLIST ${templates_dir}/info.plist.in
 )
 
 target_compile_features(godot-jolt
@@ -104,6 +124,10 @@ target_compile_definitions(godot-jolt
 	PRIVATE $<${is_distribution_config}:GDJ_CONFIG_DISTRIBUTION>
 	PRIVATE $<${is_editor_config}:GDJ_CONFIG_EDITOR>
 	PRIVATE $<IF:${is_debug_config},_DEBUG,NDEBUG>
+	PRIVATE $<${is_windows}:WIN32_LEAN_AND_MEAN>
+	PRIVATE $<${is_windows}:VC_EXTRALEAN>
+	PRIVATE $<${is_windows}:NOMINMAX>
+	PRIVATE $<${is_windows}:STRICT>
 )
 
 if(GDJ_PRECOMPILE_HEADERS)
@@ -253,7 +277,7 @@ endif()
 install(
 	TARGETS godot-jolt
 	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION bin
+	LIBRARY DESTINATION bin NAMELINK_SKIP
 	FRAMEWORK DESTINATION bin
 )
 

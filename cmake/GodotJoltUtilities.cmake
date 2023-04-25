@@ -95,3 +95,39 @@ function(gdj_args_to_script variable args)
 
 	set(${variable} ${script_content} PARENT_SCOPE)
 endfunction()
+
+function(gdj_get_build_id output_variable)
+	find_package(Git REQUIRED)
+
+	execute_process(
+		COMMAND ${GIT_EXECUTABLE} rev-parse HEAD
+		ERROR_QUIET
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+		OUTPUT_VARIABLE git_hash
+		RESULT_VARIABLE git_exit_code
+	)
+
+	if(git_exit_code EQUAL 0)
+		string(SUBSTRING ${git_hash} 0 10 build_id)
+	else()
+		set(build_id "custom")
+	endif()
+
+	set(${output_variable} ${build_id} PARENT_SCOPE)
+endfunction()
+
+function(gdj_generate_rc_file output_variable)
+	set(rc_in_file ${CMAKE_CURRENT_BINARY_DIR}/info.rc.in)
+	configure_file(${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/info.rc.in ${rc_in_file})
+
+	set(rc_file ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/info.rc)
+	file(GENERATE OUTPUT ${rc_file} INPUT ${rc_in_file})
+
+	set(${output_variable} ${rc_file} PARENT_SCOPE)
+endfunction()
+
+function(gdj_generate_info_file output_variable)
+	set(info_file ${CMAKE_CURRENT_BINARY_DIR}/info.cpp)
+	configure_file(${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/info.cpp.in ${info_file})
+	set(${output_variable} ${info_file} PARENT_SCOPE)
+endfunction()
