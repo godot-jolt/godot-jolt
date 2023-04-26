@@ -13,7 +13,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>${PROJECT_TITLE}</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.${PROJECT_NAME}.${PROJECT_NAME}</string>
+	<string>${PROJECT_BUNDLE_IDENTIFIER}</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>${PROJECT_COPYRIGHT}</string>
 	<key>CFBundleVersion</key>
