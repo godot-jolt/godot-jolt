@@ -225,6 +225,18 @@ function(gdj_add_external_library library_name library_configs)
 		set(verbose_arg "")
 	endif()
 
+	# HACK(mihe): The `update` step target for external projects ends up running on every single
+	# build. This is slow and unnecessary, since we're referencing a specific commit anyway. To get
+	# around this we use `UPDATE_DISCONNECTED` to disconnect the `update` step target from the
+	# external project, and then we reconnect it later with a `DEPENDS` file. This does however
+	# require a recursive build, which Xcode doesn't like, so we can't use this workaround there.
+
+	if(CMAKE_GENERATOR STREQUAL Xcode)
+		set(disconnect_update FALSE)
+	else()
+		set(disconnect_update TRUE)
+	endif()
+
 	# Finally declare the ExternalProject, which will be the one doing the actual work
 
 	ExternalProject_Add(${library_name}
@@ -239,7 +251,7 @@ function(gdj_add_external_library library_name library_configs)
 		INSTALL_COMMAND ""
 		BUILD_BYPRODUCTS ${output_dir_current}/${output_name_current}
 		EXCLUDE_FROM_ALL TRUE # These will always be dependencies anyway
-		UPDATE_DISCONNECTED TRUE # See extra steps below
+		UPDATE_DISCONNECTED ${disconnect_update} # See extra steps below
 		STEP_TARGETS update # See extra steps below
 	)
 
@@ -254,24 +266,27 @@ function(gdj_add_external_library library_name library_configs)
 		DEPENDERS configure
 	)
 
-	# Ensure that the external project runs its (now disconnected) `update` step if the Git commit
-	# ever changes, by writing it to a file at configure-time and adding that file as a dependency
-	# to a custom step that explicitly invokes the `update` step target. This custom step sits
-	# inbetween `download` and `configure`, just like `update` did before it was disconnected.
+	if(disconnect_update)
+		# Ensure that the external project runs its (now disconnected) `update` step if the Git
+		# commit ever changes, by writing it to a file at configure-time and adding that file as a
+		# dependency to a custom step that explicitly invokes the `update` step target. This custom
+		# step sits inbetween `download` and `configure`, just like `update` did before it was
+		# disconnected.
 
-	set(commit_file ${stamp_dir}/${library_name}-gitcommit.txt)
-	set(commit_file_content ${arg_GIT_COMMIT})
-	file(CONFIGURE OUTPUT ${commit_file} CONTENT ${commit_file_content})
+		set(commit_file ${stamp_dir}/${library_name}-gitcommit.txt)
+		set(commit_file_content ${arg_GIT_COMMIT})
+		file(CONFIGURE OUTPUT ${commit_file} CONTENT ${commit_file_content})
 
-	ExternalProject_Add_Step(${library_name} update-if-different
-		COMMAND ${CMAKE_COMMAND}
-			--build ${CMAKE_CURRENT_BINARY_DIR}
-			--config $<CONFIG>
-			--target ${library_name}-update
-		DEPENDS ${commit_file}
-		DEPENDEES download
-		DEPENDERS configure
-	)
+		ExternalProject_Add_Step(${library_name} update-if-different
+			COMMAND ${CMAKE_COMMAND}
+				--build ${CMAKE_CURRENT_BINARY_DIR}
+				--config $<CONFIG>
+				--target ${library_name}-update
+			DEPENDS ${commit_file}
+			DEPENDEES download
+			DEPENDERS configure
+		)
+	endif()
 
 	# Declare the shim library that we will consume in the end
 
