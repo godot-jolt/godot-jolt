@@ -9,10 +9,15 @@ param (
 	[string]
 	$Toolchain,
 
-	[Parameter(Mandatory = $true, HelpMessage = "Major version of the toolchain")]
+	[Parameter(Mandatory = $true, HelpMessage = "Major version of GCC")]
 	[ValidatePattern("^\d+$")]
 	[string]
-	$Version
+	$VersionGcc,
+
+	[Parameter(Mandatory = $false, HelpMessage = "Major version of LLVM")]
+	[ValidatePattern("^\d+$")]
+	[string]
+	$VersionLlvm
 )
 
 Set-StrictMode -Version Latest
@@ -37,25 +42,31 @@ Write-Output "Adding the ubuntu-toolchain-r repository..."
 
 add-apt-repository --yes --update ppa:ubuntu-toolchain-r/ppa
 
-if ($Toolchain -eq "gcc") {
-	Write-Output "Installing g++-$Version-multilib..."
+Write-Output "Installing GCC $VersionGcc..."
 
-	apt install --quiet --yes g++-$Version-multilib
+apt install --quiet --yes `
+	g++-$VersionGcc `
+	g++-$VersionGcc-multilib
 
-	Write-Output "Setting GCC $Version as the default..."
+Write-Output "Setting GCC $VersionGcc as the default..."
 
-	Set-DefaultCommand -Name gcc -Path /usr/bin/gcc-$Version
-	Set-DefaultCommand -Name g++ -Path /usr/bin/g++-$Version
-}
-elseif ($Toolchain -eq "llvm") {
-	Write-Output "Installing g++-multilib..."
+Set-DefaultCommand -Name gcc -Path /usr/bin/gcc-$VersionGcc
+Set-DefaultCommand -Name g++ -Path /usr/bin/g++-$VersionGcc
 
-	apt install --quiet --yes g++-multilib
+if ($Toolchain -eq "llvm") {
+	Write-Output "Installing LLVM $VersionLlvm..."
 
-	Write-Output "Setting LLVM $Version as the default..."
+	apt install --quiet --yes `
+		clang-$VersionLlvm `
+		clang-format-$VersionLlvm `
+		clang-tidy-$VersionLlvm `
+		lld-$VersionLlvm
 
-	Set-DefaultCommand -Name clang -Path /usr/bin/clang-$Version
-	Set-DefaultCommand -Name clang++ -Path /usr/bin/clang++-$Version
-	Set-DefaultCommand -Name clang-format -Path /usr/bin/clang-format-$Version
-	Set-DefaultCommand -Name clang-tidy -Path /usr/bin/clang-tidy-$Version
+	Write-Output "Setting LLVM $VersionLlvm as the default..."
+
+	Set-DefaultCommand -Name clang -Path /usr/bin/clang-$VersionLlvm
+	Set-DefaultCommand -Name clang++ -Path /usr/bin/clang++-$VersionLlvm
+	Set-DefaultCommand -Name clang-format -Path /usr/bin/clang-format-$VersionLlvm
+	Set-DefaultCommand -Name clang-tidy -Path /usr/bin/clang-tidy-$VersionLlvm
+	Set-DefaultCommand -Name lld -Path /usr/bin/lld-$VersionLlvm
 }

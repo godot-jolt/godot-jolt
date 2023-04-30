@@ -2,7 +2,7 @@ name: Setup macOS
 
 inputs:
   version:
-    required: true
+    default: 14.1
 
 runs:
   using: composite

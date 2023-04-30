@@ -18,7 +18,6 @@ jobs:
         uses: ./.github/actions/setup-linux
         with:
           toolchain: llvm
-          version: 14
 
       - name: Identify clang-format
         shell: pwsh
@@ -45,7 +44,6 @@ jobs:
         uses: ./.github/actions/setup-linux
         with:
           toolchain: llvm
-          version: 14
 
       - name: Configure
         uses: ./.github/actions/cmake-configure
