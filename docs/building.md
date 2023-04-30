@@ -86,7 +86,7 @@ Prerequisites:
 - Git 2.25 or newer
 - CMake 3.22 or newer
 - Python 3.8 or newer
-- Xcode 14.1 or equivalent Xcode Command Line Tools
+- Xcode 14.3 or equivalent Xcode Command Line Tools
 
 ```pwsh
 cmake --preset macos-clang
