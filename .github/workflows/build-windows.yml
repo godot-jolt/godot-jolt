@@ -21,7 +21,6 @@ jobs:
         arch: [x64, x86]
         editor: [false, true]
         config: [debug, development, distribution]
-        version: [17]
 
         include:
           - platform: windows-clangcl
@@ -35,7 +34,6 @@ jobs:
       - name: Set up environment
         uses: ./.github/actions/setup-windows
         with:
-          version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
 
       - name: Configure

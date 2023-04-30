@@ -2,7 +2,7 @@ name: Setup Windows
 
 inputs:
   version:
-    required: true
+    default: 17
   arch:
     required: true
 

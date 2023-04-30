@@ -19,7 +19,6 @@ jobs:
         platform: [macos-clang]
         editor: [false, true]
         config: [debug, development, distribution]
-        version: [14.1]
 
     steps:
       - name: Checkout code
@@ -27,8 +26,6 @@ jobs:
 
       - name: Set up environment
         uses: ./.github/actions/setup-macos
-        with:
-          version: ${{ matrix.version }}
 
       - name: Configure
         uses: ./.github/actions/cmake-configure

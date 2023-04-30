@@ -25,10 +25,8 @@ jobs:
         include:
           - platform: linux-clang
             toolchain: llvm
-            version: 14
           - platform: linux-gcc
             toolchain: gcc
-            version: 11
 
     steps:
       - name: Checkout code
@@ -38,7 +36,6 @@ jobs:
         uses: ./.github/actions/setup-linux
         with:
           toolchain: ${{ matrix.toolchain }}
-          version: ${{ matrix.version }}
 
       - name: Configure
         uses: ./.github/actions/cmake-configure
