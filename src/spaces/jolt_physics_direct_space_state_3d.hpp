@@ -5,7 +5,7 @@ class JoltShape3D;
 class JoltSpace3D;
 
 class JoltPhysicsDirectSpaceState3D final : public PhysicsDirectSpaceState3DExtension {
-	GDCLASS_NO_WARN(JoltPhysicsDirectSpaceState3D, PhysicsDirectSpaceState3DExtension) // NOLINT
+	GDCLASS_NO_WARN(JoltPhysicsDirectSpaceState3D, PhysicsDirectSpaceState3DExtension)
 
 protected:
 	// NOLINTNEXTLINE(readability-identifier-naming)

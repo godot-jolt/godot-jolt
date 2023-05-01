@@ -4,9 +4,9 @@ inputs:
   toolchain:
     required: true
   version-gcc:
-    default: 11
+    default: 12
   version-llvm:
-    default: 14
+    default: 15
 
 runs:
   using: composite

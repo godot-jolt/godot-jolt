@@ -223,7 +223,7 @@ Prerequisites:
 you to use clang-format from within the editor of your choosing, such as [the C++ extension][cpp]
 for Visual Studio Code, which can save you from the hassle of running the commands shown below.
 
-⚠️ The clang-format configuration that Godot Jolt uses is written for **LLVM 14.0** and won't work
+⚠️ The clang-format configuration that Godot Jolt uses is written for **LLVM 15.0** and won't work
 with earlier versions, possibly not newer ones either.
 
 There is a PowerShell script, `scripts/run_clang_format.ps1`, that runs clang-format on all source
@@ -251,7 +251,7 @@ Prerequisites:
 to use clang-tidy from within the editor of your choosing, such as [the C++ extension][cpp] for
 Visual Studio Code, which can save you from the hassle of running the commands shown below.
 
-⚠️ The clang-tidy configuration that Godot Jolt uses is written for **LLVM 14.0** and won't work
+⚠️ The clang-tidy configuration that Godot Jolt uses is written for **LLVM 15.0** and won't work
 with earlier versions, possibly not newer ones either.
 
 ⚠️ Because clang-tidy effectively compiles the code in order to analyze it, it's highly recommended
@@ -293,6 +293,6 @@ To make clang-tidy attempt to fix any linting errors, you can provide the `-Fix`
 [vsc]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools
 [nnj]: https://ninja-build.org/
 [uvb]: https://en.wikipedia.org/wiki/Universal_binary
-[clf]: https://releases.llvm.org/14.0.0/tools/clang/docs/ClangFormat.html
-[clt]: https://releases.llvm.org/14.0.0/tools/clang/tools/extra/docs/clang-tidy/index.html
+[clf]: https://releases.llvm.org/15.0.0/tools/clang/docs/ClangFormat.html
+[clt]: https://releases.llvm.org/15.0.0/tools/clang/tools/extra/docs/clang-tidy/index.html
 [cpp]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools

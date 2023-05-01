@@ -8,7 +8,7 @@ class JoltShape3D;
 class JoltSpace3D;
 
 class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
-	GDCLASS_NO_WARN(JoltPhysicsServer3D, PhysicsServer3DExtension) // NOLINT
+	GDCLASS_NO_WARN(JoltPhysicsServer3D, PhysicsServer3DExtension)
 
 protected:
 	// NOLINTNEXTLINE(readability-identifier-naming)

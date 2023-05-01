@@ -1,5 +1,5 @@
 ---
-# Requires LLVM 14.0
+# Requires LLVM 15.0
 
 # The checks are split it into 4 groups:
 #
@@ -273,70 +273,38 @@ Checks: >
 # hicpp-vararg
 
 CheckOptions:
-  - key: cppcoreguidelines-narrowing-conversions.PedanticMode
-    value: true
-  - key: cppcoreguidelines-pro-type-member-init.IgnoreArrays
-    value: true
-  - key: cppcoreguidelines-pro-type-member-init.UseAssignment
-    value: true
-  - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
-    value: true
-  - key: misc-definitions-in-headers.HeaderFileExtensions
-    value: hpp
-  - key: misc-unused-parameters.StrictMode
-    value: true
-  - key: modernize-deprecated-headers.CheckHeaderFile
-    value: true
-  - key: modernize-use-auto.MinTypeNameLength
-    value: 0
-  - key: modernize-use-default-member-init.UseAssignment
-    value: true
-  - key: readability-identifier-naming.ClassCase
-    value: CamelCase
-  - key: readability-identifier-naming.EnumCase
-    value: CamelCase
-  - key: readability-identifier-naming.EnumConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.FunctionCase
-    value: lower_case
-  - key: readability-identifier-naming.GlobalConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.MacroDefinitionCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.MemberCase
-    value: lower_case
-  - key: readability-identifier-naming.NamespaceCase
-    value: lower_case
-  - key: readability-identifier-naming.ParameterCase
-    value: lower_case
-  - key: readability-identifier-naming.ParameterPrefix
-    value: p_
-  - key: readability-identifier-naming.ScopedEnumConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.TemplateParameterCase
-    value: CamelCase
-  - key: readability-identifier-naming.TemplateParameterPrefix
-    value: T
-  - key: readability-identifier-naming.TypeAliasCase
-    value: CamelCase
-  - key: readability-identifier-naming.TypedefCase
-    value: CamelCase
-  - key: readability-identifier-naming.UnionCase
-    value: CamelCase
-  - key: readability-identifier-naming.VariableCase
-    value: lower_case
-  - key: readability-inconsistent-declaration-parameter-name.Strict
-    value: true
-  - key: readability-simplify-boolean-expr.ChainedConditionalAssignment
-    value: true
-  - key: readability-simplify-boolean-expr.ChainedConditionalReturn
-    value: true
-  - key: readability-simplify-boolean-expr.SimplifyDeMorganRelaxed
-    value: true
-  - key: readability-uppercase-literal-suffix.NewSuffixes
-    value: L;LL;U;UL;ULL;f
+  cppcoreguidelines-narrowing-conversions.PedanticMode: true
+  cppcoreguidelines-pro-type-member-init.IgnoreArrays: true
+  cppcoreguidelines-pro-type-member-init.UseAssignment: true
+  cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor: true
+  misc-definitions-in-headers.HeaderFileExtensions: hpp
+  misc-unused-parameters.StrictMode: true
+  modernize-deprecated-headers.CheckHeaderFile: true
+  modernize-use-auto.MinTypeNameLength: 0
+  modernize-use-default-member-init.UseAssignment: true
+  readability-identifier-naming.ClassCase: CamelCase
+  readability-identifier-naming.EnumCase: CamelCase
+  readability-identifier-naming.EnumConstantCase: UPPER_CASE
+  readability-identifier-naming.FunctionCase: lower_case
+  readability-identifier-naming.GlobalConstantCase: UPPER_CASE
+  readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
+  readability-identifier-naming.MemberCase: lower_case
+  readability-identifier-naming.NamespaceCase: lower_case
+  readability-identifier-naming.ParameterCase: lower_case
+  readability-identifier-naming.ParameterPrefix: p_
+  readability-identifier-naming.ScopedEnumConstantCase: UPPER_CASE
+  readability-identifier-naming.TemplateParameterCase: CamelCase
+  readability-identifier-naming.TemplateParameterPrefix: T
+  readability-identifier-naming.TypeAliasCase: CamelCase
+  readability-identifier-naming.TypedefCase: CamelCase
+  readability-identifier-naming.UnionCase: CamelCase
+  readability-identifier-naming.VariableCase: lower_case
+  readability-inconsistent-declaration-parameter-name.Strict: true
+  readability-simplify-boolean-expr.ChainedConditionalAssignment: true
+  readability-simplify-boolean-expr.ChainedConditionalReturn: true
+  readability-simplify-boolean-expr.SimplifyDeMorganRelaxed: true
+  readability-uppercase-literal-suffix.NewSuffixes: L;LL;U;UL;ULL;f
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: src/.+
-FormatStyle: file
 ...
