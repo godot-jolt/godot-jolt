@@ -1,5 +1,5 @@
 ---
-# Requires LLVM 14.0
+# Requires LLVM 15.0
 
 # General
 Language: Cpp
@@ -29,6 +29,7 @@ BraceWrapping:
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 Cpp11BracedListStyle: true
+InsertBraces: true
 
 # Indentation
 AccessModifierOffset: -4
@@ -41,7 +42,7 @@ IndentCaseLabels: true
 IndentExternBlock: NoIndent
 IndentGotoLabels: false
 IndentPPDirectives: None
-IndentRequires: true
+IndentRequiresClause: true
 IndentWidth: 4
 IndentWrappedFunctionNames: false
 LambdaBodyIndentation: Signature
@@ -94,7 +95,7 @@ AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBinaryOperators: None
-BreakBeforeConceptDeclarations: true
+BreakBeforeConceptDeclarations: Always
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: BeforeComma
 BreakInheritanceList: BeforeComma
@@ -108,6 +109,7 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 1
 PackConstructorInitializers: Never
 ReflowComments: true
+RequiresClausePosition: OwnLine
 SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 1
 
