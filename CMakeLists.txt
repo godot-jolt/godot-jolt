@@ -22,7 +22,7 @@ gdj_get_build_id(PROJECT_VERSION_BUILD)
 
 set(PROJECT_TITLE "Godot Jolt")
 set(PROJECT_DESCRIPTION "Godot extension that integrates the Jolt physics engine")
-set(PROJECT_COPYRIGHT "Copyright (c) 2022 Mikael Hermansson and Godot Jolt contributors")
+set(PROJECT_COPYRIGHT "Copyright (c) Mikael Hermansson and Godot Jolt contributors")
 set(PROJECT_BUNDLE_IDENTIFIER "org.godot-jolt.godot-jolt")
 set(PROJECT_VERSION_STATUS "dev")
 set(PROJECT_VERSION_WITH_STATUS ${PROJECT_VERSION}-${PROJECT_VERSION_STATUS})
