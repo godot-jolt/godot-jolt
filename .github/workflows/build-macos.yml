@@ -7,7 +7,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-12
+    runs-on: macos-13
     name: "\
       ${{ matrix.platform }}-\
       ${{ matrix.editor == true && 'editor-' || '' }}\
