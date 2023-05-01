@@ -69,4 +69,5 @@ if ($Toolchain -eq "llvm") {
 	Set-DefaultCommand -Name clang-format -Path /usr/bin/clang-format-$VersionLlvm
 	Set-DefaultCommand -Name clang-tidy -Path /usr/bin/clang-tidy-$VersionLlvm
 	Set-DefaultCommand -Name lld -Path /usr/bin/lld-$VersionLlvm
+	Set-DefaultCommand -Name ld.lld -Path /usr/bin/ld.lld-$VersionLlvm
 }
