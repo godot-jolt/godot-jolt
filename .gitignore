@@ -1,7 +1,7 @@
 # Artifacts
 /**/compile_commands.json
-/bin
 /build
+/examples/addons
 
 # Godot
 /**/.godot

@@ -34,3 +34,8 @@ if(NOT APPLE)
 else()
 	set(GDJ_X86_INSTRUCTION_SET NONE)
 endif()
+
+set(GDJ_INSTALL_DEBUG_SYMBOLS FALSE
+	CACHE BOOL
+	"Install debug symbols along with the binaries."
+)
