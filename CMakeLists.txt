@@ -277,22 +277,33 @@ else()
 	set(debug_symbols ${debug_file})
 endif()
 
-string(CONCAT bin_platform_dir
-	${bin_dir}/
+set(addon_dir addons/godot-jolt)
+
+string(CONCAT addon_platform_dir
+	${addon_dir}/
 		$<${is_windows}:windows>
 		$<${is_linux}:linux>
 		$<${is_macos}:macos>
 )
 
 install(
-	TARGETS godot-jolt
-	RUNTIME DESTINATION ${bin_platform_dir}
-	LIBRARY DESTINATION ${bin_platform_dir} NAMELINK_SKIP
-	FRAMEWORK DESTINATION ${bin_platform_dir}
+	FILES
+		godot-jolt.gdextension
+		LICENSE.txt
+		THIRDPARTY.txt
+	DESTINATION ${addon_dir}
 )
 
 install(
-	FILES ${debug_symbols}
-	CONFIGURATIONS Distribution EditorDistribution
-	DESTINATION ${bin_platform_dir}
+	TARGETS godot-jolt
+	RUNTIME DESTINATION ${addon_platform_dir}
+	LIBRARY DESTINATION ${addon_platform_dir} NAMELINK_SKIP
+	FRAMEWORK DESTINATION ${addon_platform_dir}
 )
+
+if(GDJ_INSTALL_DEBUG_SYMBOLS)
+	install(
+		FILES ${debug_symbols}
+		DESTINATION ${addon_platform_dir}
+	)
+endif()

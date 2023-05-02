@@ -91,6 +91,9 @@ defaults by passing `-DGDJ_SOME_VARIABLE=VALUE` to CMake.
   - Whether to statically link against the platform-specific C++ runtime, for added portability.
   - ⚠️ This flag is not available on Apple platforms.
   - Default is `TRUE`.
+- `GDJ_INSTALL_DEBUG_SYMBOLS`
+  - Whether to install debug symbols along with the binaries
+  - Default is `FALSE`.
 
 ## Presets
 
@@ -179,24 +182,24 @@ this:
   "buildPresets": [
     {
       "name": "dev-debug",
-      "inherits": ["install-base"],
       "configurePreset": "dev",
       "configuration": "EditorDebug",
-      "displayName": "EditorDebug"
+      "displayName": "EditorDebug",
+      "targets": ["install"]
     },
     {
       "name": "dev-development",
-      "inherits": ["install-base"],
       "configurePreset": "dev",
       "configuration": "EditorDevelopment",
-      "displayName": "EditorDevelopment"
+      "displayName": "EditorDevelopment",
+      "targets": ["install"]
     },
     {
       "name": "dev-distribution",
-      "inherits": ["install-base"],
       "configurePreset": "dev",
       "configuration": "EditorDistribution",
-      "displayName": "EditorDistribution"
+      "displayName": "EditorDistribution",
+      "targets": ["install"]
     }
   ]
 }
@@ -208,10 +211,6 @@ Then you can configure/build it like any other preset:
 cmake --preset dev
 cmake --build --preset dev-debug
 ```
-
-⚠️ If your build presets don't inherit from `install-base`, either directly or indirectly, you will
-have to explicitly pass `--target install` to the build command-line for your output binaries to end
-up in the `bin` directory, which they need to be for the examples project to be able to load them.
 
 ## Formatting
 

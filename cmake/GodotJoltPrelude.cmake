@@ -9,9 +9,17 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
 endif()
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-	set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH
+	set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/examples CACHE PATH
 		"Install path prefix, prepended onto install directories."
 	)
+
+	if(CMAKE_INSTALL_PREFIX STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+		message(FATAL_ERROR
+			"CMAKE_INSTALL_PREFIX is currently set to the project root directory. Please choose a "
+			"different install directory.\nIf you're not sure what this means then delete the "
+			"build directory, generate a new one and build again."
+		)
+	endif()
 
 	set(CMAKE_ERROR_DEPRECATED TRUE CACHE BOOL
 		"Whether to issue errors for deprecated CMake functionality."
