@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
+set(bin_dir ${CMAKE_CURRENT_LIST_DIR}/bin)
 set(source_dir ${CMAKE_CURRENT_LIST_DIR}/src)
 set(cmake_dir ${CMAKE_CURRENT_LIST_DIR}/cmake)
 set(templates_dir ${cmake_dir}/templates)
@@ -276,15 +277,22 @@ else()
 	set(debug_symbols ${debug_file})
 endif()
 
+string(CONCAT bin_platform_dir
+	${bin_dir}/
+		$<${is_windows}:windows>
+		$<${is_linux}:linux>
+		$<${is_macos}:macos>
+)
+
 install(
 	TARGETS godot-jolt
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION bin NAMELINK_SKIP
-	FRAMEWORK DESTINATION bin
+	RUNTIME DESTINATION ${bin_platform_dir}
+	LIBRARY DESTINATION ${bin_platform_dir} NAMELINK_SKIP
+	FRAMEWORK DESTINATION ${bin_platform_dir}
 )
 
 install(
 	FILES ${debug_symbols}
 	CONFIGURATIONS Distribution EditorDistribution
-	DESTINATION bin
+	DESTINATION ${bin_platform_dir}
 )
