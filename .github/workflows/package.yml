@@ -223,11 +223,6 @@ jobs:
             linux-x86
             macos
 
-      - name: Delete temporary artifacts
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: macos
-
       - name: Separate debug symbols
         run: >
           rsync ./dist/./ ./symbols
