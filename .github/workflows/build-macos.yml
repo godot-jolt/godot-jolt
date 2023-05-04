@@ -37,6 +37,8 @@ jobs:
         uses: ./.github/actions/cmake-configure
         with:
           platform: ${{ matrix.platform }}
+        env:
+          CXXFLAGS: -Werror
 
       - name: Build
         uses: ./.github/actions/cmake-build

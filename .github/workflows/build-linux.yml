@@ -48,6 +48,8 @@ jobs:
         with:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}
+        env:
+          CXXFLAGS: -Werror
 
       - name: Build
         uses: ./.github/actions/cmake-build

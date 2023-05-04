@@ -77,8 +77,7 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
-        "CMAKE_CXX_COMPILER": "cl",
-        "CMAKE_CXX_FLAGS": "/WX"
+        "CMAKE_CXX_COMPILER": "cl"
       },
       "toolset": {
         "value": "host=x64",
@@ -103,8 +102,7 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_CXX_FLAGS": "$env{CXXFLAGS} -Werror"
+        "CMAKE_CXX_COMPILER": "clang++"
       }
     },
     {
@@ -112,8 +110,7 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
-        "CMAKE_CXX_COMPILER": "g++",
-        "CMAKE_CXX_FLAGS": "$env{CXXFLAGS} -Werror"
+        "CMAKE_CXX_COMPILER": "g++"
       }
     },
     {
