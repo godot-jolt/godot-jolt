@@ -25,24 +25,24 @@ Currently only the major desktop platforms are supported. These include:
 - Linux (x86-64, x86)
 - macOS (x86-64 + Apple Silicon)
 
-## Downloading
+## Download
 
 Due to the current state of Godot Jolt there are no precompiled binaries available for download.
 Eventually they will be provided here on GitHub and wherever Godot allows distribution of native
 extensions.
 
-## Configuring
+## Configure
 
 See [`docs/settings.md`][set] for information about the project settings that Godot Jolt offers.
 
-## Building
+## Build
 
 See [`docs/building.md`][bld] for information about how to build Godot Jolt from source.
 
 ## License
 
 This project is licensed under the MIT license. See [`LICENSE.txt`][lic] for details. See
-[`COPYRIGHT.txt`][cpr] for third-party licenses and copyright notices.
+[`THIRDPARTY.txt`][tdp] for third-party licenses and copyright notices.
 
 [bnr]: docs/banner.png
 [gdt]: https://godotengine.org/
@@ -51,4 +51,4 @@ This project is licensed under the MIT license. See [`LICENSE.txt`][lic] for det
 [set]: docs/settings.md
 [bld]: docs/building.md
 [lic]: LICENSE.txt
-[cpr]: COPYRIGHT.txt
+[tdp]: THIRDPARTY.txt
