@@ -1,0 +1,32 @@
+name: 🔍 Analyze (formatting)
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up LLVM
+        uses: ./.github/actions/setup-linux
+        with:
+          toolchain: llvm
+
+      - name: Identify clang-format
+        run: clang-format --version
+
+      - name: Run clang-format
+        shell: pwsh
+        run: ./scripts/run_clang_format.ps1 -SourcePath ./src

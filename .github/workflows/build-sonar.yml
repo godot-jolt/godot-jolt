@@ -1,0 +1,43 @@
+name: 🔍 Build (Sonar)
+
+on:
+  pull_request:
+
+jobs:
+  sonar-build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up LLVM
+        uses: ./.github/actions/setup-linux
+        with:
+          toolchain: llvm
+
+      - name: Configure
+        uses: ./.github/actions/cmake-configure
+        with:
+          platform: linux-clang
+          arch: x64
+          args: >
+            -DGDJ_PRECOMPILE_HEADERS=FALSE
+            -DGDJ_INTERPROCEDURAL_OPTIMIZATION=FALSE
+
+      - name: Build
+        uses: ./.github/actions/cmake-build
+        with:
+          platform: linux-clang
+          arch: x64
+          editor: true
+          config: distribution
+
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: workspace
+          path: ./**
+          retention-days: 1

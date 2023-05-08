@@ -1,0 +1,62 @@
+name: 🔍 Analyze (Sonar)
+
+on:
+  workflow_run:
+    workflows: ["🔍 Build (Sonar)"]
+    types: ["completed"]
+
+jobs:
+  sonar-scanner:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Fetch pull request information
+        id: pr
+        uses: potiuk/get-workflow-origin@v1_5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sourceRunId: ${{ github.event.workflow_run.id }}
+
+      - name: Download workspace
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+
+            const artifacts = await github.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
+            });
+
+            const artifact = artifacts.data.artifacts[0];
+
+            const download = await github.actions.downloadArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: artifact.id,
+              archive_format: 'zip',
+            });
+
+            fs.writeFileSync('./workspace.zip', Buffer.from(download.data));
+
+      - name: Extract workspace
+        run: unzip ./workspace.zip -d
+
+      - name: Link compilation database
+        run: ln -s ./build/linux-clang-x64/compile_commands.json ./compile_commands.json
+
+      - name: Install SonarCloud tools
+        uses: SonarSource/sonarcloud-github-c-cpp@v1
+
+      - name: Run SonarScanner
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >
+          sonar-scanner
+          -Dsonar.scm.revision=${{ steps.pr.outputs.sourceHeadSha }}
+          -Dsonar.pullrequest.key=${{ steps.pr.outputs.pullRequestNumber }}
+          -Dsonar.pullrequest.branch=${{ steps.pr.outputs.sourceHeadBranch }}
+          -Dsonar.pullrequest.base=${{ steps.pr.outputs.targetBranch }}

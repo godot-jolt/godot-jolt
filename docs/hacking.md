@@ -16,7 +16,6 @@ or GUI application. Alternatively you can use the [presets](#presets) described 
 - [Presets](#presets)
 - [User Presets](#user-presets)
 - [Formatting](#formatting)
-- [Linting](#linting)
 
 ## Dependencies
 
@@ -240,47 +239,6 @@ To also automatically fix any formatting errors it might encounter:
 ./scripts/run_clang_format.ps1 -SourcePath ./src -Fix
 ```
 
-## Linting
-
-Prerequisites:
-
-- PowerShell 7.2.7 or newer
-
-[clang-tidy][clt] is used to lint code in Godot Jolt. There are numerous extensions that allow you
-to use clang-tidy from within the editor of your choosing, such as [the C++ extension][cpp] for
-Visual Studio Code, which can save you from the hassle of running the commands shown below.
-
-⚠️ The clang-tidy configuration that Godot Jolt uses is written for **LLVM 15.0** and won't work
-with earlier versions, possibly not newer ones either.
-
-⚠️ Because clang-tidy effectively compiles the code in order to analyze it, it's highly recommended
-that you provide the script below with build files for a Clang-based compiler, such as `clang` or
-`clang-cl`, in order to avoid strange errors.
-
-There is a PowerShell script, `scripts/run_clang_tidy.ps1`, that runs clang-tidy on all source files
-in the directory you provide, with the option to try to fix any errors it encounters.
-
-To see if you have any linting errors:
-
-```pwsh
-# Generate build files, and disable precompiled headers to prevent compatibility issues
-cmake --preset windows-clangcl-x64 -DGDJ_PRECOMPILE_HEADERS=NO
-
-# Build any configuration, so that we fetch and prepare all of our dependencies
-cmake --build --preset windows-clangcl-x64-editor-debug
-
-# Run the script, and provide paths to source files and the generated compile_commands.json
-./scripts/run_clang_tidy.ps1 -SourcePath ./src -BuildPath ./build/windows-clangcl-x64
-```
-
-To make clang-tidy attempt to fix any linting errors, you can provide the `-Fix` argument:
-
-⚠️ This is very slow, as `-Fix` can't run multiple instances of clang-tidy in parallel.
-
-```pwsh
-./scripts/run_clang_tidy.ps1 -SourcePath ./src -BuildPath ./build/windows-clangcl-x64 -Fix
-```
-
 [bld]: building.md
 [gen]: https://cmake.org/cmake/help/v3.22/manual/cmake-generators.7.html
 [exp]: https://cmake.org/cmake/help/v3.22/module/ExternalProject.html
@@ -293,5 +251,4 @@ To make clang-tidy attempt to fix any linting errors, you can provide the `-Fix`
 [nnj]: https://ninja-build.org/
 [uvb]: https://en.wikipedia.org/wiki/Universal_binary
 [clf]: https://releases.llvm.org/15.0.0/tools/clang/docs/ClangFormat.html
-[clt]: https://releases.llvm.org/15.0.0/tools/clang/tools/extra/docs/clang-tidy/index.html
 [cpp]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools
