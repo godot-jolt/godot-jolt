@@ -455,7 +455,7 @@ void JoltGeneric6DOFJoint3D::rebuild(bool p_lock) {
 				constraint_settings.MakeFixedAxis((JoltAxis)axis);
 			} else {
 				const auto extent = (float)Math::abs(middle - lower);
-				constraint_settings.SetLimitedAxis((JoltAxis)axis, (float)-extent, (float)extent);
+				constraint_settings.SetLimitedAxis((JoltAxis)axis, -extent, extent);
 			}
 		}
 	}

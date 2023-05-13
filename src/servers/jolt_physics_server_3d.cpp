@@ -576,7 +576,7 @@ void JoltPhysicsServer3D::_body_remove_shape(const RID& p_body, int32_t p_shape_
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	body->remove_shape((int32_t)p_shape_idx);
+	body->remove_shape(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::_body_clear_shapes(const RID& p_body) {
@@ -667,7 +667,7 @@ double JoltPhysicsServer3D::_body_get_collision_priority(const RID& p_body) cons
 	JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	return (float)body->get_collision_priority();
+	return (double)body->get_collision_priority();
 }
 
 void JoltPhysicsServer3D::_body_set_user_flags(
