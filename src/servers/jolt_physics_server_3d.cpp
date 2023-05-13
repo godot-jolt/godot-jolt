@@ -96,14 +96,14 @@ void JoltPhysicsServer3D::_shape_set_custom_solver_bias(
 }
 
 PhysicsServer3D::ShapeType JoltPhysicsServer3D::_shape_get_type(const RID& p_shape) const {
-	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	const JoltShape3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL_D(shape);
 
 	return shape->get_type();
 }
 
 Variant JoltPhysicsServer3D::_shape_get_data(const RID& p_shape) const {
-	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	const JoltShape3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL_D(shape);
 
 	return shape->get_data();
@@ -117,7 +117,7 @@ void JoltPhysicsServer3D::_shape_set_margin(const RID& p_shape, double p_margin)
 }
 
 double JoltPhysicsServer3D::_shape_get_margin(const RID& p_shape) const {
-	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	const JoltShape3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL_D(shape);
 
 	return (double)shape->get_margin();
@@ -172,7 +172,7 @@ void JoltPhysicsServer3D::_space_set_param(
 }
 
 double JoltPhysicsServer3D::_space_get_param(const RID& p_space, SpaceParameter p_param) const {
-	JoltSpace3D* space = space_owner.get_or_null(p_space);
+	const JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
 
 	return space->get_param(p_param);
@@ -242,10 +242,10 @@ void JoltPhysicsServer3D::_area_set_space(const RID& p_area, const RID& p_space)
 }
 
 RID JoltPhysicsServer3D::_area_get_space(const RID& p_area) const {
-	JoltArea3D* area = area_owner.get_or_null(p_area);
+	const JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
-	JoltSpace3D* space = area->get_space();
+	const JoltSpace3D* space = area->get_space();
 
 	if (space == nullptr) {
 		return {};
@@ -295,17 +295,17 @@ void JoltPhysicsServer3D::_area_set_shape_transform(
 }
 
 int32_t JoltPhysicsServer3D::_area_get_shape_count(const RID& p_area) const {
-	JoltArea3D* area = area_owner.get_or_null(p_area);
+	const JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
 	return area->get_shape_count();
 }
 
 RID JoltPhysicsServer3D::_area_get_shape(const RID& p_area, int32_t p_shape_idx) const {
-	JoltArea3D* area = area_owner.get_or_null(p_area);
+	const JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
-	JoltShape3D* shape = area->get_shape(p_shape_idx);
+	const JoltShape3D* shape = area->get_shape(p_shape_idx);
 	ERR_FAIL_NULL_D(shape);
 
 	return shape->get_rid();
@@ -313,7 +313,7 @@ RID JoltPhysicsServer3D::_area_get_shape(const RID& p_area, int32_t p_shape_idx)
 
 Transform3D JoltPhysicsServer3D::_area_get_shape_transform(const RID& p_area, int32_t p_shape_idx)
 	const {
-	JoltArea3D* area = area_owner.get_or_null(p_area);
+	const JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
 	return area->get_shape_transform_scaled(p_shape_idx);
@@ -352,7 +352,7 @@ void JoltPhysicsServer3D::_area_attach_object_instance_id(const RID& p_area, uin
 }
 
 uint64_t JoltPhysicsServer3D::_area_get_object_instance_id(const RID& p_area) const {
-	JoltArea3D* area = area_owner.get_or_null(p_area);
+	const JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
 	return area->get_instance_id();
@@ -366,7 +366,7 @@ void JoltPhysicsServer3D::_area_set_param(
 	RID area_rid = p_area;
 
 	if (space_owner.owns(area_rid)) {
-		JoltSpace3D* space = space_owner.get_or_null(area_rid);
+		const JoltSpace3D* space = space_owner.get_or_null(area_rid);
 		area_rid = space->get_default_area()->get_rid();
 	}
 
@@ -384,14 +384,14 @@ void JoltPhysicsServer3D::_area_set_transform(const RID& p_area, const Transform
 }
 
 Variant JoltPhysicsServer3D::_area_get_param(const RID& p_area, AreaParameter p_param) const {
-	JoltArea3D* area = area_owner.get_or_null(p_area);
+	const JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
 	return area->get_param(p_param);
 }
 
 Transform3D JoltPhysicsServer3D::_area_get_transform(const RID& p_area) const {
-	JoltArea3D* area = area_owner.get_or_null(p_area);
+	const JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
 	return area->get_transform_scaled();
@@ -405,7 +405,7 @@ void JoltPhysicsServer3D::_area_set_collision_mask(const RID& p_area, uint32_t p
 }
 
 uint32_t JoltPhysicsServer3D::_area_get_collision_mask(const RID& p_area) const {
-	JoltArea3D* area = area_owner.get_or_null(p_area);
+	const JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
 	return area->get_collision_mask();
@@ -419,7 +419,7 @@ void JoltPhysicsServer3D::_area_set_collision_layer(const RID& p_area, uint32_t 
 }
 
 uint32_t JoltPhysicsServer3D::_area_get_collision_layer(const RID& p_area) const {
-	JoltArea3D* area = area_owner.get_or_null(p_area);
+	const JoltArea3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
 	return area->get_collision_layer();
@@ -481,10 +481,10 @@ void JoltPhysicsServer3D::_body_set_space(const RID& p_body, const RID& p_space)
 }
 
 RID JoltPhysicsServer3D::_body_get_space(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	JoltSpace3D* space = body->get_space();
+	const JoltSpace3D* space = body->get_space();
 
 	if (space == nullptr) {
 		return {};
@@ -501,7 +501,7 @@ void JoltPhysicsServer3D::_body_set_mode(const RID& p_body, BodyMode p_mode) {
 }
 
 PhysicsServer3D::BodyMode JoltPhysicsServer3D::_body_get_mode(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_mode();
@@ -548,17 +548,17 @@ void JoltPhysicsServer3D::_body_set_shape_transform(
 }
 
 int32_t JoltPhysicsServer3D::_body_get_shape_count(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_shape_count();
 }
 
 RID JoltPhysicsServer3D::_body_get_shape(const RID& p_body, int32_t p_shape_idx) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	JoltShape3D* shape = body->get_shape(p_shape_idx);
+	const JoltShape3D* shape = body->get_shape(p_shape_idx);
 	ERR_FAIL_NULL_D(shape);
 
 	return shape->get_rid();
@@ -566,7 +566,7 @@ RID JoltPhysicsServer3D::_body_get_shape(const RID& p_body, int32_t p_shape_idx)
 
 Transform3D JoltPhysicsServer3D::_body_get_shape_transform(const RID& p_body, int32_t p_shape_idx)
 	const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_shape_transform_scaled(p_shape_idx);
@@ -605,7 +605,7 @@ void JoltPhysicsServer3D::_body_attach_object_instance_id(const RID& p_body, uin
 }
 
 uint64_t JoltPhysicsServer3D::_body_get_object_instance_id(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_instance_id();
@@ -622,7 +622,7 @@ void JoltPhysicsServer3D::_body_set_enable_continuous_collision_detection(
 }
 
 bool JoltPhysicsServer3D::_body_is_continuous_collision_detection_enabled(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->is_ccd_enabled();
@@ -636,7 +636,7 @@ void JoltPhysicsServer3D::_body_set_collision_layer(const RID& p_body, uint32_t 
 }
 
 uint32_t JoltPhysicsServer3D::_body_get_collision_layer(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_collision_layer();
@@ -650,7 +650,7 @@ void JoltPhysicsServer3D::_body_set_collision_mask(const RID& p_body, uint32_t p
 }
 
 uint32_t JoltPhysicsServer3D::_body_get_collision_mask(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_collision_mask();
@@ -664,7 +664,7 @@ void JoltPhysicsServer3D::_body_set_collision_priority(const RID& p_body, double
 }
 
 double JoltPhysicsServer3D::_body_get_collision_priority(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return (double)body->get_collision_priority();
@@ -696,7 +696,7 @@ void JoltPhysicsServer3D::_body_set_param(
 }
 
 Variant JoltPhysicsServer3D::_body_get_param(const RID& p_body, BodyParameter p_param) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_param(p_param);
@@ -813,7 +813,7 @@ void JoltPhysicsServer3D::_body_set_constant_force(const RID& p_body, const Vect
 }
 
 Vector3 JoltPhysicsServer3D::_body_get_constant_force(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_constant_force();
@@ -827,7 +827,7 @@ void JoltPhysicsServer3D::_body_set_constant_torque(const RID& p_body, const Vec
 }
 
 Vector3 JoltPhysicsServer3D::_body_get_constant_torque(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_constant_torque();
@@ -851,7 +851,7 @@ void JoltPhysicsServer3D::_body_set_axis_lock(const RID& p_body, BodyAxis p_axis
 }
 
 bool JoltPhysicsServer3D::_body_is_axis_locked(const RID& p_body, BodyAxis p_axis) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->is_axis_locked(p_axis);
@@ -878,7 +878,7 @@ void JoltPhysicsServer3D::_body_remove_collision_exception(
 }
 
 TypedArray<RID> JoltPhysicsServer3D::_body_get_collision_exceptions(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_collision_exceptions();
@@ -892,7 +892,7 @@ void JoltPhysicsServer3D::_body_set_max_contacts_reported(const RID& p_body, int
 }
 
 int32_t JoltPhysicsServer3D::_body_get_max_contacts_reported(const RID& p_body) const {
-	JoltBody3D* body = body_owner.get_or_null(p_body);
+	const JoltBody3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_max_contacts_reported();
@@ -1284,11 +1284,11 @@ void JoltPhysicsServer3D::_pin_joint_set_param(
 }
 
 double JoltPhysicsServer3D::_pin_joint_get_param(const RID& p_joint, PinJointParam p_param) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_PIN);
-	auto* pin_joint = static_cast<JoltPinJoint3D*>(joint);
+	const auto* pin_joint = static_cast<const JoltPinJoint3D*>(joint);
 
 	return pin_joint->get_param(p_param);
 }
@@ -1304,11 +1304,11 @@ void JoltPhysicsServer3D::_pin_joint_set_local_a(const RID& p_joint, const Vecto
 }
 
 Vector3 JoltPhysicsServer3D::_pin_joint_get_local_a(const RID& p_joint) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_PIN);
-	auto* pin_joint = static_cast<JoltPinJoint3D*>(joint);
+	const auto* pin_joint = static_cast<const JoltPinJoint3D*>(joint);
 
 	return pin_joint->get_local_a();
 }
@@ -1324,11 +1324,11 @@ void JoltPhysicsServer3D::_pin_joint_set_local_b(const RID& p_joint, const Vecto
 }
 
 Vector3 JoltPhysicsServer3D::_pin_joint_get_local_b(const RID& p_joint) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_PIN);
-	auto* pin_joint = static_cast<JoltPinJoint3D*>(joint);
+	const auto* pin_joint = static_cast<const JoltPinJoint3D*>(joint);
 
 	return pin_joint->get_local_b();
 }
@@ -1393,11 +1393,11 @@ void JoltPhysicsServer3D::_hinge_joint_set_param(
 
 double JoltPhysicsServer3D::_hinge_joint_get_param(const RID& p_joint, HingeJointParam p_param)
 	const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
-	auto* hinge_joint = static_cast<JoltHingeJoint3D*>(joint);
+	const auto* hinge_joint = static_cast<const JoltHingeJoint3D*>(joint);
 
 	return hinge_joint->get_param(p_param);
 }
@@ -1417,11 +1417,11 @@ void JoltPhysicsServer3D::_hinge_joint_set_flag(
 }
 
 bool JoltPhysicsServer3D::_hinge_joint_get_flag(const RID& p_joint, HingeJointFlag p_flag) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
-	auto* hinge_joint = static_cast<JoltHingeJoint3D*>(joint);
+	const auto* hinge_joint = static_cast<const JoltHingeJoint3D*>(joint);
 
 	return hinge_joint->get_flag(p_flag);
 }
@@ -1472,11 +1472,11 @@ void JoltPhysicsServer3D::_slider_joint_set_param(
 
 double JoltPhysicsServer3D::_slider_joint_get_param(const RID& p_joint, SliderJointParam p_param)
 	const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_SLIDER);
-	auto* slider_joint = static_cast<JoltSliderJoint3D*>(joint);
+	const auto* slider_joint = static_cast<const JoltSliderJoint3D*>(joint);
 
 	return slider_joint->get_param(p_param);
 }
@@ -1529,11 +1529,11 @@ double JoltPhysicsServer3D::_cone_twist_joint_get_param(
 	const RID& p_joint,
 	ConeTwistJointParam p_param
 ) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_CONE_TWIST);
-	auto* cone_twist_joint = static_cast<JoltConeTwistJoint3D*>(joint);
+	const auto* cone_twist_joint = static_cast<const JoltConeTwistJoint3D*>(joint);
 
 	return cone_twist_joint->get_param(p_param);
 }
@@ -1588,11 +1588,11 @@ double JoltPhysicsServer3D::_generic_6dof_joint_get_param(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisParam p_param
 ) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_6DOF);
-	auto* g6dof_joint = static_cast<JoltGeneric6DOFJoint3D*>(joint);
+	const auto* g6dof_joint = static_cast<const JoltGeneric6DOFJoint3D*>(joint);
 
 	return g6dof_joint->get_param(p_axis, p_param);
 }
@@ -1617,17 +1617,17 @@ bool JoltPhysicsServer3D::_generic_6dof_joint_get_flag(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisFlag p_flag
 ) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_6DOF);
-	auto* g6dof_joint = static_cast<JoltGeneric6DOFJoint3D*>(joint);
+	const auto* g6dof_joint = static_cast<const JoltGeneric6DOFJoint3D*>(joint);
 
 	return g6dof_joint->get_flag(p_axis, p_flag);
 }
 
 PhysicsServer3D::JointType JoltPhysicsServer3D::_joint_get_type(const RID& p_joint) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	return joint->get_type();
@@ -1641,7 +1641,7 @@ void JoltPhysicsServer3D::_joint_set_solver_priority(const RID& p_joint, int32_t
 }
 
 int32_t JoltPhysicsServer3D::_joint_get_solver_priority(const RID& p_joint) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	return joint->get_solver_priority();
@@ -1658,7 +1658,7 @@ void JoltPhysicsServer3D::_joint_disable_collisions_between_bodies(
 }
 
 bool JoltPhysicsServer3D::_joint_is_disabled_collisions_between_bodies(const RID& p_joint) const {
-	JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
+	const JoltJoint3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	return joint->is_collision_disabled();

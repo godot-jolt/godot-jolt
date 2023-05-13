@@ -119,16 +119,16 @@ void JoltDebugGeometry3D::_process([[maybe_unused]] double p_delta) {
 		return;
 	}
 
-	JoltSpace3D* space = physics_server->get_space(get_world_3d()->get_space());
-	ERR_FAIL_NULL(space);
-
 	RenderingServer* rendering_server = RenderingServer::get_singleton();
 	ERR_FAIL_NULL(rendering_server);
 
-	Viewport* viewport = get_viewport();
+	const JoltSpace3D* space = physics_server->get_space(get_world_3d()->get_space());
+	ERR_FAIL_NULL(space);
+
+	const Viewport* viewport = get_viewport();
 	ERR_FAIL_NULL(viewport);
 
-	Camera3D* camera = viewport->get_camera_3d();
+	const Camera3D* camera = viewport->get_camera_3d();
 	ERR_FAIL_NULL(camera);
 
 	debug_renderer->draw(*space, *camera, draw_settings);

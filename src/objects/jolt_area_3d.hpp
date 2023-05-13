@@ -116,7 +116,7 @@ public:
 
 	void set_gravity_vector(const Vector3& p_vector) { gravity_vector = p_vector; }
 
-	Vector3 compute_gravity(const Vector3& p_position, bool p_lock = true);
+	Vector3 compute_gravity(const Vector3& p_position, bool p_lock = true) const;
 
 	void body_shape_entered(
 		const JPH::BodyID& p_body_id,

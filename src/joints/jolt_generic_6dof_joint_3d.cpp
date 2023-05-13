@@ -54,7 +54,7 @@ JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D(
 double JoltGeneric6DOFJoint3D::get_param(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisParam p_param
-) {
+) const {
 	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
@@ -309,7 +309,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 bool JoltGeneric6DOFJoint3D::get_flag(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisFlag p_flag
-) {
+) const {
 	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 

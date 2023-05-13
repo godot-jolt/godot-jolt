@@ -39,7 +39,7 @@ public:
 		return PhysicsServer3D::JOINT_TYPE_6DOF;
 	}
 
-	double get_param(Vector3::Axis p_axis, PhysicsServer3D::G6DOFJointAxisParam p_param);
+	double get_param(Vector3::Axis p_axis, PhysicsServer3D::G6DOFJointAxisParam p_param) const;
 
 	void set_param(
 		Vector3::Axis p_axis,
@@ -48,7 +48,7 @@ public:
 		bool p_lock = true
 	);
 
-	bool get_flag(Vector3::Axis p_axis, PhysicsServer3D::G6DOFJointAxisFlag p_flag);
+	bool get_flag(Vector3::Axis p_axis, PhysicsServer3D::G6DOFJointAxisFlag p_flag) const;
 
 	void set_flag(
 		Vector3::Axis p_axis,

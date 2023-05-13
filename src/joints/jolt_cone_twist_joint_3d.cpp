@@ -84,7 +84,7 @@ JoltConeTwistJoint3D::JoltConeTwistJoint3D(
 	space->add_joint(this);
 }
 
-double JoltConeTwistJoint3D::get_param(PhysicsServer3D::ConeTwistJointParam p_param) {
+double JoltConeTwistJoint3D::get_param(PhysicsServer3D::ConeTwistJointParam p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::CONE_TWIST_JOINT_SWING_SPAN: {
 			return swing_span;

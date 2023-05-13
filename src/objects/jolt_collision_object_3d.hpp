@@ -76,7 +76,7 @@ public:
 		bool p_lock = true
 	);
 
-	void remove_shape(JoltShape3D* p_shape, bool p_lock = true);
+	void remove_shape(const JoltShape3D* p_shape, bool p_lock = true);
 
 	void remove_shape(int32_t p_index, bool p_lock = true);
 

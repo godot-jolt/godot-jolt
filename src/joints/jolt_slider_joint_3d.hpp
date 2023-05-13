@@ -25,7 +25,7 @@ public:
 		return PhysicsServer3D::JOINT_TYPE_SLIDER;
 	}
 
-	double get_param(PhysicsServer3D::SliderJointParam p_param);
+	double get_param(PhysicsServer3D::SliderJointParam p_param) const;
 
 	void set_param(PhysicsServer3D::SliderJointParam p_param, double p_value);
 

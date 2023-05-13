@@ -296,7 +296,7 @@ void JoltCollisionObject3D::add_shape(
 	shapes_changed(p_lock);
 }
 
-void JoltCollisionObject3D::remove_shape(JoltShape3D* p_shape, bool p_lock) {
+void JoltCollisionObject3D::remove_shape(const JoltShape3D* p_shape, bool p_lock) {
 	shapes.erase_if([&](const JoltShapeInstance3D& p_instance) {
 		return p_instance.get_shape() == p_shape;
 	});

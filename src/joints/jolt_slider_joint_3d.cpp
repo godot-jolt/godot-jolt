@@ -108,7 +108,7 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	space->add_joint(this);
 }
 
-double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) {
+double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_UPPER: {
 			return limit_upper;

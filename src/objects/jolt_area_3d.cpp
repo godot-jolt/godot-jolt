@@ -170,7 +170,7 @@ void JoltArea3D::set_monitorable(bool p_monitorable, bool p_lock) {
 	monitorable_changed(p_lock);
 }
 
-Vector3 JoltArea3D::compute_gravity(const Vector3& p_position, bool p_lock) {
+Vector3 JoltArea3D::compute_gravity(const Vector3& p_position, bool p_lock) const {
 	if (!point_gravity) {
 		return gravity_vector * gravity;
 	}

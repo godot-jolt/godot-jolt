@@ -34,7 +34,7 @@ public:
 
 	void set_local_b(const Vector3& p_local_b, bool p_lock = true);
 
-	double get_param(PhysicsServer3D::PinJointParam p_param);
+	double get_param(PhysicsServer3D::PinJointParam p_param) const;
 
 	void set_param(PhysicsServer3D::PinJointParam p_param, double p_value);
 

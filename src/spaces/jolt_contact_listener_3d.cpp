@@ -92,7 +92,7 @@ void JoltContactListener3D::OnContactRemoved(const JPH::SubShapeIDPair& p_shape_
 	}
 }
 
-bool JoltContactListener3D::is_listening_for(const JPH::Body& p_body) {
+bool JoltContactListener3D::is_listening_for(const JPH::Body& p_body) const {
 	return listening_for.has(p_body.GetID());
 }
 
@@ -100,7 +100,7 @@ void JoltContactListener3D::update_contacts(
 	const JPH::Body& p_body1,
 	const JPH::Body& p_body2,
 	const JPH::ContactManifold& p_manifold,
-	JPH::ContactSettings& p_settings
+	const JPH::ContactSettings& p_settings
 ) {
 	const JPH::SubShapeIDPair shape_pair = pair_contact(p_body1, p_body2, p_manifold);
 
@@ -308,8 +308,8 @@ void JoltContactListener3D::flush_area_exits() {
 		JoltArea3D* area1 = jolt_body1.as_area();
 		JoltArea3D* area2 = jolt_body2.as_area();
 
-		JoltBody3D* body1 = jolt_body1.as_body();
-		JoltBody3D* body2 = jolt_body2.as_body();
+		const JoltBody3D* body1 = jolt_body1.as_body();
+		const JoltBody3D* body2 = jolt_body2.as_body();
 
 		if (area1 != nullptr && area2 != nullptr) {
 			area1->area_shape_exited(body_id2, sub_shape_id2, sub_shape_id1);
