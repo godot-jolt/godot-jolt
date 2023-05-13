@@ -4,13 +4,7 @@
 
 class JoltOverrideUserDataShapeSettings final : public JPH::DecoratedShapeSettings {
 public:
-	JoltOverrideUserDataShapeSettings() = default;
-
-	explicit JoltOverrideUserDataShapeSettings(const JPH::ShapeSettings* p_shape_settings)
-		: DecoratedShapeSettings(p_shape_settings) { }
-
-	explicit JoltOverrideUserDataShapeSettings(const JPH::Shape* p_shape)
-		: DecoratedShapeSettings(p_shape) { }
+	using JPH::DecoratedShapeSettings::DecoratedShapeSettings;
 
 	ShapeResult Create() const override;
 };
