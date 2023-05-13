@@ -85,9 +85,6 @@ JoltConeTwistJoint3D::JoltConeTwistJoint3D(
 }
 
 double JoltConeTwistJoint3D::get_param(PhysicsServer3D::ConeTwistJointParam p_param) {
-	auto* jolt_constraint = static_cast<JPH::SwingTwistConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL_D(jolt_constraint);
-
 	switch (p_param) {
 		case PhysicsServer3D::CONE_TWIST_JOINT_SWING_SPAN: {
 			return swing_span;
@@ -111,9 +108,6 @@ double JoltConeTwistJoint3D::get_param(PhysicsServer3D::ConeTwistJointParam p_pa
 }
 
 void JoltConeTwistJoint3D::set_param(PhysicsServer3D::ConeTwistJointParam p_param, double p_value) {
-	auto* jolt_constraint = static_cast<JPH::SwingTwistConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL(jolt_constraint);
-
 	switch (p_param) {
 		case PhysicsServer3D::CONE_TWIST_JOINT_SWING_SPAN: {
 			swing_span = p_value;

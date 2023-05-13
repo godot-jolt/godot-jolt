@@ -310,9 +310,6 @@ bool JoltGeneric6DOFJoint3D::get_flag(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisFlag p_flag
 ) {
-	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL_D(jolt_constraint);
-
 	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
