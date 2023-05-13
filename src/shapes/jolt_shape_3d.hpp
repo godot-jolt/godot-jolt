@@ -122,6 +122,7 @@ private:
 };
 
 class JoltSphereShape3D final : public JoltShape3D {
+public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_SPHERE; }
 
 	bool is_convex() const override { return true; }
