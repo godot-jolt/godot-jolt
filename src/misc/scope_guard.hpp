@@ -8,8 +8,8 @@ template<typename TCallable>
 class ScopeGuard {
 public:
 	// NOLINTNEXTLINE(hicpp-explicit-conversions)
-	ScopeGuard(TCallable&& p_callable)
-		: callable(std::forward<TCallable>(p_callable)) { }
+	ScopeGuard(TCallable p_callable)
+		: callable(std::move(p_callable)) { }
 
 	ScopeGuard(const ScopeGuard& p_other) = delete;
 
