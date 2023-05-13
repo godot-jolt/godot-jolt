@@ -23,14 +23,6 @@ Godot Engine (https://github.com/godotengine/godot)
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 
-Godot Engine Logo (https://github.com/godotengine/godot)
-
-    Copyright (c) 2017 Andrea Calabró.
-
-    This work is licensed under a Creative Commons Attribution 4.0 International
-    License (CC-BY-4.0 International)
-    <https://creativecommons.org/licenses/by/4.0/>.
-
 godot-cpp (https://github.com/godot-jolt/godot-cpp)
 
     Copyright (c) 2017-present Godot Engine contributors.

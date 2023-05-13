@@ -1,4 +1,4 @@
-# ![Godot Jolt][bnr]
+# ![Godot Jolt][log]
 
 Godot Jolt is a native extension for the [Godot game engine][gdt] (4.0 and later) that allows you to
 use the [Jolt physics engine][jlt] to power Godot's 3D physics.
@@ -44,7 +44,7 @@ See [`docs/building.md`][bld] for information about how to build Godot Jolt from
 This project is licensed under the MIT license. See [`LICENSE.txt`][lic] for details. See
 [`THIRDPARTY.txt`][tdp] for third-party licenses and copyright notices.
 
-[bnr]: docs/banner.png
+[log]: docs/logo.svg
 [gdt]: https://godotengine.org/
 [jlt]: https://github.com/jrouwe/JoltPhysics
 [cpb]: https://github.com/godot-jolt/godot-jolt/issues/117
