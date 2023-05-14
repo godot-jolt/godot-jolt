@@ -1,8 +1,8 @@
 #include "jolt_shape_3d.hpp"
 
 #include "objects/jolt_object_impl_3d.hpp"
+#include "shapes/jolt_custom_ray_shape.hpp"
 #include "shapes/jolt_custom_user_data_shape.hpp"
-#include "shapes/jolt_ray_shape.hpp"
 
 JoltShapeImpl3D::~JoltShapeImpl3D() = default;
 
