@@ -2,7 +2,7 @@
 
 #include "objects/jolt_collision_object_3d.hpp"
 
-class JoltArea3D final : public JoltCollisionObject3D {
+class JoltAreaImpl3D final : public JoltCollisionObject3D {
 	struct BodyIDHasher {
 		static uint32_t hash(const JPH::BodyID& p_id) {
 			return hash_fmix32(p_id.GetIndexAndSequenceNumber());

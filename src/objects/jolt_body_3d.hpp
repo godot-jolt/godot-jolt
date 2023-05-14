@@ -3,7 +3,7 @@
 #include "objects/jolt_collision_object_3d.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 
-class JoltArea3D;
+class JoltAreaImpl3D;
 
 class JoltBody3D final : public JoltCollisionObject3D {
 public:
@@ -142,9 +142,9 @@ public:
 
 	TypedArray<RID> get_collision_exceptions(bool p_lock = true) const;
 
-	void add_area(JoltArea3D* p_area, bool p_lock = true);
+	void add_area(JoltAreaImpl3D* p_area, bool p_lock = true);
 
-	void remove_area(JoltArea3D* p_area, bool p_lock = true);
+	void remove_area(JoltAreaImpl3D* p_area, bool p_lock = true);
 
 	void integrate_forces(float p_step, bool p_lock = true);
 
@@ -259,7 +259,7 @@ private:
 
 	LocalVector<Contact> contacts;
 
-	LocalVector<JoltArea3D*> areas;
+	LocalVector<JoltAreaImpl3D*> areas;
 
 	Variant force_integration_userdata;
 

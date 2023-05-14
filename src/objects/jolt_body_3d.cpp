@@ -629,15 +629,15 @@ TypedArray<RID> JoltBody3D::get_collision_exceptions(bool p_lock) const {
 	return result;
 }
 
-void JoltBody3D::add_area(JoltArea3D* p_area, bool p_lock) {
-	areas.ordered_insert(p_area, [](const JoltArea3D* p_lhs, const JoltArea3D* p_rhs) {
+void JoltBody3D::add_area(JoltAreaImpl3D* p_area, bool p_lock) {
+	areas.ordered_insert(p_area, [](const JoltAreaImpl3D* p_lhs, const JoltAreaImpl3D* p_rhs) {
 		return p_lhs->get_priority() > p_rhs->get_priority();
 	});
 
 	areas_changed(p_lock);
 }
 
-void JoltBody3D::remove_area(JoltArea3D* p_area, bool p_lock) {
+void JoltBody3D::remove_area(JoltAreaImpl3D* p_area, bool p_lock) {
 	areas.erase(p_area);
 
 	areas_changed(p_lock);
@@ -653,7 +653,7 @@ void JoltBody3D::integrate_forces(float p_step, bool p_lock) {
 
 	bool gravity_done = false;
 
-	for (const JoltArea3D* area : areas) {
+	for (const JoltAreaImpl3D* area : areas) {
 		gravity_done = integrate(gravity, area->get_gravity_mode(), [&]() {
 			return area->compute_gravity(position);
 		});
@@ -1047,7 +1047,7 @@ void JoltBody3D::update_damp(bool p_lock) {
 	bool linear_damp_done = linear_damp_mode == PhysicsServer3D::BODY_DAMP_MODE_REPLACE;
 	bool angular_damp_done = angular_damp_mode == PhysicsServer3D::BODY_DAMP_MODE_REPLACE;
 
-	for (const JoltArea3D* area : areas) {
+	for (const JoltAreaImpl3D* area : areas) {
 		if (!linear_damp_done) {
 			linear_damp_done = integrate(total_linear_damp, area->get_linear_damp_mode(), [&]() {
 				return area->get_linear_damp();
@@ -1065,7 +1065,7 @@ void JoltBody3D::update_damp(bool p_lock) {
 		}
 	}
 
-	const JoltArea3D* default_area = space->get_default_area();
+	const JoltAreaImpl3D* default_area = space->get_default_area();
 
 	if (!linear_damp_done) {
 		total_linear_damp += default_area->get_linear_damp();

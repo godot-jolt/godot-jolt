@@ -2,7 +2,7 @@
 
 #include "spaces/jolt_body_accessor_3d.hpp"
 
-class JoltArea3D;
+class JoltAreaImpl3D;
 class JoltCollisionObject3D;
 class JoltContactListener3D;
 class JoltJointImpl3D;
@@ -74,9 +74,9 @@ public:
 
 	JoltPhysicsDirectSpaceState3D* get_direct_state();
 
-	void set_default_area(JoltArea3D* p_area) { default_area = p_area; }
+	void set_default_area(JoltAreaImpl3D* p_area) { default_area = p_area; }
 
-	JoltArea3D* get_default_area() const { return default_area; }
+	JoltAreaImpl3D* get_default_area() const { return default_area; }
 
 	float get_last_step() const { return last_step; }
 
@@ -119,7 +119,7 @@ private:
 
 	JoltPhysicsDirectSpaceState3D* direct_state = nullptr;
 
-	JoltArea3D* default_area = nullptr;
+	JoltAreaImpl3D* default_area = nullptr;
 
 	float last_step = 0.0f;
 

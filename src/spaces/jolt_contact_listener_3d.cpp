@@ -236,8 +236,8 @@ void JoltContactListener3D::flush_area_enters() {
 			continue;
 		}
 
-		JoltArea3D* area1 = jolt_body1.as_area();
-		JoltArea3D* area2 = jolt_body2.as_area();
+		JoltAreaImpl3D* area1 = jolt_body1.as_area();
+		JoltAreaImpl3D* area2 = jolt_body2.as_area();
 
 		if (area1 != nullptr && area2 != nullptr) {
 			if (area2->is_monitorable()) {
@@ -305,8 +305,8 @@ void JoltContactListener3D::flush_area_exits() {
 		const JoltReadableBody3D jolt_body1 = jolt_bodies[0];
 		const JoltReadableBody3D jolt_body2 = jolt_bodies[1];
 
-		JoltArea3D* area1 = jolt_body1.as_area();
-		JoltArea3D* area2 = jolt_body2.as_area();
+		JoltAreaImpl3D* area1 = jolt_body1.as_area();
+		JoltAreaImpl3D* area2 = jolt_body2.as_area();
 
 		const JoltBody3D* body1 = jolt_body1.as_body();
 		const JoltBody3D* body2 = jolt_body2.as_body();
