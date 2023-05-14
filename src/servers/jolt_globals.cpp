@@ -1,6 +1,6 @@
 #include "jolt_globals.hpp"
 
-#include "shapes/jolt_empty_shape.hpp"
+#include "shapes/jolt_custom_empty_shape.hpp"
 #include "shapes/jolt_override_user_data_shape.hpp"
 #include "shapes/jolt_ray_shape.hpp"
 
