@@ -28,7 +28,7 @@ private:
 
 } // namespace
 
-JPH::AABox JoltMotionShape::GetLocalBounds() const {
+JPH::AABox JoltCustomMotionShape::GetLocalBounds() const {
 	JPH::AABox aabb = inner_shape.GetLocalBounds();
 	JPH::AABox aabb_translated = aabb;
 	aabb_translated.Translate(motion);
@@ -37,7 +37,7 @@ JPH::AABox JoltMotionShape::GetLocalBounds() const {
 	return aabb;
 }
 
-const JPH::ConvexShape::Support* JoltMotionShape::GetSupportFunction(
+const JPH::ConvexShape::Support* JoltCustomMotionShape::GetSupportFunction(
 	JPH::ConvexShape::ESupportMode p_mode,
 	JPH::ConvexShape::SupportBuffer& p_buffer,
 	JPH::Vec3Arg p_scale

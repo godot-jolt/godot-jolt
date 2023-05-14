@@ -2,10 +2,10 @@
 
 #include "shapes/jolt_shape_type.hpp"
 
-class JoltMotionShape final : public JPH::ConvexShape {
+class JoltCustomMotionShape final : public JPH::ConvexShape {
 public:
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-	explicit JoltMotionShape(const JPH::ConvexShape& p_shape)
+	explicit JoltCustomMotionShape(const JPH::ConvexShape& p_shape)
 		: JPH::ConvexShape(JoltShapeSubType::MOTION)
 		, inner_shape(p_shape) { }
 
