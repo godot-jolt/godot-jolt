@@ -115,7 +115,12 @@ void JoltDebugGeometry3D::_process([[maybe_unused]] double p_delta) {
 	auto* physics_server = dynamic_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
 	if (physics_server == nullptr) {
-		ERR_PRINT_ONCE("Failed to retrieve Jolt-based physics server.");
+		ERR_PRINT_ONCE(
+			"JoltDebugGeometry3D was unable to retrieve the Jolt-based physics server. Make sure "
+			"that you have set 'JoltPhysics3D' as the currently active physics server in your "
+			"project settings."
+		);
+
 		return;
 	}
 
