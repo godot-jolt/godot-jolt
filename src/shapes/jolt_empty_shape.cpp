@@ -3,7 +3,7 @@
 namespace {
 
 JPH::Shape* construct_empty() {
-	return new JoltEmptyShape();
+	return new JoltCustomEmptyShape();
 }
 
 void collide_noop(
@@ -34,15 +34,15 @@ void cast_noop(
 
 } // namespace
 
-JPH::ShapeSettings::ShapeResult JoltEmptyShapeSettings::Create() const {
+JPH::ShapeSettings::ShapeResult JoltCustomEmptyShapeSettings::Create() const {
 	if (mCachedResult.IsEmpty()) {
-		new JoltEmptyShape(*this, mCachedResult);
+		new JoltCustomEmptyShape(*this, mCachedResult);
 	}
 
 	return mCachedResult;
 }
 
-void JoltEmptyShape::register_type() {
+void JoltCustomEmptyShape::register_type() {
 	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JoltShapeSubType::EMPTY);
 
 	shape_functions.mConstruct = construct_empty;

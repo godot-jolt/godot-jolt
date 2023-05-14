@@ -268,7 +268,7 @@ void JoltObjectImpl3D::build_shape(bool p_lock) {
 	jolt_shape = try_build_shape();
 
 	if (jolt_shape == nullptr) {
-		jolt_shape = new JoltEmptyShape();
+		jolt_shape = new JoltCustomEmptyShape();
 	}
 
 	if (jolt_shape == previous_jolt_shape) {
@@ -448,7 +448,7 @@ void JoltObjectImpl3D::create_begin() {
 	jolt_shape = try_build_shape();
 
 	if (jolt_shape == nullptr) {
-		jolt_shape = new JoltEmptyShape();
+		jolt_shape = new JoltCustomEmptyShape();
 	}
 
 	jolt_settings->mObjectLayer = get_object_layer();

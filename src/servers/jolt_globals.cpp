@@ -64,7 +64,7 @@ void jolt_initialize() {
 
 	JPH::RegisterTypes();
 
-	JoltEmptyShape::register_type();
+	JoltCustomEmptyShape::register_type();
 	JoltRayShape::register_type();
 	JoltOverrideUserDataShape::register_type();
 }

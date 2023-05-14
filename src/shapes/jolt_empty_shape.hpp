@@ -2,21 +2,21 @@
 
 #include "shapes/jolt_shape_type.hpp"
 
-class JoltEmptyShapeSettings final : public JPH::ShapeSettings {
+class JoltCustomEmptyShapeSettings final : public JPH::ShapeSettings {
 public:
-	JoltEmptyShapeSettings() = default;
+	JoltCustomEmptyShapeSettings() = default;
 
 	ShapeResult Create() const override;
 };
 
-class JoltEmptyShape final : public JPH::Shape {
+class JoltCustomEmptyShape final : public JPH::Shape {
 public:
 	static void register_type();
 
-	JoltEmptyShape()
+	JoltCustomEmptyShape()
 		: Shape(JoltShapeType::EMPTY, JoltShapeSubType::EMPTY) { }
 
-	JoltEmptyShape(const JoltEmptyShapeSettings& p_settings, ShapeResult& p_result)
+	JoltCustomEmptyShape(const JoltCustomEmptyShapeSettings& p_settings, ShapeResult& p_result)
 		: Shape(JoltShapeType::EMPTY, JoltShapeSubType::EMPTY, p_settings, p_result) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
