@@ -114,7 +114,7 @@ from Godot.
 
 You then use these presets like so:
 
-```pwsh
+```sh
 # Using the above mentioned configure preset
 cmake --preset windows-msvc-x64
 
@@ -177,7 +177,7 @@ this:
 
 Then you can configure/build it like any other preset:
 
-```pwsh
+```sh
 cmake --preset dev
 cmake --build --preset dev-debug
 ```
@@ -200,13 +200,13 @@ files in the directory you provide, with the option to fix any errors it encount
 
 To see if you have any formatting errors:
 
-```pwsh
+```sh
 ./scripts/run_clang_format.ps1 -SourcePath ./src
 ```
 
 To also automatically fix any formatting errors it might encounter:
 
-```pwsh
+```sh
 ./scripts/run_clang_format.ps1 -SourcePath ./src -Fix
 ```
 
@@ -232,7 +232,7 @@ in the directory you provide, with the option to try to fix any errors it encoun
 
 To see if you have any linting errors:
 
-```pwsh
+```sh
 # Generate build files, and disable precompiled headers to prevent compatibility issues
 cmake --preset windows-clangcl-x64 -DGDJ_PRECOMPILE_HEADERS=NO
 
@@ -247,7 +247,7 @@ To make clang-tidy attempt to fix any linting errors, you can provide the `-Fix`
 
 ⚠️ This is very slow, as `-Fix` can't run multiple instances of clang-tidy in parallel.
 
-```pwsh
+```sh
 ./scripts/run_clang_tidy.ps1 -SourcePath ./src -BuildPath ./build/windows-clangcl-x64 -Fix
 ```
 
