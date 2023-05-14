@@ -12,7 +12,7 @@ constexpr double DEFAULT_RELAXATION = 1.0;
 
 } // namespace
 
-JoltHingeJoint3D::JoltHingeJoint3D(
+JoltHingeJointImpl3D::JoltHingeJointImpl3D(
 	JoltSpace3D* p_space,
 	JoltBody3D* p_body_a,
 	JoltBody3D* p_body_b,
@@ -53,7 +53,7 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 	space->add_joint(this);
 }
 
-JoltHingeJoint3D::JoltHingeJoint3D(
+JoltHingeJointImpl3D::JoltHingeJointImpl3D(
 	JoltSpace3D* p_space,
 	JoltBody3D* p_body_a,
 	const Transform3D& p_local_ref_a,
@@ -85,7 +85,7 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 	space->add_joint(this);
 }
 
-double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) const {
+double JoltHingeJointImpl3D::get_param(PhysicsServer3D::HingeJointParam p_param) const {
 	const auto* jolt_constraint = static_cast<const JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL_D(jolt_constraint);
 
@@ -120,7 +120,7 @@ double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) con
 	}
 }
 
-void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, double p_value) {
+void JoltHingeJointImpl3D::set_param(PhysicsServer3D::HingeJointParam p_param, double p_value) {
 	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
@@ -187,7 +187,7 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 	}
 }
 
-bool JoltHingeJoint3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) const {
+bool JoltHingeJointImpl3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) const {
 	const auto* jolt_constraint = static_cast<const JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL_D(jolt_constraint);
 
@@ -204,7 +204,7 @@ bool JoltHingeJoint3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) const {
 	}
 }
 
-void JoltHingeJoint3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled) {
+void JoltHingeJointImpl3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled) {
 	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
@@ -224,7 +224,7 @@ void JoltHingeJoint3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_e
 	}
 }
 
-void JoltHingeJoint3D::limits_changed() {
+void JoltHingeJointImpl3D::limits_changed() {
 	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 

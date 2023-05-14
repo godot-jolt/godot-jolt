@@ -1353,8 +1353,8 @@ void JoltPhysicsServer3D::_joint_make_hinge(
 	ERR_FAIL_NULL(space);
 
 	JoltJoint3D* new_joint = body_b != nullptr
-		? memnew(JoltHingeJoint3D(space, body_a, body_b, p_hinge_a, p_hinge_b))
-		: memnew(JoltHingeJoint3D(space, body_a, p_hinge_a, p_hinge_b));
+		? memnew(JoltHingeJointImpl3D(space, body_a, body_b, p_hinge_a, p_hinge_b))
+		: memnew(JoltHingeJointImpl3D(space, body_a, p_hinge_a, p_hinge_b));
 
 	new_joint->set_rid(old_joint->get_rid());
 	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
@@ -1386,7 +1386,7 @@ void JoltPhysicsServer3D::_hinge_joint_set_param(
 	ERR_FAIL_NULL(joint);
 
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
-	auto* hinge_joint = static_cast<JoltHingeJoint3D*>(joint);
+	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
 	return hinge_joint->set_param(p_param, p_value);
 }
@@ -1397,7 +1397,7 @@ double JoltPhysicsServer3D::_hinge_joint_get_param(const RID& p_joint, HingeJoin
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
-	const auto* hinge_joint = static_cast<const JoltHingeJoint3D*>(joint);
+	const auto* hinge_joint = static_cast<const JoltHingeJointImpl3D*>(joint);
 
 	return hinge_joint->get_param(p_param);
 }
@@ -1411,7 +1411,7 @@ void JoltPhysicsServer3D::_hinge_joint_set_flag(
 	ERR_FAIL_NULL(joint);
 
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
-	auto* hinge_joint = static_cast<JoltHingeJoint3D*>(joint);
+	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
 	return hinge_joint->set_flag(p_flag, p_enabled);
 }
@@ -1421,7 +1421,7 @@ bool JoltPhysicsServer3D::_hinge_joint_get_flag(const RID& p_joint, HingeJointFl
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
-	const auto* hinge_joint = static_cast<const JoltHingeJoint3D*>(joint);
+	const auto* hinge_joint = static_cast<const JoltHingeJointImpl3D*>(joint);
 
 	return hinge_joint->get_flag(p_flag);
 }
