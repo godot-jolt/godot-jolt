@@ -135,6 +135,7 @@ target_compile_definitions(godot-jolt
 	PRIVATE $<${is_windows}:VC_EXTRALEAN>
 	PRIVATE $<${is_windows}:NOMINMAX>
 	PRIVATE $<${is_windows}:STRICT>
+	PRIVATE $<${is_msvc_like}:_HAS_EXCEPTIONS=0>
 )
 
 if(GDJ_PRECOMPILE_HEADERS)
@@ -148,6 +149,9 @@ else()
 endif()
 
 if(MSVC)
+	# Disable support for exception-handling
+	string(REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
 	set(pdb_file $<TARGET_PDB_FILE:godot-jolt>)
 	set(pdb_file_name $<TARGET_PDB_FILE_NAME:godot-jolt>)
 
@@ -158,6 +162,7 @@ if(MSVC)
 		PRIVATE /w44365 # Enable another implicit conversion warning
 		PRIVATE /w44800 # Enable another implicit conversion warning
 		PRIVATE /wd4324 # Disable structure padding warning
+		PRIVATE /wd4530 # Disable lack of unwind semantics warning
 		PRIVATE /GF # Enable string pooling
 		PRIVATE /Gy # Enable function-level linking
 		PRIVATE /permissive- # Enable standard conformance
@@ -201,6 +206,7 @@ else()
 		PRIVATE -Wundef # Enable warnings about undefined identifiers in `#if` directives
 		PRIVATE -pthread # Use POSIX threads
 		PRIVATE -ffast-math # Enable aggressive floating-point optimizations
+		PRIVATE -fno-exceptions # Disable support for exception-handling
 		PRIVATE ${macro_prefix_option} # Make `__FILE__` relative
 		PRIVATE $<${use_sse2}:-msse2> # Enable SSE2 instructions
 		PRIVATE $<${use_sse4_2}:-msse4.2> # Enable SSE4.2 instructions
