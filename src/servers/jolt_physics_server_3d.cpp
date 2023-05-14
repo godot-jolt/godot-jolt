@@ -1501,8 +1501,8 @@ void JoltPhysicsServer3D::_joint_make_cone_twist(
 	ERR_FAIL_NULL(space);
 
 	JoltJoint3D* new_joint = body_b != nullptr
-		? memnew(JoltConeTwistJoint3D(space, body_a, body_b, p_local_ref_a, p_local_ref_b))
-		: memnew(JoltConeTwistJoint3D(space, body_a, p_local_ref_a, p_local_ref_b));
+		? memnew(JoltConeTwistJointImpl3D(space, body_a, body_b, p_local_ref_a, p_local_ref_b))
+		: memnew(JoltConeTwistJointImpl3D(space, body_a, p_local_ref_a, p_local_ref_b));
 
 	new_joint->set_rid(old_joint->get_rid());
 	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
@@ -1520,7 +1520,7 @@ void JoltPhysicsServer3D::_cone_twist_joint_set_param(
 	ERR_FAIL_NULL(joint);
 
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_CONE_TWIST);
-	auto* cone_twist_joint = static_cast<JoltConeTwistJoint3D*>(joint);
+	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
 
 	return cone_twist_joint->set_param(p_param, p_value);
 }
@@ -1533,7 +1533,7 @@ double JoltPhysicsServer3D::_cone_twist_joint_get_param(
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_CONE_TWIST);
-	const auto* cone_twist_joint = static_cast<const JoltConeTwistJoint3D*>(joint);
+	const auto* cone_twist_joint = static_cast<const JoltConeTwistJointImpl3D*>(joint);
 
 	return cone_twist_joint->get_param(p_param);
 }
