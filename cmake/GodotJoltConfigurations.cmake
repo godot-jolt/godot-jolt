@@ -2,7 +2,7 @@ include_guard()
 
 include(GodotJoltUtilities)
 
-set(GDJ_CONFIGURATIONS
+set(GDJ_CONFIGURATION_TYPES
 	Debug
 	Development
 	Distribution
@@ -19,14 +19,14 @@ if(is_multi_config)
 	endif()
 
 	if(PROJECT_IS_TOP_LEVEL)
-		set(CMAKE_CONFIGURATION_TYPES ${GDJ_CONFIGURATIONS} CACHE STRING
+		set(CMAKE_CONFIGURATION_TYPES ${GDJ_CONFIGURATION_TYPES} CACHE STRING
 			"Semicolon separated list of supported configuration types."
 			FORCE
 		)
 	endif()
 
 	foreach(config IN LISTS CMAKE_CONFIGURATION_TYPES)
-		if(NOT config IN_LIST GDJ_CONFIGURATIONS)
+		if(NOT config IN_LIST GDJ_CONFIGURATION_TYPES)
 			message(FATAL_ERROR "Unsupported configuration: '${config}'.")
 		endif()
 	endforeach()
@@ -39,12 +39,12 @@ else()
 		message(FATAL_ERROR "No build type specified.")
 	endif()
 
-	if(NOT CMAKE_BUILD_TYPE IN_LIST GDJ_CONFIGURATIONS)
+	if(NOT CMAKE_BUILD_TYPE IN_LIST GDJ_CONFIGURATION_TYPES)
 		message(FATAL_ERROR "Unsupported build type: '${CMAKE_BUILD_TYPE}'.")
 	endif()
 
 	if(PROJECT_IS_TOP_LEVEL)
-		set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${GDJ_CONFIGURATIONS})
+		set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${GDJ_CONFIGURATION_TYPES})
 	endif()
 endif()
 
