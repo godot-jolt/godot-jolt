@@ -342,7 +342,7 @@ void JoltSpace3D::add_joint(JPH::Constraint* p_jolt_ref) {
 	physics_system->AddConstraint(p_jolt_ref);
 }
 
-void JoltSpace3D::add_joint(JoltJoint3D* p_joint) {
+void JoltSpace3D::add_joint(JoltJointImpl3D* p_joint) {
 	add_joint(p_joint->get_jolt_ref());
 }
 
@@ -350,7 +350,7 @@ void JoltSpace3D::remove_joint(JPH::Constraint* p_jolt_ref) {
 	physics_system->RemoveConstraint(p_jolt_ref);
 }
 
-void JoltSpace3D::remove_joint(JoltJoint3D* p_joint) {
+void JoltSpace3D::remove_joint(JoltJointImpl3D* p_joint) {
 	remove_joint(p_joint->get_jolt_ref());
 }
 

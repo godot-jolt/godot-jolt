@@ -19,7 +19,7 @@ JoltPinJoint3D::JoltPinJoint3D(
 	const Vector3& p_local_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a, p_body_b)
+	: JoltJointImpl3D(p_space, p_body_a, p_body_b)
 	, local_a(p_local_a)
 	, local_b(p_local_b) {
 	const JPH::BodyID body_ids[] = {body_a->get_jolt_id(), body_b->get_jolt_id()};
@@ -57,7 +57,7 @@ JoltPinJoint3D::JoltPinJoint3D(
 	const Vector3& p_local_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a)
+	: JoltJointImpl3D(p_space, p_body_a)
 	, local_a(p_local_a)
 	, local_b(p_local_b) {
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);

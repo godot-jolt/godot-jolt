@@ -41,7 +41,7 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a, p_body_b) {
+	: JoltJointImpl3D(p_space, p_body_a, p_body_b) {
 	const JPH::BodyID body_ids[] = {body_a->get_jolt_id(), body_b->get_jolt_id()};
 	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, count_of(body_ids), p_lock);
 
@@ -82,7 +82,7 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a) {
+	: JoltJointImpl3D(p_space, p_body_a) {
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 

@@ -33,7 +33,7 @@ JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
 	[[maybe_unused]] const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a, p_body_b)
+	: JoltJointImpl3D(p_space, p_body_a, p_body_b)
 	, world_ref(body_a->get_transform_scaled(p_lock) * p_local_ref_a) {
 	world_ref.orthonormalize();
 	rebuild(p_lock);
@@ -46,7 +46,7 @@ JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a)
+	: JoltJointImpl3D(p_space, p_body_a)
 	, world_ref(p_local_ref_b) {
 	rebuild(p_lock);
 }

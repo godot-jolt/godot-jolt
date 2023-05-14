@@ -3,7 +3,7 @@
 class JoltArea3D;
 class JoltBody3D;
 class JoltJobSystem;
-class JoltJoint3D;
+class JoltJointImpl3D;
 class JoltShape3D;
 class JoltSpace3D;
 
@@ -555,7 +555,7 @@ public:
 
 	void free_shape(JoltShape3D* p_shape);
 
-	void free_joint(JoltJoint3D* p_joint);
+	void free_joint(JoltJointImpl3D* p_joint);
 
 	JoltSpace3D* get_space(const RID& p_rid) const { return space_owner.get_or_null(p_rid); }
 
@@ -565,7 +565,7 @@ public:
 
 	JoltShape3D* get_shape(const RID& p_rid) const { return shape_owner.get_or_null(p_rid); }
 
-	JoltJoint3D* get_joint(const RID& p_rid) const { return joint_owner.get_or_null(p_rid); }
+	JoltJointImpl3D* get_joint(const RID& p_rid) const { return joint_owner.get_or_null(p_rid); }
 
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
@@ -576,7 +576,7 @@ private:
 
 	mutable RID_PtrOwner<JoltShape3D> shape_owner;
 
-	mutable RID_PtrOwner<JoltJoint3D> joint_owner;
+	mutable RID_PtrOwner<JoltJointImpl3D> joint_owner;
 
 	HashSet<JoltSpace3D*> active_spaces;
 

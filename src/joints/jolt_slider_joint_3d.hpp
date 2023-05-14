@@ -2,7 +2,7 @@
 
 #include "joints/jolt_joint_3d.hpp"
 
-class JoltSliderJoint3D final : public JoltJoint3D {
+class JoltSliderJoint3D final : public JoltJointImpl3D {
 public:
 	JoltSliderJoint3D(
 		JoltSpace3D* p_space,

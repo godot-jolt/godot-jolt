@@ -5,7 +5,7 @@
 class JoltArea3D;
 class JoltCollisionObject3D;
 class JoltContactListener3D;
-class JoltJoint3D;
+class JoltJointImpl3D;
 class JoltLayerMapper;
 class JoltPhysicsDirectSpaceState3D;
 
@@ -82,11 +82,11 @@ public:
 
 	void add_joint(JPH::Constraint* p_jolt_ref);
 
-	void add_joint(JoltJoint3D* p_joint);
+	void add_joint(JoltJointImpl3D* p_joint);
 
 	void remove_joint(JPH::Constraint* p_jolt_ref);
 
-	void remove_joint(JoltJoint3D* p_joint);
+	void remove_joint(JoltJointImpl3D* p_joint);
 
 #ifdef GDJ_CONFIG_EDITOR
 	const PackedVector3Array& get_debug_contacts() const;

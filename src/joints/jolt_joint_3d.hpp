@@ -3,13 +3,13 @@
 class JoltBody3D;
 class JoltSpace3D;
 
-class JoltJoint3D {
+class JoltJointImpl3D {
 public:
-	JoltJoint3D() = default;
+	JoltJointImpl3D() = default;
 
-	JoltJoint3D(JoltSpace3D* p_space, JoltBody3D* p_body_a, JoltBody3D* p_body_b = nullptr);
+	JoltJointImpl3D(JoltSpace3D* p_space, JoltBody3D* p_body_a, JoltBody3D* p_body_b = nullptr);
 
-	virtual ~JoltJoint3D();
+	virtual ~JoltJointImpl3D();
 
 	virtual PhysicsServer3D::JointType get_type() const { return PhysicsServer3D::JOINT_TYPE_MAX; }
 

@@ -2,7 +2,7 @@
 
 #include "joints/jolt_joint_3d.hpp"
 
-class JoltGeneric6DOFJointImpl3D final : public JoltJoint3D {
+class JoltGeneric6DOFJointImpl3D final : public JoltJointImpl3D {
 	using JoltAxis = JPH::SixDOFConstraintSettings::EAxis;
 
 	enum Axis {

@@ -5,7 +5,7 @@
 class JoltBody3D;
 class JoltSpace3D;
 
-class JoltPinJoint3D final : public JoltJoint3D {
+class JoltPinJoint3D final : public JoltJointImpl3D {
 public:
 	JoltPinJoint3D(
 		JoltSpace3D* p_space,
