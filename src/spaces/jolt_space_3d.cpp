@@ -1,7 +1,7 @@
 #include "jolt_space_3d.hpp"
 
 #include "joints/jolt_joint_impl_3d.hpp"
-#include "objects/jolt_area_3d.hpp"
+#include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_body_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_contact_listener_3d.hpp"
