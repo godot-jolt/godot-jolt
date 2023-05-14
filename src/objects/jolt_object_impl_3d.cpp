@@ -1,4 +1,4 @@
-#include "jolt_collision_object_3d.hpp"
+#include "jolt_object_impl_3d.hpp"
 
 #include "servers/jolt_project_settings.hpp"
 #include "shapes/jolt_empty_shape.hpp"

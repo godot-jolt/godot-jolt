@@ -1,6 +1,6 @@
 #pragma once
 
-#include "objects/jolt_collision_object_3d.hpp"
+#include "objects/jolt_object_impl_3d.hpp"
 
 class JoltAreaImpl3D final : public JoltObjectImpl3D {
 	struct BodyIDHasher {

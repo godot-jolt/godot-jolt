@@ -2,7 +2,7 @@
 
 #include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_body_impl_3d.hpp"
-#include "objects/jolt_collision_object_3d.hpp"
+#include "objects/jolt_object_impl_3d.hpp"
 #include "servers/jolt_physics_server_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "shapes/jolt_motion_shape.hpp"

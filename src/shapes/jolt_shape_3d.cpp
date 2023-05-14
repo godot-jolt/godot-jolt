@@ -1,6 +1,6 @@
 #include "jolt_shape_3d.hpp"
 
-#include "objects/jolt_collision_object_3d.hpp"
+#include "objects/jolt_object_impl_3d.hpp"
 #include "shapes/jolt_override_user_data_shape.hpp"
 #include "shapes/jolt_ray_shape.hpp"
 
