@@ -575,14 +575,14 @@ JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltConcavePolygonShape3D::get_data() const {
+Variant JoltConcavePolygonShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["faces"] = faces;
 	data["backface_collision"] = backface_collision;
 	return data;
 }
 
-void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
+void JoltConcavePolygonShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -603,11 +603,11 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	backface_collision = maybe_backface_collision;
 }
 
-String JoltConcavePolygonShape3D::to_string() const {
+String JoltConcavePolygonShapeImpl3D::to_string() const {
 	return vformat("{vertex_count=%d}", faces.size());
 }
 
-JPH::ShapeRefC JoltConcavePolygonShape3D::build() const {
+JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
 	const auto vertex_count = (int32_t)faces.size();
 	const int32_t face_count = vertex_count / 3;
 	const int32_t excess_vertex_count = vertex_count % 3;
