@@ -1,4 +1,4 @@
-#include "jolt_body_3d.hpp"
+#include "jolt_body_impl_3d.hpp"
 
 #include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_group_filter_rid.hpp"
