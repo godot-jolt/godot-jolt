@@ -5,7 +5,7 @@
 
 class JoltAreaImpl3D;
 
-class JoltBodyImpl3D final : public JoltCollisionObject3D {
+class JoltBodyImpl3D final : public JoltObjectImpl3D {
 public:
 	using DampMode = PhysicsServer3D::BodyDampMode;
 

@@ -711,7 +711,7 @@ void JoltBodyImpl3D::call_queries() {
 }
 
 void JoltBodyImpl3D::pre_step(float p_step) {
-	JoltCollisionObject3D::pre_step(p_step);
+	JoltObjectImpl3D::pre_step(p_step);
 
 	if (is_rigid() && !is_sleeping(false)) {
 		integrate_forces(p_step, false);

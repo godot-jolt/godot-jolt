@@ -273,7 +273,7 @@ void JoltAreaImpl3D::add_shape_pair(
 	const JPH::SubShapeID& p_self_shape_id
 ) {
 	const JoltReadableBody3D other_jolt_body = space->read_body(p_body_id, false);
-	const JoltCollisionObject3D* other_object = other_jolt_body.as_object();
+	const JoltObjectImpl3D* other_object = other_jolt_body.as_object();
 	ERR_FAIL_NULL(other_object);
 
 	p_overlap.rid = other_object->get_rid();

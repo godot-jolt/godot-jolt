@@ -2,7 +2,7 @@
 
 class JoltAreaImpl3D;
 class JoltBodyImpl3D;
-class JoltCollisionObject3D;
+class JoltObjectImpl3D;
 class JoltSpace3D;
 
 class JoltBodyAccessor3D {
@@ -148,9 +148,9 @@ public:
 
 	bool is_invalid() const { return body == nullptr; }
 
-	JoltCollisionObject3D* as_object() const {
+	JoltObjectImpl3D* as_object() const {
 		if (body != nullptr) {
-			return reinterpret_cast<JoltCollisionObject3D*>(body->GetUserData());
+			return reinterpret_cast<JoltObjectImpl3D*>(body->GetUserData());
 		} else {
 			return nullptr;
 		}

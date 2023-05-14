@@ -6,11 +6,11 @@
 
 JoltShape3D::~JoltShape3D() = default;
 
-void JoltShape3D::add_owner(JoltCollisionObject3D* p_owner) {
+void JoltShape3D::add_owner(JoltObjectImpl3D* p_owner) {
 	ref_counts_by_owner[p_owner]++;
 }
 
-void JoltShape3D::remove_owner(JoltCollisionObject3D* p_owner) {
+void JoltShape3D::remove_owner(JoltObjectImpl3D* p_owner) {
 	if (--ref_counts_by_owner[p_owner] <= 0) {
 		ref_counts_by_owner.erase(p_owner);
 	}

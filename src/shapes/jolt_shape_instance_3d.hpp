@@ -1,12 +1,12 @@
 #pragma once
 
-class JoltCollisionObject3D;
+class JoltObjectImpl3D;
 class JoltShape3D;
 
 class JoltShapeInstance3D {
 public:
 	JoltShapeInstance3D(
-		JoltCollisionObject3D* p_parent,
+		JoltObjectImpl3D* p_parent,
 		JoltShape3D* p_shape,
 		const Transform3D& p_transform = {},
 		const Vector3& p_scale = {1.0f, 1.0f, 1.0f},
@@ -60,7 +60,7 @@ private:
 
 	JPH::ShapeRefC jolt_ref;
 
-	JoltCollisionObject3D* parent = nullptr;
+	JoltObjectImpl3D* parent = nullptr;
 
 	JoltShape3D* shape = nullptr;
 

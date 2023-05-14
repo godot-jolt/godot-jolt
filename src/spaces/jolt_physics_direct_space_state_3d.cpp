@@ -54,7 +54,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const JPH::SubShapeID& sub_shape_id = hit.mSubShapeID2;
 
 	const JoltReadableBody3D body = space->read_body(body_id);
-	const JoltCollisionObject3D* object = body.as_object();
+	const JoltObjectImpl3D* object = body.as_object();
 	ERR_FAIL_NULL_D(object);
 
 	const JPH::Vec3 position = ray.GetPointOnRay(hit.mFraction);
@@ -101,7 +101,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
 		const JPH::CollidePointResult& hit = collector.get_hit(i);
 
 		const JoltReadableBody3D body = space->read_body(hit.mBodyID);
-		const JoltCollisionObject3D* object = body.as_object();
+		const JoltObjectImpl3D* object = body.as_object();
 		ERR_FAIL_NULL_D(object);
 
 		const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
@@ -172,7 +172,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 		const JPH::CollideShapeResult& hit = collector.get_hit(i);
 
 		const JoltReadableBody3D body = space->read_body(hit.mBodyID2);
-		const JoltCollisionObject3D* object = body.as_object();
+		const JoltObjectImpl3D* object = body.as_object();
 		ERR_FAIL_NULL_D(object);
 
 		const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
@@ -369,7 +369,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	const JPH::CollideShapeResult& hit = collector.get_hit();
 
 	const JoltReadableBody3D body = space->read_body(hit.mBodyID2);
-	const JoltCollisionObject3D* object = body.as_object();
+	const JoltObjectImpl3D* object = body.as_object();
 	ERR_FAIL_NULL_D(object);
 
 	const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
@@ -393,7 +393,7 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 ) const {
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
-	JoltCollisionObject3D* object = physics_server->get_area(p_object);
+	JoltObjectImpl3D* object = physics_server->get_area(p_object);
 
 	if (object == nullptr) {
 		object = physics_server->get_body(p_object);
@@ -911,7 +911,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
 		const JPH::CollideShapeResult& hit = collector.get_hit(i);
 
 		const JoltReadableBody3D collider_jolt_body = space->read_body(hit.mBodyID2);
-		const JoltCollisionObject3D* collider = collider_jolt_body.as_object();
+		const JoltObjectImpl3D* collider = collider_jolt_body.as_object();
 		ERR_FAIL_NULL_D(collider);
 
 		const Vector3 position = base_offset + to_godot(hit.mContactPointOn2);

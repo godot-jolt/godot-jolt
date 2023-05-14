@@ -16,7 +16,7 @@ JPH::SubShapeIDPair pair_contact(
 
 } // namespace
 
-void JoltContactListener3D::listen_for(JoltCollisionObject3D* p_object) {
+void JoltContactListener3D::listen_for(JoltObjectImpl3D* p_object) {
 	listening_for.insert(p_object->get_jolt_id());
 }
 
@@ -261,7 +261,7 @@ void JoltContactListener3D::flush_area_shifts() {
 	for (const JPH::SubShapeIDPair& shape_pair : area_overlaps) {
 		auto is_shifted = [&](const JPH::BodyID& p_body_id, const JPH::SubShapeID& p_sub_shape_id) {
 			const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
-			const JoltCollisionObject3D* object = jolt_body.as_object();
+			const JoltObjectImpl3D* object = jolt_body.as_object();
 			ERR_FAIL_NULL_V(object, false);
 
 			if (object->get_previous_jolt_shape() == nullptr) {

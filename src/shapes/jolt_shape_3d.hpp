@@ -1,6 +1,6 @@
 #pragma once
 
-class JoltCollisionObject3D;
+class JoltObjectImpl3D;
 
 class JoltShape3D {
 public:
@@ -12,9 +12,9 @@ public:
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
-	void add_owner(JoltCollisionObject3D* p_owner);
+	void add_owner(JoltObjectImpl3D* p_owner);
 
-	void remove_owner(JoltCollisionObject3D* p_owner);
+	void remove_owner(JoltObjectImpl3D* p_owner);
 
 	void remove_self(bool p_lock = true);
 
@@ -70,7 +70,7 @@ protected:
 
 	virtual void invalidated(bool p_lock = true);
 
-	HashMap<JoltCollisionObject3D*, int32_t> ref_counts_by_owner;
+	HashMap<JoltObjectImpl3D*, int32_t> ref_counts_by_owner;
 
 	RID rid;
 

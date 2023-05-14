@@ -3,7 +3,7 @@
 #include "shapes/jolt_shape_3d.hpp"
 
 JoltShapeInstance3D::JoltShapeInstance3D(
-	JoltCollisionObject3D* p_parent,
+	JoltObjectImpl3D* p_parent,
 	JoltShape3D* p_shape,
 	const Transform3D& p_transform,
 	const Vector3& p_scale,

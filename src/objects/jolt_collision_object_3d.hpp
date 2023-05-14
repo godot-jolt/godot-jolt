@@ -5,11 +5,11 @@
 class JoltSpace3D;
 class JoltShape3D;
 
-class JoltCollisionObject3D {
+class JoltObjectImpl3D {
 public:
-	JoltCollisionObject3D();
+	JoltObjectImpl3D();
 
-	virtual ~JoltCollisionObject3D() = 0;
+	virtual ~JoltObjectImpl3D() = 0;
 
 	RID get_rid() const { return rid; }
 

@@ -31,8 +31,8 @@ JoltPinJointImpl3D::JoltPinJointImpl3D(
 	const JoltWritableBody3D jolt_body_b = bodies[1];
 	ERR_FAIL_COND(jolt_body_b.is_invalid());
 
-	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
-	const JoltCollisionObject3D& object_b = *jolt_body_b.as_object();
+	const JoltObjectImpl3D& object_a = *jolt_body_a.as_object();
+	const JoltObjectImpl3D& object_b = *jolt_body_b.as_object();
 
 	const JPH::Vec3 point_scaled_a = to_jolt(local_a * object_a.get_scale());
 	const JPH::Vec3 point_scaled_b = to_jolt(local_b * object_b.get_scale());
@@ -63,7 +63,7 @@ JoltPinJointImpl3D::JoltPinJointImpl3D(
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+	const JoltObjectImpl3D& object_a = *jolt_body_a.as_object();
 
 	const JPH::Vec3 point_scaled_a = to_jolt(local_a * object_a.get_scale());
 	const JPH::Vec3 point_scaled_b = to_jolt(local_b);
@@ -89,7 +89,7 @@ void JoltPinJointImpl3D::set_local_a(const Vector3& p_local_a, bool p_lock) {
 	const JoltReadableBody3D jolt_body_a = space->read_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+	const JoltObjectImpl3D& object_a = *jolt_body_a.as_object();
 	const JPH::Vec3 point_scaled_a = to_jolt(local_a * object_a.get_scale());
 	const JPH::Vec3 com_scaled_a = jolt_body_a->GetShape()->GetCenterOfMass();
 
@@ -109,7 +109,7 @@ void JoltPinJointImpl3D::set_local_b(const Vector3& p_local_b, bool p_lock) {
 		const JoltReadableBody3D jolt_body_b = space->read_body(*body_b, p_lock);
 		ERR_FAIL_COND(jolt_body_b.is_invalid());
 
-		const JoltCollisionObject3D& object_b = *jolt_body_b.as_object();
+		const JoltObjectImpl3D& object_b = *jolt_body_b.as_object();
 		const JPH::Vec3 point_scaled_b = to_jolt(local_b * object_b.get_scale());
 		const JPH::Vec3 com_scaled_b = jolt_body_b->GetShape()->GetCenterOfMass();
 

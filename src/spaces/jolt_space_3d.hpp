@@ -3,7 +3,7 @@
 #include "spaces/jolt_body_accessor_3d.hpp"
 
 class JoltAreaImpl3D;
-class JoltCollisionObject3D;
+class JoltObjectImpl3D;
 class JoltContactListener3D;
 class JoltJointImpl3D;
 class JoltLayerMapper;
@@ -54,11 +54,11 @@ public:
 
 	JoltReadableBody3D read_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
 
-	JoltReadableBody3D read_body(const JoltCollisionObject3D& p_object, bool p_lock = true) const;
+	JoltReadableBody3D read_body(const JoltObjectImpl3D& p_object, bool p_lock = true) const;
 
 	JoltWritableBody3D write_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
 
-	JoltWritableBody3D write_body(const JoltCollisionObject3D& p_object, bool p_lock = true) const;
+	JoltWritableBody3D write_body(const JoltObjectImpl3D& p_object, bool p_lock = true) const;
 
 	JoltReadableBodies3D read_bodies(
 		const JPH::BodyID* p_body_ids,

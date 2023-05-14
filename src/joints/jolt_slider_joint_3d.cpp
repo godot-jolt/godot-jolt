@@ -51,8 +51,8 @@ JoltSliderJointImpl3D::JoltSliderJointImpl3D(
 	const JoltWritableBody3D jolt_body_b = bodies[1];
 	ERR_FAIL_COND(jolt_body_b.is_invalid());
 
-	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
-	const JoltCollisionObject3D& object_b = *jolt_body_b.as_object();
+	const JoltObjectImpl3D& object_a = *jolt_body_a.as_object();
+	const JoltObjectImpl3D& object_b = *jolt_body_b.as_object();
 
 	const JPH::Vec3 point_scaled_a = to_jolt(p_local_ref_a.origin * object_a.get_scale());
 	const JPH::Vec3 point_scaled_b = to_jolt(p_local_ref_b.origin * object_b.get_scale());
@@ -86,7 +86,7 @@ JoltSliderJointImpl3D::JoltSliderJointImpl3D(
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+	const JoltObjectImpl3D& object_a = *jolt_body_a.as_object();
 
 	const JPH::Vec3 point_scaled_a = to_jolt(p_local_ref_a.origin * object_a.get_scale());
 	const JPH::Vec3 point_scaled_b = to_jolt(p_local_ref_b.origin);
