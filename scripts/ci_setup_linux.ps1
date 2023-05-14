@@ -4,17 +4,17 @@
 #Requires -Version 7.2
 
 param (
-	[Parameter(Mandatory = $true, HelpMessage = "Toolchain to use")]
+	[Parameter(HelpMessage = "Toolchain to use", Mandatory)]
 	[ValidateSet("gcc", "llvm")]
 	[string]
 	$Toolchain,
 
-	[Parameter(Mandatory = $true, HelpMessage = "Major version of GCC")]
+	[Parameter(HelpMessage = "Major version of GCC", Mandatory)]
 	[ValidatePattern("^\d+$")]
 	[string]
 	$VersionGcc,
 
-	[Parameter(Mandatory = $false, HelpMessage = "Major version of LLVM")]
+	[Parameter(HelpMessage = "Major version of LLVM")]
 	[ValidatePattern("^\d+$")]
 	[string]
 	$VersionLlvm

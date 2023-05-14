@@ -4,12 +4,12 @@
 #Requires -Version 7.2
 
 param (
-	[Parameter(Mandatory = $true, HelpMessage = "Version of Visual Studio")]
+	[Parameter(HelpMessage = "Version of Visual Studio", Mandatory)]
 	[ValidatePattern("^\d+(\.\d+)?$")]
 	[string]
 	$Version,
 
-	[Parameter(Mandatory = $true, HelpMessage = "Target architecture")]
+	[Parameter(HelpMessage = "Target architecture", Mandatory)]
 	[ValidateSet("x64", "x86")]
 	[string]
 	$Arch

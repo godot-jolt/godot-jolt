@@ -5,10 +5,10 @@
 
 param (
 	[Parameter(
+		HelpMessage = "Paths to framework bundles",
 		Mandatory,
 		ValueFromRemainingArguments,
-		ValueFromPipeline,
-		HelpMessage = "Paths to framework bundles"
+		ValueFromPipeline
 	)]
 	[ValidateScript({ Test-Path $_ -PathType Container })]
 	[string[]]

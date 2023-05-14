@@ -4,7 +4,7 @@
 #Requires -Version 7.2
 
 param (
-	[Parameter(Mandatory = $true, HelpMessage = "Version of Xcode")]
+	[Parameter(HelpMessage = "Version of Xcode", Mandatory)]
 	[ValidatePattern("^\d+\.\d+$")]
 	[string]
 	$Version
