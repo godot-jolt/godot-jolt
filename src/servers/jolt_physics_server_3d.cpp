@@ -29,7 +29,7 @@ RID JoltPhysicsServer3D::_separation_ray_shape_create() {
 }
 
 RID JoltPhysicsServer3D::_sphere_shape_create() {
-	JoltShapeImpl3D* shape = memnew(JoltSphereShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltSphereShapeImpl3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;

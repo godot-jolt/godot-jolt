@@ -121,7 +121,7 @@ private:
 	bool slide_on_slope = false;
 };
 
-class JoltSphereShape3D final : public JoltShapeImpl3D {
+class JoltSphereShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_SPHERE; }
 

@@ -245,11 +245,11 @@ JPH::ShapeRefC JoltSeparationRayShapeImpl3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltSphereShape3D::get_data() const {
+Variant JoltSphereShapeImpl3D::get_data() const {
 	return radius;
 }
 
-void JoltSphereShape3D::set_data(const Variant& p_data) {
+void JoltSphereShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -261,11 +261,11 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 	radius = p_data;
 }
 
-String JoltSphereShape3D::to_string() const {
+String JoltSphereShapeImpl3D::to_string() const {
 	return vformat("{radius=%f}", radius);
 }
 
-JPH::ShapeRefC JoltSphereShape3D::build() const {
+JPH::ShapeRefC JoltSphereShapeImpl3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		radius <= 0.0f,
 		vformat(
