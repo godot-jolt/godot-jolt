@@ -22,7 +22,7 @@ RID JoltPhysicsServer3D::_world_boundary_shape_create() {
 }
 
 RID JoltPhysicsServer3D::_separation_ray_shape_create() {
-	JoltShapeImpl3D* shape = memnew(JoltSeparationRayShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltSeparationRayShapeImpl3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;

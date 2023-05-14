@@ -97,7 +97,7 @@ private:
 	Plane plane;
 };
 
-class JoltSeparationRayShape3D final : public JoltShapeImpl3D {
+class JoltSeparationRayShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_SEPARATION_RAY; }
 

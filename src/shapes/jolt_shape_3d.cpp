@@ -187,14 +187,14 @@ JPH::ShapeRefC JoltWorldBoundaryShapeImpl3D::build() const {
 	);
 }
 
-Variant JoltSeparationRayShape3D::get_data() const {
+Variant JoltSeparationRayShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["length"] = length;
 	data["slide_on_slope"] = slide_on_slope;
 	return data;
 }
 
-void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
+void JoltSeparationRayShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -215,11 +215,11 @@ void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
 	slide_on_slope = maybe_slide_on_slope;
 }
 
-String JoltSeparationRayShape3D::to_string() const {
+String JoltSeparationRayShapeImpl3D::to_string() const {
 	return vformat("{length=%f slide_on_slope=%s}", length, slide_on_slope);
 }
 
-JPH::ShapeRefC JoltSeparationRayShape3D::build() const {
+JPH::ShapeRefC JoltSeparationRayShapeImpl3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		length <= 0.0f,
 		vformat(
