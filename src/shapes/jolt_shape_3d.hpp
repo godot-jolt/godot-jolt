@@ -265,7 +265,7 @@ private:
 	bool backface_collision = false;
 };
 
-class JoltHeightMapShape3D final : public JoltShapeImpl3D {
+class JoltHeightMapShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_HEIGHTMAP; }
 

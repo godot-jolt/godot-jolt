@@ -677,7 +677,7 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltHeightMapShape3D::get_data() const {
+Variant JoltHeightMapShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["width"] = width;
 	data["depth"] = depth;
@@ -685,7 +685,7 @@ Variant JoltHeightMapShape3D::get_data() const {
 	return data;
 }
 
-void JoltHeightMapShape3D::set_data(const Variant& p_data) {
+void JoltHeightMapShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -710,11 +710,11 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	depth = maybe_depth;
 }
 
-String JoltHeightMapShape3D::to_string() const {
+String JoltHeightMapShapeImpl3D::to_string() const {
 	return vformat("{height_count=%d width=%d depth=%d}", heights.size(), width, depth);
 }
 
-JPH::ShapeRefC JoltHeightMapShape3D::build() const {
+JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 	const auto height_count = (int32_t)heights.size();
 
 	// NOTE(mihe): This somewhat arbitrary limit depends on what the block size is set to, which by
