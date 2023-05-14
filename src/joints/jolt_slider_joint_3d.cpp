@@ -33,7 +33,7 @@ constexpr double DEFAULT_ANGULAR_ORTHO_DAMPING = 1.0;
 
 } // namespace
 
-JoltSliderJoint3D::JoltSliderJoint3D(
+JoltSliderJointImpl3D::JoltSliderJointImpl3D(
 	JoltSpace3D* p_space,
 	JoltBody3D* p_body_a,
 	JoltBody3D* p_body_b,
@@ -75,7 +75,7 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	space->add_joint(this);
 }
 
-JoltSliderJoint3D::JoltSliderJoint3D(
+JoltSliderJointImpl3D::JoltSliderJointImpl3D(
 	JoltSpace3D* p_space,
 	JoltBody3D* p_body_a,
 	const Transform3D& p_local_ref_a,
@@ -108,7 +108,7 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	space->add_joint(this);
 }
 
-double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) const {
+double JoltSliderJointImpl3D::get_param(PhysicsServer3D::SliderJointParam p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_UPPER: {
 			return limit_upper;
@@ -182,7 +182,7 @@ double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) c
 	}
 }
 
-void JoltSliderJoint3D::set_param(PhysicsServer3D::SliderJointParam p_param, double p_value) {
+void JoltSliderJointImpl3D::set_param(PhysicsServer3D::SliderJointParam p_param, double p_value) {
 	switch (p_param) {
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_UPPER: {
 			limit_upper = p_value;
@@ -360,7 +360,7 @@ void JoltSliderJoint3D::set_param(PhysicsServer3D::SliderJointParam p_param, dou
 	}
 }
 
-void JoltSliderJoint3D::limits_changed() {
+void JoltSliderJointImpl3D::limits_changed() {
 	auto* jolt_constraint = static_cast<JPH::SliderConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 

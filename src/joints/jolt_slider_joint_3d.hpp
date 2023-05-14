@@ -2,9 +2,9 @@
 
 #include "joints/jolt_joint_3d.hpp"
 
-class JoltSliderJoint3D final : public JoltJointImpl3D {
+class JoltSliderJointImpl3D final : public JoltJointImpl3D {
 public:
-	JoltSliderJoint3D(
+	JoltSliderJointImpl3D(
 		JoltSpace3D* p_space,
 		JoltBody3D* p_body_a,
 		JoltBody3D* p_body_b,
@@ -13,7 +13,7 @@ public:
 		bool p_lock = true
 	);
 
-	JoltSliderJoint3D(
+	JoltSliderJointImpl3D(
 		JoltSpace3D* p_space,
 		JoltBody3D* p_body_a,
 		const Transform3D& p_local_ref_a,

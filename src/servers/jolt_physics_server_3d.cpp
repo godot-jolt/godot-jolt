@@ -1446,8 +1446,8 @@ void JoltPhysicsServer3D::_joint_make_slider(
 	ERR_FAIL_NULL(space);
 
 	JoltJointImpl3D* new_joint = body_b != nullptr
-		? memnew(JoltSliderJoint3D(space, body_a, body_b, p_local_ref_a, p_local_ref_b))
-		: memnew(JoltSliderJoint3D(space, body_a, p_local_ref_a, p_local_ref_b));
+		? memnew(JoltSliderJointImpl3D(space, body_a, body_b, p_local_ref_a, p_local_ref_b))
+		: memnew(JoltSliderJointImpl3D(space, body_a, p_local_ref_a, p_local_ref_b));
 
 	new_joint->set_rid(old_joint->get_rid());
 	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
@@ -1465,7 +1465,7 @@ void JoltPhysicsServer3D::_slider_joint_set_param(
 	ERR_FAIL_NULL(joint);
 
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_SLIDER);
-	auto* slider_joint = static_cast<JoltSliderJoint3D*>(joint);
+	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
 
 	return slider_joint->set_param(p_param, p_value);
 }
@@ -1476,7 +1476,7 @@ double JoltPhysicsServer3D::_slider_joint_get_param(const RID& p_joint, SliderJo
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_SLIDER);
-	const auto* slider_joint = static_cast<const JoltSliderJoint3D*>(joint);
+	const auto* slider_joint = static_cast<const JoltSliderJointImpl3D*>(joint);
 
 	return slider_joint->get_param(p_param);
 }
