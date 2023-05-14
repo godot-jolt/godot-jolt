@@ -55,7 +55,6 @@ defaults by passing `-DGDJ_SOME_VARIABLE=VALUE` to CMake.
 - `GDJ_PRECOMPILE_HEADERS`
   - Enables precompiling of header files that don't change often, like external ones, which speeds
     up compilations.
-  - Disabling this will make it so any precompiled headers gets force-included instead.
   - Default is `TRUE`.
 - `GDJ_STATIC_RUNTIME_LIBRARY`
   - Whether to statically link against the platform-specific C++ runtime, for added portability.
