@@ -1558,8 +1558,8 @@ void JoltPhysicsServer3D::_joint_make_generic_6dof(
 	ERR_FAIL_NULL(space);
 
 	JoltJoint3D* new_joint = body_b != nullptr
-		? memnew(JoltGeneric6DOFJoint3D(space, body_a, body_b, p_local_ref_a, p_local_ref_b))
-		: memnew(JoltGeneric6DOFJoint3D(space, body_a, p_local_ref_a, p_local_ref_b));
+		? memnew(JoltGeneric6DOFJointImpl3D(space, body_a, body_b, p_local_ref_a, p_local_ref_b))
+		: memnew(JoltGeneric6DOFJointImpl3D(space, body_a, p_local_ref_a, p_local_ref_b));
 
 	new_joint->set_rid(old_joint->get_rid());
 	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
@@ -1578,7 +1578,7 @@ void JoltPhysicsServer3D::_generic_6dof_joint_set_param(
 	ERR_FAIL_NULL(joint);
 
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_6DOF);
-	auto* g6dof_joint = static_cast<JoltGeneric6DOFJoint3D*>(joint);
+	auto* g6dof_joint = static_cast<JoltGeneric6DOFJointImpl3D*>(joint);
 
 	return g6dof_joint->set_param(p_axis, p_param, p_value);
 }
@@ -1592,7 +1592,7 @@ double JoltPhysicsServer3D::_generic_6dof_joint_get_param(
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_6DOF);
-	const auto* g6dof_joint = static_cast<const JoltGeneric6DOFJoint3D*>(joint);
+	const auto* g6dof_joint = static_cast<const JoltGeneric6DOFJointImpl3D*>(joint);
 
 	return g6dof_joint->get_param(p_axis, p_param);
 }
@@ -1607,7 +1607,7 @@ void JoltPhysicsServer3D::_generic_6dof_joint_set_flag(
 	ERR_FAIL_NULL(joint);
 
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_6DOF);
-	auto* g6dof_joint = static_cast<JoltGeneric6DOFJoint3D*>(joint);
+	auto* g6dof_joint = static_cast<JoltGeneric6DOFJointImpl3D*>(joint);
 
 	return g6dof_joint->set_flag(p_axis, p_flag, p_enable);
 }
@@ -1621,7 +1621,7 @@ bool JoltPhysicsServer3D::_generic_6dof_joint_get_flag(
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_6DOF);
-	const auto* g6dof_joint = static_cast<const JoltGeneric6DOFJoint3D*>(joint);
+	const auto* g6dof_joint = static_cast<const JoltGeneric6DOFJointImpl3D*>(joint);
 
 	return g6dof_joint->get_flag(p_axis, p_flag);
 }
