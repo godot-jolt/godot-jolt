@@ -11,12 +11,12 @@ or GUI application. Alternatively you can use the [presets](#presets) described 
 ## Table of Contents
 
 - [Dependencies](#dependencies)
-- [Updating Godot](#updating-godot)
 - [Options](#options)
 - [Presets](#presets)
 - [User Presets](#user-presets)
 - [Formatting](#formatting)
 - [Linting](#linting)
+- [Updating Godot](#updating-godot)
 
 ## Dependencies
 
@@ -36,36 +36,6 @@ Godot Jolt, as there would otherwise be nothing stopping dependencies from simpl
 repository and thereby rendering Godot Jolt impossible to build. In some cases these forks have also
 been modified to make integration easier. You can find all of these forks under the
 [`godot-jolt`][org] organization on GitHub.
-
-## Updating Godot
-
-If you wish to target a version of Godot other than the current stable version then you will need to
-make modifications to [the fork][gpp] of the GDExtension C++ bindings that Godot Jolt uses, in order
-to update the GDExtension API to your desired version.
-
-⚠️ This process is somewhat complicated and could lead to having to resolve compilation errors that
-might appear from API differences.
-
-⚠️ This process requires a moderate proficiency with [Git][git].
-
-⚠️ This process will *only* work with Godot Jolt's [fork][gpp] of `godot-cpp`, as it contains
-changes that are crucial for building and running Godot Jolt.
-
-1. Clone [the fork][gpp] of `godot-cpp`
-2. Run `godot --dump-extension-api extension_api.json` using the desired Godot version
-3. Move `extension_api.json` into the `gdextension` directory of your `godot-cpp` clone
-4. Copy `core/extension/gdextension_interface.h` from the source code of your desired Godot version
-   into the `gdextension` directory of your `godot-cpp` clone
-5. Commit those two files to your `godot-cpp` clone
-6. Run `git rev-parse HEAD` within your `godot-cpp` clone to see the commit hash
-7. Open `godot-jolt/cmake/GodotJoltExternalGodotCpp.cmake`
-8. Change `GIT_REPOSITORY` to be the absolute path (on disk) of your `godot-cpp` clone
-9. Change `GIT_COMMIT` to be the commit hash that you got previously
-10. Replace any `\` in that path with `/`
-11. Build Godot Jolt
-
-To make these changes portable across workspaces you would need to push them to a remote repository
-and link to that instead of your local one.
 
 ## Options
 
@@ -281,12 +251,40 @@ To make clang-tidy attempt to fix any linting errors, you can provide the `-Fix`
 ./scripts/run_clang_tidy.ps1 -SourcePath ./src -BuildPath ./build/windows-clangcl-x64 -Fix
 ```
 
+## Updating Godot
+
+If you wish to target a version of Godot other than the current stable version then you will need to
+make modifications to [the fork][gpp] of the GDExtension C++ bindings that Godot Jolt uses, in order
+to update the GDExtension API to your desired version.
+
+⚠️ This process is somewhat complicated and could lead to having to resolve compilation errors that
+might appear from API differences.
+
+⚠️ This process requires a moderate proficiency with [Git][git].
+
+⚠️ This process will *only* work with Godot Jolt's [fork][gpp] of `godot-cpp`, as it contains
+changes that are crucial for building and running Godot Jolt.
+
+1. Clone [the fork][gpp] of `godot-cpp`
+2. Run `godot --dump-extension-api extension_api.json` using the desired Godot version
+3. Move `extension_api.json` into the `gdextension` directory of your `godot-cpp` clone
+4. Copy `core/extension/gdextension_interface.h` from the source code of your desired Godot version
+   into the `gdextension` directory of your `godot-cpp` clone
+5. Commit those two files to your `godot-cpp` clone
+6. Run `git rev-parse HEAD` within your `godot-cpp` clone to see the commit hash
+7. Open `godot-jolt/cmake/GodotJoltExternalGodotCpp.cmake`
+8. Change `GIT_REPOSITORY` to be the absolute path (on disk) of your `godot-cpp` clone
+9. Change `GIT_COMMIT` to be the commit hash that you got previously
+10. Replace any `\` in the repository path with `/`
+11. Build Godot Jolt
+
+To make these changes portable across workspaces you would need to push them to a remote repository
+and link to that instead of your local one.
+
 [bld]: building.md
 [gen]: https://cmake.org/cmake/help/v3.22/manual/cmake-generators.7.html
 [exp]: https://cmake.org/cmake/help/v3.22/module/ExternalProject.html
 [org]: https://github.com/orgs/godot-jolt/repositories
-[gpp]: https://github.com/godot-jolt/godot-cpp
-[git]: https://git-scm.com/
 [prs]: https://cmake.org/cmake/help/v3.22/manual/cmake-presets.7.html
 [mvs]: https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio
 [vsc]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools
@@ -295,3 +293,5 @@ To make clang-tidy attempt to fix any linting errors, you can provide the `-Fix`
 [clf]: https://releases.llvm.org/15.0.0/tools/clang/docs/ClangFormat.html
 [clt]: https://releases.llvm.org/15.0.0/tools/clang/tools/extra/docs/clang-tidy/index.html
 [cpp]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools
+[gpp]: https://github.com/godot-jolt/godot-cpp
+[git]: https://git-scm.com/
