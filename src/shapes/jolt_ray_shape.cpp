@@ -4,9 +4,9 @@
 
 namespace {
 
-class JoltRayConvexSupport final : public JPH::ConvexShape::Support {
+class JoltCustomRayShapeSupport final : public JPH::ConvexShape::Support {
 public:
-	explicit JoltRayConvexSupport(float p_length)
+	explicit JoltCustomRayShapeSupport(float p_length)
 		: length(p_length) { }
 
 	JPH::Vec3 GetSupport(JPH::Vec3Arg p_direction) const override {
@@ -23,10 +23,10 @@ private:
 	float length = 0.0f;
 };
 
-static_assert(sizeof(JoltRayConvexSupport) <= sizeof(JPH::ConvexShape::SupportBuffer));
+static_assert(sizeof(JoltCustomRayShapeSupport) <= sizeof(JPH::ConvexShape::SupportBuffer));
 
 JPH::Shape* construct_ray() {
-	return new JoltRayShape();
+	return new JoltCustomRayShape();
 }
 
 void collide_ray_vs_shape(
@@ -44,7 +44,7 @@ void collide_ray_vs_shape(
 ) {
 	ERR_FAIL_COND(p_shape1->GetSubType() != JoltShapeSubType::RAY);
 
-	const auto* shape1 = static_cast<const JoltRayShape*>(p_shape1);
+	const auto* shape1 = static_cast<const JoltCustomRayShape*>(p_shape1);
 
 	const float margin = p_collide_shape_settings.mMaxSeparationDistance;
 	const float ray_length = shape1->length;
@@ -147,15 +147,15 @@ void cast_noop(
 
 } // namespace
 
-JPH::ShapeSettings::ShapeResult JoltRayShapeSettings::Create() const {
+JPH::ShapeSettings::ShapeResult JoltCustomRayShapeSettings::Create() const {
 	if (mCachedResult.IsEmpty()) {
-		new JoltRayShape(*this, mCachedResult);
+		new JoltCustomRayShape(*this, mCachedResult);
 	}
 
 	return mCachedResult;
 }
 
-void JoltRayShape::register_type() {
+void JoltCustomRayShape::register_type() {
 	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JoltShapeSubType::RAY);
 
 	shape_functions.mConstruct = construct_ray;
@@ -198,13 +198,13 @@ void JoltRayShape::register_type() {
 	);
 }
 
-JPH::AABox JoltRayShape::GetLocalBounds() const {
+JPH::AABox JoltCustomRayShape::GetLocalBounds() const {
 	return {JPH::Vec3::sZero(), JPH::Vec3(0.0f, 0.0f, length)};
 }
 
 #ifdef JPH_DEBUG_RENDERER
 
-void JoltRayShape::Draw(
+void JoltCustomRayShape::Draw(
 	JPH::DebugRenderer* p_renderer,
 	JPH::RMat44Arg p_center_of_mass_transform,
 	JPH::Vec3Arg p_scale,
@@ -222,10 +222,10 @@ void JoltRayShape::Draw(
 
 #endif // JPH_DEBUG_RENDERER
 
-const JPH::ConvexShape::Support* JoltRayShape::GetSupportFunction(
+const JPH::ConvexShape::Support* JoltCustomRayShape::GetSupportFunction(
 	[[maybe_unused]] JPH::ConvexShape::ESupportMode p_mode,
 	JPH::ConvexShape::SupportBuffer& p_buffer,
 	JPH::Vec3Arg p_scale
 ) const {
-	return new (&p_buffer) JoltRayConvexSupport(p_scale.GetZ() * length);
+	return new (&p_buffer) JoltCustomRayShapeSupport(p_scale.GetZ() * length);
 }

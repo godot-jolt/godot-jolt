@@ -229,7 +229,7 @@ JPH::ShapeRefC JoltSeparationRayShapeImpl3D::build() const {
 		)
 	);
 
-	const JoltRayShapeSettings shape_settings(length, slide_on_slope);
+	const JoltCustomRayShapeSettings shape_settings(length, slide_on_slope);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
