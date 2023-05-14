@@ -5,7 +5,7 @@
 #include "joints/jolt_hinge_joint_impl_3d.hpp"
 #include "joints/jolt_joint_3d.hpp"
 #include "joints/jolt_pin_joint_impl_3d.hpp"
-#include "joints/jolt_slider_joint_3d.hpp"
+#include "joints/jolt_slider_joint_impl_3d.hpp"
 #include "objects/jolt_area_3d.hpp"
 #include "objects/jolt_body_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
