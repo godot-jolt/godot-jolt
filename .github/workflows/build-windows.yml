@@ -28,6 +28,9 @@ jobs:
         editor: [false, true]
         config: [debug, development, distribution]
 
+        # HACK(mihe): 32-bit clang-cl builds are compiled using a 32-bit compiler, which tend to run
+        # out of memory randomly when IPO/LTO is enabled, so we disable that for all 32-bit clang-cl
+        # builds by injecting the relevant CMake argument using `include`
         include:
           - platform: windows-clangcl
             arch: x86

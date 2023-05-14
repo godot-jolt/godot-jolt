@@ -170,7 +170,7 @@ void JoltArea3D::set_monitorable(bool p_monitorable, bool p_lock) {
 	monitorable_changed(p_lock);
 }
 
-Vector3 JoltArea3D::compute_gravity(const Vector3& p_position, bool p_lock) {
+Vector3 JoltArea3D::compute_gravity(const Vector3& p_position, bool p_lock) const {
 	if (!point_gravity) {
 		return gravity_vector * gravity;
 	}
@@ -192,7 +192,7 @@ void JoltArea3D::body_shape_entered(
 ) {
 	Overlap& overlap = bodies_by_id[p_body_id];
 
-	if (overlap.shape_pairs.size() == 0) {
+	if (overlap.shape_pairs.is_empty()) {
 		notify_body_entered(p_body_id, false);
 	}
 
@@ -214,7 +214,7 @@ bool JoltArea3D::body_shape_exited(
 		return false;
 	}
 
-	if (overlap->shape_pairs.size() == 0) {
+	if (overlap->shape_pairs.is_empty()) {
 		notify_body_exited(p_body_id, false);
 	}
 
@@ -335,7 +335,7 @@ void JoltArea3D::flush_events(OverlapsById& p_objects, const Callable& p_callbac
 		overlap.pending_removed.clear();
 		overlap.pending_added.clear();
 
-		return overlap.shape_pairs.size() == 0;
+		return overlap.shape_pairs.is_empty();
 	});
 }
 

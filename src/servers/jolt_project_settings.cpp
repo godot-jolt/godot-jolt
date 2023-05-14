@@ -109,26 +109,26 @@ TType get_setting(const char* p_setting) {
 
 void JoltProjectSettings::register_settings() {
 	register_setting_plain(SLEEP_ENABLED, true);
-	register_setting_hinted(SLEEP_VELOCITY_THRESHOLD, 0.03f, "suffix:m/s");
-	register_setting_ranged(SLEEP_TIME_THRESHOLD, 0.5f, "0,5,0.01,or_greater,suffix:s");
+	register_setting_hinted(SLEEP_VELOCITY_THRESHOLD, 0.03f, U"suffix:m/s");
+	register_setting_ranged(SLEEP_TIME_THRESHOLD, 0.5f, U"0,5,0.01,or_greater,suffix:s");
 
-	register_setting_ranged(RECOVERY_ITERATIONS, 4, "1,8,or_greater");
-	register_setting_ranged(RECOVERY_SPEED, 0.4f, "0,1,0.01");
+	register_setting_ranged(RECOVERY_ITERATIONS, 4, U"1,8,or_greater");
+	register_setting_ranged(RECOVERY_SPEED, 0.4f, U"0,1,0.01");
 
-	register_setting_ranged(VELOCITY_ITERATIONS, 10, "2,16,or_greater");
-	register_setting_ranged(POSITION_ITERATIONS, 2, "1,16,or_greater");
-	register_setting_ranged(STABILIZATION_FACTOR, 0.2f, "0,1,0.01");
-	register_setting_ranged(CONTACT_DISTANCE, 0.02f, "0,1,0.01,or_greater,suffix:m");
-	register_setting_ranged(CONTACT_PENETRATION, 0.02f, "0,1,0.01,or_greater,suffix:m");
+	register_setting_ranged(VELOCITY_ITERATIONS, 10, U"2,16,or_greater");
+	register_setting_ranged(POSITION_ITERATIONS, 2, U"1,16,or_greater");
+	register_setting_ranged(STABILIZATION_FACTOR, 0.2f, U"0,1,0.01");
+	register_setting_ranged(CONTACT_DISTANCE, 0.02f, U"0,1,0.01,or_greater,suffix:m");
+	register_setting_ranged(CONTACT_PENETRATION, 0.02f, U"0,1,0.01,or_greater,suffix:m");
 
 	register_setting_plain(MORE_DETERMINISTIC, false);
 
-	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, "0,500,or_greater,suffix:m/s");
+	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, U"0,500,or_greater,suffix:m/s");
 	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,or_greater,suffix:°/s");
-	register_setting_ranged(MAX_BODIES, 10240, "1,10240,or_greater", true);
-	register_setting_ranged(MAX_PAIRS, 65536, "8,65536,or_greater");
-	register_setting_ranged(MAX_CONTACTS, 20480, "8,20480,or_greater");
-	register_setting_ranged(MAX_TEMP_MEMORY, 32, "1,32,or_greater,suffix:MiB");
+	register_setting_ranged(MAX_BODIES, 10240, U"1,10240,or_greater", true);
+	register_setting_ranged(MAX_PAIRS, 65536, U"8,65536,or_greater");
+	register_setting_ranged(MAX_CONTACTS, 20480, U"8,20480,or_greater");
+	register_setting_ranged(MAX_TEMP_MEMORY, 32, U"1,32,or_greater,suffix:MiB");
 }
 
 bool JoltProjectSettings::is_sleep_enabled() {

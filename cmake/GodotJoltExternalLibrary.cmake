@@ -22,7 +22,7 @@ function(gdj_add_external_library library_name library_configs)
 
 	# Add a `LIBRARY_CONFIG_<CONFIG>` argument for each of the project's configurations
 
-	foreach(project_config IN LISTS GDJ_CONFIGURATIONS)
+	foreach(project_config IN LISTS GDJ_CONFIGURATION_TYPES)
 		string(TOUPPER ${project_config} project_config_upper)
 		list(APPEND one_value_args LIBRARY_CONFIG_${project_config_upper})
 	endforeach()
@@ -89,7 +89,7 @@ function(gdj_add_external_library library_name library_configs)
 	# Set up mappings between configurations. For library config `Foo` that maps to project config
 	# `Bar` we get `set(project_config_Foo Bar)` and `set(library_config_Bar Foo)`.
 
-	foreach(project_config IN LISTS GDJ_CONFIGURATIONS)
+	foreach(project_config IN LISTS GDJ_CONFIGURATION_TYPES)
 		string(TOUPPER ${project_config} project_config_upper)
 		set(library_config ${arg_LIBRARY_CONFIG_${project_config_upper}})
 		set(library_config_${project_config} ${library_config})
@@ -101,7 +101,7 @@ function(gdj_add_external_library library_name library_configs)
 
 	set(library_config_current "")
 
-	foreach(project_config IN LISTS GDJ_CONFIGURATIONS)
+	foreach(project_config IN LISTS GDJ_CONFIGURATION_TYPES)
 		set(condition $<CONFIG:${project_config}>)
 		set(library_config ${library_config_${project_config}})
 		string(APPEND library_config_current $<${condition}:${library_config}>)
@@ -112,7 +112,7 @@ function(gdj_add_external_library library_name library_configs)
 
 	get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
-	foreach(project_config IN LISTS GDJ_CONFIGURATIONS)
+	foreach(project_config IN LISTS GDJ_CONFIGURATION_TYPES)
 		if(is_multi_config)
 			set(library_config ${library_config_${project_config}})
 			set(output_dir_${project_config} ${binary_dir}/${library_config})
@@ -133,7 +133,7 @@ function(gdj_add_external_library library_name library_configs)
 	# Set up the output names. For library config `Foo` that map to project config `Bar` we get
 	# `set(output_name_Bar ${arg_OUTPUT_NAME_FOO})`.
 
-	foreach(project_config IN LISTS GDJ_CONFIGURATIONS)
+	foreach(project_config IN LISTS GDJ_CONFIGURATION_TYPES)
 		set(library_config ${library_config_${project_config}})
 		string(TOUPPER ${library_config} library_config_upper)
 		string(CONCAT output_name_${project_config}
@@ -148,7 +148,7 @@ function(gdj_add_external_library library_name library_configs)
 
 	set(output_name_current "")
 
-	foreach(project_config IN LISTS GDJ_CONFIGURATIONS)
+	foreach(project_config IN LISTS GDJ_CONFIGURATION_TYPES)
 		set(condition $<CONFIG:${project_config}>)
 		set(output_name ${output_name_${project_config}})
 		string(APPEND output_name_current $<${condition}:${output_name}>)
@@ -315,7 +315,7 @@ function(gdj_add_external_library library_name library_configs)
 
 	set(compile_definitions ${arg_COMPILE_DEFINITIONS})
 
-	foreach(project_config IN LISTS GDJ_CONFIGURATIONS)
+	foreach(project_config IN LISTS GDJ_CONFIGURATION_TYPES)
 		set(library_config ${library_config_${project_config}})
 		string(TOUPPER ${library_config} library_config_upper)
 		set(condition $<CONFIG:${project_config}>)
@@ -340,7 +340,7 @@ function(gdj_add_external_library library_name library_configs)
 	# Add the target property that maps library configurations to project configurations. For
 	# project config `Foo` that maps to library config `Bar` we get `MAP_IMPORTED_CONFIG_FOO Bar`.
 
-	foreach(project_config IN LISTS GDJ_CONFIGURATIONS)
+	foreach(project_config IN LISTS GDJ_CONFIGURATION_TYPES)
 		string(TOUPPER ${project_config} project_config_upper)
 		set(library_config ${library_config_${project_config}})
 		list(APPEND target_properties MAP_IMPORTED_CONFIG_${project_config_upper} ${library_config})

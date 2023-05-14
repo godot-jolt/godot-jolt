@@ -240,7 +240,10 @@ void JoltDebugRenderer3D::DrawGeometry(
 		}
 	}
 
-	auto* triangle_batch = static_cast<JoltDebugTriangleBatch*>(model_lod->mTriangleBatch.GetPtr());
+	const auto* triangle_batch = static_cast<const JoltDebugTriangleBatch*>(
+		model_lod->mTriangleBatch.GetPtr()
+	);
+
 	const JoltDebugTriangleBatch::Vertices& model_vertices = triangle_batch->get_vertices();
 	const JPH::Vec3* model_vertices_ptr = model_vertices.data();
 

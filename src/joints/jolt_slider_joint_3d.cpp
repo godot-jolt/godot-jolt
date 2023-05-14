@@ -108,10 +108,7 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	space->add_joint(this);
 }
 
-double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) {
-	auto* jolt_constraint = static_cast<JPH::SliderConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL_D(jolt_constraint);
-
+double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_UPPER: {
 			return limit_upper;

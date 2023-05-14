@@ -143,7 +143,7 @@ public:
 
 	template<typename TComparer>
 	_FORCE_INLINE_ void sort(TComparer&& p_comparer) {
-		std::sort(begin(), end(), p_comparer);
+		std::sort(begin(), end(), std::forward<TComparer>(p_comparer));
 	}
 
 	_FORCE_INLINE_ TElement* ptr() { return impl.data(); }

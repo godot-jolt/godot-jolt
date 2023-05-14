@@ -122,7 +122,7 @@ void JoltPinJoint3D::set_local_b(const Vector3& p_local_b, bool p_lock) {
 	}
 }
 
-double JoltPinJoint3D::get_param(PhysicsServer3D::PinJointParam p_param) {
+double JoltPinJoint3D::get_param(PhysicsServer3D::PinJointParam p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::PIN_JOINT_BIAS: {
 			return DEFAULT_BIAS;

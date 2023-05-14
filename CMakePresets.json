@@ -29,8 +29,8 @@
       "inherits": ["platform-base"],
       "hidden": true,
       "condition": {
-        "lhs": "${hostSystemName}",
         "type": "equals",
+        "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
       "cacheVariables": {
@@ -45,8 +45,8 @@
       "inherits": ["platform-base"],
       "hidden": true,
       "condition": {
-        "lhs": "${hostSystemName}",
         "type": "equals",
+        "lhs": "${hostSystemName}",
         "rhs": "Linux"
       },
       "cacheVariables": {
@@ -61,8 +61,8 @@
       "inherits": ["platform-base"],
       "hidden": true,
       "condition": {
-        "lhs": "${hostSystemName}",
         "type": "equals",
+        "lhs": "${hostSystemName}",
         "rhs": "Darwin"
       },
       "cacheVariables": {
@@ -223,8 +223,8 @@
       "name": "windows-base",
       "hidden": true,
       "condition": {
-        "lhs": "${hostSystemName}",
         "type": "equals",
+        "lhs": "${hostSystemName}",
         "rhs": "Windows"
       }
     },
@@ -232,8 +232,8 @@
       "name": "linux-base",
       "hidden": true,
       "condition": {
-        "lhs": "${hostSystemName}",
         "type": "equals",
+        "lhs": "${hostSystemName}",
         "rhs": "Linux"
       }
     },
@@ -241,8 +241,8 @@
       "name": "macos-base",
       "hidden": true,
       "condition": {
-        "lhs": "${hostSystemName}",
         "type": "equals",
+        "lhs": "${hostSystemName}",
         "rhs": "Darwin"
       }
     },

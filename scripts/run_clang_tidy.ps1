@@ -4,12 +4,12 @@
 #Requires -Version 7.2
 
 param (
-	[Parameter(Mandatory = $true, HelpMessage = "Path to directory with source files")]
+	[Parameter(HelpMessage = "Path to directory with source files", Mandatory)]
 	[ValidateNotNullOrEmpty()]
 	[string]
 	$SourcePath,
 
-	[Parameter(Mandatory = $true, HelpMessage = "Path to directory with compile_commands.json")]
+	[Parameter(HelpMessage = "Path to directory with compile_commands.json", Mandatory)]
 	[ValidateNotNullOrEmpty()]
 	[string]
 	$BuildPath,

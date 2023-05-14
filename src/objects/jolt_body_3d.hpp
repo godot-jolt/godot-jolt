@@ -92,7 +92,7 @@ public:
 
 	const Contact& get_contact(int32_t p_index) { return contacts[p_index]; }
 
-	bool generates_contacts() const override { return contacts.size() > 0; }
+	bool generates_contacts() const override { return !contacts.is_empty(); }
 
 	void add_contact(
 		const JoltBody3D* p_collider,

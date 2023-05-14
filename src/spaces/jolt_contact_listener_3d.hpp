@@ -89,13 +89,13 @@ private:
 
 	void OnContactRemoved(const JPH::SubShapeIDPair& p_shape_pair) override;
 
-	bool is_listening_for(const JPH::Body& p_body);
+	bool is_listening_for(const JPH::Body& p_body) const;
 
 	void update_contacts(
 		const JPH::Body& p_body1,
 		const JPH::Body& p_body2,
 		const JPH::ContactManifold& p_manifold,
-		JPH::ContactSettings& p_settings
+		const JPH::ContactSettings& p_settings
 	);
 
 	void flush_contacts();

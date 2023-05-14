@@ -5,7 +5,7 @@ class JoltBody3D;
 class JoltPhysicsDirectBodyState3D final : public PhysicsDirectBodyState3DExtension {
 	GDCLASS_NO_WARN(JoltPhysicsDirectBodyState3D, PhysicsDirectBodyState3DExtension)
 
-protected:
+private:
 	// NOLINTNEXTLINE(readability-identifier-naming)
 	static void _bind_methods() { }
 
