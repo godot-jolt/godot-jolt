@@ -167,7 +167,7 @@ private:
 	float margin = 0.04f;
 };
 
-class JoltCapsuleShape3D final : public JoltShapeImpl3D {
+class JoltCapsuleShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CAPSULE; }
 

@@ -349,14 +349,14 @@ JPH::ShapeRefC JoltBoxShapeImpl3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltCapsuleShape3D::get_data() const {
+Variant JoltCapsuleShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["height"] = height;
 	data["radius"] = radius;
 	return data;
 }
 
-void JoltCapsuleShape3D::set_data(const Variant& p_data) {
+void JoltCapsuleShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -377,11 +377,11 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	radius = maybe_radius;
 }
 
-String JoltCapsuleShape3D::to_string() const {
+String JoltCapsuleShapeImpl3D::to_string() const {
 	return vformat("{height=%f radius=%f}", height, radius);
 }
 
-JPH::ShapeRefC JoltCapsuleShape3D::build() const {
+JPH::ShapeRefC JoltCapsuleShapeImpl3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		radius <= 0.0f,
 		vformat(

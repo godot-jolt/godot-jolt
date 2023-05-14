@@ -43,7 +43,7 @@ RID JoltPhysicsServer3D::_box_shape_create() {
 }
 
 RID JoltPhysicsServer3D::_capsule_shape_create() {
-	JoltShapeImpl3D* shape = memnew(JoltCapsuleShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltCapsuleShapeImpl3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
