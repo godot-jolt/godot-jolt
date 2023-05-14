@@ -6,7 +6,7 @@
 #include "servers/jolt_physics_server_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "shapes/jolt_custom_motion_shape.hpp"
-#include "shapes/jolt_shape_3d.hpp"
+#include "shapes/jolt_shape_impl_3d.hpp"
 #include "spaces/jolt_motion_filter_3d.hpp"
 #include "spaces/jolt_query_collectors.hpp"
 #include "spaces/jolt_query_filter_3d.hpp"
