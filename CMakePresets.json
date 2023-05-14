@@ -89,8 +89,7 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang-cl",
-        "CMAKE_CXX_COMPILER": "clang-cl",
-        "CMAKE_CXX_FLAGS": "$env{CXXFLAGS} /WX"
+        "CMAKE_CXX_COMPILER": "clang-cl"
       },
       "toolset": {
         "value": "ClangCL,host=x64",
