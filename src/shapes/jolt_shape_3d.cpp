@@ -291,11 +291,11 @@ JPH::ShapeRefC JoltSphereShapeImpl3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltBoxShape3D::get_data() const {
+Variant JoltBoxShapeImpl3D::get_data() const {
 	return half_extents;
 }
 
-void JoltBoxShape3D::set_data(const Variant& p_data) {
+void JoltBoxShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -307,7 +307,7 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 	half_extents = p_data;
 }
 
-void JoltBoxShape3D::set_margin(float p_margin) {
+void JoltBoxShapeImpl3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -317,11 +317,11 @@ void JoltBoxShape3D::set_margin(float p_margin) {
 	margin = p_margin;
 }
 
-String JoltBoxShape3D::to_string() const {
+String JoltBoxShapeImpl3D::to_string() const {
 	return vformat("{half_extents=%v margin=%f}", half_extents, margin);
 }
 
-JPH::ShapeRefC JoltBoxShape3D::build() const {
+JPH::ShapeRefC JoltBoxShapeImpl3D::build() const {
 	const float shortest_axis = half_extents[half_extents.min_axis_index()];
 
 	ERR_FAIL_COND_D_MSG(
