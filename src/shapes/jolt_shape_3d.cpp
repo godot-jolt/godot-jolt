@@ -141,7 +141,7 @@ JPH::ShapeRefC JoltShapeImpl3D::with_center_of_mass(
 }
 
 JPH::ShapeRefC JoltShapeImpl3D::with_user_data(const JPH::Shape* p_shape, uint64_t p_user_data) {
-	JoltOverrideUserDataShapeSettings shape_settings(p_shape);
+	JoltCustomUserDataShapeSettings shape_settings(p_shape);
 	shape_settings.mUserData = (JPH::uint64)p_user_data;
 
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();

@@ -3,7 +3,7 @@
 namespace {
 
 JPH::Shape* construct_override_user_data() {
-	return new JoltOverrideUserDataShape();
+	return new JoltCustomUserDataShape();
 }
 
 void collide_override_user_data_vs_shape(
@@ -21,7 +21,7 @@ void collide_override_user_data_vs_shape(
 ) {
 	ERR_FAIL_COND(p_shape1->GetSubType() != JoltShapeSubType::OVERRIDE_USER_DATA);
 
-	const auto* shape1 = static_cast<const JoltOverrideUserDataShape*>(p_shape1);
+	const auto* shape1 = static_cast<const JoltCustomUserDataShape*>(p_shape1);
 
 	JPH::CollisionDispatch::sCollideShapeVsShape(
 		shape1->GetInnerShape(),
@@ -53,7 +53,7 @@ void collide_shape_vs_override_user_data(
 ) {
 	ERR_FAIL_COND(p_shape2->GetSubType() != JoltShapeSubType::OVERRIDE_USER_DATA);
 
-	const auto* shape2 = static_cast<const JoltOverrideUserDataShape*>(p_shape2);
+	const auto* shape2 = static_cast<const JoltCustomUserDataShape*>(p_shape2);
 
 	JPH::CollisionDispatch::sCollideShapeVsShape(
 		p_shape1,
@@ -83,7 +83,7 @@ void cast_override_user_data_vs_shape(
 ) {
 	ERR_FAIL_COND(p_shape_cast.mShape->GetSubType() != JoltShapeSubType::OVERRIDE_USER_DATA);
 
-	const auto* shape = static_cast<const JoltOverrideUserDataShape*>(p_shape_cast.mShape);
+	const auto* shape = static_cast<const JoltCustomUserDataShape*>(p_shape_cast.mShape);
 
 	const JPH::ShapeCast shape_cast(
 		shape->GetInnerShape(),
@@ -118,7 +118,7 @@ void cast_shape_vs_override_user_data(
 ) {
 	ERR_FAIL_COND(p_shape->GetSubType() != JoltShapeSubType::OVERRIDE_USER_DATA);
 
-	const auto* shape = static_cast<const JoltOverrideUserDataShape*>(p_shape);
+	const auto* shape = static_cast<const JoltCustomUserDataShape*>(p_shape);
 
 	JPH::CollisionDispatch::sCastShapeVsShapeLocalSpace(
 		p_shape_cast,
@@ -135,15 +135,15 @@ void cast_shape_vs_override_user_data(
 
 } // namespace
 
-JPH::ShapeSettings::ShapeResult JoltOverrideUserDataShapeSettings::Create() const {
+JPH::ShapeSettings::ShapeResult JoltCustomUserDataShapeSettings::Create() const {
 	if (mCachedResult.IsEmpty()) {
-		new JoltOverrideUserDataShape(*this, mCachedResult);
+		new JoltCustomUserDataShape(*this, mCachedResult);
 	}
 
 	return mCachedResult;
 }
 
-void JoltOverrideUserDataShape::register_type() {
+void JoltCustomUserDataShape::register_type() {
 	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(
 		JoltShapeSubType::OVERRIDE_USER_DATA
 	);
