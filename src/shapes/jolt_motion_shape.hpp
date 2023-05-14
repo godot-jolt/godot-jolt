@@ -6,7 +6,7 @@ class JoltCustomMotionShape final : public JPH::ConvexShape {
 public:
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
 	explicit JoltCustomMotionShape(const JPH::ConvexShape& p_shape)
-		: JPH::ConvexShape(JoltShapeSubType::MOTION)
+		: JPH::ConvexShape(JoltCustomShapeSubType::MOTION)
 		, inner_shape(p_shape) { }
 
 	bool MustBeStatic() const override { return false; }

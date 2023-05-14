@@ -14,13 +14,13 @@ public:
 	static void register_type();
 
 	JoltCustomUserDataShape()
-		: DecoratedShape(JoltShapeSubType::OVERRIDE_USER_DATA) { }
+		: DecoratedShape(JoltCustomShapeSubType::OVERRIDE_USER_DATA) { }
 
 	JoltCustomUserDataShape(
 		const JoltCustomUserDataShapeSettings& p_settings,
 		ShapeResult& p_result
 	)
-		: DecoratedShape(JoltShapeSubType::OVERRIDE_USER_DATA, p_settings, p_result) {
+		: DecoratedShape(JoltCustomShapeSubType::OVERRIDE_USER_DATA, p_settings, p_result) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
 		}

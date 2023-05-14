@@ -14,10 +14,10 @@ public:
 	static void register_type();
 
 	JoltCustomEmptyShape()
-		: Shape(JoltShapeType::EMPTY, JoltShapeSubType::EMPTY) { }
+		: Shape(JoltCustomShapeType::EMPTY, JoltCustomShapeSubType::EMPTY) { }
 
 	JoltCustomEmptyShape(const JoltCustomEmptyShapeSettings& p_settings, ShapeResult& p_result)
-		: Shape(JoltShapeType::EMPTY, JoltShapeSubType::EMPTY, p_settings, p_result) {
+		: Shape(JoltCustomShapeType::EMPTY, JoltCustomShapeSubType::EMPTY, p_settings, p_result) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
 		}

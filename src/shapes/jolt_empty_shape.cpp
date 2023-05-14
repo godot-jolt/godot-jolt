@@ -43,26 +43,34 @@ JPH::ShapeSettings::ShapeResult JoltCustomEmptyShapeSettings::Create() const {
 }
 
 void JoltCustomEmptyShape::register_type() {
-	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JoltShapeSubType::EMPTY);
+	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JoltCustomShapeSubType::EMPTY);
 
 	shape_functions.mConstruct = construct_empty;
 	shape_functions.mColor = JPH::Color::sBlack;
 
 	for (const JPH::EShapeSubType sub_type : JPH::sAllSubShapeTypes) {
 		JPH::CollisionDispatch::sRegisterCollideShape(
-			JoltShapeSubType::EMPTY,
+			JoltCustomShapeSubType::EMPTY,
 			sub_type,
 			collide_noop
 		);
 
 		JPH::CollisionDispatch::sRegisterCollideShape(
 			sub_type,
-			JoltShapeSubType::EMPTY,
+			JoltCustomShapeSubType::EMPTY,
 			collide_noop
 		);
 
-		JPH::CollisionDispatch::sRegisterCastShape(JoltShapeSubType::EMPTY, sub_type, cast_noop);
+		JPH::CollisionDispatch::sRegisterCastShape(
+			JoltCustomShapeSubType::EMPTY,
+			sub_type,
+			cast_noop
+		);
 
-		JPH::CollisionDispatch::sRegisterCastShape(sub_type, JoltShapeSubType::EMPTY, cast_noop);
+		JPH::CollisionDispatch::sRegisterCastShape(
+			sub_type,
+			JoltCustomShapeSubType::EMPTY,
+			cast_noop
+		);
 	}
 }

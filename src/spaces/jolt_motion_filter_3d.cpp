@@ -78,5 +78,5 @@ bool JoltMotionFilter3D::ShouldCollide(
 	const auto* motion_shape1 = static_cast<const JoltCustomMotionShape*>(p_shape1);
 	const JPH::ConvexShape& actual_shape1 = motion_shape1->get_inner_shape();
 
-	return actual_shape1.GetSubType() != JoltShapeSubType::RAY;
+	return actual_shape1.GetSubType() != JoltCustomShapeSubType::RAY;
 }

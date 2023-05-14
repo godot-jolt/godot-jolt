@@ -29,13 +29,13 @@ public:
 	static void register_type();
 
 	JoltCustomRayShape()
-		: JPH::ConvexShape(JoltShapeSubType::RAY) { }
+		: JPH::ConvexShape(JoltCustomShapeSubType::RAY) { }
 
 	JoltCustomRayShape(
 		const JoltCustomRayShapeSettings& p_settings,
 		JPH::Shape::ShapeResult& p_result
 	)
-		: JPH::ConvexShape(JoltShapeSubType::RAY, p_settings, p_result)
+		: JPH::ConvexShape(JoltCustomShapeSubType::RAY, p_settings, p_result)
 		, material(p_settings.material)
 		, length(p_settings.length)
 		, slide_on_slope(p_settings.slide_on_slope) {
@@ -49,7 +49,7 @@ public:
 		bool p_slide_on_slope,
 		const JPH::PhysicsMaterial* p_material = nullptr
 	)
-		: JPH::ConvexShape(JoltShapeSubType::RAY)
+		: JPH::ConvexShape(JoltCustomShapeSubType::RAY)
 		, material(p_material)
 		, length(p_length)
 		, slide_on_slope(p_slide_on_slope) { }
