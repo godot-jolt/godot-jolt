@@ -57,7 +57,7 @@ RID JoltPhysicsServer3D::_cylinder_shape_create() {
 }
 
 RID JoltPhysicsServer3D::_convex_polygon_shape_create() {
-	JoltShapeImpl3D* shape = memnew(JoltConvexPolygonShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltConvexPolygonShapeImpl3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;

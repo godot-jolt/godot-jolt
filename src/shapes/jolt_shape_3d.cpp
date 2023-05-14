@@ -507,11 +507,11 @@ JPH::ShapeRefC JoltCylinderShapeImpl3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltConvexPolygonShape3D::get_data() const {
+Variant JoltConvexPolygonShapeImpl3D::get_data() const {
 	return vertices;
 }
 
-void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
+void JoltConvexPolygonShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -523,7 +523,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	vertices = p_data;
 }
 
-void JoltConvexPolygonShape3D::set_margin(float p_margin) {
+void JoltConvexPolygonShapeImpl3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -533,11 +533,11 @@ void JoltConvexPolygonShape3D::set_margin(float p_margin) {
 	margin = p_margin;
 }
 
-String JoltConvexPolygonShape3D::to_string() const {
+String JoltConvexPolygonShapeImpl3D::to_string() const {
 	return vformat("{vertex_count=%d margin=%f}", vertices.size(), margin);
 }
 
-JPH::ShapeRefC JoltConvexPolygonShape3D::build() const {
+JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::build() const {
 	const auto vertex_count = (int32_t)vertices.size();
 
 	ERR_FAIL_COND_D_MSG(

@@ -217,7 +217,7 @@ private:
 	float margin = 0.04f;
 };
 
-class JoltConvexPolygonShape3D final : public JoltShapeImpl3D {
+class JoltConvexPolygonShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CONVEX_POLYGON; }
 
