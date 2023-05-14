@@ -2,8 +2,8 @@
 
 #include "shapes/jolt_shape_instance_3d.hpp"
 
-class JoltSpace3D;
 class JoltShapeImpl3D;
+class JoltSpace3D;
 
 class JoltObjectImpl3D {
 public:

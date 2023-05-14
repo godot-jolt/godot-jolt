@@ -3,10 +3,10 @@
 #include "spaces/jolt_body_accessor_3d.hpp"
 
 class JoltAreaImpl3D;
-class JoltObjectImpl3D;
 class JoltContactListener3D;
 class JoltJointImpl3D;
 class JoltLayerMapper;
+class JoltObjectImpl3D;
 class JoltPhysicsDirectSpaceState3D;
 
 class JoltSpace3D final {

@@ -1,7 +1,7 @@
 #pragma once
 
-class JoltPhysicsServer3D;
 class JoltBodyImpl3D;
+class JoltPhysicsServer3D;
 
 class JoltMotionFilter3D final
 	: public JPH::BroadPhaseLayerFilter
