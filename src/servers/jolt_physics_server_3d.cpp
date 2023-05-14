@@ -1259,8 +1259,8 @@ void JoltPhysicsServer3D::_joint_make_pin(
 	ERR_FAIL_NULL(space);
 
 	JoltJointImpl3D* new_joint = body_b != nullptr
-		? memnew(JoltPinJoint3D(space, body_a, body_b, p_local_a, p_local_b))
-		: memnew(JoltPinJoint3D(space, body_a, p_local_a, p_local_b));
+		? memnew(JoltPinJointImpl3D(space, body_a, body_b, p_local_a, p_local_b))
+		: memnew(JoltPinJointImpl3D(space, body_a, p_local_a, p_local_b));
 
 	new_joint->set_rid(old_joint->get_rid());
 	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
@@ -1278,7 +1278,7 @@ void JoltPhysicsServer3D::_pin_joint_set_param(
 	ERR_FAIL_NULL(joint);
 
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_PIN);
-	auto* pin_joint = static_cast<JoltPinJoint3D*>(joint);
+	auto* pin_joint = static_cast<JoltPinJointImpl3D*>(joint);
 
 	pin_joint->set_param(p_param, p_value);
 }
@@ -1288,7 +1288,7 @@ double JoltPhysicsServer3D::_pin_joint_get_param(const RID& p_joint, PinJointPar
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_PIN);
-	const auto* pin_joint = static_cast<const JoltPinJoint3D*>(joint);
+	const auto* pin_joint = static_cast<const JoltPinJointImpl3D*>(joint);
 
 	return pin_joint->get_param(p_param);
 }
@@ -1298,7 +1298,7 @@ void JoltPhysicsServer3D::_pin_joint_set_local_a(const RID& p_joint, const Vecto
 	ERR_FAIL_NULL(joint);
 
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_PIN);
-	auto* pin_joint = static_cast<JoltPinJoint3D*>(joint);
+	auto* pin_joint = static_cast<JoltPinJointImpl3D*>(joint);
 
 	pin_joint->set_local_a(p_local_a);
 }
@@ -1308,7 +1308,7 @@ Vector3 JoltPhysicsServer3D::_pin_joint_get_local_a(const RID& p_joint) const {
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_PIN);
-	const auto* pin_joint = static_cast<const JoltPinJoint3D*>(joint);
+	const auto* pin_joint = static_cast<const JoltPinJointImpl3D*>(joint);
 
 	return pin_joint->get_local_a();
 }
@@ -1318,7 +1318,7 @@ void JoltPhysicsServer3D::_pin_joint_set_local_b(const RID& p_joint, const Vecto
 	ERR_FAIL_NULL(joint);
 
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_PIN);
-	auto* pin_joint = static_cast<JoltPinJoint3D*>(joint);
+	auto* pin_joint = static_cast<JoltPinJointImpl3D*>(joint);
 
 	pin_joint->set_local_b(p_local_b);
 }
@@ -1328,7 +1328,7 @@ Vector3 JoltPhysicsServer3D::_pin_joint_get_local_b(const RID& p_joint) const {
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_PIN);
-	const auto* pin_joint = static_cast<const JoltPinJoint3D*>(joint);
+	const auto* pin_joint = static_cast<const JoltPinJointImpl3D*>(joint);
 
 	return pin_joint->get_local_b();
 }

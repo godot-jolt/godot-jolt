@@ -5,9 +5,9 @@
 class JoltBody3D;
 class JoltSpace3D;
 
-class JoltPinJoint3D final : public JoltJointImpl3D {
+class JoltPinJointImpl3D final : public JoltJointImpl3D {
 public:
-	JoltPinJoint3D(
+	JoltPinJointImpl3D(
 		JoltSpace3D* p_space,
 		JoltBody3D* p_body_a,
 		JoltBody3D* p_body_b,
@@ -16,7 +16,7 @@ public:
 		bool p_lock = true
 	);
 
-	JoltPinJoint3D(
+	JoltPinJointImpl3D(
 		JoltSpace3D* p_space,
 		JoltBody3D* p_body_a,
 		const Vector3& p_local_a,
