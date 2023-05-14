@@ -1,7 +1,7 @@
 #pragma once
 
 class JoltPhysicsServer3D;
-class JoltBody3D;
+class JoltBodyImpl3D;
 
 class JoltMotionFilter3D final
 	: public JPH::BroadPhaseLayerFilter
@@ -9,7 +9,7 @@ class JoltMotionFilter3D final
 	, public JPH::BodyFilter
 	, public JPH::ShapeFilter {
 public:
-	explicit JoltMotionFilter3D(const JoltBody3D& p_body, bool p_collide_separation_ray = true);
+	explicit JoltMotionFilter3D(const JoltBodyImpl3D& p_body, bool p_collide_separation_ray = true);
 
 	bool ShouldCollide(JPH::BroadPhaseLayer p_broad_phase_layer) const override;
 
@@ -32,7 +32,7 @@ public:
 private:
 	const JoltPhysicsServer3D& physics_server;
 
-	const JoltBody3D& body;
+	const JoltBodyImpl3D& body;
 
 	bool collide_separation_ray = false;
 };

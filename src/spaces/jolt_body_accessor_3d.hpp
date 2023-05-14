@@ -1,7 +1,7 @@
 #pragma once
 
 class JoltAreaImpl3D;
-class JoltBody3D;
+class JoltBodyImpl3D;
 class JoltCollisionObject3D;
 class JoltSpace3D;
 
@@ -156,9 +156,9 @@ public:
 		}
 	}
 
-	JoltBody3D* as_body() const {
+	JoltBodyImpl3D* as_body() const {
 		if (body != nullptr && !body->IsSensor()) {
-			return reinterpret_cast<JoltBody3D*>(body->GetUserData());
+			return reinterpret_cast<JoltBodyImpl3D*>(body->GetUserData());
 		} else {
 			return nullptr;
 		}

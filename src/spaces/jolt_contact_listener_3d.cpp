@@ -171,10 +171,10 @@ void JoltContactListener3D::flush_contacts() {
 			false
 		);
 
-		JoltBody3D* body1 = jolt_bodies[0].as_body();
+		JoltBodyImpl3D* body1 = jolt_bodies[0].as_body();
 		ERR_FAIL_NULL(body1);
 
-		JoltBody3D* body2 = jolt_bodies[1].as_body();
+		JoltBodyImpl3D* body2 = jolt_bodies[1].as_body();
 		ERR_FAIL_NULL(body2);
 
 		const int32_t shape_index1 = body1->find_shape_index(shape_pair.GetSubShapeID1());
@@ -308,8 +308,8 @@ void JoltContactListener3D::flush_area_exits() {
 		JoltAreaImpl3D* area1 = jolt_body1.as_area();
 		JoltAreaImpl3D* area2 = jolt_body2.as_area();
 
-		const JoltBody3D* body1 = jolt_body1.as_body();
-		const JoltBody3D* body2 = jolt_body2.as_body();
+		const JoltBodyImpl3D* body1 = jolt_body1.as_body();
+		const JoltBodyImpl3D* body2 = jolt_body2.as_body();
 
 		if (area1 != nullptr && area2 != nullptr) {
 			area1->area_shape_exited(body_id2, sub_shape_id2, sub_shape_id1);

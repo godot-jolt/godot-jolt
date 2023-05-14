@@ -2,15 +2,15 @@
 
 #include "joints/jolt_joint_3d.hpp"
 
-class JoltBody3D;
+class JoltBodyImpl3D;
 class JoltSpace3D;
 
 class JoltPinJointImpl3D final : public JoltJointImpl3D {
 public:
 	JoltPinJointImpl3D(
 		JoltSpace3D* p_space,
-		JoltBody3D* p_body_a,
-		JoltBody3D* p_body_b,
+		JoltBodyImpl3D* p_body_a,
+		JoltBodyImpl3D* p_body_b,
 		const Vector3& p_local_a,
 		const Vector3& p_local_b,
 		bool p_lock = true
@@ -18,7 +18,7 @@ public:
 
 	JoltPinJointImpl3D(
 		JoltSpace3D* p_space,
-		JoltBody3D* p_body_a,
+		JoltBodyImpl3D* p_body_a,
 		const Vector3& p_local_a,
 		const Vector3& p_local_b,
 		bool p_lock = true

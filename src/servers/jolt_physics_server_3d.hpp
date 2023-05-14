@@ -1,7 +1,7 @@
 #pragma once
 
 class JoltAreaImpl3D;
-class JoltBody3D;
+class JoltBodyImpl3D;
 class JoltJobSystem;
 class JoltJointImpl3D;
 class JoltShape3D;
@@ -551,7 +551,7 @@ public:
 
 	void free_area(JoltAreaImpl3D* p_area);
 
-	void free_body(JoltBody3D* p_body);
+	void free_body(JoltBodyImpl3D* p_body);
 
 	void free_shape(JoltShape3D* p_shape);
 
@@ -561,7 +561,7 @@ public:
 
 	JoltAreaImpl3D* get_area(const RID& p_rid) const { return area_owner.get_or_null(p_rid); }
 
-	JoltBody3D* get_body(const RID& p_rid) const { return body_owner.get_or_null(p_rid); }
+	JoltBodyImpl3D* get_body(const RID& p_rid) const { return body_owner.get_or_null(p_rid); }
 
 	JoltShape3D* get_shape(const RID& p_rid) const { return shape_owner.get_or_null(p_rid); }
 
@@ -572,7 +572,7 @@ private:
 
 	mutable RID_PtrOwner<JoltAreaImpl3D> area_owner;
 
-	mutable RID_PtrOwner<JoltBody3D> body_owner;
+	mutable RID_PtrOwner<JoltBodyImpl3D> body_owner;
 
 	mutable RID_PtrOwner<JoltShape3D> shape_owner;
 

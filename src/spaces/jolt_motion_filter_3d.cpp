@@ -9,7 +9,7 @@
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
-JoltMotionFilter3D::JoltMotionFilter3D(const JoltBody3D& p_body, bool p_collide_separation_ray)
+JoltMotionFilter3D::JoltMotionFilter3D(const JoltBodyImpl3D& p_body, bool p_collide_separation_ray)
 	: physics_server(*static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton()))
 	, body(p_body)
 	, collide_separation_ray(p_collide_separation_ray) { }

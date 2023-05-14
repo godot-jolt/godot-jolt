@@ -13,8 +13,8 @@ constexpr double DEFAULT_IMPULSE_CLAMP = 0.0;
 
 JoltPinJointImpl3D::JoltPinJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
-	JoltBody3D* p_body_b,
+	JoltBodyImpl3D* p_body_a,
+	JoltBodyImpl3D* p_body_b,
 	const Vector3& p_local_a,
 	const Vector3& p_local_b,
 	bool p_lock
@@ -52,7 +52,7 @@ JoltPinJointImpl3D::JoltPinJointImpl3D(
 
 JoltPinJointImpl3D::JoltPinJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
+	JoltBodyImpl3D* p_body_a,
 	const Vector3& p_local_a,
 	const Vector3& p_local_b,
 	bool p_lock

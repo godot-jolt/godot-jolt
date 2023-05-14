@@ -5,7 +5,7 @@
 
 class JoltAreaImpl3D;
 
-class JoltBody3D final : public JoltCollisionObject3D {
+class JoltBodyImpl3D final : public JoltCollisionObject3D {
 public:
 	using DampMode = PhysicsServer3D::BodyDampMode;
 
@@ -31,7 +31,7 @@ public:
 		Vector3 impulse;
 	};
 
-	~JoltBody3D() override;
+	~JoltBodyImpl3D() override;
 
 	Variant get_state(PhysicsServer3D::BodyState p_state);
 
@@ -95,7 +95,7 @@ public:
 	bool generates_contacts() const override { return !contacts.is_empty(); }
 
 	void add_contact(
-		const JoltBody3D* p_collider,
+		const JoltBodyImpl3D* p_collider,
 		float p_depth,
 		int32_t p_shape_index,
 		int32_t p_collider_shape_index,

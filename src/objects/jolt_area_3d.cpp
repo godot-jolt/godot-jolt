@@ -367,7 +367,7 @@ void JoltAreaImpl3D::report_event(
 void JoltAreaImpl3D::notify_body_entered(const JPH::BodyID& p_body_id, bool p_lock) {
 	const JoltReadableBody3D jolt_body = space->read_body(p_body_id, p_lock);
 
-	JoltBody3D* body = jolt_body.as_body();
+	JoltBodyImpl3D* body = jolt_body.as_body();
 	QUIET_FAIL_NULL(body);
 
 	body->add_area(this, false);
@@ -376,7 +376,7 @@ void JoltAreaImpl3D::notify_body_entered(const JPH::BodyID& p_body_id, bool p_lo
 void JoltAreaImpl3D::notify_body_exited(const JPH::BodyID& p_body_id, bool p_lock) {
 	const JoltReadableBody3D jolt_body = space->read_body(p_body_id, p_lock);
 
-	JoltBody3D* body = jolt_body.as_body();
+	JoltBodyImpl3D* body = jolt_body.as_body();
 	QUIET_FAIL_NULL(body);
 
 	body->remove_area(this, false);

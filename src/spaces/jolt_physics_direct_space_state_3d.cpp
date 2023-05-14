@@ -483,7 +483,7 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 }
 
 bool JoltPhysicsDirectSpaceState3D::test_body_motion(
-	const JoltBody3D& p_body,
+	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_motion,
 	float p_margin,
@@ -689,7 +689,7 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 }
 
 bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
-	const JoltBody3D& p_body,
+	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_direction,
 	float p_margin,
@@ -744,7 +744,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 			const JPH::CollideShapeResult& hit = collector.get_hit(j);
 
 			const JoltReadableBody3D other_jolt_body = space->read_body(hit.mBodyID2);
-			const JoltBody3D* other_body = other_jolt_body.as_body();
+			const JoltBodyImpl3D* other_body = other_jolt_body.as_body();
 			ERR_CONTINUE(other_body == nullptr);
 
 			combined_priority += other_body->get_collision_priority();
@@ -775,7 +775,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 			}
 
 			const JoltReadableBody3D other_jolt_body = space->read_body(hit.mBodyID2);
-			const JoltBody3D* other_body = other_jolt_body.as_body();
+			const JoltBodyImpl3D* other_body = other_jolt_body.as_body();
 			ERR_CONTINUE(other_body == nullptr);
 
 			const float recovery_distance = penetration_depth * recovery_speed;
@@ -798,7 +798,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 }
 
 bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
-	const JoltBody3D& p_body,
+	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_scale,
 	const Vector3& p_motion,
@@ -862,7 +862,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 }
 
 bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
-	const JoltBody3D& p_body,
+	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_direction,
 	float p_margin,

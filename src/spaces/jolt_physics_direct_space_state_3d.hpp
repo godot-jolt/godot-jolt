@@ -1,6 +1,6 @@
 #pragma once
 
-class JoltBody3D;
+class JoltBodyImpl3D;
 class JoltShape3D;
 class JoltSpace3D;
 
@@ -89,7 +89,7 @@ public:
 		const override;
 
 	bool test_body_motion(
-		const JoltBody3D& p_body,
+		const JoltBodyImpl3D& p_body,
 		const Transform3D& p_transform,
 		const Vector3& p_motion,
 		float p_margin,
@@ -117,7 +117,7 @@ private:
 	) const;
 
 	bool body_motion_recover(
-		const JoltBody3D& p_body,
+		const JoltBodyImpl3D& p_body,
 		const Transform3D& p_transform,
 		const Vector3& p_direction,
 		float p_margin,
@@ -125,7 +125,7 @@ private:
 	) const;
 
 	bool body_motion_cast(
-		const JoltBody3D& p_body,
+		const JoltBodyImpl3D& p_body,
 		const Transform3D& p_transform,
 		const Vector3& p_scale,
 		const Vector3& p_motion,
@@ -135,7 +135,7 @@ private:
 	) const;
 
 	bool body_motion_collide(
-		const JoltBody3D& p_body,
+		const JoltBodyImpl3D& p_body,
 		const Transform3D& p_transform,
 		const Vector3& p_direction,
 		float p_margin,

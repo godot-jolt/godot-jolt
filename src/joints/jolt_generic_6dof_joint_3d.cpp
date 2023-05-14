@@ -27,8 +27,8 @@ constexpr double DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT = 0.0;
 
 JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
-	JoltBody3D* p_body_b,
+	JoltBodyImpl3D* p_body_a,
+	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
 	[[maybe_unused]] const Transform3D& p_local_ref_b,
 	bool p_lock
@@ -41,7 +41,7 @@ JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
 
 JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
+	JoltBodyImpl3D* p_body_a,
 	[[maybe_unused]] const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock

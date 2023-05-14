@@ -1,13 +1,17 @@
 #pragma once
 
-class JoltBody3D;
+class JoltBodyImpl3D;
 class JoltSpace3D;
 
 class JoltJointImpl3D {
 public:
 	JoltJointImpl3D() = default;
 
-	JoltJointImpl3D(JoltSpace3D* p_space, JoltBody3D* p_body_a, JoltBody3D* p_body_b = nullptr);
+	JoltJointImpl3D(
+		JoltSpace3D* p_space,
+		JoltBodyImpl3D* p_body_a,
+		JoltBodyImpl3D* p_body_b = nullptr
+	);
 
 	virtual ~JoltJointImpl3D();
 
@@ -34,9 +38,9 @@ protected:
 
 	JoltSpace3D* space = nullptr;
 
-	JoltBody3D* body_a = nullptr;
+	JoltBodyImpl3D* body_a = nullptr;
 
-	JoltBody3D* body_b = nullptr;
+	JoltBodyImpl3D* body_b = nullptr;
 
 	JPH::Ref<JPH::Constraint> jolt_ref;
 

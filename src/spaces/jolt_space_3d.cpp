@@ -122,7 +122,7 @@ void JoltSpace3D::call_queries() {
 	for (int32_t i = 0; i < body_count; ++i) {
 		if (const JPH::Body* body = body_accessor.try_get(i)) {
 			if (!body->IsSensor() && !body->IsStatic()) {
-				reinterpret_cast<JoltBody3D*>(body->GetUserData())->call_queries();
+				reinterpret_cast<JoltBodyImpl3D*>(body->GetUserData())->call_queries();
 			}
 		}
 	}

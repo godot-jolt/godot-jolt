@@ -9,7 +9,11 @@ constexpr int32_t DEFAULT_SOLVER_PRIORITY = 1;
 
 } // namespace
 
-JoltJointImpl3D::JoltJointImpl3D(JoltSpace3D* p_space, JoltBody3D* p_body_a, JoltBody3D* p_body_b)
+JoltJointImpl3D::JoltJointImpl3D(
+	JoltSpace3D* p_space,
+	JoltBodyImpl3D* p_body_a,
+	JoltBodyImpl3D* p_body_b
+)
 	: space(p_space)
 	, body_a(p_body_a)
 	, body_b(p_body_b) { }
