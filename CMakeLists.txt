@@ -26,20 +26,20 @@ set(PROJECT_VERSION_STATUS "dev")
 set(PROJECT_VERSION_WITH_STATUS ${PROJECT_VERSION}-${PROJECT_VERSION_STATUS})
 set(PROJECT_VERSION_WITH_BUILD ${PROJECT_VERSION_WITH_STATUS}+${PROJECT_VERSION_BUILD})
 
-file(GLOB_RECURSE godot-jolt_SOURCES CONFIGURE_DEPENDS ${source_dir}/*.cpp)
-file(GLOB_RECURSE godot-jolt_HEADERS CONFIGURE_DEPENDS ${source_dir}/*.hpp)
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS ${source_dir}/*.cpp)
+file(GLOB_RECURSE headers CONFIGURE_DEPENDS ${source_dir}/*.hpp)
 
 set(pch_file ${source_dir}/precompiled.hpp)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
 	gdj_generate_rc_file(rc_file)
-	list(APPEND godot-jolt_SOURCES ${rc_file})
+	list(APPEND sources ${rc_file})
 elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
 	gdj_generate_info_file(info_file)
-	list(APPEND godot-jolt_SOURCES ${info_file})
+	list(APPEND sources ${info_file})
 endif()
 
-add_library(godot-jolt SHARED ${godot-jolt_SOURCES} ${godot-jolt_HEADERS})
+add_library(godot-jolt SHARED ${sources} ${headers})
 add_library(godot-jolt::godot-jolt ALIAS godot-jolt)
 
 target_link_libraries(godot-jolt
