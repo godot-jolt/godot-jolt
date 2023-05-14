@@ -45,10 +45,10 @@ cmake --build --preset windows-msvc-x64-distribution
 # Build editor binaries and install them into the examples project
 cmake --build --preset windows-msvc-x64-editor-distribution
 
-# Install non-editor binaries into your project, as `addons/godot-jolt`
+# Install non-editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/windows-msvc-x64 --config Distribution --prefix C:/Path/To/Project
 
-# Install editor binaries into your project, as `addons/godot-jolt`
+# Install editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/windows-msvc-x64 --config EditorDistribution --prefix C:/Path/To/Project
 ```
 
@@ -64,10 +64,10 @@ cmake --build --preset windows-clangcl-x64-distribution
 # Build editor binaries and install them into the examples project
 cmake --build --preset windows-clangcl-x64-editor-distribution
 
-# Install non-editor binaries into your project, as `addons/godot-jolt`
+# Install non-editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/windows-clangcl-x64 --config Distribution --prefix C:/Path/To/Project
 
-# Install editor binaries into your project, as `addons/godot-jolt`
+# Install editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/windows-clangcl-x64 --config EditorDistribution --prefix C:/Path/To/Project
 ```
 
@@ -97,10 +97,10 @@ cmake --build --preset linux-gcc-x64-distribution
 # Build editor binaries and install them into the examples project
 cmake --build --preset linux-gcc-x64-editor-distribution
 
-# Install non-editor binaries into your project, as `addons/godot-jolt`
+# Install non-editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/linux-gcc-x64 --config Distribution --prefix /path/to/project
 
-# Install editor binaries into your project, as `addons/godot-jolt`
+# Install editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/linux-gcc-x64 --config EditorDistribution --prefix /path/to/project
 ```
 
@@ -116,10 +116,10 @@ cmake --build --preset linux-clang-x64-distribution
 # Build editor binaries and install them into the examples project
 cmake --build --preset linux-clang-x64-editor-distribution
 
-# Install non-editor binaries into your project, as `addons/godot-jolt`
+# Install non-editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/linux-clang-x64 --config Distribution --prefix /path/to/project
 
-# Install editor binaries into your project, as `addons/godot-jolt`
+# Install editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/linux-clang-x64 --config EditorDistribution --prefix /path/to/project
 ```
 
@@ -142,10 +142,10 @@ cmake --build --preset macos-clang-distribution
 # Build editor binaries and install them into the examples project
 cmake --build --preset macos-clang-editor-distribution
 
-# Install non-editor binaries into your project, as `addons/godot-jolt`
+# Install non-editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/macos-clang --config Distribution --prefix /path/to/project
 
-# Install editor binaries into your project, as `addons/godot-jolt`
+# Install editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/macos-clang --config EditorDistribution --prefix /path/to/project
 ```
 
