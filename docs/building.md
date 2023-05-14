@@ -30,7 +30,7 @@ order for CMake to find the correct toolchain. Make sure you pick the one approp
 target architecture (x64 or x86).
 
 ⚠️ Visual Studio's "Developer Command Prompt" and "Developer PowerShell" will not work when
-targeting x64 due to them using to an x86 toolchain. Use the "x64 Native Tools Command Prompt"
+targeting x64 due to them exposing an x86 toolchain. Use the "x64 Native Tools Command Prompt"
 instead.
 
 Using Microsoft Visual C++:
