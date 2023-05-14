@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="godot-jolt"
+config/name="Godot Jolt Examples"
 run/main_scene="res://scenes/shapes/shapes.tscn"
 config/features=PackedStringArray("4.0")
 
