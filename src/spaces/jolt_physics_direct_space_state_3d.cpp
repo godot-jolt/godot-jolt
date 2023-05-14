@@ -135,7 +135,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
-	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -210,7 +210,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
-	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -263,7 +263,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
-	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -329,7 +329,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 ) {
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
-	JoltShape3D* shape = physics_server->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -819,7 +819,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 			continue;
 		}
 
-		JoltShape3D* shape = p_body.get_shape(i);
+		JoltShapeImpl3D* shape = p_body.get_shape(i);
 
 		if (!shape->is_convex()) {
 			continue;

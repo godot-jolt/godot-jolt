@@ -1,7 +1,7 @@
 #pragma once
 
 template<typename TCallable>
-JPH::ShapeRefC JoltShape3D::as_compound(TCallable&& p_callable) {
+JPH::ShapeRefC JoltShapeImpl3D::as_compound(TCallable&& p_callable) {
 	JPH::StaticCompoundShapeSettings shape_settings;
 
 	auto add_shape = [&](JPH::ShapeRefC p_shape,

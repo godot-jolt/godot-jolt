@@ -15,63 +15,63 @@
 #include "spaces/jolt_space_3d.hpp"
 
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
-	JoltShape3D* shape = memnew(JoltWorldBoundaryShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltWorldBoundaryShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_separation_ray_shape_create() {
-	JoltShape3D* shape = memnew(JoltSeparationRayShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltSeparationRayShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_sphere_shape_create() {
-	JoltShape3D* shape = memnew(JoltSphereShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltSphereShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_box_shape_create() {
-	JoltShape3D* shape = memnew(JoltBoxShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltBoxShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_capsule_shape_create() {
-	JoltShape3D* shape = memnew(JoltCapsuleShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltCapsuleShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_cylinder_shape_create() {
-	JoltShape3D* shape = memnew(JoltCylinderShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltCylinderShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_convex_polygon_shape_create() {
-	JoltShape3D* shape = memnew(JoltConvexPolygonShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltConvexPolygonShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_concave_polygon_shape_create() {
-	JoltShape3D* shape = memnew(JoltConcavePolygonShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltConcavePolygonShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
 }
 
 RID JoltPhysicsServer3D::_heightmap_shape_create() {
-	JoltShape3D* shape = memnew(JoltHeightMapShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltHeightMapShape3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
@@ -82,7 +82,7 @@ RID JoltPhysicsServer3D::_custom_shape_create() {
 }
 
 void JoltPhysicsServer3D::_shape_set_data(const RID& p_shape, const Variant& p_data) {
-	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
 	shape->set_data(p_data);
@@ -96,28 +96,28 @@ void JoltPhysicsServer3D::_shape_set_custom_solver_bias(
 }
 
 PhysicsServer3D::ShapeType JoltPhysicsServer3D::_shape_get_type(const RID& p_shape) const {
-	const JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	const JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL_D(shape);
 
 	return shape->get_type();
 }
 
 Variant JoltPhysicsServer3D::_shape_get_data(const RID& p_shape) const {
-	const JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	const JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL_D(shape);
 
 	return shape->get_data();
 }
 
 void JoltPhysicsServer3D::_shape_set_margin(const RID& p_shape, double p_margin) {
-	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
 	shape->set_margin((float)p_margin);
 }
 
 double JoltPhysicsServer3D::_shape_get_margin(const RID& p_shape) const {
-	const JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	const JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL_D(shape);
 
 	return (double)shape->get_margin();
@@ -263,7 +263,7 @@ void JoltPhysicsServer3D::_area_add_shape(
 	JoltAreaImpl3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
-	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
 	area->add_shape(shape, p_transform, p_disabled);
@@ -277,7 +277,7 @@ void JoltPhysicsServer3D::_area_set_shape(
 	JoltAreaImpl3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
-	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
 	area->set_shape(p_shape_idx, shape);
@@ -305,7 +305,7 @@ RID JoltPhysicsServer3D::_area_get_shape(const RID& p_area, int32_t p_shape_idx)
 	const JoltAreaImpl3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL_D(area);
 
-	const JoltShape3D* shape = area->get_shape(p_shape_idx);
+	const JoltShapeImpl3D* shape = area->get_shape(p_shape_idx);
 	ERR_FAIL_NULL_D(shape);
 
 	return shape->get_rid();
@@ -516,7 +516,7 @@ void JoltPhysicsServer3D::_body_add_shape(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
 	body->add_shape(shape, p_transform, p_disabled);
@@ -530,7 +530,7 @@ void JoltPhysicsServer3D::_body_set_shape(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	JoltShape3D* shape = shape_owner.get_or_null(p_shape);
+	JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
 	body->set_shape(p_shape_idx, shape);
@@ -558,7 +558,7 @@ RID JoltPhysicsServer3D::_body_get_shape(const RID& p_body, int32_t p_shape_idx)
 	const JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	const JoltShape3D* shape = body->get_shape(p_shape_idx);
+	const JoltShapeImpl3D* shape = body->get_shape(p_shape_idx);
 	ERR_FAIL_NULL_D(shape);
 
 	return shape->get_rid();
@@ -1665,7 +1665,7 @@ bool JoltPhysicsServer3D::_joint_is_disabled_collisions_between_bodies(const RID
 }
 
 void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
-	if (JoltShape3D* shape = shape_owner.get_or_null(p_rid)) {
+	if (JoltShapeImpl3D* shape = shape_owner.get_or_null(p_rid)) {
 		free_shape(shape);
 	} else if (JoltBodyImpl3D* body = body_owner.get_or_null(p_rid)) {
 		free_body(body);
@@ -1760,7 +1760,7 @@ void JoltPhysicsServer3D::free_body(JoltBodyImpl3D* p_body) {
 	memdelete_safely(p_body);
 }
 
-void JoltPhysicsServer3D::free_shape(JoltShape3D* p_shape) {
+void JoltPhysicsServer3D::free_shape(JoltShapeImpl3D* p_shape) {
 	ERR_FAIL_NULL(p_shape);
 
 	p_shape->remove_self();

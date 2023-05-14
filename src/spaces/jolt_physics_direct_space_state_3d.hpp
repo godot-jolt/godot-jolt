@@ -1,7 +1,7 @@
 #pragma once
 
 class JoltBodyImpl3D;
-class JoltShape3D;
+class JoltShapeImpl3D;
 class JoltSpace3D;
 
 class JoltPhysicsDirectSpaceState3D final : public PhysicsDirectSpaceState3DExtension {

@@ -4,7 +4,7 @@ class JoltAreaImpl3D;
 class JoltBodyImpl3D;
 class JoltJobSystem;
 class JoltJointImpl3D;
-class JoltShape3D;
+class JoltShapeImpl3D;
 class JoltSpace3D;
 
 class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
@@ -553,7 +553,7 @@ public:
 
 	void free_body(JoltBodyImpl3D* p_body);
 
-	void free_shape(JoltShape3D* p_shape);
+	void free_shape(JoltShapeImpl3D* p_shape);
 
 	void free_joint(JoltJointImpl3D* p_joint);
 
@@ -563,7 +563,7 @@ public:
 
 	JoltBodyImpl3D* get_body(const RID& p_rid) const { return body_owner.get_or_null(p_rid); }
 
-	JoltShape3D* get_shape(const RID& p_rid) const { return shape_owner.get_or_null(p_rid); }
+	JoltShapeImpl3D* get_shape(const RID& p_rid) const { return shape_owner.get_or_null(p_rid); }
 
 	JoltJointImpl3D* get_joint(const RID& p_rid) const { return joint_owner.get_or_null(p_rid); }
 
@@ -574,7 +574,7 @@ private:
 
 	mutable RID_PtrOwner<JoltBodyImpl3D> body_owner;
 
-	mutable RID_PtrOwner<JoltShape3D> shape_owner;
+	mutable RID_PtrOwner<JoltShapeImpl3D> shape_owner;
 
 	mutable RID_PtrOwner<JoltJointImpl3D> joint_owner;
 

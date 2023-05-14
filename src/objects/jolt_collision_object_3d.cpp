@@ -216,7 +216,7 @@ JPH::ShapeRefC JoltObjectImpl3D::try_build_shape() {
 	JPH::ShapeRefC result;
 
 	if (built_shape_count == 1) {
-		result = JoltShape3D::with_transform(
+		result = JoltShapeImpl3D::with_transform(
 			last_built_shape->get_jolt_ref(),
 			last_built_shape->get_transform_unscaled(),
 			last_built_shape->get_scale()
@@ -224,7 +224,7 @@ JPH::ShapeRefC JoltObjectImpl3D::try_build_shape() {
 	} else {
 		int32_t shape_index = 0;
 
-		result = JoltShape3D::as_compound([&](auto&& p_add_shape) {
+		result = JoltShapeImpl3D::as_compound([&](auto&& p_add_shape) {
 			if (shape_index >= shapes.size()) {
 				return false;
 			}
@@ -244,11 +244,11 @@ JPH::ShapeRefC JoltObjectImpl3D::try_build_shape() {
 	}
 
 	if (has_custom_center_of_mass()) {
-		result = JoltShape3D::with_center_of_mass(result, get_center_of_mass_custom());
+		result = JoltShapeImpl3D::with_center_of_mass(result, get_center_of_mass_custom());
 	}
 
 	if (scale != Vector3(1.0f, 1.0f, 1.0f)) {
-		result = JoltShape3D::with_scale(result, scale);
+		result = JoltShapeImpl3D::with_scale(result, scale);
 	}
 
 	return result;
@@ -282,7 +282,7 @@ void JoltObjectImpl3D::build_shape(bool p_lock) {
 }
 
 void JoltObjectImpl3D::add_shape(
-	JoltShape3D* p_shape,
+	JoltShapeImpl3D* p_shape,
 	Transform3D p_transform,
 	bool p_disabled,
 	bool p_lock
@@ -295,7 +295,7 @@ void JoltObjectImpl3D::add_shape(
 	shapes_changed(p_lock);
 }
 
-void JoltObjectImpl3D::remove_shape(const JoltShape3D* p_shape, bool p_lock) {
+void JoltObjectImpl3D::remove_shape(const JoltShapeImpl3D* p_shape, bool p_lock) {
 	shapes.erase_if([&](const JoltShapeInstance3D& p_instance) {
 		return p_instance.get_shape() == p_shape;
 	});
@@ -311,13 +311,13 @@ void JoltObjectImpl3D::remove_shape(int32_t p_index, bool p_lock) {
 	shapes_changed(p_lock);
 }
 
-JoltShape3D* JoltObjectImpl3D::get_shape(int32_t p_index) const {
+JoltShapeImpl3D* JoltObjectImpl3D::get_shape(int32_t p_index) const {
 	ERR_FAIL_INDEX_D(p_index, shapes.size());
 
 	return shapes[p_index].get_shape();
 }
 
-void JoltObjectImpl3D::set_shape(int32_t p_index, JoltShape3D* p_shape, bool p_lock) {
+void JoltObjectImpl3D::set_shape(int32_t p_index, JoltShapeImpl3D* p_shape, bool p_lock) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	shapes[p_index] = JoltShapeInstance3D(this, p_shape);
@@ -343,12 +343,12 @@ int32_t JoltObjectImpl3D::find_shape_index(const JPH::SubShapeID& p_sub_shape_id
 	return find_shape_index((uint32_t)jolt_shape->GetSubShapeUserData(p_sub_shape_id));
 }
 
-JoltShape3D* JoltObjectImpl3D::find_shape(uint32_t p_shape_instance_id) const {
+JoltShapeImpl3D* JoltObjectImpl3D::find_shape(uint32_t p_shape_instance_id) const {
 	const int32_t shape_index = find_shape_index(p_shape_instance_id);
 	return shape_index != -1 ? shapes[shape_index].get_shape() : nullptr;
 }
 
-JoltShape3D* JoltObjectImpl3D::find_shape(const JPH::SubShapeID& p_sub_shape_id) const {
+JoltShapeImpl3D* JoltObjectImpl3D::find_shape(const JPH::SubShapeID& p_sub_shape_id) const {
 	const int32_t shape_index = find_shape_index(p_sub_shape_id);
 	return shape_index != -1 ? shapes[shape_index].get_shape() : nullptr;
 }

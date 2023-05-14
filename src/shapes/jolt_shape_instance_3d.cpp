@@ -4,7 +4,7 @@
 
 JoltShapeInstance3D::JoltShapeInstance3D(
 	JoltObjectImpl3D* p_parent,
-	JoltShape3D* p_shape,
+	JoltShapeImpl3D* p_shape,
 	const Transform3D& p_transform,
 	const Vector3& p_scale,
 	bool p_disabled
@@ -45,7 +45,7 @@ bool JoltShapeInstance3D::try_build() {
 		}
 	}
 
-	jolt_ref = JoltShape3D::with_user_data(maybe_new_shape, (uint64_t)id);
+	jolt_ref = JoltShapeImpl3D::with_user_data(maybe_new_shape, (uint64_t)id);
 
 	return true;
 }

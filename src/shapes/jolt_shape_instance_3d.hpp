@@ -1,13 +1,13 @@
 #pragma once
 
 class JoltObjectImpl3D;
-class JoltShape3D;
+class JoltShapeImpl3D;
 
 class JoltShapeInstance3D {
 public:
 	JoltShapeInstance3D(
 		JoltObjectImpl3D* p_parent,
-		JoltShape3D* p_shape,
+		JoltShapeImpl3D* p_shape,
 		const Transform3D& p_transform = {},
 		const Vector3& p_scale = {1.0f, 1.0f, 1.0f},
 		bool p_disabled = false
@@ -21,7 +21,7 @@ public:
 
 	uint32_t get_id() const { return id; }
 
-	JoltShape3D* get_shape() const { return shape; }
+	JoltShapeImpl3D* get_shape() const { return shape; }
 
 	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
@@ -62,7 +62,7 @@ private:
 
 	JoltObjectImpl3D* parent = nullptr;
 
-	JoltShape3D* shape = nullptr;
+	JoltShapeImpl3D* shape = nullptr;
 
 	uint32_t id = next_id++;
 

@@ -4,19 +4,19 @@
 #include "shapes/jolt_override_user_data_shape.hpp"
 #include "shapes/jolt_ray_shape.hpp"
 
-JoltShape3D::~JoltShape3D() = default;
+JoltShapeImpl3D::~JoltShapeImpl3D() = default;
 
-void JoltShape3D::add_owner(JoltObjectImpl3D* p_owner) {
+void JoltShapeImpl3D::add_owner(JoltObjectImpl3D* p_owner) {
 	ref_counts_by_owner[p_owner]++;
 }
 
-void JoltShape3D::remove_owner(JoltObjectImpl3D* p_owner) {
+void JoltShapeImpl3D::remove_owner(JoltObjectImpl3D* p_owner) {
 	if (--ref_counts_by_owner[p_owner] <= 0) {
 		ref_counts_by_owner.erase(p_owner);
 	}
 }
 
-void JoltShape3D::remove_self(bool p_lock) {
+void JoltShapeImpl3D::remove_self(bool p_lock) {
 	// `remove_owner` will be called when we `remove_shape`, so we need to copy the map since the
 	// iterator would be invalidated from underneath us
 	const auto ref_counts_by_owner_copy = ref_counts_by_owner;
@@ -26,7 +26,7 @@ void JoltShape3D::remove_self(bool p_lock) {
 	}
 }
 
-JPH::ShapeRefC JoltShape3D::try_build() {
+JPH::ShapeRefC JoltShapeImpl3D::try_build() {
 	if (jolt_ref == nullptr) {
 		jolt_ref = build();
 	}
@@ -34,7 +34,7 @@ JPH::ShapeRefC JoltShape3D::try_build() {
 	return jolt_ref;
 }
 
-JPH::ShapeRefC JoltShape3D::with_scale(const JPH::Shape* p_shape, const Vector3& p_scale) {
+JPH::ShapeRefC JoltShapeImpl3D::with_scale(const JPH::Shape* p_shape, const Vector3& p_scale) {
 	ERR_FAIL_NULL_D(p_shape);
 
 	const JPH::ScaledShapeSettings shape_settings(p_shape, to_jolt(p_scale));
@@ -53,7 +53,7 @@ JPH::ShapeRefC JoltShape3D::with_scale(const JPH::Shape* p_shape, const Vector3&
 	return shape_result.Get();
 }
 
-JPH::ShapeRefC JoltShape3D::with_basis_origin(
+JPH::ShapeRefC JoltShapeImpl3D::with_basis_origin(
 	const JPH::Shape* p_shape,
 	const Basis& p_basis,
 	const Vector3& p_origin
@@ -82,7 +82,7 @@ JPH::ShapeRefC JoltShape3D::with_basis_origin(
 	return shape_result.Get();
 }
 
-JPH::ShapeRefC JoltShape3D::with_transform(
+JPH::ShapeRefC JoltShapeImpl3D::with_transform(
 	const JPH::Shape* p_shape,
 	const Transform3D& p_transform,
 	const Vector3& p_scale
@@ -102,7 +102,7 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 	return shape;
 }
 
-JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
+JPH::ShapeRefC JoltShapeImpl3D::with_center_of_mass_offset(
 	const JPH::Shape* p_shape,
 	const Vector3& p_offset
 ) {
@@ -124,7 +124,7 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
 	return shape_result.Get();
 }
 
-JPH::ShapeRefC JoltShape3D::with_center_of_mass(
+JPH::ShapeRefC JoltShapeImpl3D::with_center_of_mass(
 	const JPH::Shape* p_shape,
 	const Vector3& p_center_of_mass
 ) {
@@ -140,7 +140,7 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass(
 	return with_center_of_mass_offset(p_shape, center_of_mass_offset);
 }
 
-JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p_user_data) {
+JPH::ShapeRefC JoltShapeImpl3D::with_user_data(const JPH::Shape* p_shape, uint64_t p_user_data) {
 	JoltOverrideUserDataShapeSettings shape_settings(p_shape);
 	shape_settings.mUserData = (JPH::uint64)p_user_data;
 
@@ -158,7 +158,7 @@ JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p
 	return shape_result.Get();
 }
 
-void JoltShape3D::invalidated(bool p_lock) {
+void JoltShapeImpl3D::invalidated(bool p_lock) {
 	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
 		owner->shapes_changed(p_lock);
 	}
