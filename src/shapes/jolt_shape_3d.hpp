@@ -77,7 +77,7 @@ protected:
 	JPH::ShapeRefC jolt_ref;
 };
 
-class JoltWorldBoundaryShape3D final : public JoltShapeImpl3D {
+class JoltWorldBoundaryShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_WORLD_BOUNDARY; }
 

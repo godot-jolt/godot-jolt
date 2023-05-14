@@ -15,7 +15,7 @@
 #include "spaces/jolt_space_3d.hpp"
 
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
-	JoltShapeImpl3D* shape = memnew(JoltWorldBoundaryShape3D);
+	JoltShapeImpl3D* shape = memnew(JoltWorldBoundaryShapeImpl3D);
 	RID rid = shape_owner.make_rid(shape);
 	shape->set_rid(rid);
 	return rid;
