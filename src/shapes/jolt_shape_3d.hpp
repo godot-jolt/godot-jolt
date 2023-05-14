@@ -191,7 +191,7 @@ private:
 	float radius = 0.0f;
 };
 
-class JoltCylinderShape3D final : public JoltShapeImpl3D {
+class JoltCylinderShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CYLINDER; }
 

@@ -428,14 +428,14 @@ JPH::ShapeRefC JoltCapsuleShapeImpl3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltCylinderShape3D::get_data() const {
+Variant JoltCylinderShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["height"] = height;
 	data["radius"] = radius;
 	return data;
 }
 
-void JoltCylinderShape3D::set_data(const Variant& p_data) {
+void JoltCylinderShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -456,7 +456,7 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 	radius = maybe_radius;
 }
 
-void JoltCylinderShape3D::set_margin(float p_margin) {
+void JoltCylinderShapeImpl3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -466,11 +466,11 @@ void JoltCylinderShape3D::set_margin(float p_margin) {
 	margin = p_margin;
 }
 
-String JoltCylinderShape3D::to_string() const {
+String JoltCylinderShapeImpl3D::to_string() const {
 	return vformat("{height=%f radius=%f margin=%f}", height, radius, margin);
 }
 
-JPH::ShapeRefC JoltCylinderShape3D::build() const {
+JPH::ShapeRefC JoltCylinderShapeImpl3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		height < margin * 2.0f,
 		vformat(
