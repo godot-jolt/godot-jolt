@@ -1,4 +1,4 @@
-#include "jolt_ray_shape.hpp"
+#include "jolt_custom_ray_shape.hpp"
 
 #include "spaces/jolt_query_collectors.hpp"
 

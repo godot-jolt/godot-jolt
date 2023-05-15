@@ -1,6 +1,6 @@
 #include "jolt_shape_instance_3d.hpp"
 
-#include "shapes/jolt_shape_3d.hpp"
+#include "shapes/jolt_shape_impl_3d.hpp"
 
 JoltShapeInstance3D::JoltShapeInstance3D(
 	JoltObjectImpl3D* p_parent,

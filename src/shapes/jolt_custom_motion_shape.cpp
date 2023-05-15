@@ -1,4 +1,4 @@
-#include "jolt_motion_shape.hpp"
+#include "jolt_custom_motion_shape.hpp"
 
 namespace {
 

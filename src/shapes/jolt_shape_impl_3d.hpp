@@ -291,4 +291,4 @@ private:
 	int32_t depth = 0;
 };
 
-#include "jolt_shape_3d.inl"
+#include "jolt_shape_impl_3d.inl"

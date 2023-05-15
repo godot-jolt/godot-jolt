@@ -1,6 +1,6 @@
 #include "jolt_query_filter_3d.hpp"
 
-#include "objects/jolt_collision_object_3d.hpp"
+#include "objects/jolt_object_impl_3d.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"

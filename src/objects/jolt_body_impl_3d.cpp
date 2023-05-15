@@ -1,6 +1,6 @@
-#include "jolt_body_3d.hpp"
+#include "jolt_body_impl_3d.hpp"
 
-#include "objects/jolt_area_3d.hpp"
+#include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_group_filter_rid.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 #include "servers/jolt_project_settings.hpp"

@@ -1,4 +1,4 @@
-#include "jolt_empty_shape.hpp"
+#include "jolt_custom_empty_shape.hpp"
 
 namespace {
 

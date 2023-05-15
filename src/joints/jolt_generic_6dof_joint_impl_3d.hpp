@@ -1,6 +1,6 @@
 #pragma once
 
-#include "joints/jolt_joint_3d.hpp"
+#include "joints/jolt_joint_impl_3d.hpp"
 
 class JoltGeneric6DOFJointImpl3D final : public JoltJointImpl3D {
 	using JoltAxis = JPH::SixDOFConstraintSettings::EAxis;

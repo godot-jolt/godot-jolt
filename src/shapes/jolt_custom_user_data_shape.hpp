@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shapes/jolt_shape_type.hpp"
+#include "shapes/jolt_custom_shape_type.hpp"
 
 class JoltCustomUserDataShapeSettings final : public JPH::DecoratedShapeSettings {
 public:

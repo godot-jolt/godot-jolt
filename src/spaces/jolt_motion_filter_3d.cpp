@@ -1,11 +1,11 @@
 #include "jolt_motion_filter_3d.hpp"
 
-#include "objects/jolt_body_3d.hpp"
-#include "objects/jolt_collision_object_3d.hpp"
+#include "objects/jolt_body_impl_3d.hpp"
+#include "objects/jolt_object_impl_3d.hpp"
 #include "servers/jolt_physics_server_3d.hpp"
-#include "shapes/jolt_motion_shape.hpp"
-#include "shapes/jolt_shape_3d.hpp"
-#include "shapes/jolt_shape_type.hpp"
+#include "shapes/jolt_custom_motion_shape.hpp"
+#include "shapes/jolt_custom_shape_type.hpp"
+#include "shapes/jolt_shape_impl_3d.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
 

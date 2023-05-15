@@ -1,8 +1,8 @@
-#include "jolt_collision_object_3d.hpp"
+#include "jolt_object_impl_3d.hpp"
 
 #include "servers/jolt_project_settings.hpp"
-#include "shapes/jolt_empty_shape.hpp"
-#include "shapes/jolt_shape_3d.hpp"
+#include "shapes/jolt_custom_empty_shape.hpp"
+#include "shapes/jolt_shape_impl_3d.hpp"
 #include "spaces/jolt_layer_mapper.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
