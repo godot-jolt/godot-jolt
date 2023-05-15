@@ -2,25 +2,25 @@
 
 #include "shapes/jolt_shape_type.hpp"
 
-class JoltOverrideUserDataShapeSettings final : public JPH::DecoratedShapeSettings {
+class JoltCustomUserDataShapeSettings final : public JPH::DecoratedShapeSettings {
 public:
 	using JPH::DecoratedShapeSettings::DecoratedShapeSettings;
 
 	ShapeResult Create() const override;
 };
 
-class JoltOverrideUserDataShape final : public JPH::DecoratedShape {
+class JoltCustomUserDataShape final : public JPH::DecoratedShape {
 public:
 	static void register_type();
 
-	JoltOverrideUserDataShape()
-		: DecoratedShape(JoltShapeSubType::OVERRIDE_USER_DATA) { }
+	JoltCustomUserDataShape()
+		: DecoratedShape(JoltCustomShapeSubType::OVERRIDE_USER_DATA) { }
 
-	JoltOverrideUserDataShape(
-		const JoltOverrideUserDataShapeSettings& p_settings,
+	JoltCustomUserDataShape(
+		const JoltCustomUserDataShapeSettings& p_settings,
 		ShapeResult& p_result
 	)
-		: DecoratedShape(JoltShapeSubType::OVERRIDE_USER_DATA, p_settings, p_result) {
+		: DecoratedShape(JoltCustomShapeSubType::OVERRIDE_USER_DATA, p_settings, p_result) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
 		}

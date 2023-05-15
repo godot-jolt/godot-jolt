@@ -56,6 +56,6 @@ bool JoltQueryFilter3D::ShouldCollide([[maybe_unused]] const JPH::BodyID& p_body
 
 bool JoltQueryFilter3D::ShouldCollideLocked(const JPH::Body& p_body) const {
 	return !space_state.is_body_excluded_from_query(
-		reinterpret_cast<JoltCollisionObject3D*>(p_body.GetUserData())->get_rid()
+		reinterpret_cast<JoltObjectImpl3D*>(p_body.GetUserData())->get_rid()
 	);
 }

@@ -12,15 +12,15 @@ constexpr double DEFAULT_RELAXATION = 1.0;
 
 } // namespace
 
-JoltHingeJoint3D::JoltHingeJoint3D(
+JoltHingeJointImpl3D::JoltHingeJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
-	JoltBody3D* p_body_b,
+	JoltBodyImpl3D* p_body_a,
+	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a, p_body_b) {
+	: JoltJointImpl3D(p_space, p_body_a, p_body_b) {
 	const JPH::BodyID body_ids[] = {body_a->get_jolt_id(), body_b->get_jolt_id()};
 	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, count_of(body_ids), p_lock);
 
@@ -30,8 +30,8 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 	const JoltWritableBody3D jolt_body_b = bodies[1];
 	ERR_FAIL_COND(jolt_body_b.is_invalid());
 
-	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
-	const JoltCollisionObject3D& object_b = *jolt_body_b.as_object();
+	const JoltObjectImpl3D& object_a = *jolt_body_a.as_object();
+	const JoltObjectImpl3D& object_b = *jolt_body_b.as_object();
 
 	const JPH::Vec3 point_scaled_a = to_jolt(p_local_ref_a.origin * object_a.get_scale());
 	const JPH::Vec3 point_scaled_b = to_jolt(p_local_ref_b.origin * object_b.get_scale());
@@ -53,18 +53,18 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 	space->add_joint(this);
 }
 
-JoltHingeJoint3D::JoltHingeJoint3D(
+JoltHingeJointImpl3D::JoltHingeJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
+	JoltBodyImpl3D* p_body_a,
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a) {
+	: JoltJointImpl3D(p_space, p_body_a) {
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+	const JoltObjectImpl3D& object_a = *jolt_body_a.as_object();
 
 	const JPH::Vec3 point_scaled_a = to_jolt(p_local_ref_a.origin * object_a.get_scale());
 	const JPH::Vec3 point_scaled_b = to_jolt(p_local_ref_b.origin);
@@ -85,7 +85,7 @@ JoltHingeJoint3D::JoltHingeJoint3D(
 	space->add_joint(this);
 }
 
-double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) const {
+double JoltHingeJointImpl3D::get_param(PhysicsServer3D::HingeJointParam p_param) const {
 	const auto* jolt_constraint = static_cast<const JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL_D(jolt_constraint);
 
@@ -120,7 +120,7 @@ double JoltHingeJoint3D::get_param(PhysicsServer3D::HingeJointParam p_param) con
 	}
 }
 
-void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, double p_value) {
+void JoltHingeJointImpl3D::set_param(PhysicsServer3D::HingeJointParam p_param, double p_value) {
 	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
@@ -187,7 +187,7 @@ void JoltHingeJoint3D::set_param(PhysicsServer3D::HingeJointParam p_param, doubl
 	}
 }
 
-bool JoltHingeJoint3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) const {
+bool JoltHingeJointImpl3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) const {
 	const auto* jolt_constraint = static_cast<const JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL_D(jolt_constraint);
 
@@ -204,7 +204,7 @@ bool JoltHingeJoint3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) const {
 	}
 }
 
-void JoltHingeJoint3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled) {
+void JoltHingeJointImpl3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled) {
 	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 
@@ -224,7 +224,7 @@ void JoltHingeJoint3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_e
 	}
 }
 
-void JoltHingeJoint3D::limits_changed() {
+void JoltHingeJointImpl3D::limits_changed() {
 	auto* jolt_constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 

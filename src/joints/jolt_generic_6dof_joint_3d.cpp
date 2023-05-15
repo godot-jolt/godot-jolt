@@ -25,33 +25,33 @@ constexpr double DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT = 0.0;
 
 } // namespace
 
-JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D(
+JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
-	JoltBody3D* p_body_b,
+	JoltBodyImpl3D* p_body_a,
+	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
 	[[maybe_unused]] const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a, p_body_b)
+	: JoltJointImpl3D(p_space, p_body_a, p_body_b)
 	, world_ref(body_a->get_transform_scaled(p_lock) * p_local_ref_a) {
 	world_ref.orthonormalize();
 	rebuild(p_lock);
 }
 
-JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D(
+JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
+	JoltBodyImpl3D* p_body_a,
 	[[maybe_unused]] const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a)
+	: JoltJointImpl3D(p_space, p_body_a)
 	, world_ref(p_local_ref_b) {
 	rebuild(p_lock);
 }
 
-double JoltGeneric6DOFJoint3D::get_param(
+double JoltGeneric6DOFJointImpl3D::get_param(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisParam p_param
 ) const {
@@ -131,7 +131,7 @@ double JoltGeneric6DOFJoint3D::get_param(
 	}
 }
 
-void JoltGeneric6DOFJoint3D::set_param(
+void JoltGeneric6DOFJointImpl3D::set_param(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisParam p_param,
 	double p_value,
@@ -306,7 +306,7 @@ void JoltGeneric6DOFJoint3D::set_param(
 	}
 }
 
-bool JoltGeneric6DOFJoint3D::get_flag(
+bool JoltGeneric6DOFJointImpl3D::get_flag(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisFlag p_flag
 ) const {
@@ -338,7 +338,7 @@ bool JoltGeneric6DOFJoint3D::get_flag(
 	}
 }
 
-void JoltGeneric6DOFJoint3D::set_flag(
+void JoltGeneric6DOFJointImpl3D::set_flag(
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisFlag p_flag,
 	bool p_enabled,
@@ -397,7 +397,7 @@ void JoltGeneric6DOFJoint3D::set_flag(
 	}
 }
 
-void JoltGeneric6DOFJoint3D::rebuild(bool p_lock) {
+void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 	// HACK(mihe): This joint has to be rebuilt whenever the limits change for three reasons:
 	//
 	// 1. Jolt seems to cache the fixed/free/limited state of each axis, and doesn't seem to allow

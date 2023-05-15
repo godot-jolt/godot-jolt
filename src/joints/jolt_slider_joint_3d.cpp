@@ -33,15 +33,15 @@ constexpr double DEFAULT_ANGULAR_ORTHO_DAMPING = 1.0;
 
 } // namespace
 
-JoltSliderJoint3D::JoltSliderJoint3D(
+JoltSliderJointImpl3D::JoltSliderJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
-	JoltBody3D* p_body_b,
+	JoltBodyImpl3D* p_body_a,
+	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a, p_body_b) {
+	: JoltJointImpl3D(p_space, p_body_a, p_body_b) {
 	const JPH::BodyID body_ids[] = {body_a->get_jolt_id(), body_b->get_jolt_id()};
 	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, count_of(body_ids), p_lock);
 
@@ -51,8 +51,8 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	const JoltWritableBody3D jolt_body_b = bodies[1];
 	ERR_FAIL_COND(jolt_body_b.is_invalid());
 
-	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
-	const JoltCollisionObject3D& object_b = *jolt_body_b.as_object();
+	const JoltObjectImpl3D& object_a = *jolt_body_a.as_object();
+	const JoltObjectImpl3D& object_b = *jolt_body_b.as_object();
 
 	const JPH::Vec3 point_scaled_a = to_jolt(p_local_ref_a.origin * object_a.get_scale());
 	const JPH::Vec3 point_scaled_b = to_jolt(p_local_ref_b.origin * object_b.get_scale());
@@ -75,18 +75,18 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	space->add_joint(this);
 }
 
-JoltSliderJoint3D::JoltSliderJoint3D(
+JoltSliderJointImpl3D::JoltSliderJointImpl3D(
 	JoltSpace3D* p_space,
-	JoltBody3D* p_body_a,
+	JoltBodyImpl3D* p_body_a,
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJoint3D(p_space, p_body_a) {
+	: JoltJointImpl3D(p_space, p_body_a) {
 	const JoltWritableBody3D jolt_body_a = space->write_body(*body_a, p_lock);
 	ERR_FAIL_COND(jolt_body_a.is_invalid());
 
-	const JoltCollisionObject3D& object_a = *jolt_body_a.as_object();
+	const JoltObjectImpl3D& object_a = *jolt_body_a.as_object();
 
 	const JPH::Vec3 point_scaled_a = to_jolt(p_local_ref_a.origin * object_a.get_scale());
 	const JPH::Vec3 point_scaled_b = to_jolt(p_local_ref_b.origin);
@@ -108,7 +108,7 @@ JoltSliderJoint3D::JoltSliderJoint3D(
 	space->add_joint(this);
 }
 
-double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) const {
+double JoltSliderJointImpl3D::get_param(PhysicsServer3D::SliderJointParam p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_UPPER: {
 			return limit_upper;
@@ -182,7 +182,7 @@ double JoltSliderJoint3D::get_param(PhysicsServer3D::SliderJointParam p_param) c
 	}
 }
 
-void JoltSliderJoint3D::set_param(PhysicsServer3D::SliderJointParam p_param, double p_value) {
+void JoltSliderJointImpl3D::set_param(PhysicsServer3D::SliderJointParam p_param, double p_value) {
 	switch (p_param) {
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_UPPER: {
 			limit_upper = p_value;
@@ -360,7 +360,7 @@ void JoltSliderJoint3D::set_param(PhysicsServer3D::SliderJointParam p_param, dou
 	}
 }
 
-void JoltSliderJoint3D::limits_changed() {
+void JoltSliderJointImpl3D::limits_changed() {
 	auto* jolt_constraint = static_cast<JPH::SliderConstraint*>(jolt_ref.GetPtr());
 	ERR_FAIL_NULL(jolt_constraint);
 

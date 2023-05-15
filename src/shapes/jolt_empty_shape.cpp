@@ -3,7 +3,7 @@
 namespace {
 
 JPH::Shape* construct_empty() {
-	return new JoltEmptyShape();
+	return new JoltCustomEmptyShape();
 }
 
 void collide_noop(
@@ -34,35 +34,43 @@ void cast_noop(
 
 } // namespace
 
-JPH::ShapeSettings::ShapeResult JoltEmptyShapeSettings::Create() const {
+JPH::ShapeSettings::ShapeResult JoltCustomEmptyShapeSettings::Create() const {
 	if (mCachedResult.IsEmpty()) {
-		new JoltEmptyShape(*this, mCachedResult);
+		new JoltCustomEmptyShape(*this, mCachedResult);
 	}
 
 	return mCachedResult;
 }
 
-void JoltEmptyShape::register_type() {
-	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JoltShapeSubType::EMPTY);
+void JoltCustomEmptyShape::register_type() {
+	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(JoltCustomShapeSubType::EMPTY);
 
 	shape_functions.mConstruct = construct_empty;
 	shape_functions.mColor = JPH::Color::sBlack;
 
 	for (const JPH::EShapeSubType sub_type : JPH::sAllSubShapeTypes) {
 		JPH::CollisionDispatch::sRegisterCollideShape(
-			JoltShapeSubType::EMPTY,
+			JoltCustomShapeSubType::EMPTY,
 			sub_type,
 			collide_noop
 		);
 
 		JPH::CollisionDispatch::sRegisterCollideShape(
 			sub_type,
-			JoltShapeSubType::EMPTY,
+			JoltCustomShapeSubType::EMPTY,
 			collide_noop
 		);
 
-		JPH::CollisionDispatch::sRegisterCastShape(JoltShapeSubType::EMPTY, sub_type, cast_noop);
+		JPH::CollisionDispatch::sRegisterCastShape(
+			JoltCustomShapeSubType::EMPTY,
+			sub_type,
+			cast_noop
+		);
 
-		JPH::CollisionDispatch::sRegisterCastShape(sub_type, JoltShapeSubType::EMPTY, cast_noop);
+		JPH::CollisionDispatch::sRegisterCastShape(
+			sub_type,
+			JoltCustomShapeSubType::EMPTY,
+			cast_noop
+		);
 	}
 }

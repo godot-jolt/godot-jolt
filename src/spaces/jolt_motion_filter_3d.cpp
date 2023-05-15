@@ -9,7 +9,7 @@
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
-JoltMotionFilter3D::JoltMotionFilter3D(const JoltBody3D& p_body, bool p_collide_separation_ray)
+JoltMotionFilter3D::JoltMotionFilter3D(const JoltBodyImpl3D& p_body, bool p_collide_separation_ray)
 	: physics_server(*static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton()))
 	, body(p_body)
 	, collide_separation_ray(p_collide_separation_ray) { }
@@ -52,7 +52,7 @@ bool JoltMotionFilter3D::ShouldCollide(const JPH::BodyID& p_body_id) const {
 }
 
 bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_body) const {
-	const auto* object = reinterpret_cast<const JoltCollisionObject3D*>(p_body.GetUserData());
+	const auto* object = reinterpret_cast<const JoltObjectImpl3D*>(p_body.GetUserData());
 
 	return !physics_server.body_test_motion_is_excluding_object(object->get_instance_id()) &&
 		!physics_server.body_test_motion_is_excluding_body(object->get_rid());
@@ -75,8 +75,8 @@ bool JoltMotionFilter3D::ShouldCollide(
 		return true;
 	}
 
-	const auto* motion_shape1 = static_cast<const JoltMotionShape*>(p_shape1);
+	const auto* motion_shape1 = static_cast<const JoltCustomMotionShape*>(p_shape1);
 	const JPH::ConvexShape& actual_shape1 = motion_shape1->get_inner_shape();
 
-	return actual_shape1.GetSubType() != JoltShapeSubType::RAY;
+	return actual_shape1.GetSubType() != JoltCustomShapeSubType::RAY;
 }

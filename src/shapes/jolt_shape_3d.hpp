@@ -1,20 +1,20 @@
 #pragma once
 
-class JoltCollisionObject3D;
+class JoltObjectImpl3D;
 
-class JoltShape3D {
+class JoltShapeImpl3D {
 public:
 	using ShapeType = PhysicsServer3D::ShapeType;
 
-	virtual ~JoltShape3D() = 0;
+	virtual ~JoltShapeImpl3D() = 0;
 
 	RID get_rid() const { return rid; }
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
 
-	void add_owner(JoltCollisionObject3D* p_owner);
+	void add_owner(JoltObjectImpl3D* p_owner);
 
-	void remove_owner(JoltCollisionObject3D* p_owner);
+	void remove_owner(JoltObjectImpl3D* p_owner);
 
 	void remove_self(bool p_lock = true);
 
@@ -70,14 +70,14 @@ protected:
 
 	virtual void invalidated(bool p_lock = true);
 
-	HashMap<JoltCollisionObject3D*, int32_t> ref_counts_by_owner;
+	HashMap<JoltObjectImpl3D*, int32_t> ref_counts_by_owner;
 
 	RID rid;
 
 	JPH::ShapeRefC jolt_ref;
 };
 
-class JoltWorldBoundaryShape3D final : public JoltShape3D {
+class JoltWorldBoundaryShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_WORLD_BOUNDARY; }
 
@@ -97,7 +97,7 @@ private:
 	Plane plane;
 };
 
-class JoltSeparationRayShape3D final : public JoltShape3D {
+class JoltSeparationRayShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_SEPARATION_RAY; }
 
@@ -121,7 +121,7 @@ private:
 	bool slide_on_slope = false;
 };
 
-class JoltSphereShape3D final : public JoltShape3D {
+class JoltSphereShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_SPHERE; }
 
@@ -143,7 +143,7 @@ private:
 	float radius = 0.0f;
 };
 
-class JoltBoxShape3D final : public JoltShape3D {
+class JoltBoxShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_BOX; }
 
@@ -167,7 +167,7 @@ private:
 	float margin = 0.04f;
 };
 
-class JoltCapsuleShape3D final : public JoltShape3D {
+class JoltCapsuleShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CAPSULE; }
 
@@ -191,7 +191,7 @@ private:
 	float radius = 0.0f;
 };
 
-class JoltCylinderShape3D final : public JoltShape3D {
+class JoltCylinderShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CYLINDER; }
 
@@ -217,7 +217,7 @@ private:
 	float margin = 0.04f;
 };
 
-class JoltConvexPolygonShape3D final : public JoltShape3D {
+class JoltConvexPolygonShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CONVEX_POLYGON; }
 
@@ -241,7 +241,7 @@ private:
 	float margin = 0.04f;
 };
 
-class JoltConcavePolygonShape3D final : public JoltShape3D {
+class JoltConcavePolygonShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_CONCAVE_POLYGON; }
 
@@ -265,7 +265,7 @@ private:
 	bool backface_collision = false;
 };
 
-class JoltHeightMapShape3D final : public JoltShape3D {
+class JoltHeightMapShapeImpl3D final : public JoltShapeImpl3D {
 public:
 	ShapeType get_type() const override { return ShapeType::SHAPE_HEIGHTMAP; }
 

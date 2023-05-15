@@ -122,7 +122,7 @@ void JoltSpace3D::call_queries() {
 	for (int32_t i = 0; i < body_count; ++i) {
 		if (const JPH::Body* body = body_accessor.try_get(i)) {
 			if (!body->IsSensor() && !body->IsStatic()) {
-				reinterpret_cast<JoltBody3D*>(body->GetUserData())->call_queries();
+				reinterpret_cast<JoltBodyImpl3D*>(body->GetUserData())->call_queries();
 			}
 		}
 	}
@@ -130,7 +130,7 @@ void JoltSpace3D::call_queries() {
 	for (int32_t i = 0; i < body_count; ++i) {
 		if (const JPH::Body* body = body_accessor.try_get(i)) {
 			if (body->IsSensor()) {
-				reinterpret_cast<JoltArea3D*>(body->GetUserData())->call_queries();
+				reinterpret_cast<JoltAreaImpl3D*>(body->GetUserData())->call_queries();
 			}
 		}
 	}
@@ -300,8 +300,7 @@ JoltReadableBody3D JoltSpace3D::read_body(const JPH::BodyID& p_body_id, bool p_l
 	return {*this, p_body_id, p_lock};
 }
 
-JoltReadableBody3D JoltSpace3D::read_body(const JoltCollisionObject3D& p_object, bool p_lock)
-	const {
+JoltReadableBody3D JoltSpace3D::read_body(const JoltObjectImpl3D& p_object, bool p_lock) const {
 	return read_body(p_object.get_jolt_id(), p_lock);
 }
 
@@ -309,8 +308,7 @@ JoltWritableBody3D JoltSpace3D::write_body(const JPH::BodyID& p_body_id, bool p_
 	return {*this, p_body_id, p_lock};
 }
 
-JoltWritableBody3D JoltSpace3D::write_body(const JoltCollisionObject3D& p_object, bool p_lock)
-	const {
+JoltWritableBody3D JoltSpace3D::write_body(const JoltObjectImpl3D& p_object, bool p_lock) const {
 	return write_body(p_object.get_jolt_id(), p_lock);
 }
 
@@ -342,7 +340,7 @@ void JoltSpace3D::add_joint(JPH::Constraint* p_jolt_ref) {
 	physics_system->AddConstraint(p_jolt_ref);
 }
 
-void JoltSpace3D::add_joint(JoltJoint3D* p_joint) {
+void JoltSpace3D::add_joint(JoltJointImpl3D* p_joint) {
 	add_joint(p_joint->get_jolt_ref());
 }
 
@@ -350,7 +348,7 @@ void JoltSpace3D::remove_joint(JPH::Constraint* p_jolt_ref) {
 	physics_system->RemoveConstraint(p_jolt_ref);
 }
 
-void JoltSpace3D::remove_joint(JoltJoint3D* p_joint) {
+void JoltSpace3D::remove_joint(JoltJointImpl3D* p_joint) {
 	remove_joint(p_joint->get_jolt_ref());
 }
 
@@ -383,7 +381,7 @@ void JoltSpace3D::pre_step(float p_step) {
 
 	for (int32_t i = 0; i < body_count; ++i) {
 		if (const JPH::Body* jolt_body = body_accessor.try_get(i)) {
-			auto* object = reinterpret_cast<JoltCollisionObject3D*>(jolt_body->GetUserData());
+			auto* object = reinterpret_cast<JoltObjectImpl3D*>(jolt_body->GetUserData());
 
 			object->pre_step(p_step);
 
@@ -405,7 +403,7 @@ void JoltSpace3D::post_step(float p_step) {
 
 	for (int32_t i = 0; i < body_count; ++i) {
 		if (const JPH::Body* jolt_body = body_accessor.try_get(i)) {
-			auto* object = reinterpret_cast<JoltCollisionObject3D*>(jolt_body->GetUserData());
+			auto* object = reinterpret_cast<JoltObjectImpl3D*>(jolt_body->GetUserData());
 
 			object->post_step(p_step);
 		}

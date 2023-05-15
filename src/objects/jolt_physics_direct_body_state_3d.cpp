@@ -4,7 +4,7 @@
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
-JoltPhysicsDirectBodyState3D::JoltPhysicsDirectBodyState3D(JoltBody3D* p_body)
+JoltPhysicsDirectBodyState3D::JoltPhysicsDirectBodyState3D(JoltBodyImpl3D* p_body)
 	: body(p_body) { }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_total_gravity() const {

@@ -4,19 +4,19 @@
 #include "shapes/jolt_override_user_data_shape.hpp"
 #include "shapes/jolt_ray_shape.hpp"
 
-JoltShape3D::~JoltShape3D() = default;
+JoltShapeImpl3D::~JoltShapeImpl3D() = default;
 
-void JoltShape3D::add_owner(JoltCollisionObject3D* p_owner) {
+void JoltShapeImpl3D::add_owner(JoltObjectImpl3D* p_owner) {
 	ref_counts_by_owner[p_owner]++;
 }
 
-void JoltShape3D::remove_owner(JoltCollisionObject3D* p_owner) {
+void JoltShapeImpl3D::remove_owner(JoltObjectImpl3D* p_owner) {
 	if (--ref_counts_by_owner[p_owner] <= 0) {
 		ref_counts_by_owner.erase(p_owner);
 	}
 }
 
-void JoltShape3D::remove_self(bool p_lock) {
+void JoltShapeImpl3D::remove_self(bool p_lock) {
 	// `remove_owner` will be called when we `remove_shape`, so we need to copy the map since the
 	// iterator would be invalidated from underneath us
 	const auto ref_counts_by_owner_copy = ref_counts_by_owner;
@@ -26,7 +26,7 @@ void JoltShape3D::remove_self(bool p_lock) {
 	}
 }
 
-JPH::ShapeRefC JoltShape3D::try_build() {
+JPH::ShapeRefC JoltShapeImpl3D::try_build() {
 	if (jolt_ref == nullptr) {
 		jolt_ref = build();
 	}
@@ -34,7 +34,7 @@ JPH::ShapeRefC JoltShape3D::try_build() {
 	return jolt_ref;
 }
 
-JPH::ShapeRefC JoltShape3D::with_scale(const JPH::Shape* p_shape, const Vector3& p_scale) {
+JPH::ShapeRefC JoltShapeImpl3D::with_scale(const JPH::Shape* p_shape, const Vector3& p_scale) {
 	ERR_FAIL_NULL_D(p_shape);
 
 	const JPH::ScaledShapeSettings shape_settings(p_shape, to_jolt(p_scale));
@@ -53,7 +53,7 @@ JPH::ShapeRefC JoltShape3D::with_scale(const JPH::Shape* p_shape, const Vector3&
 	return shape_result.Get();
 }
 
-JPH::ShapeRefC JoltShape3D::with_basis_origin(
+JPH::ShapeRefC JoltShapeImpl3D::with_basis_origin(
 	const JPH::Shape* p_shape,
 	const Basis& p_basis,
 	const Vector3& p_origin
@@ -82,7 +82,7 @@ JPH::ShapeRefC JoltShape3D::with_basis_origin(
 	return shape_result.Get();
 }
 
-JPH::ShapeRefC JoltShape3D::with_transform(
+JPH::ShapeRefC JoltShapeImpl3D::with_transform(
 	const JPH::Shape* p_shape,
 	const Transform3D& p_transform,
 	const Vector3& p_scale
@@ -102,7 +102,7 @@ JPH::ShapeRefC JoltShape3D::with_transform(
 	return shape;
 }
 
-JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
+JPH::ShapeRefC JoltShapeImpl3D::with_center_of_mass_offset(
 	const JPH::Shape* p_shape,
 	const Vector3& p_offset
 ) {
@@ -124,7 +124,7 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass_offset(
 	return shape_result.Get();
 }
 
-JPH::ShapeRefC JoltShape3D::with_center_of_mass(
+JPH::ShapeRefC JoltShapeImpl3D::with_center_of_mass(
 	const JPH::Shape* p_shape,
 	const Vector3& p_center_of_mass
 ) {
@@ -140,8 +140,8 @@ JPH::ShapeRefC JoltShape3D::with_center_of_mass(
 	return with_center_of_mass_offset(p_shape, center_of_mass_offset);
 }
 
-JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p_user_data) {
-	JoltOverrideUserDataShapeSettings shape_settings(p_shape);
+JPH::ShapeRefC JoltShapeImpl3D::with_user_data(const JPH::Shape* p_shape, uint64_t p_user_data) {
+	JoltCustomUserDataShapeSettings shape_settings(p_shape);
 	shape_settings.mUserData = (JPH::uint64)p_user_data;
 
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
@@ -158,17 +158,17 @@ JPH::ShapeRefC JoltShape3D::with_user_data(const JPH::Shape* p_shape, uint64_t p
 	return shape_result.Get();
 }
 
-void JoltShape3D::invalidated(bool p_lock) {
+void JoltShapeImpl3D::invalidated(bool p_lock) {
 	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
 		owner->shapes_changed(p_lock);
 	}
 }
 
-Variant JoltWorldBoundaryShape3D::get_data() const {
+Variant JoltWorldBoundaryShapeImpl3D::get_data() const {
 	return plane;
 }
 
-void JoltWorldBoundaryShape3D::set_data(const Variant& p_data) {
+void JoltWorldBoundaryShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -180,21 +180,21 @@ void JoltWorldBoundaryShape3D::set_data(const Variant& p_data) {
 	plane = p_data;
 }
 
-JPH::ShapeRefC JoltWorldBoundaryShape3D::build() const {
+JPH::ShapeRefC JoltWorldBoundaryShapeImpl3D::build() const {
 	ERR_FAIL_D_MSG(
 		"WorldBoundaryShape3D is not supported by Godot Jolt. "
 		"Consider using one or more reasonably sized BoxShape3D instead."
 	);
 }
 
-Variant JoltSeparationRayShape3D::get_data() const {
+Variant JoltSeparationRayShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["length"] = length;
 	data["slide_on_slope"] = slide_on_slope;
 	return data;
 }
 
-void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
+void JoltSeparationRayShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -215,11 +215,11 @@ void JoltSeparationRayShape3D::set_data(const Variant& p_data) {
 	slide_on_slope = maybe_slide_on_slope;
 }
 
-String JoltSeparationRayShape3D::to_string() const {
+String JoltSeparationRayShapeImpl3D::to_string() const {
 	return vformat("{length=%f slide_on_slope=%s}", length, slide_on_slope);
 }
 
-JPH::ShapeRefC JoltSeparationRayShape3D::build() const {
+JPH::ShapeRefC JoltSeparationRayShapeImpl3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		length <= 0.0f,
 		vformat(
@@ -229,7 +229,7 @@ JPH::ShapeRefC JoltSeparationRayShape3D::build() const {
 		)
 	);
 
-	const JoltRayShapeSettings shape_settings(length, slide_on_slope);
+	const JoltCustomRayShapeSettings shape_settings(length, slide_on_slope);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
@@ -245,11 +245,11 @@ JPH::ShapeRefC JoltSeparationRayShape3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltSphereShape3D::get_data() const {
+Variant JoltSphereShapeImpl3D::get_data() const {
 	return radius;
 }
 
-void JoltSphereShape3D::set_data(const Variant& p_data) {
+void JoltSphereShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -261,11 +261,11 @@ void JoltSphereShape3D::set_data(const Variant& p_data) {
 	radius = p_data;
 }
 
-String JoltSphereShape3D::to_string() const {
+String JoltSphereShapeImpl3D::to_string() const {
 	return vformat("{radius=%f}", radius);
 }
 
-JPH::ShapeRefC JoltSphereShape3D::build() const {
+JPH::ShapeRefC JoltSphereShapeImpl3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		radius <= 0.0f,
 		vformat(
@@ -291,11 +291,11 @@ JPH::ShapeRefC JoltSphereShape3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltBoxShape3D::get_data() const {
+Variant JoltBoxShapeImpl3D::get_data() const {
 	return half_extents;
 }
 
-void JoltBoxShape3D::set_data(const Variant& p_data) {
+void JoltBoxShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -307,7 +307,7 @@ void JoltBoxShape3D::set_data(const Variant& p_data) {
 	half_extents = p_data;
 }
 
-void JoltBoxShape3D::set_margin(float p_margin) {
+void JoltBoxShapeImpl3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -317,11 +317,11 @@ void JoltBoxShape3D::set_margin(float p_margin) {
 	margin = p_margin;
 }
 
-String JoltBoxShape3D::to_string() const {
+String JoltBoxShapeImpl3D::to_string() const {
 	return vformat("{half_extents=%v margin=%f}", half_extents, margin);
 }
 
-JPH::ShapeRefC JoltBoxShape3D::build() const {
+JPH::ShapeRefC JoltBoxShapeImpl3D::build() const {
 	const float shortest_axis = half_extents[half_extents.min_axis_index()];
 
 	ERR_FAIL_COND_D_MSG(
@@ -349,14 +349,14 @@ JPH::ShapeRefC JoltBoxShape3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltCapsuleShape3D::get_data() const {
+Variant JoltCapsuleShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["height"] = height;
 	data["radius"] = radius;
 	return data;
 }
 
-void JoltCapsuleShape3D::set_data(const Variant& p_data) {
+void JoltCapsuleShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -377,11 +377,11 @@ void JoltCapsuleShape3D::set_data(const Variant& p_data) {
 	radius = maybe_radius;
 }
 
-String JoltCapsuleShape3D::to_string() const {
+String JoltCapsuleShapeImpl3D::to_string() const {
 	return vformat("{height=%f radius=%f}", height, radius);
 }
 
-JPH::ShapeRefC JoltCapsuleShape3D::build() const {
+JPH::ShapeRefC JoltCapsuleShapeImpl3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		radius <= 0.0f,
 		vformat(
@@ -428,14 +428,14 @@ JPH::ShapeRefC JoltCapsuleShape3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltCylinderShape3D::get_data() const {
+Variant JoltCylinderShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["height"] = height;
 	data["radius"] = radius;
 	return data;
 }
 
-void JoltCylinderShape3D::set_data(const Variant& p_data) {
+void JoltCylinderShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -456,7 +456,7 @@ void JoltCylinderShape3D::set_data(const Variant& p_data) {
 	radius = maybe_radius;
 }
 
-void JoltCylinderShape3D::set_margin(float p_margin) {
+void JoltCylinderShapeImpl3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -466,11 +466,11 @@ void JoltCylinderShape3D::set_margin(float p_margin) {
 	margin = p_margin;
 }
 
-String JoltCylinderShape3D::to_string() const {
+String JoltCylinderShapeImpl3D::to_string() const {
 	return vformat("{height=%f radius=%f margin=%f}", height, radius, margin);
 }
 
-JPH::ShapeRefC JoltCylinderShape3D::build() const {
+JPH::ShapeRefC JoltCylinderShapeImpl3D::build() const {
 	ERR_FAIL_COND_D_MSG(
 		height < margin * 2.0f,
 		vformat(
@@ -507,11 +507,11 @@ JPH::ShapeRefC JoltCylinderShape3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltConvexPolygonShape3D::get_data() const {
+Variant JoltConvexPolygonShapeImpl3D::get_data() const {
 	return vertices;
 }
 
-void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
+void JoltConvexPolygonShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -523,7 +523,7 @@ void JoltConvexPolygonShape3D::set_data(const Variant& p_data) {
 	vertices = p_data;
 }
 
-void JoltConvexPolygonShape3D::set_margin(float p_margin) {
+void JoltConvexPolygonShapeImpl3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -533,11 +533,11 @@ void JoltConvexPolygonShape3D::set_margin(float p_margin) {
 	margin = p_margin;
 }
 
-String JoltConvexPolygonShape3D::to_string() const {
+String JoltConvexPolygonShapeImpl3D::to_string() const {
 	return vformat("{vertex_count=%d margin=%f}", vertices.size(), margin);
 }
 
-JPH::ShapeRefC JoltConvexPolygonShape3D::build() const {
+JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::build() const {
 	const auto vertex_count = (int32_t)vertices.size();
 
 	ERR_FAIL_COND_D_MSG(
@@ -575,14 +575,14 @@ JPH::ShapeRefC JoltConvexPolygonShape3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltConcavePolygonShape3D::get_data() const {
+Variant JoltConcavePolygonShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["faces"] = faces;
 	data["backface_collision"] = backface_collision;
 	return data;
 }
 
-void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
+void JoltConcavePolygonShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -603,11 +603,11 @@ void JoltConcavePolygonShape3D::set_data(const Variant& p_data) {
 	backface_collision = maybe_backface_collision;
 }
 
-String JoltConcavePolygonShape3D::to_string() const {
+String JoltConcavePolygonShapeImpl3D::to_string() const {
 	return vformat("{vertex_count=%d}", faces.size());
 }
 
-JPH::ShapeRefC JoltConcavePolygonShape3D::build() const {
+JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
 	const auto vertex_count = (int32_t)faces.size();
 	const int32_t face_count = vertex_count / 3;
 	const int32_t excess_vertex_count = vertex_count % 3;
@@ -677,7 +677,7 @@ JPH::ShapeRefC JoltConcavePolygonShape3D::build() const {
 	return shape_result.Get();
 }
 
-Variant JoltHeightMapShape3D::get_data() const {
+Variant JoltHeightMapShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["width"] = width;
 	data["depth"] = depth;
@@ -685,7 +685,7 @@ Variant JoltHeightMapShape3D::get_data() const {
 	return data;
 }
 
-void JoltHeightMapShape3D::set_data(const Variant& p_data) {
+void JoltHeightMapShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
 		invalidated();
 	};
@@ -710,11 +710,11 @@ void JoltHeightMapShape3D::set_data(const Variant& p_data) {
 	depth = maybe_depth;
 }
 
-String JoltHeightMapShape3D::to_string() const {
+String JoltHeightMapShapeImpl3D::to_string() const {
 	return vformat("{height_count=%d width=%d depth=%d}", heights.size(), width, depth);
 }
 
-JPH::ShapeRefC JoltHeightMapShape3D::build() const {
+JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 	const auto height_count = (int32_t)heights.size();
 
 	// NOTE(mihe): This somewhat arbitrary limit depends on what the block size is set to, which by

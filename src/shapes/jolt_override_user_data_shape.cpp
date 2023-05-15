@@ -3,7 +3,7 @@
 namespace {
 
 JPH::Shape* construct_override_user_data() {
-	return new JoltOverrideUserDataShape();
+	return new JoltCustomUserDataShape();
 }
 
 void collide_override_user_data_vs_shape(
@@ -19,9 +19,9 @@ void collide_override_user_data_vs_shape(
 	JPH::CollideShapeCollector& p_collector,
 	const JPH::ShapeFilter& p_shape_filter
 ) {
-	ERR_FAIL_COND(p_shape1->GetSubType() != JoltShapeSubType::OVERRIDE_USER_DATA);
+	ERR_FAIL_COND(p_shape1->GetSubType() != JoltCustomShapeSubType::OVERRIDE_USER_DATA);
 
-	const auto* shape1 = static_cast<const JoltOverrideUserDataShape*>(p_shape1);
+	const auto* shape1 = static_cast<const JoltCustomUserDataShape*>(p_shape1);
 
 	JPH::CollisionDispatch::sCollideShapeVsShape(
 		shape1->GetInnerShape(),
@@ -51,9 +51,9 @@ void collide_shape_vs_override_user_data(
 	JPH::CollideShapeCollector& p_collector,
 	const JPH::ShapeFilter& p_shape_filter
 ) {
-	ERR_FAIL_COND(p_shape2->GetSubType() != JoltShapeSubType::OVERRIDE_USER_DATA);
+	ERR_FAIL_COND(p_shape2->GetSubType() != JoltCustomShapeSubType::OVERRIDE_USER_DATA);
 
-	const auto* shape2 = static_cast<const JoltOverrideUserDataShape*>(p_shape2);
+	const auto* shape2 = static_cast<const JoltCustomUserDataShape*>(p_shape2);
 
 	JPH::CollisionDispatch::sCollideShapeVsShape(
 		p_shape1,
@@ -81,9 +81,9 @@ void cast_override_user_data_vs_shape(
 	const JPH::SubShapeIDCreator& p_sub_shape_id_creator2,
 	JPH::CastShapeCollector& p_collector
 ) {
-	ERR_FAIL_COND(p_shape_cast.mShape->GetSubType() != JoltShapeSubType::OVERRIDE_USER_DATA);
+	ERR_FAIL_COND(p_shape_cast.mShape->GetSubType() != JoltCustomShapeSubType::OVERRIDE_USER_DATA);
 
-	const auto* shape = static_cast<const JoltOverrideUserDataShape*>(p_shape_cast.mShape);
+	const auto* shape = static_cast<const JoltCustomUserDataShape*>(p_shape_cast.mShape);
 
 	const JPH::ShapeCast shape_cast(
 		shape->GetInnerShape(),
@@ -116,9 +116,9 @@ void cast_shape_vs_override_user_data(
 	const JPH::SubShapeIDCreator& p_sub_shape_id_creator2,
 	JPH::CastShapeCollector& p_collector
 ) {
-	ERR_FAIL_COND(p_shape->GetSubType() != JoltShapeSubType::OVERRIDE_USER_DATA);
+	ERR_FAIL_COND(p_shape->GetSubType() != JoltCustomShapeSubType::OVERRIDE_USER_DATA);
 
-	const auto* shape = static_cast<const JoltOverrideUserDataShape*>(p_shape);
+	const auto* shape = static_cast<const JoltCustomUserDataShape*>(p_shape);
 
 	JPH::CollisionDispatch::sCastShapeVsShapeLocalSpace(
 		p_shape_cast,
@@ -135,17 +135,17 @@ void cast_shape_vs_override_user_data(
 
 } // namespace
 
-JPH::ShapeSettings::ShapeResult JoltOverrideUserDataShapeSettings::Create() const {
+JPH::ShapeSettings::ShapeResult JoltCustomUserDataShapeSettings::Create() const {
 	if (mCachedResult.IsEmpty()) {
-		new JoltOverrideUserDataShape(*this, mCachedResult);
+		new JoltCustomUserDataShape(*this, mCachedResult);
 	}
 
 	return mCachedResult;
 }
 
-void JoltOverrideUserDataShape::register_type() {
+void JoltCustomUserDataShape::register_type() {
 	JPH::ShapeFunctions& shape_functions = JPH::ShapeFunctions::sGet(
-		JoltShapeSubType::OVERRIDE_USER_DATA
+		JoltCustomShapeSubType::OVERRIDE_USER_DATA
 	);
 
 	shape_functions.mConstruct = construct_override_user_data;
@@ -153,26 +153,26 @@ void JoltOverrideUserDataShape::register_type() {
 
 	for (const JPH::EShapeSubType sub_type : JPH::sAllSubShapeTypes) {
 		JPH::CollisionDispatch::sRegisterCollideShape(
-			JoltShapeSubType::OVERRIDE_USER_DATA,
+			JoltCustomShapeSubType::OVERRIDE_USER_DATA,
 			sub_type,
 			collide_override_user_data_vs_shape
 		);
 
 		JPH::CollisionDispatch::sRegisterCollideShape(
 			sub_type,
-			JoltShapeSubType::OVERRIDE_USER_DATA,
+			JoltCustomShapeSubType::OVERRIDE_USER_DATA,
 			collide_shape_vs_override_user_data
 		);
 
 		JPH::CollisionDispatch::sRegisterCastShape(
-			JoltShapeSubType::OVERRIDE_USER_DATA,
+			JoltCustomShapeSubType::OVERRIDE_USER_DATA,
 			sub_type,
 			cast_override_user_data_vs_shape
 		);
 
 		JPH::CollisionDispatch::sRegisterCastShape(
 			sub_type,
-			JoltShapeSubType::OVERRIDE_USER_DATA,
+			JoltCustomShapeSubType::OVERRIDE_USER_DATA,
 			cast_shape_vs_override_user_data
 		);
 	}

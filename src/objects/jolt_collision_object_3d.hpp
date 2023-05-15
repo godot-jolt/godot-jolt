@@ -2,14 +2,14 @@
 
 #include "shapes/jolt_shape_instance_3d.hpp"
 
+class JoltShapeImpl3D;
 class JoltSpace3D;
-class JoltShape3D;
 
-class JoltCollisionObject3D {
+class JoltObjectImpl3D {
 public:
-	JoltCollisionObject3D();
+	JoltObjectImpl3D();
 
-	virtual ~JoltCollisionObject3D() = 0;
+	virtual ~JoltObjectImpl3D() = 0;
 
 	RID get_rid() const { return rid; }
 
@@ -70,19 +70,19 @@ public:
 	const JPH::Shape* get_previous_jolt_shape() const { return previous_jolt_shape; }
 
 	void add_shape(
-		JoltShape3D* p_shape,
+		JoltShapeImpl3D* p_shape,
 		Transform3D p_transform,
 		bool p_disabled,
 		bool p_lock = true
 	);
 
-	void remove_shape(const JoltShape3D* p_shape, bool p_lock = true);
+	void remove_shape(const JoltShapeImpl3D* p_shape, bool p_lock = true);
 
 	void remove_shape(int32_t p_index, bool p_lock = true);
 
-	JoltShape3D* get_shape(int32_t p_index) const;
+	JoltShapeImpl3D* get_shape(int32_t p_index) const;
 
-	void set_shape(int32_t p_index, JoltShape3D* p_shape, bool p_lock = true);
+	void set_shape(int32_t p_index, JoltShapeImpl3D* p_shape, bool p_lock = true);
 
 	void clear_shapes(bool p_lock = true);
 
@@ -92,9 +92,9 @@ public:
 
 	int32_t find_shape_index(const JPH::SubShapeID& p_sub_shape_id) const;
 
-	JoltShape3D* find_shape(uint32_t p_shape_instance_id) const;
+	JoltShapeImpl3D* find_shape(uint32_t p_shape_instance_id) const;
 
-	JoltShape3D* find_shape(const JPH::SubShapeID& p_sub_shape_id) const;
+	JoltShapeImpl3D* find_shape(const JPH::SubShapeID& p_sub_shape_id) const;
 
 	Transform3D get_shape_transform_unscaled(int32_t p_index) const;
 
@@ -119,7 +119,7 @@ public:
 	virtual bool generates_contacts() const = 0;
 
 protected:
-	friend class JoltShape3D;
+	friend class JoltShapeImpl3D;
 
 	virtual JPH::BroadPhaseLayer get_broad_phase_layer() const = 0;
 

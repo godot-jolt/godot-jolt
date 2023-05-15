@@ -2,11 +2,11 @@
 
 #include "spaces/jolt_body_accessor_3d.hpp"
 
-class JoltArea3D;
-class JoltCollisionObject3D;
+class JoltAreaImpl3D;
 class JoltContactListener3D;
-class JoltJoint3D;
+class JoltJointImpl3D;
 class JoltLayerMapper;
+class JoltObjectImpl3D;
 class JoltPhysicsDirectSpaceState3D;
 
 class JoltSpace3D final {
@@ -54,11 +54,11 @@ public:
 
 	JoltReadableBody3D read_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
 
-	JoltReadableBody3D read_body(const JoltCollisionObject3D& p_object, bool p_lock = true) const;
+	JoltReadableBody3D read_body(const JoltObjectImpl3D& p_object, bool p_lock = true) const;
 
 	JoltWritableBody3D write_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
 
-	JoltWritableBody3D write_body(const JoltCollisionObject3D& p_object, bool p_lock = true) const;
+	JoltWritableBody3D write_body(const JoltObjectImpl3D& p_object, bool p_lock = true) const;
 
 	JoltReadableBodies3D read_bodies(
 		const JPH::BodyID* p_body_ids,
@@ -74,19 +74,19 @@ public:
 
 	JoltPhysicsDirectSpaceState3D* get_direct_state();
 
-	void set_default_area(JoltArea3D* p_area) { default_area = p_area; }
+	void set_default_area(JoltAreaImpl3D* p_area) { default_area = p_area; }
 
-	JoltArea3D* get_default_area() const { return default_area; }
+	JoltAreaImpl3D* get_default_area() const { return default_area; }
 
 	float get_last_step() const { return last_step; }
 
 	void add_joint(JPH::Constraint* p_jolt_ref);
 
-	void add_joint(JoltJoint3D* p_joint);
+	void add_joint(JoltJointImpl3D* p_joint);
 
 	void remove_joint(JPH::Constraint* p_jolt_ref);
 
-	void remove_joint(JoltJoint3D* p_joint);
+	void remove_joint(JoltJointImpl3D* p_joint);
 
 #ifdef GDJ_CONFIG_EDITOR
 	const PackedVector3Array& get_debug_contacts() const;
@@ -119,7 +119,7 @@ private:
 
 	JoltPhysicsDirectSpaceState3D* direct_state = nullptr;
 
-	JoltArea3D* default_area = nullptr;
+	JoltAreaImpl3D* default_area = nullptr;
 
 	float last_step = 0.0f;
 

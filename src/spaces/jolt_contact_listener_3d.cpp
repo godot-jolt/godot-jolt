@@ -16,7 +16,7 @@ JPH::SubShapeIDPair pair_contact(
 
 } // namespace
 
-void JoltContactListener3D::listen_for(JoltCollisionObject3D* p_object) {
+void JoltContactListener3D::listen_for(JoltObjectImpl3D* p_object) {
 	listening_for.insert(p_object->get_jolt_id());
 }
 
@@ -171,10 +171,10 @@ void JoltContactListener3D::flush_contacts() {
 			false
 		);
 
-		JoltBody3D* body1 = jolt_bodies[0].as_body();
+		JoltBodyImpl3D* body1 = jolt_bodies[0].as_body();
 		ERR_FAIL_NULL(body1);
 
-		JoltBody3D* body2 = jolt_bodies[1].as_body();
+		JoltBodyImpl3D* body2 = jolt_bodies[1].as_body();
 		ERR_FAIL_NULL(body2);
 
 		const int32_t shape_index1 = body1->find_shape_index(shape_pair.GetSubShapeID1());
@@ -236,8 +236,8 @@ void JoltContactListener3D::flush_area_enters() {
 			continue;
 		}
 
-		JoltArea3D* area1 = jolt_body1.as_area();
-		JoltArea3D* area2 = jolt_body2.as_area();
+		JoltAreaImpl3D* area1 = jolt_body1.as_area();
+		JoltAreaImpl3D* area2 = jolt_body2.as_area();
 
 		if (area1 != nullptr && area2 != nullptr) {
 			if (area2->is_monitorable()) {
@@ -261,7 +261,7 @@ void JoltContactListener3D::flush_area_shifts() {
 	for (const JPH::SubShapeIDPair& shape_pair : area_overlaps) {
 		auto is_shifted = [&](const JPH::BodyID& p_body_id, const JPH::SubShapeID& p_sub_shape_id) {
 			const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
-			const JoltCollisionObject3D* object = jolt_body.as_object();
+			const JoltObjectImpl3D* object = jolt_body.as_object();
 			ERR_FAIL_NULL_V(object, false);
 
 			if (object->get_previous_jolt_shape() == nullptr) {
@@ -305,11 +305,11 @@ void JoltContactListener3D::flush_area_exits() {
 		const JoltReadableBody3D jolt_body1 = jolt_bodies[0];
 		const JoltReadableBody3D jolt_body2 = jolt_bodies[1];
 
-		JoltArea3D* area1 = jolt_body1.as_area();
-		JoltArea3D* area2 = jolt_body2.as_area();
+		JoltAreaImpl3D* area1 = jolt_body1.as_area();
+		JoltAreaImpl3D* area2 = jolt_body2.as_area();
 
-		const JoltBody3D* body1 = jolt_body1.as_body();
-		const JoltBody3D* body2 = jolt_body2.as_body();
+		const JoltBodyImpl3D* body1 = jolt_body1.as_body();
+		const JoltBodyImpl3D* body2 = jolt_body2.as_body();
 
 		if (area1 != nullptr && area2 != nullptr) {
 			area1->area_shape_exited(body_id2, sub_shape_id2, sub_shape_id1);

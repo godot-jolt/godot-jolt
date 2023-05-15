@@ -3,9 +3,9 @@
 #include "objects/jolt_collision_object_3d.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 
-class JoltArea3D;
+class JoltAreaImpl3D;
 
-class JoltBody3D final : public JoltCollisionObject3D {
+class JoltBodyImpl3D final : public JoltObjectImpl3D {
 public:
 	using DampMode = PhysicsServer3D::BodyDampMode;
 
@@ -31,7 +31,7 @@ public:
 		Vector3 impulse;
 	};
 
-	~JoltBody3D() override;
+	~JoltBodyImpl3D() override;
 
 	Variant get_state(PhysicsServer3D::BodyState p_state);
 
@@ -95,7 +95,7 @@ public:
 	bool generates_contacts() const override { return !contacts.is_empty(); }
 
 	void add_contact(
-		const JoltBody3D* p_collider,
+		const JoltBodyImpl3D* p_collider,
 		float p_depth,
 		int32_t p_shape_index,
 		int32_t p_collider_shape_index,
@@ -142,9 +142,9 @@ public:
 
 	TypedArray<RID> get_collision_exceptions(bool p_lock = true) const;
 
-	void add_area(JoltArea3D* p_area, bool p_lock = true);
+	void add_area(JoltAreaImpl3D* p_area, bool p_lock = true);
 
-	void remove_area(JoltArea3D* p_area, bool p_lock = true);
+	void remove_area(JoltAreaImpl3D* p_area, bool p_lock = true);
 
 	void integrate_forces(float p_step, bool p_lock = true);
 
@@ -259,7 +259,7 @@ private:
 
 	LocalVector<Contact> contacts;
 
-	LocalVector<JoltArea3D*> areas;
+	LocalVector<JoltAreaImpl3D*> areas;
 
 	Variant force_integration_userdata;
 
