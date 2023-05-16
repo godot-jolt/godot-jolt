@@ -47,36 +47,38 @@ bool JoltMotionFilter3D::ShouldCollide(JPH::ObjectLayer p_object_layer) const {
 	return (body.get_collision_mask() & object_collision_layer) != 0;
 }
 
-bool JoltMotionFilter3D::ShouldCollide(const JPH::BodyID& p_body_id) const {
-	return p_body_id != body.get_jolt_id();
+bool JoltMotionFilter3D::ShouldCollide(const JPH::BodyID& p_jolt_id_other) const {
+	return p_jolt_id_other != body.get_jolt_id();
 }
 
-bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_body) const {
-	const auto* object = reinterpret_cast<const JoltObjectImpl3D*>(p_body.GetUserData());
+bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_jolt_body_other) const {
+	const auto* object_other = reinterpret_cast<const JoltObjectImpl3D*>(
+		p_jolt_body_other.GetUserData()
+	);
 
-	return !physics_server.body_test_motion_is_excluding_object(object->get_instance_id()) &&
-		!physics_server.body_test_motion_is_excluding_body(object->get_rid());
+	return !physics_server.body_test_motion_is_excluding_object(object_other->get_instance_id()) &&
+		!physics_server.body_test_motion_is_excluding_body(object_other->get_rid());
 }
 
 bool JoltMotionFilter3D::ShouldCollide(
-	[[maybe_unused]] const JPH::Shape* p_shape2,
-	[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id2
+	[[maybe_unused]] const JPH::Shape* p_jolt_shape_other,
+	[[maybe_unused]] const JPH::SubShapeID& p_jolt_shape_id_other
 ) const {
 	return true;
 }
 
 bool JoltMotionFilter3D::ShouldCollide(
-	const JPH::Shape* p_shape1,
-	[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id1,
-	[[maybe_unused]] const JPH::Shape* p_shape2,
-	[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id2
+	const JPH::Shape* p_jolt_shape,
+	[[maybe_unused]] const JPH::SubShapeID& p_jolt_shape_id,
+	[[maybe_unused]] const JPH::Shape* p_jolt_shape_other,
+	[[maybe_unused]] const JPH::SubShapeID& p_jolt_shape_id_other
 ) const {
 	if (collide_separation_ray) {
 		return true;
 	}
 
-	const auto* motion_shape1 = static_cast<const JoltCustomMotionShape*>(p_shape1);
-	const JPH::ConvexShape& actual_shape1 = motion_shape1->get_inner_shape();
+	const auto* motion_shape = static_cast<const JoltCustomMotionShape*>(p_jolt_shape);
+	const JPH::ConvexShape& actual_shape = motion_shape->get_inner_shape();
 
-	return actual_shape1.GetSubType() != JoltCustomShapeSubType::RAY;
+	return actual_shape.GetSubType() != JoltCustomShapeSubType::RAY;
 }

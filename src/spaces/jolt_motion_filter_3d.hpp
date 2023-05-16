@@ -15,18 +15,20 @@ public:
 
 	bool ShouldCollide(JPH::ObjectLayer p_object_layer) const override;
 
-	bool ShouldCollide(const JPH::BodyID& p_body_id) const override;
+	bool ShouldCollide(const JPH::BodyID& p_jolt_id_other) const override;
 
-	bool ShouldCollideLocked(const JPH::Body& p_body) const override;
-
-	bool ShouldCollide(const JPH::Shape* p_shape2, const JPH::SubShapeID& p_sub_shape_id2)
-		const override;
+	bool ShouldCollideLocked(const JPH::Body& p_jolt_body_other) const override;
 
 	bool ShouldCollide(
-		const JPH::Shape* p_shape1,
-		const JPH::SubShapeID& p_sub_shape_id1,
-		const JPH::Shape* p_shape2,
-		const JPH::SubShapeID& p_sub_shape_id2
+		const JPH::Shape* p_jolt_shape_other,
+		const JPH::SubShapeID& p_jolt_shape_id_other
+	) const override;
+
+	bool ShouldCollide(
+		const JPH::Shape* p_jolt_shape,
+		const JPH::SubShapeID& p_jolt_shape_id,
+		const JPH::Shape* p_jolt_shape_other,
+		const JPH::SubShapeID& p_jolt_shape_id_other
 	) const override;
 
 private:
