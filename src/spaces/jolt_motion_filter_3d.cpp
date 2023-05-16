@@ -12,6 +12,7 @@
 JoltMotionFilter3D::JoltMotionFilter3D(const JoltBodyImpl3D& p_body, bool p_collide_separation_ray)
 	: physics_server(*static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton()))
 	, body(p_body)
+	, space(*body.get_space())
 	, collide_separation_ray(p_collide_separation_ray) { }
 
 bool JoltMotionFilter3D::ShouldCollide(JPH::BroadPhaseLayer p_broad_phase_layer) const {
@@ -37,7 +38,7 @@ bool JoltMotionFilter3D::ShouldCollide(JPH::ObjectLayer p_object_layer) const {
 	uint32_t object_collision_layer = 0;
 	uint32_t object_collision_mask = 0;
 
-	body.get_space()->map_from_object_layer(
+	space.map_from_object_layer(
 		p_object_layer,
 		object_broad_phase_layer,
 		object_collision_layer,
@@ -56,8 +57,19 @@ bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_jolt_body_other)
 		p_jolt_body_other.GetUserData()
 	);
 
-	return !physics_server.body_test_motion_is_excluding_object(object_other->get_instance_id()) &&
-		!physics_server.body_test_motion_is_excluding_body(object_other->get_rid());
+	if (physics_server.body_test_motion_is_excluding_object(object_other->get_instance_id()) ||
+		physics_server.body_test_motion_is_excluding_body(object_other->get_rid()))
+	{
+		return false;
+	}
+
+	// TODO(mihe): This should ideally be locked, but we've already locked the body that we're
+	// checking against, so we could deadlock if we try. Since we're not actually using the locks
+	// for anything crucial we can get away with not locking here, but a more robust solution should
+	// be implemented down the line.
+	const JoltReadableBody3D jolt_body = space.read_body(body, false);
+
+	return jolt_body->GetCollisionGroup().CanCollide(p_jolt_body_other.GetCollisionGroup());
 }
 
 bool JoltMotionFilter3D::ShouldCollide(

@@ -2,6 +2,7 @@
 
 class JoltBodyImpl3D;
 class JoltPhysicsServer3D;
+class JoltSpace3D;
 
 class JoltMotionFilter3D final
 	: public JPH::BroadPhaseLayerFilter
@@ -35,6 +36,8 @@ private:
 	const JoltPhysicsServer3D& physics_server;
 
 	const JoltBodyImpl3D& body;
+
+	const JoltSpace3D& space;
 
 	bool collide_separation_ray = false;
 };
