@@ -12,7 +12,7 @@ max_line_length = 100
 [{CMakeLists.txt,*.cmake}]
 max_line_length = unset
 
-[*.{json,yml,yaml,clang-format,clang-tidy,clangd}]
+[*.{json,yml,yaml,svg,clang-format,clang-tidy,clangd}]
 indent_style = space
 indent_size = 2
 
