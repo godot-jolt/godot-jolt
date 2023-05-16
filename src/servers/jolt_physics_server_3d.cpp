@@ -96,11 +96,11 @@ void JoltPhysicsServer3D::_shape_set_data(const RID& p_shape, const Variant& p_d
 	shape->set_data(p_data);
 }
 
-void JoltPhysicsServer3D::_shape_set_custom_solver_bias(
-	[[maybe_unused]] const RID& p_shape,
-	[[maybe_unused]] double p_bias
-) {
-	ERR_FAIL_NOT_IMPL();
+void JoltPhysicsServer3D::_shape_set_custom_solver_bias(const RID& p_shape, double p_bias) {
+	JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL(shape);
+
+	shape->set_solver_bias((float)p_bias);
 }
 
 PhysicsServer3D::ShapeType JoltPhysicsServer3D::_shape_get_type(const RID& p_shape) const {
@@ -131,9 +131,11 @@ double JoltPhysicsServer3D::_shape_get_margin(const RID& p_shape) const {
 	return (double)shape->get_margin();
 }
 
-double JoltPhysicsServer3D::_shape_get_custom_solver_bias([[maybe_unused]] const RID& p_shape
-) const {
-	ERR_FAIL_D_NOT_IMPL();
+double JoltPhysicsServer3D::_shape_get_custom_solver_bias(const RID& p_shape) const {
+	const JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
+	ERR_FAIL_NULL_D(shape);
+
+	return (double)shape->get_solver_bias();
 }
 
 RID JoltPhysicsServer3D::_space_create() {

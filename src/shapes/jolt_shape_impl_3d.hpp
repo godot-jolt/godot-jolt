@@ -30,6 +30,10 @@ public:
 
 	virtual void set_margin(float p_margin) = 0;
 
+	float get_solver_bias() const;
+
+	void set_solver_bias(float p_bias);
+
 	JPH::ShapeRefC try_build();
 
 	void destroy() { jolt_ref = nullptr; }
