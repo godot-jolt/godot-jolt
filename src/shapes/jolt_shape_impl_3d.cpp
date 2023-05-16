@@ -3,6 +3,12 @@
 #include "objects/jolt_object_impl_3d.hpp"
 #include "shapes/jolt_custom_user_data_shape.hpp"
 
+namespace {
+
+constexpr float DEFAULT_SOLVER_BIAS = 0.0;
+
+} // namespace
+
 JoltShapeImpl3D::~JoltShapeImpl3D() = default;
 
 void JoltShapeImpl3D::add_owner(JoltObjectImpl3D* p_owner) {
@@ -22,6 +28,19 @@ void JoltShapeImpl3D::remove_self(bool p_lock) {
 
 	for (const auto& [owner, ref_count] : ref_counts_by_owner_copy) {
 		owner->remove_shape(this, p_lock);
+	}
+}
+
+float JoltShapeImpl3D::get_solver_bias() const {
+	return DEFAULT_SOLVER_BIAS;
+}
+
+void JoltShapeImpl3D::set_solver_bias(float p_bias) {
+	if (!Math::is_equal_approx(p_bias, DEFAULT_SOLVER_BIAS)) {
+		WARN_PRINT(
+			"Custom solver bias for shapes is not supported by Godot Jolt. "
+			"Any such value will be ignored."
+		);
 	}
 }
 
