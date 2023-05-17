@@ -1,4 +1,4 @@
-The Godot Jolt software incorporates third-party material from the projects listed below.
+Godot Jolt incorporates third-party material from the projects listed below.
 
 Godot Engine (https://github.com/godotengine/godot)
 
