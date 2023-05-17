@@ -3,7 +3,7 @@ name: 📦 Package
 on:
   push:
     tags:
-      - v\d+.\d+.\d+
+      - v\d+.\d+.\d+-\w+
   workflow_dispatch:
 
 concurrency:
