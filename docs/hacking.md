@@ -45,7 +45,7 @@ defaults by passing `-DGDJ_SOME_VARIABLE=VALUE` to CMake.
 
 - `GDJ_X86_INSTRUCTION_SET`
   - Sets the minimum required CPU instruction set when compiling for x86.
-  - ⚠️ This flag is not available on Apple platforms, due to universal binaries not supporting it.
+  - ⚠️ This flag is not available on Apple platforms.
   - Possible values are [`NONE`, `SSE2`, `AVX`, `AVX2`, `AVX512`]
   - Default is `SSE2`
 - `GDJ_INTERPROCEDURAL_OPTIMIZATION`
