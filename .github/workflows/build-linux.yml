@@ -9,12 +9,14 @@ on:
       - 'examples/**'
       - '**.md'
       - '**.txt'
+      - '!**/CMakeLists.txt'
   pull_request:
     paths-ignore:
       - 'docs/**'
       - 'examples/**'
       - '**.md'
       - '**.txt'
+      - '!**/CMakeLists.txt'
   workflow_dispatch:
 
 concurrency:
