@@ -131,3 +131,17 @@ function(gdj_generate_info_file output_variable)
 	configure_file(${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/info.cpp.in ${info_file})
 	set(${output_variable} ${info_file} PARENT_SCOPE)
 endfunction()
+
+function(gdj_generate_exports_ld output_variable)
+	set(exports_file ${CMAKE_CURRENT_BINARY_DIR}/exports.map)
+	configure_file(${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/exports_ld.map.in ${exports_file})
+
+	set(${output_variable} ${exports_file} PARENT_SCOPE)
+endfunction()
+
+function(gdj_generate_exports_ld64 output_variable)
+	set(exports_file ${CMAKE_CURRENT_BINARY_DIR}/exports_list)
+	configure_file(${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/exports_ld64.in ${exports_file})
+
+	set(${output_variable} ${exports_file} PARENT_SCOPE)
+endfunction()

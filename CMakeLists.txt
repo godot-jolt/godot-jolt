@@ -22,6 +22,7 @@ set(PROJECT_TITLE "Godot Jolt")
 set(PROJECT_DESCRIPTION "Godot extension that integrates the Jolt physics engine.")
 set(PROJECT_COPYRIGHT "Copyright (c) Mikael Hermansson and Godot Jolt contributors.")
 set(PROJECT_BUNDLE_IDENTIFIER "org.godot-jolt.godot-jolt")
+set(PROJECT_ENTRY_POINT "godot_jolt_main")
 set(PROJECT_VERSION_STATUS "rc2")
 set(PROJECT_VERSION_WITH_STATUS ${PROJECT_VERSION}-${PROJECT_VERSION_STATUS})
 set(PROJECT_VERSION_WITH_BUILD ${PROJECT_VERSION_WITH_STATUS}+${PROJECT_VERSION_BUILD})
@@ -223,7 +224,15 @@ else()
 		PRIVATE $<${is_gcc}:-no-integrated-cpp> # Workaround for GCC ignoring _Pragma (GCC#53431)
 	)
 
+	if(APPLE)
+		gdj_generate_exports_ld64(exports_file)
+	else()
+		gdj_generate_exports_ld(exports_file)
+	endif()
+
 	target_link_options(godot-jolt
+		PRIVATE $<${is_linux}:-Wl,--version-script,${exports_file}>
+		PRIVATE $<${is_macos}:-Wl,-exported_symbols_list,${exports_file}>
 		PRIVATE $<${use_static_crt}:-static-libgcc> # Link libgcc statically
 		PRIVATE $<${use_static_crt}:-static-libstdc++> # Link libstdc++ statically
 	)
