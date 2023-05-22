@@ -12,7 +12,7 @@ public:
 
 	static int32_t get_kinematic_recovery_iterations();
 
-	static float get_kinematic_recovery_speed();
+	static float get_kinematic_recovery_correction();
 
 	static int32_t get_velocity_iterations();
 

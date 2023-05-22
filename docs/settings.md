@@ -198,11 +198,10 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Kinematic</td>
-      <td>Recovery Speed</td>
+      <td>Recovery Correction</td>
       <td>
-        How much of the penetration to resolve per iteration during things like
+        How much of the penetration to correct per iteration during things like
         <code>move_and_slide</code>.
-        <br><i>(0.0 = 0%, 1.0 = 100%)</i>
       </td>
       <td>-</td>
     </tr>
