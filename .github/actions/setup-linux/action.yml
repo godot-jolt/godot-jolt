@@ -4,7 +4,7 @@ inputs:
   toolchain:
     required: true
   version-gcc:
-    default: 12
+    default: 11
   version-llvm:
     default: 15
 

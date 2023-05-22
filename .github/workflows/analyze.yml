@@ -26,7 +26,7 @@ concurrency:
 jobs:
   clang-format:
     name: Formatting
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout code
@@ -47,7 +47,7 @@ jobs:
 
   clang-tidy:
     name: Linting (${{ matrix.arch }})
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     strategy:
       fail-fast: false

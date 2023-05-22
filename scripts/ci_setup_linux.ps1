@@ -54,13 +54,17 @@ Set-DefaultCommand -Name gcc -Path /usr/bin/gcc-$VersionGcc
 Set-DefaultCommand -Name g++ -Path /usr/bin/g++-$VersionGcc
 
 if ($Toolchain -eq "llvm") {
+	Write-Output "Downloading LLVM installation script..."
+
+	Invoke-WebRequest -Uri https://apt.llvm.org/llvm.sh -OutFile ./llvm.sh
+
+	Write-Output "Making LLVM installation script executable..."
+
+	chmod +x ./llvm.sh
+
 	Write-Output "Installing LLVM $VersionLlvm..."
 
-	apt install --quiet --yes `
-		clang-$VersionLlvm `
-		clang-format-$VersionLlvm `
-		clang-tidy-$VersionLlvm `
-		lld-$VersionLlvm
+	./llvm.sh $VersionLlvm all
 
 	Write-Output "Setting LLVM $VersionLlvm as the default..."
 
