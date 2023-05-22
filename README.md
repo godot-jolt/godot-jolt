@@ -32,8 +32,8 @@ does however allow you to quickly switch between physics engines with very littl
 ## What about determinism?
 
 While Jolt itself offers deterministic simulations, Godot Jolt is not able to make those kinds of
-guarantees. The simulations may look deterministic, and may even be deterministic, but it should not
-be relied upon if determinism is a hard requirement.
+guarantees. Simulations in Godot Jolt may look deterministic, and may even be deterministic, but it
+should not be relied upon if determinism is a hard requirement.
 
 ## What's not supported?
 

@@ -206,6 +206,22 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       <td>-</td>
     </tr>
     <tr>
+      <td>Continuous CD</td>
+      <td>Movement Threshold</td>
+      <td>
+        Percentage of its inner radius a body must move per step to make use of CCD.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Continuous CD</td>
+      <td>Max Penetration</td>
+      <td>
+        Percentage of its inner radius a body may penetrate another body whilst using CCD.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
       <td>Solver</td>
       <td>Velocity Iterations</td>
       <td>The number of solver velocity iterations to run during a physics tick.</td>

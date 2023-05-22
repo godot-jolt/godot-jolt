@@ -10,6 +10,10 @@ public:
 
 	static float get_sleep_time_threshold();
 
+	static float get_ccd_movement_threshold();
+
+	static float get_ccd_max_penetration();
+
 	static int32_t get_kinematic_recovery_iterations();
 
 	static float get_kinematic_recovery_correction();

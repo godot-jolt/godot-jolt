@@ -6,6 +6,9 @@ constexpr char SLEEP_ENABLED[] = "physics/jolt_3d/sleep/enabled";
 constexpr char SLEEP_VELOCITY_THRESHOLD[] = "physics/jolt_3d/sleep/velocity_threshold";
 constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_3d/sleep/time_threshold";
 
+constexpr char CCD_MOVEMENT_THRESHOLD[] = "physics/jolt_3d/continuous_cd/movement_threshold";
+constexpr char CCD_MAX_PENETRATION[] = "physics/jolt_3d/continuous_cd/max_penetration";
+
 constexpr char RECOVERY_ITERATIONS[] = "physics/jolt_3d/kinematics/recovery_iterations";
 constexpr char RECOVERY_CORRECTION[] = "physics/jolt_3d/kinematics/recovery_correction";
 
@@ -110,6 +113,9 @@ void JoltProjectSettings::register_settings() {
 	register_setting_hinted(SLEEP_VELOCITY_THRESHOLD, 0.03f, U"suffix:m/s");
 	register_setting_ranged(SLEEP_TIME_THRESHOLD, 0.5f, U"0,5,0.01,or_greater,suffix:s");
 
+	register_setting_ranged(CCD_MOVEMENT_THRESHOLD, 75.0f, U"0,100,0.1,suffix:%");
+	register_setting_ranged(CCD_MAX_PENETRATION, 25.0f, U"0,100,0.1,suffix:%");
+
 	register_setting_ranged(RECOVERY_ITERATIONS, 4, U"1,8,or_greater");
 	register_setting_ranged(RECOVERY_CORRECTION, 40.0f, U"0,100,0.1,suffix:%");
 
@@ -139,6 +145,16 @@ float JoltProjectSettings::get_sleep_velocity_threshold() {
 
 float JoltProjectSettings::get_sleep_time_threshold() {
 	static const auto value = get_setting<float>(SLEEP_TIME_THRESHOLD);
+	return value;
+}
+
+float JoltProjectSettings::get_ccd_movement_threshold() {
+	static const auto value = get_setting<float>(CCD_MOVEMENT_THRESHOLD) / 100.0f;
+	return value;
+}
+
+float JoltProjectSettings::get_ccd_max_penetration() {
+	static const auto value = get_setting<float>(CCD_MAX_PENETRATION) / 100.0f;
 	return value;
 }
 
