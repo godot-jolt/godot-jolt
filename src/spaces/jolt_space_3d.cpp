@@ -39,7 +39,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	);
 
 	JPH::PhysicsSettings settings;
-	settings.mBaumgarte = JoltProjectSettings::get_stabilization_factor();
+	settings.mBaumgarte = JoltProjectSettings::get_position_correction();
 	settings.mSpeculativeContactDistance = JoltProjectSettings::get_contact_distance();
 	settings.mPenetrationSlop = JoltProjectSettings::get_contact_penetration();
 	settings.mNumVelocitySteps = JoltProjectSettings::get_velocity_iterations();

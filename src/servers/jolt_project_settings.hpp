@@ -18,7 +18,7 @@ public:
 
 	static int32_t get_position_iterations();
 
-	static float get_stabilization_factor();
+	static float get_position_correction();
 
 	static float get_contact_distance();
 

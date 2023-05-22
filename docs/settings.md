@@ -219,10 +219,9 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Solver</td>
-      <td>Stabilization Factor</td>
+      <td>Position Correction</td>
       <td>
-        How much of the position error to resolve during a physics tick.
-        <br><i>(0.0 = 0%, 1.0 = 100%)</i>
+        How much of the position error to correct during a physics tick.
       </td>
       <td>-</td>
     </tr>
