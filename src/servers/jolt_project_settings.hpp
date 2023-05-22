@@ -24,8 +24,6 @@ public:
 
 	static float get_contact_penetration();
 
-	static bool is_more_deterministic();
-
 	static float get_max_linear_velocity();
 
 	static float get_max_angular_velocity();

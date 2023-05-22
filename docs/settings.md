@@ -246,16 +246,6 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       <td>-</td>
     </tr>
     <tr>
-      <td>Simulation</td>
-      <td>More Deterministic</td>
-      <td>Whether to make the simulation more deterministic.</td>
-      <td>
-        ⚠️ While this makes Jolt itself deterministic when using the same binary, this extension
-        (or Godot itself) might not be. This setting should not be relied upon if determinism is a
-        requirement.
-      </td>
-    </tr>
-    <tr>
       <td>Limits</td>
       <td>Max Linear Velocity</td>
       <td>The maximum linear velocity that a body can reach.</td>
