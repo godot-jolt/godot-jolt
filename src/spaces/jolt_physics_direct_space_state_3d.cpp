@@ -696,7 +696,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	Vector3& p_recovery
 ) const {
 	const int32_t recovery_iterations = JoltProjectSettings::get_kinematic_recovery_iterations();
-	const float recovery_speed = JoltProjectSettings::get_kinematic_recovery_speed();
+	const float recovery_correction = JoltProjectSettings::get_kinematic_recovery_correction();
 
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
@@ -778,7 +778,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 			const JoltBodyImpl3D* other_body = other_jolt_body.as_body();
 			ERR_CONTINUE(other_body == nullptr);
 
-			const float recovery_distance = penetration_depth * recovery_speed;
+			const float recovery_distance = penetration_depth * recovery_correction;
 			const float other_priority = other_body->get_collision_priority();
 			const float other_priority_normalized = other_priority / average_priority;
 			const float scaled_recovery_distance = recovery_distance * other_priority_normalized;

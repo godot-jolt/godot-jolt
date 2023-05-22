@@ -198,11 +198,26 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Kinematic</td>
-      <td>Recovery Speed</td>
+      <td>Recovery Correction</td>
       <td>
-        How much of the penetration to resolve per iteration during things like
+        How much of the penetration to correct per iteration during things like
         <code>move_and_slide</code>.
-        <br><i>(0.0 = 0%, 1.0 = 100%)</i>
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Continuous CD</td>
+      <td>Movement Threshold</td>
+      <td>
+        Percentage of its inner radius a body must move per step to make use of CCD.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Continuous CD</td>
+      <td>Max Penetration</td>
+      <td>
+        Percentage of its inner radius a body may penetrate another body whilst using CCD.
       </td>
       <td>-</td>
     </tr>
@@ -220,10 +235,9 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Solver</td>
-      <td>Stabilization Factor</td>
+      <td>Position Correction</td>
       <td>
-        How much of the position error to resolve during a physics tick.
-        <br><i>(0.0 = 0%, 1.0 = 100%)</i>
+        How much of the position error to correct during a physics tick.
       </td>
       <td>-</td>
     </tr>
@@ -244,16 +258,6 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       <td>Contact Allowed Penetration</td>
       <td>How much bodies are allowed to penetrate eachother.</td>
       <td>-</td>
-    </tr>
-    <tr>
-      <td>Simulation</td>
-      <td>More Deterministic</td>
-      <td>Whether to make the simulation more deterministic.</td>
-      <td>
-        ⚠️ While this makes Jolt itself deterministic when using the same binary, this extension
-        (or Godot itself) might not be. This setting should not be relied upon if determinism is a
-        requirement.
-      </td>
     </tr>
     <tr>
       <td>Limits</td>
