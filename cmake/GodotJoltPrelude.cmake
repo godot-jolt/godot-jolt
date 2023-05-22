@@ -33,7 +33,7 @@ if(CMAKE_HOST_SYSTEM_NAME STREQUAL Darwin)
 		"Semicolon-separated list of target architectures."
 	)
 
-	set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING
 		"Minimum version of target platform. Set to empty string for default value."
 	)
 endif()
