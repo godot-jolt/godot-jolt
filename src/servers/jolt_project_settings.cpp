@@ -118,13 +118,13 @@ void JoltProjectSettings::register_settings() {
 	register_setting_ranged(VELOCITY_ITERATIONS, 10, U"2,16,or_greater");
 	register_setting_ranged(POSITION_ITERATIONS, 2, U"1,16,or_greater");
 	register_setting_ranged(STABILIZATION_FACTOR, 0.2f, U"0,1,0.01");
-	register_setting_ranged(CONTACT_DISTANCE, 0.02f, U"0,1,0.01,or_greater,suffix:m");
-	register_setting_ranged(CONTACT_PENETRATION, 0.02f, U"0,1,0.01,or_greater,suffix:m");
+	register_setting_ranged(CONTACT_DISTANCE, 0.02f, U"0,1,0.001,or_greater,suffix:m");
+	register_setting_ranged(CONTACT_PENETRATION, 0.02f, U"0,1,0.001,or_greater,suffix:m");
 
 	register_setting_plain(MORE_DETERMINISTIC, false);
 
-	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, U"0,500,or_greater,suffix:m/s");
-	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,or_greater,suffix:°/s");
+	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, U"0,500,0.01,or_greater,suffix:m/s");
+	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,0.01,or_greater,suffix:°/s");
 	register_setting_ranged(MAX_BODIES, 10240, U"1,10240,or_greater", true);
 	register_setting_ranged(MAX_PAIRS, 65536, U"8,65536,or_greater");
 	register_setting_ranged(MAX_CONTACTS, 20480, U"8,20480,or_greater");
