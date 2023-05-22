@@ -6,16 +6,17 @@ constexpr char SLEEP_ENABLED[] = "physics/jolt_3d/sleep/enabled";
 constexpr char SLEEP_VELOCITY_THRESHOLD[] = "physics/jolt_3d/sleep/velocity_threshold";
 constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_3d/sleep/time_threshold";
 
+constexpr char CCD_MOVEMENT_THRESHOLD[] = "physics/jolt_3d/continuous_cd/movement_threshold";
+constexpr char CCD_MAX_PENETRATION[] = "physics/jolt_3d/continuous_cd/max_penetration";
+
 constexpr char RECOVERY_ITERATIONS[] = "physics/jolt_3d/kinematics/recovery_iterations";
-constexpr char RECOVERY_SPEED[] = "physics/jolt_3d/kinematics/recovery_speed";
+constexpr char RECOVERY_AMOUNT[] = "physics/jolt_3d/kinematics/recovery_amount";
 
 constexpr char POSITION_ITERATIONS[] = "physics/jolt_3d/solver/position_iterations";
 constexpr char VELOCITY_ITERATIONS[] = "physics/jolt_3d/solver/velocity_iterations";
-constexpr char STABILIZATION_FACTOR[] = "physics/jolt_3d/solver/stabilization_factor";
+constexpr char POSITION_CORRECTION[] = "physics/jolt_3d/solver/position_correction";
 constexpr char CONTACT_DISTANCE[] = "physics/jolt_3d/solver/contact_speculative_distance";
 constexpr char CONTACT_PENETRATION[] = "physics/jolt_3d/solver/contact_allowed_penetration";
-
-constexpr char MORE_DETERMINISTIC[] = "physics/jolt_3d/simulation/more_deterministic";
 
 constexpr char MAX_LINEAR_VELOCITY[] = "physics/jolt_3d/limits/max_linear_velocity";
 constexpr char MAX_ANGULAR_VELOCITY[] = "physics/jolt_3d/limits/max_angular_velocity";
@@ -112,19 +113,20 @@ void JoltProjectSettings::register_settings() {
 	register_setting_hinted(SLEEP_VELOCITY_THRESHOLD, 0.03f, U"suffix:m/s");
 	register_setting_ranged(SLEEP_TIME_THRESHOLD, 0.5f, U"0,5,0.01,or_greater,suffix:s");
 
+	register_setting_ranged(CCD_MOVEMENT_THRESHOLD, 75.0f, U"0,100,0.1,suffix:%");
+	register_setting_ranged(CCD_MAX_PENETRATION, 25.0f, U"0,100,0.1,suffix:%");
+
 	register_setting_ranged(RECOVERY_ITERATIONS, 4, U"1,8,or_greater");
-	register_setting_ranged(RECOVERY_SPEED, 0.4f, U"0,1,0.01");
+	register_setting_ranged(RECOVERY_AMOUNT, 40.0f, U"0,100,0.1,suffix:%");
 
 	register_setting_ranged(VELOCITY_ITERATIONS, 10, U"2,16,or_greater");
 	register_setting_ranged(POSITION_ITERATIONS, 2, U"1,16,or_greater");
-	register_setting_ranged(STABILIZATION_FACTOR, 0.2f, U"0,1,0.01");
-	register_setting_ranged(CONTACT_DISTANCE, 0.02f, U"0,1,0.01,or_greater,suffix:m");
-	register_setting_ranged(CONTACT_PENETRATION, 0.02f, U"0,1,0.01,or_greater,suffix:m");
+	register_setting_ranged(POSITION_CORRECTION, 20.0f, U"0,100,0.1,suffix:%");
+	register_setting_ranged(CONTACT_DISTANCE, 0.02f, U"0,1,0.001,or_greater,suffix:m");
+	register_setting_ranged(CONTACT_PENETRATION, 0.02f, U"0,1,0.001,or_greater,suffix:m");
 
-	register_setting_plain(MORE_DETERMINISTIC, false);
-
-	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, U"0,500,or_greater,suffix:m/s");
-	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,or_greater,suffix:°/s");
+	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, U"0,500,0.01,or_greater,suffix:m/s");
+	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,0.01,or_greater,suffix:°/s");
 	register_setting_ranged(MAX_BODIES, 10240, U"1,10240,or_greater", true);
 	register_setting_ranged(MAX_PAIRS, 65536, U"8,65536,or_greater");
 	register_setting_ranged(MAX_CONTACTS, 20480, U"8,20480,or_greater");
@@ -146,13 +148,23 @@ float JoltProjectSettings::get_sleep_time_threshold() {
 	return value;
 }
 
+float JoltProjectSettings::get_ccd_movement_threshold() {
+	static const auto value = get_setting<float>(CCD_MOVEMENT_THRESHOLD) / 100.0f;
+	return value;
+}
+
+float JoltProjectSettings::get_ccd_max_penetration() {
+	static const auto value = get_setting<float>(CCD_MAX_PENETRATION) / 100.0f;
+	return value;
+}
+
 int32_t JoltProjectSettings::get_kinematic_recovery_iterations() {
 	static const auto value = get_setting<int32_t>(RECOVERY_ITERATIONS);
 	return value;
 }
 
-float JoltProjectSettings::get_kinematic_recovery_speed() {
-	static const auto value = get_setting<float>(RECOVERY_SPEED);
+float JoltProjectSettings::get_kinematic_recovery_amount() {
+	static const auto value = get_setting<float>(RECOVERY_AMOUNT) / 100.0f;
 	return value;
 }
 
@@ -166,8 +178,8 @@ int32_t JoltProjectSettings::get_position_iterations() {
 	return value;
 }
 
-float JoltProjectSettings::get_stabilization_factor() {
-	static const auto value = get_setting<float>(STABILIZATION_FACTOR);
+float JoltProjectSettings::get_position_correction() {
+	static const auto value = get_setting<float>(POSITION_CORRECTION) / 100.0f;
 	return value;
 }
 
@@ -178,11 +190,6 @@ float JoltProjectSettings::get_contact_distance() {
 
 float JoltProjectSettings::get_contact_penetration() {
 	static const auto value = get_setting<float>(CONTACT_PENETRATION);
-	return value;
-}
-
-bool JoltProjectSettings::is_more_deterministic() {
-	static const auto value = get_setting<bool>(MORE_DETERMINISTIC);
 	return value;
 }
 
