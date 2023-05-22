@@ -63,7 +63,7 @@ jobs:
           retention-days: 1
 
   linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     strategy:
       fail-fast: false
@@ -80,6 +80,9 @@ jobs:
         uses: ./.github/actions/setup-linux
         with:
           toolchain: llvm
+
+      - name: List dynamic dependencies
+        run: ldd --version
 
       - name: Configure
         uses: ./.github/actions/cmake-configure
@@ -177,7 +180,7 @@ jobs:
           retention-days: 1
 
   upload:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     needs: [windows, linux, macos]
 
     name: Upload

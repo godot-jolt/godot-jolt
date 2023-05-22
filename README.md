@@ -68,6 +68,9 @@ candidate, may be incompatible and is therefore not supported.
 - Linux (x86-64, x86)
 - macOS (x86-64 + Apple Silicon)
 
+Note that Linux support is limited by the version of glibc present on the system, which currently
+has to be the same as (or newer than) what's used by Ubuntu 20.04 (Focal Fossa).
+
 ## How do I get started?
 
 1. Download the [latest release][rls] from GitHub
