@@ -19,7 +19,7 @@ would use normally, like `RigidBody3D` or `CharacterBody3D`.
 - [What settings are there?](#what-settings-are-there)
 - [How do I build from source?](#how-do-i-build-from-source)
 - [What do the versions mean?](#what-do-the-versions-mean)
-- [How is it licensed?](#how-is-it-licensed)
+- [What's the license?](#whats-the-license)
 
 ## What features are there?
 
@@ -31,8 +31,8 @@ allows you to quickly switch between physics engines with little risk or effort.
 
 ## What about determinism?
 
-While Jolt itself offers deterministic simulations, Godot Jolt is not able to make any such
-guarantees. Simulations in Godot Jolt may look deterministic, and may even be deterministic, but it
+While Jolt itself offers deterministic simulations, Godot Jolt is not able to make such guarantees.
+Simulations in Godot Jolt may look deterministic, and may even happen to be deterministic, but this
 should not be relied upon if determinism is a hard requirement.
 
 ## What's not supported?
@@ -51,15 +51,17 @@ should not be relied upon if determinism is a hard requirement.
 - Ray-casts will hit the back-faces of all shape types, not just concave polygons and height maps
 - Shape-casts should be more accurate, but their cost also scale with the cast distance
 - Manipulating a body's shape(s) while it's connected to a scene tree can be costly
+- Contact impulses are estimations and won't be accurate when colliding with multiple bodies
+- `Area3D` is not able to detect overlaps with `StaticBody3D`
 - `HeightMapShape3D` only supports square height maps with dimensions that are power-of-two
 - Axis-locking is implemented using joints, which means a body can technically deviate a bit from
   its locked axes, but they do a better job of conserving energy
 
 Also consider this note from Jolt's [documentation][jdc]:
 
-> In order for the simulation to be accurate, dynamic objects should be in the order of [0.1, 10]
-> meters long and have speeds in the order of [0, 500] meters per second. Static object should be in
-> the order of [0.1, 2000] meters long.
+> In order for the simulation to be accurate, dynamic objects should be in the order of 0.1 to 10
+> meters long and have speeds in the order of 0 to 500 meters per second. Static object should be in
+> the order of 0.1 to 2000 meters long.
 
 ## What versions of Godot are supported?
 
@@ -73,8 +75,8 @@ candidate, may be incompatible and is therefore not supported.
 - Linux (x86-64, x86)
 - macOS (x86-64 + Apple Silicon)
 
-Linux support is limited by the version of glibc present on the system, which must be compatible
-with the version found in Ubuntu 20.04 (Focal Fossa).
+Note that Linux support is limited by the version of glibc present on the system, which must be
+compatible with the one found in Ubuntu 20.04 (Focal Fossa).
 
 ## How do I get started?
 
@@ -122,7 +124,7 @@ versions may contain backwards-incompatible changes.
 
 See [`CHANGELOG.md`][chl] for details about what notable changes were included in each version.
 
-## How is it licensed?
+## What's the license?
 
 Godot Jolt is distributed under the MIT license. See [`LICENSE.txt`][lic] for more details and
 [`THIRDPARTY.txt`][trd] for third-party licenses.
