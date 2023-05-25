@@ -1,6 +1,7 @@
 #include "jolt_physics_direct_body_state_3d.hpp"
 
 #include "objects/jolt_body_impl_3d.hpp"
+#include "servers/jolt_physics_server_3d.hpp"
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
@@ -234,7 +235,17 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_velocity_at_position
 ) const {
 	QUIET_FAIL_NULL_D_ED(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
-	return body->get_contact(p_contact_idx).collider_velocity;
+
+	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+
+	const JoltBodyImpl3D::Contact& contact = body->get_contact(p_contact_idx);
+	const JoltBodyImpl3D* collider = physics_server->get_body(contact.collider_rid);
+	ERR_FAIL_NULL_D(collider);
+
+	const Vector3 collider_position = collider->get_position();
+	const Vector3& collider_offset = contact.collider_position;
+
+	return collider->get_velocity_at_position(collider_position + collider_offset);
 }
 
 double JoltPhysicsDirectBodyState3D::_get_step() const {

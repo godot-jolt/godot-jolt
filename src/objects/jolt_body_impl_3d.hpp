@@ -26,8 +26,6 @@ public:
 
 		Vector3 collider_position;
 
-		Vector3 collider_velocity;
-
 		Vector3 impulse;
 	};
 
@@ -102,7 +100,6 @@ public:
 		const Vector3& p_normal,
 		const Vector3& p_position,
 		const Vector3& p_collider_position,
-		const Vector3& p_collider_velocity,
 		const Vector3& p_impulse
 	);
 

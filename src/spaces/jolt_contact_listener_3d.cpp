@@ -150,13 +150,11 @@ void JoltContactListener3D::update_contacts(
 		contact1.normal = -p_manifold.mWorldSpaceNormal;
 		contact1.point_self = world_point1 - body_position1;
 		contact1.point_other = world_point1 - body_position2;
-		contact1.velocity_other = p_body2.GetPointVelocity(world_point1);
 		contact1.impulse = -combined_impulse;
 
 		contact2.normal = p_manifold.mWorldSpaceNormal;
 		contact2.point_self = world_point2 - body_position2;
 		contact2.point_other = world_point2 - body_position1;
-		contact2.velocity_other = p_body1.GetPointVelocity(world_point2);
 		contact2.impulse = combined_impulse;
 	}
 }
@@ -189,7 +187,6 @@ void JoltContactListener3D::flush_contacts() {
 				to_godot(contact.normal),
 				to_godot(contact.point_self),
 				to_godot(contact.point_other),
-				to_godot(contact.velocity_other),
 				to_godot(contact.impulse)
 			);
 		}
@@ -203,7 +200,6 @@ void JoltContactListener3D::flush_contacts() {
 				to_godot(contact.normal),
 				to_godot(contact.point_self),
 				to_godot(contact.point_other),
-				to_godot(contact.velocity_other),
 				to_godot(contact.impulse)
 			);
 		}
