@@ -83,6 +83,10 @@ constexpr void decode_collision(
 
 } // namespace
 
+JoltLayerMapper::JoltLayerMapper() {
+	allocate_object_layer(0);
+}
+
 JPH::ObjectLayer JoltLayerMapper::to_object_layer(
 	JPH::BroadPhaseLayer p_broad_phase_layer,
 	uint32_t p_collision_layer,
@@ -103,14 +107,7 @@ JPH::ObjectLayer JoltLayerMapper::to_object_layer(
 			vformat("Maximum number of object layers (%d) reached.", object_layer_count)
 		);
 
-		object_layer = next_object_layer++;
-
-		layers_by_collision[collision] = object_layer;
-
-		{
-			const MutexLockWrite collisions_lock(collisions_mutex);
-			collisions_by_layer[object_layer] = collision;
-		}
+		object_layer = allocate_object_layer(collision);
 	}
 
 	return encode_layers(p_broad_phase_layer, object_layer);
@@ -125,12 +122,7 @@ void JoltLayerMapper::from_object_layer(
 	JPH::ObjectLayer object_layer = {};
 	decode_layers(p_encoded_layer, p_broad_phase_layer, object_layer);
 
-	uint64_t collision = 0;
-
-	{
-		const MutexLockRead collisions_lock(collisions_mutex);
-		collision = collisions_by_layer[object_layer];
-	}
+	const uint64_t collision = collisions_by_layer[object_layer];
 
 	decode_collision(collision, p_collision_layer, p_collision_mask);
 }
@@ -202,6 +194,17 @@ bool JoltLayerMapper::ShouldCollide(
 	decode_layers(p_encoded_layer1, broad_phase_layer1, object_layer1);
 
 	return table.should_collide(broad_phase_layer1, p_broad_phase_layer2);
+}
+
+JPH::ObjectLayer JoltLayerMapper::allocate_object_layer(uint64_t p_collision) {
+	const JPH::ObjectLayer new_object_layer = next_object_layer++;
+
+	collisions_by_layer.resize(new_object_layer + 1);
+	collisions_by_layer[new_object_layer] = p_collision;
+
+	layers_by_collision[p_collision] = new_object_layer;
+
+	return new_object_layer;
 }
 
 static_assert(sizeof(JPH::ObjectLayer) == 2);
