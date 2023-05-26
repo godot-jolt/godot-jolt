@@ -265,10 +265,13 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_TARGET_VELOCITY: {
 			motor_velocity[axis_ang] = p_value;
 
+			// HACK(mihe): We're forced to flip the direction of these to match Godot Physics. This
+			// does mean that the velocity direction is inconsistent with the velocity direction for
+			// things like hinge joints.
 			jolt_constraint->SetTargetAngularVelocityCS(
-				{(float)motor_velocity[AXIS_ANGULAR_X],
-				 (float)motor_velocity[AXIS_ANGULAR_Y],
-				 (float)motor_velocity[AXIS_ANGULAR_Z]}
+				{-(float)motor_velocity[AXIS_ANGULAR_X],
+				 -(float)motor_velocity[AXIS_ANGULAR_Y],
+				 -(float)motor_velocity[AXIS_ANGULAR_Z]}
 			);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_FORCE_LIMIT: {
@@ -518,10 +521,13 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 		 (float)motor_velocity[AXIS_LINEAR_Z]}
 	);
 
+	// HACK(mihe): We're forced to flip the direction of these to match Godot Physics. This does
+	// mean that the velocity direction is inconsistent with the velocity direction for things like
+	// hinge joints.
 	jolt_constraint->SetTargetAngularVelocityCS(
-		{(float)motor_velocity[AXIS_ANGULAR_X],
-		 (float)motor_velocity[AXIS_ANGULAR_Y],
-		 (float)motor_velocity[AXIS_ANGULAR_Z]}
+		{-(float)motor_velocity[AXIS_ANGULAR_X],
+		 -(float)motor_velocity[AXIS_ANGULAR_Y],
+		 -(float)motor_velocity[AXIS_ANGULAR_Z]}
 	);
 
 	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
