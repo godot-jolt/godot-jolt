@@ -2,6 +2,7 @@
 
 #include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_body_impl_3d.hpp"
+#include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
 namespace {
@@ -126,7 +127,7 @@ void JoltContactListener3D::update_contacts(
 		collision,
 		p_settings.mCombinedFriction,
 		p_settings.mCombinedRestitution,
-		1.0f,
+		JoltProjectSettings::get_bounce_velocity_threshold(),
 		5
 	);
 
