@@ -41,7 +41,6 @@ should not be relied upon if determinism is a hard requirement.
 - `SoftBody3D` is not supported
 - `WorldBoundaryShape3D` is not supported
 - `StaticBody3D` does not support "constant velocities"
-- Custom integrators are not supported
 - The physics server is not thread-safe (yet)
 - Memory usage is not reflected in Godot's performance monitors (yet)
 

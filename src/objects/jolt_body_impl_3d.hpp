@@ -54,6 +54,10 @@ public:
 		force_integration_userdata = p_userdata;
 	}
 
+	bool has_custom_integrator() const { return custom_integrator; }
+
+	void set_custom_integrator(bool p_enabled, bool p_lock = true);
+
 	bool is_sleeping(bool p_lock = true) const;
 
 	void set_is_sleeping(bool p_enabled, bool p_lock = true);
@@ -202,9 +206,9 @@ public:
 
 	void set_angular_damp(float p_damp, bool p_lock = true);
 
-	float get_total_linear_damp(bool p_lock = true) const;
+	float get_total_linear_damp() const { return total_linear_damp; }
 
-	float get_total_angular_damp(bool p_lock = true) const;
+	float get_total_angular_damp() const { return total_angular_damp; }
 
 	float get_collision_priority() const { return collision_priority; }
 
@@ -293,6 +297,10 @@ private:
 
 	float angular_damp = 0.0f;
 
+	float total_linear_damp = 0.0f;
+
+	float total_angular_damp = 0.0f;
+
 	float collision_priority = 1.0f;
 
 	int32_t contact_count = 0;
@@ -300,4 +308,6 @@ private:
 	uint32_t locked_axes = 0;
 
 	bool custom_center_of_mass = false;
+
+	bool custom_integrator = false;
 };

@@ -11,6 +11,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Changed the direction of `Generic6DOFJoint` angular motors to match Godot Physics
 
+### Added
+
+- Added support for custom integrators
+
 ## [0.1.0] - 2023-05-24
 
 Initial release.
