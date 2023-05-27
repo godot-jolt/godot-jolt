@@ -181,6 +181,33 @@ JPH::BroadPhaseLayer JoltBodyImpl3D::get_broad_phase_layer() const {
 	}
 }
 
+void JoltBodyImpl3D::set_custom_integrator(bool p_enabled, bool p_lock) {
+	custom_integrator = p_enabled;
+
+	if (space == nullptr) {
+		motion_changed(p_lock);
+		return;
+	}
+
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
+
+	body->ResetForce();
+	body->ResetTorque();
+
+	JPH::MotionProperties& motion_properties = *body->GetMotionPropertiesUnchecked();
+
+	if (custom_integrator) {
+		motion_properties.SetLinearDamping(0.0f);
+		motion_properties.SetAngularDamping(0.0f);
+	} else {
+		motion_properties.SetLinearDamping(total_linear_damp);
+		motion_properties.SetAngularDamping(total_angular_damp);
+	}
+
+	motion_changed(false);
+}
+
 bool JoltBodyImpl3D::is_sleeping(bool p_lock) const {
 	if (space == nullptr) {
 		// HACK(mihe): Since `BODY_STATE_TRANSFORM` will be set right after creation it's more or
@@ -401,7 +428,7 @@ void JoltBodyImpl3D::reset_mass_properties(bool p_lock) {
 void JoltBodyImpl3D::apply_force(const Vector3& p_force, const Vector3& p_position, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
-	if (p_force == Vector3()) {
+	if (custom_integrator || p_force == Vector3()) {
 		return;
 	}
 
@@ -416,7 +443,7 @@ void JoltBodyImpl3D::apply_force(const Vector3& p_force, const Vector3& p_positi
 void JoltBodyImpl3D::apply_central_force(const Vector3& p_force, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
-	if (p_force == Vector3()) {
+	if (custom_integrator || p_force == Vector3()) {
 		return;
 	}
 
@@ -465,7 +492,7 @@ void JoltBodyImpl3D::apply_central_impulse(const Vector3& p_impulse, bool p_lock
 void JoltBodyImpl3D::apply_torque(const Vector3& p_torque, bool p_lock) {
 	ERR_FAIL_NULL(space);
 
-	if (p_torque == Vector3()) {
+	if (custom_integrator || p_torque == Vector3()) {
 		return;
 	}
 
@@ -675,12 +702,14 @@ void JoltBodyImpl3D::integrate_forces(float p_step, bool p_lock) {
 
 	gravity *= motion_properties.GetGravityFactor();
 
-	motion_properties.SetLinearVelocityClamped(
-		motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
-	);
+	if (!custom_integrator) {
+		motion_properties.SetLinearVelocityClamped(
+			motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
+		);
 
-	jolt_body->AddForce(to_jolt(constant_force));
-	jolt_body->AddTorque(to_jolt(constant_torque));
+		jolt_body->AddForce(to_jolt(constant_force));
+		jolt_body->AddTorque(to_jolt(constant_torque));
+	}
 }
 
 void JoltBodyImpl3D::call_queries() {
@@ -929,24 +958,6 @@ void JoltBodyImpl3D::set_angular_damp(float p_damp, bool p_lock) {
 	update_damp(p_lock);
 }
 
-float JoltBodyImpl3D::get_total_linear_damp(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
-
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return body->GetMotionPropertiesUnchecked()->GetLinearDamping();
-}
-
-float JoltBodyImpl3D::get_total_angular_damp(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
-
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return body->GetMotionPropertiesUnchecked()->GetAngularDamping();
-}
-
 bool JoltBodyImpl3D::is_axis_locked(PhysicsServer3D::BodyAxis p_axis) const {
 	return (locked_axes & (uint32_t)p_axis) != 0;
 }
@@ -1049,8 +1060,8 @@ void JoltBodyImpl3D::update_damp(bool p_lock) {
 		return;
 	}
 
-	float total_linear_damp = 0.0;
-	float total_angular_damp = 0.0;
+	total_linear_damp = 0.0;
+	total_angular_damp = 0.0;
 
 	bool linear_damp_done = linear_damp_mode == PhysicsServer3D::BODY_DAMP_MODE_REPLACE;
 	bool angular_damp_done = angular_damp_mode == PhysicsServer3D::BODY_DAMP_MODE_REPLACE;
@@ -1104,10 +1115,14 @@ void JoltBodyImpl3D::update_damp(bool p_lock) {
 	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(jolt_body.is_invalid());
 
-	JPH::MotionProperties& motion_properties = *jolt_body->GetMotionPropertiesUnchecked();
+	if (!custom_integrator) {
+		JPH::MotionProperties& motion_properties = *jolt_body->GetMotionPropertiesUnchecked();
 
-	motion_properties.SetLinearDamping(total_linear_damp);
-	motion_properties.SetAngularDamping(total_angular_damp);
+		motion_properties.SetLinearDamping(total_linear_damp);
+		motion_properties.SetAngularDamping(total_angular_damp);
+	}
+
+	motion_changed(false);
 }
 
 void JoltBodyImpl3D::update_axes_constraint(bool p_lock) {

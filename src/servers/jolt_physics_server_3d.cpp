@@ -924,11 +924,11 @@ double JoltPhysicsServer3D::_body_get_contacts_reported_depth_threshold(
 	return 0.0;
 }
 
-void JoltPhysicsServer3D::_body_set_omit_force_integration(
-	[[maybe_unused]] const RID& p_body,
-	bool p_enable
-) {
-	ERR_FAIL_COND_MSG(p_enable, "Custom integrators are not supported by Godot Jolt.");
+void JoltPhysicsServer3D::_body_set_omit_force_integration(const RID& p_body, bool p_enable) {
+	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_custom_integrator(p_enable);
 }
 
 bool JoltPhysicsServer3D::_body_is_omitting_force_integration([[maybe_unused]] const RID& p_body
