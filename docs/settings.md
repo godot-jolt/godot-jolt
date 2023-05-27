@@ -243,6 +243,14 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Solver</td>
+      <td>Bounce Velocity Threshold</td>
+      <td>
+        The minimum velocity needed before a collision can be elastic.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Solver</td>
       <td>Contact Speculative Distance</td>
       <td>
         Radius around objects, inside which speculative contact points will be detected.

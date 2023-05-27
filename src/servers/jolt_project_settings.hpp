@@ -24,6 +24,8 @@ public:
 
 	static float get_position_correction();
 
+	static float get_bounce_velocity_threshold();
+
 	static float get_contact_distance();
 
 	static float get_contact_penetration();

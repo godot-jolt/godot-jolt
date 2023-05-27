@@ -14,6 +14,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Added support for custom integrators
+- Added new project setting "Bounce Velocity Threshold"
 
 ## [0.1.0] - 2023-05-24
 
