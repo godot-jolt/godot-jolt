@@ -54,6 +54,24 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	physics_system->SetPhysicsSettings(settings);
 	physics_system->SetGravity(JPH::Vec3::sZero());
 	physics_system->SetContactListener(contact_listener);
+
+	physics_system->SetCombineFriction(
+		[](const JPH::Body& p_body1,
+		   [[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id1,
+		   const JPH::Body& p_body2,
+		   [[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id2) {
+			return abs(min(p_body1.GetFriction(), p_body2.GetFriction()));
+		}
+	);
+
+	physics_system->SetCombineRestitution(
+		[](const JPH::Body& p_body1,
+		   [[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id1,
+		   const JPH::Body& p_body2,
+		   [[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id2) {
+			return clamp(p_body1.GetRestitution() + p_body2.GetRestitution(), 0.0f, 1.0f);
+		}
+	);
 }
 
 JoltSpace3D::~JoltSpace3D() {

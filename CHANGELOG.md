@@ -15,6 +15,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Added support for custom integrators
 - Added new project setting "Bounce Velocity Threshold"
+- Added support for "Rough" physics material property
+- Added support for "Absorbent" physics material property
+
+### Fixed
+
+- Fixed issue where friction values weren't combined in the same way as Godot Physics
+- Fixed issue where bounce values weren't combined in the same way as Godot Physics
+- Fixed issue where setting friction on an already entered body would instead set bounce
 
 ## [0.1.0] - 2023-05-24
 
