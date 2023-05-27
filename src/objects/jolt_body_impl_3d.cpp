@@ -843,15 +843,6 @@ float JoltBodyImpl3D::get_bounce(bool p_lock) const {
 }
 
 void JoltBodyImpl3D::set_bounce(float p_bounce, bool p_lock) {
-	if (p_bounce < 0.0f || p_bounce > 1.0f) {
-		WARN_PRINT(
-			"Bounce values less than 0 or greater than 1 are not supported by Godot Jolt. "
-			"Values outside this range will be clamped."
-		);
-
-		p_bounce = clamp(p_bounce, 0.0f, 1.0f);
-	}
-
 	if (space == nullptr) {
 		jolt_settings->mRestitution = p_bounce;
 		return;
@@ -875,15 +866,6 @@ float JoltBodyImpl3D::get_friction(bool p_lock) const {
 }
 
 void JoltBodyImpl3D::set_friction(float p_friction, bool p_lock) {
-	if (p_friction < 0.0f) {
-		WARN_PRINT(
-			"Friction values less than 0 are not supported by Godot Jolt. "
-			"Values outside this range will be clamped."
-		);
-
-		p_friction = 0;
-	}
-
 	if (space == nullptr) {
 		jolt_settings->mFriction = p_friction;
 		return;
@@ -892,7 +874,7 @@ void JoltBodyImpl3D::set_friction(float p_friction, bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->SetRestitution(p_friction);
+	body->SetFriction(p_friction);
 }
 
 float JoltBodyImpl3D::get_gravity_scale(bool p_lock) const {
