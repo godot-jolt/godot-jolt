@@ -138,6 +138,10 @@ public:
 
 	void set_constant_torque(const Vector3& p_torque, bool p_lock = true);
 
+	Vector3 get_linear_surface_velocity() const { return linear_surface_velocity; }
+
+	Vector3 get_angular_surface_velocity() const { return angular_surface_velocity; }
+
 	void add_collision_exception(const RID& p_excepted_body, bool p_lock = true);
 
 	void remove_collision_exception(const RID& p_excepted_body, bool p_lock = true);
@@ -274,6 +278,10 @@ private:
 	Vector3 constant_force;
 
 	Vector3 constant_torque;
+
+	Vector3 linear_surface_velocity;
+
+	Vector3 angular_surface_velocity;
 
 	Vector3 gravity;
 

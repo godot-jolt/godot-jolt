@@ -40,7 +40,6 @@ should not be relied upon if determinism is a hard requirement.
 - Joints do not support springs or soft limits (yet)
 - `SoftBody3D` is not supported
 - `WorldBoundaryShape3D` is not supported
-- `StaticBody3D` does not support "constant velocities"
 - The physics server is not thread-safe (yet)
 - Memory usage is not reflected in Godot's performance monitors (yet)
 

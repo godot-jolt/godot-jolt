@@ -307,6 +307,12 @@ Basis JoltBodyImpl3D::get_inverse_inertia_tensor(bool p_lock) const {
 }
 
 void JoltBodyImpl3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock) {
+	if (is_static() || is_kinematic()) {
+		linear_surface_velocity = p_velocity;
+		motion_changed(p_lock);
+		return;
+	}
+
 	if (space == nullptr) {
 		jolt_settings->mLinearVelocity = to_jolt(p_velocity);
 		motion_changed(p_lock);
@@ -322,6 +328,12 @@ void JoltBodyImpl3D::set_linear_velocity(const Vector3& p_velocity, bool p_lock)
 }
 
 void JoltBodyImpl3D::set_angular_velocity(const Vector3& p_velocity, bool p_lock) {
+	if (is_static() || is_kinematic()) {
+		angular_surface_velocity = p_velocity;
+		motion_changed(p_lock);
+		return;
+	}
+
 	if (space == nullptr) {
 		jolt_settings->mAngularVelocity = to_jolt(p_velocity);
 		motion_changed(p_lock);
@@ -788,6 +800,9 @@ void JoltBodyImpl3D::set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock) {
 		body->SetLinearVelocity(JPH::Vec3::sZero());
 		body->SetAngularVelocity(JPH::Vec3::sZero());
 	}
+
+	linear_surface_velocity = Vector3();
+	angular_surface_velocity = Vector3();
 
 	mode_changed(false);
 }
