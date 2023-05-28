@@ -1,5 +1,11 @@
 #include "jolt_cylinder_shape_impl_3d.hpp"
 
+namespace {
+
+constexpr float MARGIN_FACTOR = 0.08f;
+
+} // namespace
+
 Variant JoltCylinderShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["height"] = height;
@@ -43,27 +49,10 @@ String JoltCylinderShapeImpl3D::to_string() const {
 }
 
 JPH::ShapeRefC JoltCylinderShapeImpl3D::build() const {
-	ERR_FAIL_COND_D_MSG(
-		height < margin * 2.0f,
-		vformat(
-			"Failed to build cylinder shape with %s. "
-			"Its height must be at least double that of its margin.",
-			to_string()
-		)
-	);
-
-	ERR_FAIL_COND_D_MSG(
-		radius < margin,
-		vformat(
-			"Failed to build cylinder shape with %s. "
-			"Its radius must be equal to or greater than its margin.",
-			to_string()
-		)
-	);
-
 	const float half_height = height / 2.0f;
+	const float shrunk_margin = min(margin, half_height * MARGIN_FACTOR, radius * MARGIN_FACTOR);
 
-	const JPH::CylinderShapeSettings shape_settings(half_height, radius, margin);
+	const JPH::CylinderShapeSettings shape_settings(half_height, radius, shrunk_margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
