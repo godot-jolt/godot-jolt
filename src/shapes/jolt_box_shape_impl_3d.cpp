@@ -1,5 +1,11 @@
 #include "jolt_box_shape_impl_3d.hpp"
 
+namespace {
+
+constexpr float MARGIN_FACTOR = 0.08f;
+
+} // namespace
+
 Variant JoltBoxShapeImpl3D::get_data() const {
 	return half_extents;
 }
@@ -31,18 +37,10 @@ String JoltBoxShapeImpl3D::to_string() const {
 }
 
 JPH::ShapeRefC JoltBoxShapeImpl3D::build() const {
-	const float shortest_axis = half_extents[half_extents.min_axis_index()];
+	const float min_half_extent = half_extents[half_extents.min_axis_index()];
+	const float shrunk_margin = min(margin, min_half_extent * MARGIN_FACTOR);
 
-	ERR_FAIL_COND_D_MSG(
-		shortest_axis <= margin,
-		vformat(
-			"Failed to build box shape with %s. "
-			"Its half extents must be greater than its margin.",
-			to_string()
-		)
-	);
-
-	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), margin);
+	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), shrunk_margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(

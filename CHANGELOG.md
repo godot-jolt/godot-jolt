@@ -10,6 +10,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Changed the direction of `Generic6DOFJoint` angular motors to match Godot Physics
+- Changed shape margins to be interpreted as an upper bound. They are now scaled according to the
+  shape's size, which removes the ability to have an incorrect margin, thereby removing any warnings
+  about that.
 
 ### Added
 
