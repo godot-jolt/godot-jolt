@@ -243,7 +243,18 @@ double JoltPhysicsDirectBodyState3D::_get_step() const {
 }
 
 void JoltPhysicsDirectBodyState3D::_integrate_forces() {
-	ERR_PRINT("Manual force integration is not supported by Godot Jolt.");
+	const auto step = (float)_get_step();
+
+	Vector3 linear_velocity = _get_linear_velocity();
+	Vector3 angular_velocity = _get_angular_velocity();
+
+	linear_velocity += _get_total_gravity() * step;
+
+	linear_velocity *= max(1.0f - (float)_get_total_linear_damp() * step, 0.0f);
+	angular_velocity *= max(1.0f - (float)_get_total_angular_damp() * step, 0.0f);
+
+	_set_linear_velocity(linear_velocity);
+	_set_angular_velocity(angular_velocity);
 }
 
 PhysicsDirectSpaceState3D* JoltPhysicsDirectBodyState3D::_get_space_state() {
