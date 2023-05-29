@@ -194,164 +194,204 @@ void JoltSliderJointImpl3D::set_param(PhysicsServer3D::SliderJointParam p_param,
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_LIMIT_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint linear limit softness is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_RESTITUTION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_LIMIT_RESTITUTION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint linear limit restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_DAMPING: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_LIMIT_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint linear limit damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_MOTION_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_MOTION_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint linear motion softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_MOTION_RESTITUTION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_MOTION_RESTITUTION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint linear motion restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_MOTION_DAMPING: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_MOTION_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint linear motion damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_ORTHOGONAL_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_ORTHO_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint linear ortho softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_ORTHOGONAL_RESTITUTION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_ORTHO_RESTITUTION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint linear ortho restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_ORTHOGONAL_DAMPING: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_ORTHO_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint linear ortho damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_LIMIT_UPPER: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_LIMIT_UPPER)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular limits are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-					"Try using Generic6DOFJoint3D instead."
-				);
+					"Try using Generic6DOFJoint3D instead. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_LIMIT_LOWER: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_LIMIT_LOWER)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular limits are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-					"Try using Generic6DOFJoint3D instead."
-				);
+					"Try using Generic6DOFJoint3D instead. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_LIMIT_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular limit softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_LIMIT_RESTITUTION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_LIMIT_RESTITUTION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular limit restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_LIMIT_DAMPING: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_LIMIT_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular limit damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_MOTION_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_MOTION_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular motion softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_MOTION_RESTITUTION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_MOTION_RESTITUTION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular motion restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_MOTION_DAMPING: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_MOTION_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular motion damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_ORTHOGONAL_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_ORTHO_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular ortho softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_ORTHOGONAL_RESTITUTION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_ORTHO_RESTITUTION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular ortho restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_ANGULAR_ORTHOGONAL_DAMPING: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_ORTHO_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Slider joint angular ortho damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
-				);
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		default: {
@@ -368,17 +408,21 @@ void JoltSliderJointImpl3D::limits_changed() {
 	constexpr double basically_neg_zero = -CMP_EPSILON;
 
 	if (limit_lower > basically_pos_zero) {
-		WARN_PRINT(
+		WARN_PRINT(vformat(
 			"Slider joint lower distances greater than 0 are not supported by Godot Jolt. "
-			"Values outside this range will be clamped."
-		);
+			"Values outside this range will be clamped. "
+			"This joint connects %s.",
+			owners_to_string()
+		));
 	}
 
 	if (limit_upper < basically_neg_zero) {
-		WARN_PRINT(
+		WARN_PRINT(vformat(
 			"Slider joint upper distances less than 0 are not supported by Godot Jolt. "
-			"Values outside this range will be clamped."
-		);
+			"Values outside this range will be clamped. "
+			"This joint connects %s.",
+			owners_to_string()
+		));
 	}
 
 	const float limit_lower_clamped = min((float)limit_lower, 0.0f);

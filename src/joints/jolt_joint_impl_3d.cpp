@@ -54,3 +54,11 @@ void JoltJointImpl3D::set_collision_disabled(bool p_disabled) {
 		physics_server->body_remove_collision_exception(body_b->get_rid(), body_a->get_rid());
 	}
 }
+
+String JoltJointImpl3D::owners_to_string() const {
+	return vformat(
+		"'%s' and '%s'",
+		body_a != nullptr ? body_a->to_string() : "<unknown>",
+		body_b != nullptr ? body_b->to_string() : "<World>"
+	);
+}

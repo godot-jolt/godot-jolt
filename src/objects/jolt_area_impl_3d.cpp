@@ -98,34 +98,42 @@ void JoltAreaImpl3D::set_param(PhysicsServer3D::AreaParameter p_param, const Var
 		} break;
 		case PhysicsServer3D::AREA_PARAM_WIND_FORCE_MAGNITUDE: {
 			if (!Math::is_equal_approx((double)p_value, DEFAULT_WIND_FORCE_MAGNITUDE)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
+					"Invalid wind force magnitude for '%s'. "
 					"Area wind force magnitude is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored.",
+					to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::AREA_PARAM_WIND_SOURCE: {
 			if (!((Vector3)p_value).is_equal_approx(DEFAULT_WIND_SOURCE)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
+					"Invalid wind source for '%s'. "
 					"Area wind source is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored.",
+					to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::AREA_PARAM_WIND_DIRECTION: {
 			if (!((Vector3)p_value).is_equal_approx(DEFAULT_WIND_DIRECTION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
+					"Invalid wind direction for '%s'. "
 					"Area wind direction is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored.",
+					to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::AREA_PARAM_WIND_ATTENUATION_FACTOR: {
 			if (!Math::is_equal_approx((double)p_value, DEFAULT_WIND_ATTENUATION_FACTOR)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
+					"Invalid wind attenuation for '%s'. "
 					"Area wind attenuation is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored.",
+					to_string()
+				));
 			}
 		} break;
 		default: {

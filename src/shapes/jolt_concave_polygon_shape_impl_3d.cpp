@@ -46,8 +46,10 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
 		vertex_count < 3,
 		vformat(
 			"Failed to build concave polygon shape with %s. "
-			"It must have a vertex count of at least 3.",
-			to_string()
+			"It must have a vertex count of at least 3. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -55,8 +57,10 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
 		excess_vertex_count != 0,
 		vformat(
 			"Failed to build concave polygon shape with %s. "
-			"It must have a vertex count that is divisible by 3.",
-			to_string()
+			"It must have a vertex count that is divisible by 3. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -93,9 +97,11 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build concave polygon shape with %s. "
-			"It returned the following error: '%s'.",
+			"It returned the following error: '%s'. "
+			"This shape belongs to %s.",
 			to_string(),
-			to_godot(shape_result.GetError())
+			to_godot(shape_result.GetError()),
+			owners_to_string()
 		)
 	);
 

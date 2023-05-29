@@ -118,6 +118,8 @@ public:
 
 	virtual bool generates_contacts() const = 0;
 
+	String to_string() const;
+
 protected:
 	friend class JoltShapeImpl3D;
 

@@ -25,8 +25,10 @@ JPH::ShapeRefC JoltSphereShapeImpl3D::build() const {
 		radius <= 0.0f,
 		vformat(
 			"Failed to build sphere shape with %s. "
-			"Its radius must be greater than 0.",
-			to_string()
+			"Its radius must be greater than 0. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -37,9 +39,11 @@ JPH::ShapeRefC JoltSphereShapeImpl3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build sphere shape with %s. "
-			"It returned the following error: '%s'.",
+			"It returned the following error: '%s'. "
+			"This shape belongs to %s.",
 			to_string(),
-			to_godot(shape_result.GetError())
+			to_godot(shape_result.GetError()),
+			owners_to_string()
 		)
 	);
 

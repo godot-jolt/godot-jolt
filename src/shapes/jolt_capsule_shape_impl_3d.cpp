@@ -37,8 +37,10 @@ JPH::ShapeRefC JoltCapsuleShapeImpl3D::build() const {
 		radius <= 0.0f,
 		vformat(
 			"Failed to build capsule shape with %s. "
-			"Its radius must be greater than 0.",
-			to_string()
+			"Its radius must be greater than 0. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -46,8 +48,10 @@ JPH::ShapeRefC JoltCapsuleShapeImpl3D::build() const {
 		height <= 0.0f,
 		vformat(
 			"Failed to build capsule shape with %s. "
-			"Its height must be greater than 0.",
-			to_string()
+			"Its height must be greater than 0. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -55,8 +59,10 @@ JPH::ShapeRefC JoltCapsuleShapeImpl3D::build() const {
 		height < radius * 2.0f,
 		vformat(
 			"Failed to build capsule shape with %s. "
-			"Its height must be at least double that of its radius.",
-			to_string()
+			"Its height must be at least double that of its radius. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -70,9 +76,11 @@ JPH::ShapeRefC JoltCapsuleShapeImpl3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build capsule shape with %s. "
-			"It returned the following error: '%s'.",
+			"It returned the following error: '%s'. "
+			"This shape belongs to %s.",
 			to_string(),
-			to_godot(shape_result.GetError())
+			to_godot(shape_result.GetError()),
+			owners_to_string()
 		)
 	);
 

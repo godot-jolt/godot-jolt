@@ -46,8 +46,10 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 		height_count < 16,
 		vformat(
 			"Failed to build height map shape with %s. "
-			"Height count must be at least 16.",
-			to_string()
+			"Height count must be at least 16. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -55,8 +57,10 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 		height_count != width * depth,
 		vformat(
 			"Failed to build height map shape with %s. "
-			"Height count must be the product of width and depth.",
-			to_string()
+			"Height count must be the product of width and depth. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -64,8 +68,10 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 		width != depth,
 		vformat(
 			"Failed to build height map shape with %s. "
-			"Width must be equal to depth.",
-			to_string()
+			"Width must be equal to depth. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -73,8 +79,10 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 		!is_power_of_2((uint32_t)width),
 		vformat(
 			"Failed to build height map shape with %s. "
-			"Width/depth must be a power-of-two.",
-			to_string()
+			"Width/depth must be a power-of-two. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -99,9 +107,11 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build height map shape with %s. "
-			"It returned the following error: '%s'.",
+			"It returned the following error: '%s'. "
+			"This shape belongs to %s.",
 			to_string(),
-			to_godot(shape_result.GetError())
+			to_godot(shape_result.GetError()),
+			owners_to_string()
 		)
 	);
 

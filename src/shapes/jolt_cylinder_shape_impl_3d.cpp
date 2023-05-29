@@ -59,9 +59,11 @@ JPH::ShapeRefC JoltCylinderShapeImpl3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build cylinder shape with %s. "
-			"It returned the following error: '%s'.",
+			"It returned the following error: '%s'. "
+			"This shape belongs to %s.",
 			to_string(),
-			to_godot(shape_result.GetError())
+			to_godot(shape_result.GetError()),
+			owners_to_string()
 		)
 	);
 
