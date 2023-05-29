@@ -30,6 +30,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fixed issue where setting friction on an already entered body would instead set bounce
 - Fixed issue where setting velocities on kinematic bodies would actually move them instead of
   applying a surface velocity
+- Fixed issue where `RigidBody3D` would de-sync from its actual physics body after freezing
 
 ## [0.1.0] - 2023-05-24
 
