@@ -106,6 +106,13 @@ private:
 
 	void flush_area_exits();
 
+	void apply_surface_velocities(
+		const JPH::Body& p_body1,
+		const JPH::Body& p_body2,
+		const JPH::ContactManifold& p_manifold,
+		JPH::ContactSettings& p_settings
+	);
+
 #ifdef GDJ_CONFIG_EDITOR
 	void add_debug_contacts(const JPH::ContactManifold& p_manifold);
 #endif // GDJ_CONFIG_EDITOR
