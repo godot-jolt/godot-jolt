@@ -34,6 +34,8 @@ public:
 	void set_collision_disabled(bool p_disabled);
 
 protected:
+	String owners_to_string() const;
+
 	RID rid;
 
 	JoltSpace3D* space = nullptr;

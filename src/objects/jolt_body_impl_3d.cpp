@@ -923,10 +923,12 @@ void JoltBodyImpl3D::set_gravity_scale(float p_scale, bool p_lock) {
 
 void JoltBodyImpl3D::set_linear_damp(float p_damp, bool p_lock) {
 	if (p_damp < 0.0f) {
-		WARN_PRINT(
+		WARN_PRINT(vformat(
+			"Invalid linear damp for '%s'. "
 			"Linear damp values less than 0 are not supported by Godot Jolt. "
-			"Values outside this range will be clamped."
-		);
+			"Values outside this range will be clamped.",
+			to_string()
+		));
 
 		p_damp = 0;
 	}
@@ -942,10 +944,12 @@ void JoltBodyImpl3D::set_linear_damp(float p_damp, bool p_lock) {
 
 void JoltBodyImpl3D::set_angular_damp(float p_damp, bool p_lock) {
 	if (p_damp < 0.0f) {
-		WARN_PRINT(
+		WARN_PRINT(vformat(
+			"Invalid angular damp for '%s'. "
 			"Angular damp values less than 0 are not supported by Godot Jolt. "
-			"Values outside this range will be clamped."
-		);
+			"Values outside this range will be clamped.",
+			to_string()
+		));
 
 		p_damp = 0;
 	}

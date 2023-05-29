@@ -154,26 +154,32 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_LIMIT_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint linear limit softness is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_RESTITUTION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_RESTITUTION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint linear restitution is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_DAMPING: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint linear damping is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_MOTOR_TARGET_VELOCITY: {
@@ -192,26 +198,32 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 		} break;
 		case 7: /* G6DOF_JOINT_LINEAR_SPRING_STIFFNESS */ {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_STIFFNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case 8: /* G6DOF_JOINT_LINEAR_SPRING_DAMPING */ {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case 9: /* G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT */ {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_EQUILIBRIUM_POINT)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LOWER_LIMIT: {
@@ -224,42 +236,52 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_LIMIT_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint angular limit softness is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_DAMPING: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint angular damping is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_RESTITUTION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_RESTITUTION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint angular restitution is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_FORCE_LIMIT: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_FORCE_LIMIT)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF angular force limit is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_ERP: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_ERP)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF angular ERP is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_TARGET_VELOCITY: {
@@ -281,26 +303,32 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 		} break;
 		case 19: /* G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS */ {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_STIFFNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case 20: /* G6DOF_JOINT_ANGULAR_SPRING_DAMPING */ {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_DAMPING)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case 21: /* G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT */ {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		default: {
@@ -364,18 +392,22 @@ void JoltGeneric6DOFJointImpl3D::set_flag(
 		} break;
 		case 2: /* G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING */ {
 			if (p_enabled) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case 3: /* G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING */ {
 			if (p_enabled) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_MOTOR: {

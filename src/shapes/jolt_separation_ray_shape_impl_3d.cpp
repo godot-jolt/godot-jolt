@@ -39,8 +39,10 @@ JPH::ShapeRefC JoltSeparationRayShapeImpl3D::build() const {
 		length <= 0.0f,
 		vformat(
 			"Failed to build separation ray shape with %s. "
-			"Its length must be greater than 0.",
-			to_string()
+			"Its length must be greater than 0. "
+			"This shape belongs to %s.",
+			to_string(),
+			owners_to_string()
 		)
 	);
 
@@ -51,9 +53,11 @@ JPH::ShapeRefC JoltSeparationRayShapeImpl3D::build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build separation ray shape with %s. "
-			"It returned the following error: '%s'.",
+			"It returned the following error: '%s'. "
+			"This shape belongs to %s.",
 			to_string(),
-			to_godot(shape_result.GetError())
+			to_godot(shape_result.GetError()),
+			owners_to_string()
 		)
 	);
 

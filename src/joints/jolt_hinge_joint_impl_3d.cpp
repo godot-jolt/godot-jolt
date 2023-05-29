@@ -127,10 +127,12 @@ void JoltHingeJointImpl3D::set_param(PhysicsServer3D::HingeJointParam p_param, d
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_BIAS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Hinge joint bias is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_UPPER: {
@@ -143,26 +145,32 @@ void JoltHingeJointImpl3D::set_param(PhysicsServer3D::HingeJointParam p_param, d
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LIMIT_BIAS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Hinge joint bias limit is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Hinge joint softness is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_RELAXATION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_RELAXATION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Hinge joint relaxation is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_TARGET_VELOCITY: {
@@ -235,17 +243,21 @@ void JoltHingeJointImpl3D::limits_changed() {
 		constexpr double basically_neg_pi = -Math_PI - CMP_EPSILON;
 
 		if (limit_lower < basically_neg_pi || limit_lower > basically_pos_zero) {
-			WARN_PRINT(
+			WARN_PRINT(vformat(
 				"Hinge joint lower limits less than -180º or greater than 0º are not supported by "
-				"Godot Jolt. Values outside this range will be clamped."
-			);
+				"Godot Jolt. Values outside this range will be clamped. "
+				"This joint connects %s.",
+				owners_to_string()
+			));
 		}
 
 		if (limit_upper < basically_neg_zero || limit_upper > basically_pos_pi) {
-			WARN_PRINT(
+			WARN_PRINT(vformat(
 				"Hinge joint upper limits less than 0º or greater than 180º are not supported by "
-				"Godot Jolt. Values outside this range will be clamped."
-			);
+				"Godot Jolt. Values outside this range will be clamped. "
+				"This joint connects %s.",
+				owners_to_string()
+			));
 		}
 
 		const float limit_lower_clamped = clamp((float)limit_lower, -JPH::JPH_PI, 0.0f);

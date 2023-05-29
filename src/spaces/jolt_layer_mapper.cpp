@@ -104,7 +104,14 @@ JPH::ObjectLayer JoltLayerMapper::to_object_layer(
 
 		ERR_FAIL_COND_D_MSG(
 			next_object_layer == object_layer_count,
-			vformat("Maximum number of object layers (%d) reached.", object_layer_count)
+			vformat(
+				"Maximum number of object layers (%d) reached. "
+				"This means there are %d combinations of collision layers and masks. "
+				"This should not happen under normal circumstances. "
+				"Consider reporting this issue.",
+				object_layer_count,
+				object_layer_count
+			)
 		);
 
 		object_layer = allocate_object_layer(collision);

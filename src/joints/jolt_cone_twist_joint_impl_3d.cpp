@@ -122,26 +122,32 @@ void JoltConeTwistJointImpl3D::set_param(
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_BIAS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Cone twist joint bias is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_SOFTNESS)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Cone twist joint softness is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. ",
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_RELAXATION: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_RELAXATION)) {
-				WARN_PRINT(
+				WARN_PRINT(vformat(
 					"Cone twist joint relaxation is not supported by Godot Jolt. "
-					"Any such value will be ignored."
-				);
+					"Any such value will be ignored. "
+					"This joint connects %s.",
+					owners_to_string()
+				));
 			}
 		} break;
 		default: {

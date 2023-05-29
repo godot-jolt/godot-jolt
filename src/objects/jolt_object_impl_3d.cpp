@@ -436,6 +436,11 @@ void JoltObjectImpl3D::post_step([[maybe_unused]] float p_step) {
 	previous_jolt_shape = nullptr;
 }
 
+String JoltObjectImpl3D::to_string() const {
+	Object* instance = ObjectDB::get_instance(instance_id);
+	return instance != nullptr ? instance->to_string() : "<unknown>";
+}
+
 JPH::ObjectLayer JoltObjectImpl3D::get_object_layer() const {
 	if (space == nullptr) {
 		return jolt_settings->mObjectLayer;
@@ -466,9 +471,10 @@ JPH::Body* JoltObjectImpl3D::create_end() {
 	ERR_FAIL_NULL_D_MSG(
 		body,
 		vformat(
-			"Failed to create Jolt body. "
+			"Failed to create Jolt body for '%s'. "
 			"Consider increasing maximum number of bodies in project settings. "
 			"Maximum number of bodies is currently set to %d.",
+			to_string(),
 			JoltProjectSettings::get_max_bodies()
 		)
 	);

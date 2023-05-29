@@ -1686,7 +1686,7 @@ void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
 	} else if (JoltSpace3D* space = space_owner.get_or_null(p_rid)) {
 		free_space(space);
 	} else {
-		ERR_FAIL_MSG("Invalid ID.");
+		ERR_FAIL_MSG("Failed to free RID: The specified RID has no owner.");
 	}
 }
 
