@@ -188,24 +188,6 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       <td>-</td>
     </tr>
     <tr>
-      <td>Kinematic</td>
-      <td>Recovery Iterations</td>
-      <td>
-        The number of iterations to run when resolving penetration during things like
-        <code>move_and_slide</code>.
-      </td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>Kinematic</td>
-      <td>Recovery Amount</td>
-      <td>
-        How much of the penetration to correct per iteration during things like
-        <code>move_and_slide</code>.
-      </td>
-      <td>-</td>
-    </tr>
-    <tr>
       <td>Continuous CD</td>
       <td>Movement Threshold</td>
       <td>
@@ -218,6 +200,24 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       <td>Max Penetration</td>
       <td>
         Percentage of its inner radius a body may penetrate another body whilst using CCD.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Kinematics</td>
+      <td>Recovery Iterations</td>
+      <td>
+        The number of iterations to run when resolving penetration during things like
+        <code>move_and_slide</code>.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Kinematics</td>
+      <td>Recovery Amount</td>
+      <td>
+        How much of the penetration to correct per iteration during things like
+        <code>move_and_slide</code>.
       </td>
       <td>-</td>
     </tr>

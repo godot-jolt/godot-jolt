@@ -45,12 +45,12 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What else is different?
 
-- Collision layers/masks behave like they did in Godot 3, meaning you can't have one-way collisions
+- Collision layers/masks behave like they did in Godot 3, meaning no asymmetrical collisions
 - Ray-casts will hit the back-faces of all shape types, not just concave polygons and height maps
 - Shape-casts should be more accurate, but their cost also scale with the cast distance
-- Manipulating a body's shape(s) while it's connected to a scene tree can be costly
+- Manipulating a body's shape(s) after it has entered a scene tree can be costly
 - Contact impulses are estimations and won't be accurate when colliding with multiple bodies
-- `Area3D` is not able to detect overlaps with `StaticBody3D`
+- `Area3D` is not able to detect overlaps with static bodies, including the static freeze mode
 - `HeightMapShape3D` only supports square height maps with dimensions that are power-of-two
 - Axis-locking is implemented using joints, which means a body can technically deviate a bit from
   its locked axes, but they do a better job of conserving energy
@@ -63,9 +63,9 @@ Also consider this note from Jolt's [documentation][jdc]:
 
 ## What versions of Godot are supported?
 
-Godot Jolt relies on the GDExtension API found in Godot 4 and as a result only supports the latest
-stable version of Godot 4. Any custom build or pre-release of Godot, such as a beta or release
-candidate, may be incompatible and is therefore not supported.
+Godot Jolt relies on the GDExtension API found in Godot 4 and only supports the latest stable
+version of Godot 4. Any custom build or pre-release of Godot, such as a beta or release candidate,
+may be incompatible and is therefore not supported.
 
 ## What platforms are supported?
 
