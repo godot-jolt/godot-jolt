@@ -722,10 +722,12 @@ void JoltBodyImpl3D::integrate_forces(float p_step, bool p_lock) {
 		jolt_body->AddForce(to_jolt(constant_force));
 		jolt_body->AddTorque(to_jolt(constant_torque));
 	}
+
+	sync_state = true;
 }
 
 void JoltBodyImpl3D::call_queries() {
-	if (force_integration_callback.is_valid()) {
+	if (is_rigid() && force_integration_callback.is_valid()) {
 		static thread_local Array arguments = []() {
 			Array array;
 			array.resize(2);
@@ -738,7 +740,7 @@ void JoltBodyImpl3D::call_queries() {
 		force_integration_callback.callv(arguments);
 	}
 
-	if (body_state_callback.is_valid()) {
+	if (sync_state && body_state_callback.is_valid()) {
 		static thread_local Array arguments = []() {
 			Array array;
 			array.resize(1);
@@ -748,6 +750,8 @@ void JoltBodyImpl3D::call_queries() {
 		arguments[0] = get_direct_state();
 
 		body_state_callback.callv(arguments);
+
+		sync_state = false;
 	}
 }
 

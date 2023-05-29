@@ -315,6 +315,8 @@ private:
 
 	uint32_t locked_axes = 0;
 
+	bool sync_state = false;
+
 	bool custom_center_of_mass = false;
 
 	bool custom_integrator = false;
