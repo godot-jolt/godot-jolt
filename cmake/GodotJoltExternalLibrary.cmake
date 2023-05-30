@@ -17,6 +17,7 @@ function(gdj_add_external_library library_name library_configs)
 	set(multi_value_args
 		INCLUDE_DIRECTORIES
 		COMPILE_DEFINITIONS
+		ENVIRONMENT
 		CMAKE_CACHE_ARGS
 	)
 
@@ -154,6 +155,36 @@ function(gdj_add_external_library library_name library_configs)
 		string(APPEND output_name_current $<${condition}:${output_name}>)
 	endforeach()
 
+	# Set up the CMake configure command, which we need to provide explicitly in order to use CMake
+	# in the `env` command mode, allowing us to set environment variables for the external project
+
+	set(configure_command
+		${CMAKE_COMMAND}
+			-E env ${arg_ENVIRONMENT}
+		${CMAKE_COMMAND}
+			-S <SOURCE_DIR><SOURCE_SUBDIR>
+			-B <BINARY_DIR>
+			-G ${CMAKE_GENERATOR}
+	)
+
+	if(CMAKE_GENERATOR_TOOLSET)
+		list(APPEND configure_command
+			-T ${CMAKE_GENERATOR_TOOLSET}
+		)
+	endif()
+
+	if(CMAKE_GENERATOR_PLATFORM)
+		list(APPEND configure_command
+			-A ${CMAKE_GENERATOR_PLATFORM}
+		)
+	endif()
+
+	if(CMAKE_GENERATOR_INSTANCE)
+		list(APPEND configure_command
+			"-DCMAKE_GENERATOR_INSTANCE:INTERNAL=${CMAKE_GENERATOR_INSTANCE}"
+		)
+	endif()
+
 	# Set up the CMake arguments, most of which go through an "initial cache file" in order to defer
 	# evaluation of generator expressions to the external project
 
@@ -243,7 +274,9 @@ function(gdj_add_external_library library_name library_configs)
 		GIT_REPOSITORY ${arg_GIT_REPOSITORY}
 		GIT_TAG ${arg_GIT_COMMIT}
 		SOURCE_SUBDIR ${arg_SOURCE_SUBDIR}
-		CMAKE_ARGS -C ${cache_file} ${build_type_arg}
+		CONFIGURE_COMMAND ${configure_command}
+			-C ${cache_file}
+			${build_type_arg}
 		BUILD_COMMAND ${CMAKE_COMMAND}
 			--build <BINARY_DIR>
 			--config ${library_config_current}
