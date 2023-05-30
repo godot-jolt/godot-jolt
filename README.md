@@ -40,6 +40,7 @@ should not be relied upon if determinism is a hard requirement.
 - Joints do not support springs or soft limits (yet)
 - `SoftBody3D` is not supported
 - `WorldBoundaryShape3D` is not supported
+- `Area3D` is not able to detect overlaps with static bodies, including the static freeze mode
 - The physics server is not thread-safe (yet)
 - Memory usage is not reflected in Godot's performance monitors (yet)
 
@@ -50,7 +51,6 @@ should not be relied upon if determinism is a hard requirement.
 - Shape-casts should be more accurate, but their cost also scale with the cast distance
 - Manipulating a body's shape(s) after it has entered a scene tree can be costly
 - Contact impulses are estimations and won't be accurate when colliding with multiple bodies
-- `Area3D` is not able to detect overlaps with static bodies, including the static freeze mode
 - `HeightMapShape3D` only supports square height maps with dimensions that are power-of-two
 - Axis-locking is implemented using joints, which means a body can technically deviate a bit from
   its locked axes, but they do a better job of conserving energy
