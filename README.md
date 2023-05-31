@@ -42,6 +42,7 @@ should not be relied upon if determinism is a hard requirement.
 - `WorldBoundaryShape3D` is not supported
 - `Area3D` is not able to detect overlaps with static bodies, including the static freeze mode
 - The physics server is not thread-safe (yet)
+- Double-precision builds of Godot are not supported (yet)
 - Memory usage is not reflected in Godot's performance monitors (yet)
 
 ## What else is different?
