@@ -65,7 +65,11 @@ double JoltHingeJointImpl3D::get_param(PhysicsServer3D::HingeJointParam p_param)
 	}
 }
 
-void JoltHingeJointImpl3D::set_param(PhysicsServer3D::HingeJointParam p_param, double p_value) {
+void JoltHingeJointImpl3D::set_param(
+	PhysicsServer3D::HingeJointParam p_param,
+	double p_value,
+	bool p_lock
+) {
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_BIAS)) {
@@ -79,11 +83,11 @@ void JoltHingeJointImpl3D::set_param(PhysicsServer3D::HingeJointParam p_param, d
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_UPPER: {
 			limit_upper = p_value;
-			rebuild();
+			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_LOWER: {
 			limit_lower = p_value;
-			rebuild();
+			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LIMIT_BIAS)) {
@@ -153,11 +157,15 @@ bool JoltHingeJointImpl3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) cons
 	}
 }
 
-void JoltHingeJointImpl3D::set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled) {
+void JoltHingeJointImpl3D::set_flag(
+	PhysicsServer3D::HingeJointFlag p_flag,
+	bool p_enabled,
+	bool p_lock
+) {
 	switch (p_flag) {
 		case PhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT: {
 			use_limits = p_enabled;
-			rebuild();
+			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_FLAG_ENABLE_MOTOR: {
 			motor_enabled = p_enabled;

@@ -25,7 +25,7 @@ public:
 
 	double get_param(PhysicsServer3D::SliderJointParam p_param) const;
 
-	void set_param(PhysicsServer3D::SliderJointParam p_param, double p_value);
+	void set_param(PhysicsServer3D::SliderJointParam p_param, double p_value, bool p_lock = true);
 
 	void rebuild(bool p_lock = true) override;
 
