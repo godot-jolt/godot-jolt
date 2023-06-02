@@ -33,15 +33,13 @@ void jolt_trace(const char* p_format, ...) {
 #ifdef JPH_ENABLE_ASSERTS
 
 bool jolt_assert(const char* p_expr, const char* p_msg, const char* p_file, uint32_t p_line) {
-	ERR_PRINT(vformat(
+	CRASH_NOW_MSG(vformat(
 		"Assertion '%s' failed with message '%s' at '%s:%d'",
 		p_expr,
 		p_msg != nullptr ? p_msg : "",
 		p_file,
 		p_line
 	));
-
-	CRASH_NOW();
 
 	return false;
 }
