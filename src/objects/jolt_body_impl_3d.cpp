@@ -602,29 +602,16 @@ void JoltBodyImpl3D::set_constant_torque(const Vector3& p_torque, bool p_lock) {
 }
 
 void JoltBodyImpl3D::add_collision_exception(const RID& p_excepted_body, bool p_lock) {
-	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
-	ERR_FAIL_COND(body.is_invalid());
-
-	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
-		body->GetCollisionGroup().GetGroupFilter()
-	);
-
 	if (group_filter == nullptr) {
 		group_filter = new JoltGroupFilterRID();
-		body->GetCollisionGroup().SetGroupFilter(group_filter);
 	}
 
 	group_filter->add_exception(p_excepted_body);
+
+	exceptions_changed(p_lock);
 }
 
 void JoltBodyImpl3D::remove_collision_exception(const RID& p_excepted_body, bool p_lock) {
-	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
-	ERR_FAIL_COND(body.is_invalid());
-
-	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
-		body->GetCollisionGroup().GetGroupFilter()
-	);
-
 	if (group_filter == nullptr) {
 		return;
 	}
@@ -632,30 +619,17 @@ void JoltBodyImpl3D::remove_collision_exception(const RID& p_excepted_body, bool
 	group_filter->remove_exception(p_excepted_body);
 
 	if (group_filter->get_exception_count() == 0) {
-		body->GetCollisionGroup().SetGroupFilter(nullptr);
 		group_filter = nullptr;
 	}
+
+	exceptions_changed(p_lock);
 }
 
-bool JoltBodyImpl3D::has_collision_exception(const RID& p_excepted_body, bool p_lock) const {
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
-		body->GetCollisionGroup().GetGroupFilter()
-	);
-
+bool JoltBodyImpl3D::has_collision_exception(const RID& p_excepted_body) const {
 	return group_filter != nullptr && group_filter->has_exception(p_excepted_body);
 }
 
-TypedArray<RID> JoltBodyImpl3D::get_collision_exceptions(bool p_lock) const {
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	const auto* group_filter = static_cast<const JoltGroupFilterRID*>(
-		body->GetCollisionGroup().GetGroupFilter()
-	);
-
+TypedArray<RID> JoltBodyImpl3D::get_collision_exceptions() const {
 	if (group_filter == nullptr) {
 		return {};
 	}
@@ -1184,6 +1158,17 @@ void JoltBodyImpl3D::destroy_axes_constraint() {
 	}
 }
 
+void JoltBodyImpl3D::update_group_filter(bool p_lock) {
+	if (space == nullptr) {
+		return;
+	}
+
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
+
+	body->GetCollisionGroup().SetGroupFilter(group_filter);
+}
+
 void JoltBodyImpl3D::mode_changed(bool p_lock) {
 	update_object_layer(p_lock);
 	update_axes_constraint(p_lock);
@@ -1200,6 +1185,7 @@ void JoltBodyImpl3D::space_changing([[maybe_unused]] bool p_lock) {
 }
 
 void JoltBodyImpl3D::space_changed(bool p_lock) {
+	update_group_filter(p_lock);
 	update_axes_constraint();
 	areas_changed(p_lock);
 }
@@ -1215,6 +1201,10 @@ void JoltBodyImpl3D::transform_changed(bool p_lock) {
 
 void JoltBodyImpl3D::motion_changed(bool p_lock) {
 	wake_up(p_lock);
+}
+
+void JoltBodyImpl3D::exceptions_changed(bool p_lock) {
+	update_group_filter(p_lock);
 }
 
 void JoltBodyImpl3D::axis_lock_changed(bool p_lock) {
