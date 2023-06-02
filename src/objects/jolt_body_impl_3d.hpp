@@ -1,9 +1,11 @@
 #pragma once
 
+#include "objects/jolt_group_filter_rid.hpp"
 #include "objects/jolt_object_impl_3d.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 
 class JoltAreaImpl3D;
+class JoltGroupFilterRID;
 
 class JoltBodyImpl3D final : public JoltObjectImpl3D {
 public:
@@ -146,9 +148,9 @@ public:
 
 	void remove_collision_exception(const RID& p_excepted_body, bool p_lock = true);
 
-	bool has_collision_exception(const RID& p_excepted_body, bool p_lock = true) const;
+	bool has_collision_exception(const RID& p_excepted_body) const;
 
-	TypedArray<RID> get_collision_exceptions(bool p_lock = true) const;
+	TypedArray<RID> get_collision_exceptions() const;
 
 	void add_area(JoltAreaImpl3D* p_area, bool p_lock = true);
 
@@ -245,6 +247,8 @@ private:
 
 	void update_damp(bool p_lock = true);
 
+	void update_group_filter(bool p_lock = true);
+
 	void update_axes_constraint(bool p_lock = true);
 
 	void destroy_axes_constraint();
@@ -262,6 +266,8 @@ private:
 	void transform_changed(bool p_lock = true) override;
 
 	void motion_changed(bool p_lock = true);
+
+	void exceptions_changed(bool p_lock = true);
 
 	void axis_lock_changed(bool p_lock = true);
 
@@ -290,6 +296,8 @@ private:
 	Callable force_integration_callback;
 
 	JoltPhysicsDirectBodyState3D* direct_state = nullptr;
+
+	JPH::Ref<JoltGroupFilterRID> group_filter;
 
 	JPH::Ref<JPH::Constraint> axes_constraint;
 
