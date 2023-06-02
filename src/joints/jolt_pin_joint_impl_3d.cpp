@@ -39,7 +39,7 @@ JoltPinJointImpl3D::JoltPinJointImpl3D(
 void JoltPinJointImpl3D::set_local_a(const Vector3& p_local_a, bool p_lock) {
 	local_a = p_local_a;
 
-	world_ref = body_a->get_transform_scaled() * Transform3D({}, local_a);
+	world_ref = body_a->get_transform_scaled(p_lock) * Transform3D({}, local_a);
 
 	rebuild(p_lock);
 }
@@ -48,7 +48,7 @@ void JoltPinJointImpl3D::set_local_b(const Vector3& p_local_b, bool p_lock) {
 	local_b = p_local_b;
 
 	if (body_b != nullptr) {
-		world_ref = body_b->get_transform_scaled() * Transform3D({}, local_b);
+		world_ref = body_b->get_transform_scaled(p_lock) * Transform3D({}, local_b);
 	} else {
 		world_ref = Transform3D({}, local_b);
 	}
