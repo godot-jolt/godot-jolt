@@ -19,7 +19,6 @@ class JoltGeneric6DOFJointImpl3D final : public JoltJointImpl3D {
 
 public:
 	JoltGeneric6DOFJointImpl3D(
-		JoltSpace3D* p_space,
 		JoltBodyImpl3D* p_body_a,
 		JoltBodyImpl3D* p_body_b,
 		const Transform3D& p_local_ref_a,
@@ -28,7 +27,6 @@ public:
 	);
 
 	JoltGeneric6DOFJointImpl3D(
-		JoltSpace3D* p_space,
 		JoltBodyImpl3D* p_body_a,
 		const Transform3D& p_local_ref_a,
 		const Transform3D& p_local_ref_b,
@@ -57,11 +55,9 @@ public:
 		bool p_lock = true
 	);
 
+	void rebuild(bool p_lock = true) override;
+
 private:
-	void rebuild(bool p_lock = true);
-
-	Transform3D world_ref;
-
 	double limit_lower[AXIS_COUNT] = {};
 
 	double limit_upper[AXIS_COUNT] = {};

@@ -8,7 +8,6 @@ class JoltSpace3D;
 class JoltPinJointImpl3D final : public JoltJointImpl3D {
 public:
 	JoltPinJointImpl3D(
-		JoltSpace3D* p_space,
 		JoltBodyImpl3D* p_body_a,
 		JoltBodyImpl3D* p_body_b,
 		const Vector3& p_local_a,
@@ -17,7 +16,6 @@ public:
 	);
 
 	JoltPinJointImpl3D(
-		JoltSpace3D* p_space,
 		JoltBodyImpl3D* p_body_a,
 		const Vector3& p_local_a,
 		const Vector3& p_local_b,
@@ -37,6 +35,8 @@ public:
 	double get_param(PhysicsServer3D::PinJointParam p_param) const;
 
 	void set_param(PhysicsServer3D::PinJointParam p_param, double p_value);
+
+	void rebuild(bool p_lock = true) override;
 
 private:
 	Vector3 local_a;

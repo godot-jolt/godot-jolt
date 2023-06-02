@@ -51,3 +51,12 @@ _FORCE_INLINE_ void memdelete_safely(TType*& p_ptr) {
 		p_ptr = nullptr;
 	}
 }
+
+_FORCE_INLINE_ double estimate_physics_step() {
+	Engine* engine = Engine::get_singleton();
+
+	const double step = 1.0 / engine->get_physics_ticks_per_second();
+	const double step_scaled = step * engine->get_time_scale();
+
+	return step_scaled;
+}

@@ -5,7 +5,6 @@
 class JoltHingeJointImpl3D final : public JoltJointImpl3D {
 public:
 	JoltHingeJointImpl3D(
-		JoltSpace3D* p_space,
 		JoltBodyImpl3D* p_body_a,
 		JoltBodyImpl3D* p_body_b,
 		const Transform3D& p_local_ref_a,
@@ -14,7 +13,6 @@ public:
 	);
 
 	JoltHingeJointImpl3D(
-		JoltSpace3D* p_space,
 		JoltBodyImpl3D* p_body_a,
 		const Transform3D& p_local_ref_a,
 		const Transform3D& p_local_ref_b,
@@ -33,14 +31,20 @@ public:
 
 	void set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled);
 
+	void rebuild(bool p_lock = true) override;
+
 private:
-	void limits_changed();
+	double estimate_max_motor_torque() const;
 
 	double limit_lower = 0.0;
 
 	double limit_upper = 0.0;
 
+	double motor_target_velocity = 0.0f;
+
 	double motor_max_impulse = 0.0;
 
 	bool use_limits = false;
+
+	bool motor_enabled = false;
 };

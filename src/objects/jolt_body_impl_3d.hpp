@@ -6,6 +6,7 @@
 
 class JoltAreaImpl3D;
 class JoltGroupFilterRID;
+class JoltJointImpl3D;
 
 class JoltBodyImpl3D final : public JoltObjectImpl3D {
 public:
@@ -156,6 +157,10 @@ public:
 
 	void remove_area(JoltAreaImpl3D* p_area, bool p_lock = true);
 
+	void add_joint(JoltJointImpl3D* p_joint, bool p_lock = true);
+
+	void remove_joint(JoltJointImpl3D* p_joint, bool p_lock = true);
+
 	void integrate_forces(float p_step, bool p_lock = true);
 
 	void call_queries();
@@ -249,6 +254,10 @@ private:
 
 	void update_group_filter(bool p_lock = true);
 
+	void update_joint_constraints(bool p_lock = true);
+
+	void destroy_joint_constraints();
+
 	void update_axes_constraint(bool p_lock = true);
 
 	void destroy_axes_constraint();
@@ -263,6 +272,8 @@ private:
 
 	void areas_changed(bool p_lock = true);
 
+	void joints_changed(bool p_lock = true);
+
 	void transform_changed(bool p_lock = true) override;
 
 	void motion_changed(bool p_lock = true);
@@ -274,6 +285,8 @@ private:
 	LocalVector<Contact> contacts;
 
 	LocalVector<JoltAreaImpl3D*> areas;
+
+	LocalVector<JoltJointImpl3D*> joints;
 
 	Variant force_integration_userdata;
 
