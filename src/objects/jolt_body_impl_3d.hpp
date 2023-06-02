@@ -244,6 +244,8 @@ private:
 
 	void create_in_space() override;
 
+	bool moves_kinematically() const override { return is_kinematic(); }
+
 	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
 
 	JPH::MassProperties calculate_mass_properties() const;

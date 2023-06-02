@@ -33,6 +33,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   applying a surface velocity
 - Fixed issue where `RigidBody3D` would de-sync from its actual physics body after freezing
 - Fixed issues where disabling or removing a body connected to a joint would error or crash
+- Fixed issue with `CharacterBody3D` and other kinematic bodies where they wouldn't elicit a proper
+  collision response from dynamic bodies
 
 ## [0.1.0] - 2023-05-24
 

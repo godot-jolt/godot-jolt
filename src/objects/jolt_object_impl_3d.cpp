@@ -120,12 +120,25 @@ void JoltObjectImpl3D::set_transform(Transform3D p_transform, bool p_lock) {
 		return;
 	}
 
-	space->get_body_iface(p_lock).SetPositionAndRotation(
-		jolt_id,
-		to_jolt(p_transform.origin),
-		to_jolt(p_transform.basis),
-		JPH::EActivation::DontActivate
-	);
+	if (moves_kinematically()) {
+		const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+		ERR_FAIL_COND(body.is_invalid());
+
+		float step = space->get_last_step();
+
+		if (unlikely(step == 0.0f)) {
+			step = (float)estimate_physics_step();
+		}
+
+		body->MoveKinematic(to_jolt(p_transform.origin), to_jolt(p_transform.basis), step);
+	} else {
+		space->get_body_iface(p_lock).SetPositionAndRotation(
+			jolt_id,
+			to_jolt(p_transform.origin),
+			to_jolt(p_transform.basis),
+			JPH::EActivation::DontActivate
+		);
+	}
 
 	transform_changed(p_lock);
 }
