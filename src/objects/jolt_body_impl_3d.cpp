@@ -1,7 +1,7 @@
 #include "jolt_body_impl_3d.hpp"
 
+#include "joints/jolt_joint_impl_3d.hpp"
 #include "objects/jolt_area_impl_3d.hpp"
-#include "objects/jolt_group_filter_rid.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
@@ -660,6 +660,18 @@ void JoltBodyImpl3D::remove_area(JoltAreaImpl3D* p_area, bool p_lock) {
 	areas_changed(p_lock);
 }
 
+void JoltBodyImpl3D::add_joint(JoltJointImpl3D* p_joint, bool p_lock) {
+	joints.push_back(p_joint);
+
+	joints_changed(p_lock);
+}
+
+void JoltBodyImpl3D::remove_joint(JoltJointImpl3D* p_joint, bool p_lock) {
+	joints.erase(p_joint);
+
+	joints_changed(p_lock);
+}
+
 void JoltBodyImpl3D::integrate_forces(float p_step, bool p_lock) {
 	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(jolt_body.is_invalid());
@@ -1104,6 +1116,18 @@ void JoltBodyImpl3D::update_damp(bool p_lock) {
 	motion_changed(false);
 }
 
+void JoltBodyImpl3D::update_joint_constraints(bool p_lock) {
+	for (JoltJointImpl3D* joint : joints) {
+		joint->rebuild(p_lock);
+	}
+}
+
+void JoltBodyImpl3D::destroy_joint_constraints() {
+	for (JoltJointImpl3D* joint : joints) {
+		joint->destroy();
+	}
+}
+
 void JoltBodyImpl3D::update_axes_constraint(bool p_lock) {
 	if (space == nullptr) {
 		return;
@@ -1181,17 +1205,23 @@ void JoltBodyImpl3D::shapes_built(bool p_lock) {
 }
 
 void JoltBodyImpl3D::space_changing([[maybe_unused]] bool p_lock) {
+	destroy_joint_constraints();
 	destroy_axes_constraint();
 }
 
 void JoltBodyImpl3D::space_changed(bool p_lock) {
 	update_group_filter(p_lock);
-	update_axes_constraint();
+	update_joint_constraints(p_lock);
+	update_axes_constraint(p_lock);
 	areas_changed(p_lock);
 }
 
 void JoltBodyImpl3D::areas_changed(bool p_lock) {
 	update_damp(p_lock);
+	wake_up(p_lock);
+}
+
+void JoltBodyImpl3D::joints_changed(bool p_lock) {
 	wake_up(p_lock);
 }
 

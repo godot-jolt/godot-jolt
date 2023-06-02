@@ -26,28 +26,23 @@ constexpr double DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT = 0.0;
 } // namespace
 
 JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
-	JoltSpace3D* p_space,
 	JoltBodyImpl3D* p_body_a,
 	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
-	[[maybe_unused]] const Transform3D& p_local_ref_b,
+	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJointImpl3D(p_space, p_body_a, p_body_b)
-	, world_ref(body_a->get_transform_scaled(p_lock) * p_local_ref_a) {
-	world_ref.orthonormalize();
+	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b, p_lock) {
 	rebuild(p_lock);
 }
 
 JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
-	JoltSpace3D* p_space,
 	JoltBodyImpl3D* p_body_a,
 	[[maybe_unused]] const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJointImpl3D(p_space, p_body_a)
-	, world_ref(p_local_ref_b) {
+	: JoltJointImpl3D(p_body_a, p_local_ref_b) {
 	rebuild(p_lock);
 }
 
@@ -137,9 +132,6 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 	double p_value,
 	bool p_lock
 ) {
-	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL(jolt_constraint);
-
 	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
@@ -185,16 +177,20 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_MOTOR_TARGET_VELOCITY: {
 			motor_velocity[axis_lin] = p_value;
 
-			jolt_constraint->SetTargetVelocityCS(
-				{(float)motor_velocity[AXIS_LINEAR_X],
-				 (float)motor_velocity[AXIS_LINEAR_Y],
-				 (float)motor_velocity[AXIS_LINEAR_Z]}
-			);
+			if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
+				constraint->SetTargetVelocityCS(
+					{(float)motor_velocity[AXIS_LINEAR_X],
+					 (float)motor_velocity[AXIS_LINEAR_Y],
+					 (float)motor_velocity[AXIS_LINEAR_Z]}
+				);
+			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_MOTOR_FORCE_LIMIT: {
 			motor_limit[axis_lin] = p_value;
 
-			jolt_constraint->GetMotorSettings((JoltAxis)axis_lin).SetForceLimit((float)p_value);
+			if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
+				constraint->GetMotorSettings((JoltAxis)axis_lin).SetForceLimit((float)p_value);
+			}
 		} break;
 		case 7: /* G6DOF_JOINT_LINEAR_SPRING_STIFFNESS */ {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_STIFFNESS)) {
@@ -287,19 +283,23 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_TARGET_VELOCITY: {
 			motor_velocity[axis_ang] = p_value;
 
-			// HACK(mihe): We're forced to flip the direction of these to match Godot Physics. This
-			// does mean that the velocity direction is inconsistent with the velocity direction for
-			// things like hinge joints.
-			jolt_constraint->SetTargetAngularVelocityCS(
-				{-(float)motor_velocity[AXIS_ANGULAR_X],
-				 -(float)motor_velocity[AXIS_ANGULAR_Y],
-				 -(float)motor_velocity[AXIS_ANGULAR_Z]}
-			);
+			if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
+				// HACK(mihe): We're forced to flip the direction of these to match Godot Physics.
+				// This does mean that the velocity direction is inconsistent with the velocity
+				// direction for things like hinge joints.
+				constraint->SetTargetAngularVelocityCS(
+					{-(float)motor_velocity[AXIS_ANGULAR_X],
+					 -(float)motor_velocity[AXIS_ANGULAR_Y],
+					 -(float)motor_velocity[AXIS_ANGULAR_Z]}
+				);
+			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_FORCE_LIMIT: {
 			motor_limit[axis_ang] = p_value;
 
-			jolt_constraint->GetMotorSettings((JoltAxis)axis_ang).SetTorqueLimit((float)p_value);
+			if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
+				constraint->GetMotorSettings((JoltAxis)axis_ang).SetTorqueLimit((float)p_value);
+			}
 		} break;
 		case 19: /* G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS */ {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_STIFFNESS)) {
@@ -375,9 +375,6 @@ void JoltGeneric6DOFJointImpl3D::set_flag(
 	bool p_enabled,
 	bool p_lock
 ) {
-	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL(jolt_constraint);
-
 	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
@@ -413,18 +410,22 @@ void JoltGeneric6DOFJointImpl3D::set_flag(
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_MOTOR: {
 			motor_enabled[axis_ang] = p_enabled;
 
-			jolt_constraint->SetMotorState(
-				(JoltAxis)axis_ang,
-				p_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
-			);
+			if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
+				constraint->SetMotorState(
+					(JoltAxis)axis_ang,
+					p_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
+				);
+			}
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_MOTOR: {
 			motor_enabled[axis_lin] = p_enabled;
 
-			jolt_constraint->SetMotorState(
-				(JoltAxis)axis_lin,
-				p_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
-			);
+			if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
+				constraint->SetMotorState(
+					(JoltAxis)axis_lin,
+					p_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
+				);
+			}
 		} break;
 		default: {
 			ERR_FAIL_MSG(vformat("Unhandled 6DOF joint flag: '%d'", p_flag));
@@ -447,22 +448,23 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 	//    limits like [-90, -45] like we can in Godot. So we have to shift the reference frames to
 	//    work around this, which we can't do after the constraint has been created.
 
-	InlineVector<JPH::BodyID, 2> body_ids = {body_a->get_jolt_id()};
+	destroy();
+
+	JoltSpace3D* space = get_space();
+
+	if (space == nullptr) {
+		return;
+	}
+
+	JPH::BodyID body_ids[2] = {body_a->get_jolt_id()};
+	int32_t body_count = 1;
 
 	if (body_b != nullptr) {
-		body_ids.push_back(body_b->get_jolt_id());
+		body_ids[1] = body_b->get_jolt_id();
+		body_count = 2;
 	}
 
-	const JoltWritableBodies3D bodies = space->write_bodies(
-		body_ids.ptr(),
-		body_ids.size(),
-		p_lock
-	);
-
-	if (jolt_ref != nullptr) {
-		space->remove_joint(this);
-		jolt_ref = nullptr;
-	}
+	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, body_count, p_lock);
 
 	JPH::SixDOFConstraintSettings constraint_settings;
 
@@ -505,9 +507,6 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 		ref_shift[AXIS_ANGULAR_Y],
 		ref_shift[AXIS_ANGULAR_Z]};
 
-	// HACK(mihe): The way these linear/angular shifts are being applied is mostly just a result of
-	// trial-and-error. If you can see a better way of doing this, please make it known.
-
 	const Vector3 shifted_origin = world_ref.xform(linear_shift);
 	const Basis shifted_basis = world_ref.basis.rotated(angular_shift);
 
@@ -544,10 +543,9 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 
 	space->add_joint(this);
 
-	auto* jolt_constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
-	ERR_FAIL_NULL(jolt_constraint);
+	auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr());
 
-	jolt_constraint->SetTargetVelocityCS(
+	constraint->SetTargetVelocityCS(
 		{(float)motor_velocity[AXIS_LINEAR_X],
 		 (float)motor_velocity[AXIS_LINEAR_Y],
 		 (float)motor_velocity[AXIS_LINEAR_Z]}
@@ -556,7 +554,7 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 	// HACK(mihe): We're forced to flip the direction of these to match Godot Physics. This does
 	// mean that the velocity direction is inconsistent with the velocity direction for things like
 	// hinge joints.
-	jolt_constraint->SetTargetAngularVelocityCS(
+	constraint->SetTargetAngularVelocityCS(
 		{-(float)motor_velocity[AXIS_ANGULAR_X],
 		 -(float)motor_velocity[AXIS_ANGULAR_Y],
 		 -(float)motor_velocity[AXIS_ANGULAR_Z]}
@@ -564,7 +562,7 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 
 	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
 		if (motor_enabled[axis]) {
-			jolt_constraint->SetMotorState((JoltAxis)axis, JPH::EMotorState::Velocity);
+			constraint->SetMotorState((JoltAxis)axis, JPH::EMotorState::Velocity);
 		}
 	}
 }

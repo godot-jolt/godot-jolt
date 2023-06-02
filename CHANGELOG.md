@@ -22,6 +22,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Added support for "Absorbent" physics material property
 - Added support for surface velocities, also known as "constant velocities", for both static and
   kinematic bodies
+- Added support for more flexible limits for `HingeJoint3D` and `SliderJoint3D`
 
 ### Fixed
 
@@ -31,6 +32,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fixed issue where setting velocities on kinematic bodies would actually move them instead of
   applying a surface velocity
 - Fixed issue where `RigidBody3D` would de-sync from its actual physics body after freezing
+- Fixed issues where disabling or removing a body connected to a joint would error or crash
 
 ## [0.1.0] - 2023-05-24
 
