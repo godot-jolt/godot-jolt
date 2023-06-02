@@ -46,6 +46,7 @@ material = ExtResource("1_twesm")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 node_a = NodePath("../Box_Upper")
 node_b = NodePath("../Box_Lower")
+exclude_nodes_from_collision = false
 
 [node name="Box_Lower" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
