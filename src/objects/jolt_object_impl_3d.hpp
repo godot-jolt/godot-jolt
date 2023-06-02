@@ -127,6 +127,8 @@ protected:
 
 	JPH::ObjectLayer get_object_layer() const;
 
+	virtual bool moves_kinematically() const = 0;
+
 	virtual bool has_custom_center_of_mass() const = 0;
 
 	virtual Vector3 get_center_of_mass_custom() const = 0;
