@@ -25,11 +25,11 @@ public:
 
 	double get_param(PhysicsServer3D::HingeJointParam p_param) const;
 
-	void set_param(PhysicsServer3D::HingeJointParam p_param, double p_value);
+	void set_param(PhysicsServer3D::HingeJointParam p_param, double p_value, bool p_lock = true);
 
 	bool get_flag(PhysicsServer3D::HingeJointFlag p_flag) const;
 
-	void set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled);
+	void set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled, bool p_lock = true);
 
 	void rebuild(bool p_lock = true) override;
 

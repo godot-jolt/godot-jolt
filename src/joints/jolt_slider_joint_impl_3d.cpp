@@ -128,15 +128,19 @@ double JoltSliderJointImpl3D::get_param(PhysicsServer3D::SliderJointParam p_para
 	}
 }
 
-void JoltSliderJointImpl3D::set_param(PhysicsServer3D::SliderJointParam p_param, double p_value) {
+void JoltSliderJointImpl3D::set_param(
+	PhysicsServer3D::SliderJointParam p_param,
+	double p_value,
+	bool p_lock
+) {
 	switch (p_param) {
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_UPPER: {
 			limit_upper = p_value;
-			rebuild();
+			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_LOWER: {
 			limit_lower = p_value;
-			rebuild();
+			rebuild(p_lock);
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_LIMIT_SOFTNESS)) {
