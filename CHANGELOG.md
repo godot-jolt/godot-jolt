@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.2.0] - 2023-06-06
+
 ### Changed
 
 - ⚠️ Changed friction values to be combined in the same way as in Godot Physics.
@@ -48,5 +50,6 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.1.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.0-stable...HEAD
+[0.2.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.1.0-stable...v0.2.0-stable
 [0.1.0]: https://github.com/godot-jolt/godot-jolt/releases/tag/v0.1.0-stable
