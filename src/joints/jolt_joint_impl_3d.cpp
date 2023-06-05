@@ -121,8 +121,8 @@ void JoltJointImpl3D::shift_reference_frames(
 		origin_b -= to_godot(body_b->get_jolt_shape()->GetCenterOfMass());
 	}
 
-	p_shifted_ref_a = Transform3D(local_ref_a.basis, origin_a + p_linear_shift);
-	p_shifted_ref_b = Transform3D(local_ref_b.basis.rotated(p_angular_shift), origin_b);
+	p_shifted_ref_a = Transform3D(local_ref_a.basis.rotated(p_angular_shift), origin_a);
+	p_shifted_ref_b = Transform3D(local_ref_b.basis, origin_b + p_linear_shift);
 }
 
 String JoltJointImpl3D::owners_to_string() const {

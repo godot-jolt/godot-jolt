@@ -201,7 +201,7 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 	} else {
 		const double limit_middle = Math::lerp(limit_lower, limit_upper, 0.5);
 
-		axis_shift = (float)limit_middle;
+		axis_shift = (float)-limit_middle;
 
 		const auto extent = (float)Math::abs(limit_middle - limit_lower);
 		constraint_settings.mLimitsMin = -extent;
@@ -213,7 +213,7 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 
 	shift_reference_frames(
 		Vector3(),
-		Vector3(axis_shift, 0.0f, 0.0f),
+		Vector3(0.0f, axis_shift, 0.0f),
 		shifted_ref_a,
 		shifted_ref_b
 	);
