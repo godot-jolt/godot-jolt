@@ -26,13 +26,6 @@ public:
 		bool p_lock = true
 	);
 
-	JoltGeneric6DOFJointImpl3D(
-		JoltBodyImpl3D* p_body_a,
-		const Transform3D& p_local_ref_a,
-		const Transform3D& p_local_ref_b,
-		bool p_lock = true
-	);
-
 	PhysicsServer3D::JointType get_type() const override {
 		return PhysicsServer3D::JOINT_TYPE_6DOF;
 	}

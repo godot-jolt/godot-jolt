@@ -11,11 +11,8 @@ public:
 		JoltBodyImpl3D* p_body_a,
 		JoltBodyImpl3D* p_body_b,
 		const Transform3D& p_local_ref_a,
-		const Transform3D& p_local_ref_b,
-		bool p_lock = true
+		const Transform3D& p_local_ref_b
 	);
-
-	JoltJointImpl3D(JoltBodyImpl3D* p_body_a, const Transform3D& p_world_ref);
 
 	virtual ~JoltJointImpl3D();
 
@@ -42,6 +39,13 @@ public:
 	virtual void rebuild([[maybe_unused]] bool p_lock = true) { }
 
 protected:
+	void shift_reference_frames(
+		const Vector3& p_linear_shift,
+		const Vector3& p_angular_shift,
+		Transform3D& p_shifted_ref_a,
+		Transform3D& p_shifted_ref_b
+	);
+
 	String owners_to_string() const;
 
 	bool collision_disabled = false;
@@ -54,5 +58,7 @@ protected:
 
 	RID rid;
 
-	Transform3D world_ref;
+	Transform3D local_ref_a;
+
+	Transform3D local_ref_b;
 };

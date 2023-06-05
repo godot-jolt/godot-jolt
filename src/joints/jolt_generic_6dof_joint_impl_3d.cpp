@@ -32,17 +32,7 @@ JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b, p_lock) {
-	rebuild(p_lock);
-}
-
-JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
-	JoltBodyImpl3D* p_body_a,
-	[[maybe_unused]] const Transform3D& p_local_ref_a,
-	const Transform3D& p_local_ref_b,
-	bool p_lock
-)
-	: JoltJointImpl3D(p_body_a, p_local_ref_b) {
+	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b) {
 	rebuild(p_lock);
 }
 
@@ -434,20 +424,6 @@ void JoltGeneric6DOFJointImpl3D::set_flag(
 }
 
 void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
-	// HACK(mihe): This joint has to be rebuilt whenever the limits change for three reasons:
-	//
-	// 1. Jolt seems to cache the fixed/free/limited state of each axis, and doesn't seem to allow
-	//    changing this after the constraint has been created, unless you hack around it by always
-	//    setting the axes to be limited.
-	//
-	// 2. Jolt doesn't allow asymmetric limits for the Y and Z rotational axes, meaning we can't
-	//    have limits like [-5, 10] like we can in Godot. So we have to shift the reference frames
-	//    to work around this, which we can't do after the constraint has been created.
-	//
-	// 3. Jolt doesn't allow limits that are both negative or both positive, meaning we can't have
-	//    limits like [-90, -45] like we can in Godot. So we have to shift the reference frames to
-	//    work around this, which we can't do after the constraint has been created.
-
 	destroy();
 
 	JoltSpace3D* space = get_space();
@@ -507,16 +483,18 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 		ref_shift[AXIS_ANGULAR_Y],
 		ref_shift[AXIS_ANGULAR_Z]};
 
-	const Vector3 shifted_origin = world_ref.xform(linear_shift);
-	const Basis shifted_basis = world_ref.basis.rotated(angular_shift);
+	Transform3D shifted_ref_a;
+	Transform3D shifted_ref_b;
 
-	constraint_settings.mSpace = JPH::EConstraintSpace::WorldSpace;
-	constraint_settings.mPosition1 = to_jolt(shifted_origin);
-	constraint_settings.mAxisX1 = to_jolt(world_ref.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mAxisY1 = to_jolt(world_ref.basis.get_column(Vector3::AXIS_Y));
-	constraint_settings.mPosition2 = to_jolt(world_ref.origin);
-	constraint_settings.mAxisX2 = to_jolt(shifted_basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mAxisY2 = to_jolt(shifted_basis.get_column(Vector3::AXIS_Y));
+	shift_reference_frames(linear_shift, angular_shift, shifted_ref_a, shifted_ref_b);
+
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+	constraint_settings.mPosition1 = to_jolt(shifted_ref_a.origin);
+	constraint_settings.mAxisX1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
+	constraint_settings.mPosition2 = to_jolt(shifted_ref_b.origin);
+	constraint_settings.mAxisX2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
 
 	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
 		if (axis >= AXIS_LINEAR_X && axis <= AXIS_LINEAR_Z) {

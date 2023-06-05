@@ -19,17 +19,7 @@ JoltHingeJointImpl3D::JoltHingeJointImpl3D(
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b, p_lock) {
-	rebuild(p_lock);
-}
-
-JoltHingeJointImpl3D::JoltHingeJointImpl3D(
-	JoltBodyImpl3D* p_body_a,
-	[[maybe_unused]] const Transform3D& p_local_ref_a,
-	const Transform3D& p_local_ref_b,
-	bool p_lock
-)
-	: JoltJointImpl3D(p_body_a, p_local_ref_b) {
+	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b) {
 	rebuild(p_lock);
 }
 
@@ -218,15 +208,23 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 		constraint_settings.mLimitsMax = extent;
 	}
 
-	const Basis shifted_basis = world_ref.basis.rotated(Vector3(axis_shift, 0.0f, 0.0f));
+	Transform3D shifted_ref_a;
+	Transform3D shifted_ref_b;
 
-	constraint_settings.mSpace = JPH::EConstraintSpace::WorldSpace;
-	constraint_settings.mPoint1 = to_jolt(world_ref.origin);
-	constraint_settings.mHingeAxis1 = to_jolt(-world_ref.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mNormalAxis1 = to_jolt(world_ref.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mPoint2 = to_jolt(world_ref.origin);
-	constraint_settings.mHingeAxis2 = to_jolt(-shifted_basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mNormalAxis2 = to_jolt(shifted_basis.get_column(Vector3::AXIS_X));
+	shift_reference_frames(
+		Vector3(),
+		Vector3(axis_shift, 0.0f, 0.0f),
+		shifted_ref_a,
+		shifted_ref_b
+	);
+
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+	constraint_settings.mPoint1 = to_jolt(shifted_ref_a.origin);
+	constraint_settings.mHingeAxis1 = to_jolt(-shifted_ref_a.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mPoint2 = to_jolt(shifted_ref_b.origin);
+	constraint_settings.mHingeAxis2 = to_jolt(-shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mNormalAxis2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 
 	const double max_torque = estimate_max_motor_torque();
 
