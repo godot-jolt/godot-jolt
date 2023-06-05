@@ -462,7 +462,7 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 		} else {
 			const double middle = Math::lerp(lower, upper, 0.5);
 
-			ref_shift[axis] = (float)middle;
+			ref_shift[axis] = (float)-middle;
 
 			if (Math::is_equal_approx(lower, upper)) {
 				constraint_settings.MakeFixedAxis((JoltAxis)axis);
