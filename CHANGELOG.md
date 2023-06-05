@@ -41,6 +41,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where disabling or removing a body connected to a joint would error or crash.
 - Fixed issue where `RigidBody3D` would de-sync from its underlying body after freezing with the
   "Static" freeze mode.
+- Fixed issue where bodies connected to a `Generic6DOFJoint` would lose their relative pose when
+  changing any of the joint's limits
 
 ## [0.1.0] - 2023-05-24
 
