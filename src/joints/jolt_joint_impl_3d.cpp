@@ -13,22 +13,17 @@ JoltJointImpl3D::JoltJointImpl3D(
 	JoltBodyImpl3D* p_body_a,
 	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
-	[[maybe_unused]] const Transform3D& p_local_ref_b,
-	bool p_lock
+	const Transform3D& p_local_ref_b
 )
 	: body_a(p_body_a)
 	, body_b(p_body_b)
-	, world_ref(body_a->get_transform_scaled(p_lock) * p_local_ref_a) {
+	, local_ref_a(p_local_ref_a)
+	, local_ref_b(p_local_ref_b) {
 	body_a->add_joint(this);
-	body_b->add_joint(this);
 
-	world_ref.orthonormalize();
-}
-
-JoltJointImpl3D::JoltJointImpl3D(JoltBodyImpl3D* p_body_a, const Transform3D& p_world_ref)
-	: body_a(p_body_a)
-	, world_ref(p_world_ref) {
-	body_a->add_joint(this);
+	if (body_b != nullptr) {
+		body_b->add_joint(this);
+	}
 }
 
 JoltJointImpl3D::~JoltJointImpl3D() {
@@ -109,6 +104,25 @@ void JoltJointImpl3D::destroy() {
 	}
 
 	jolt_ref = nullptr;
+}
+
+void JoltJointImpl3D::shift_reference_frames(
+	const Vector3& p_linear_shift,
+	const Vector3& p_angular_shift,
+	Transform3D& p_shifted_ref_a,
+	Transform3D& p_shifted_ref_b
+) {
+	Vector3 origin_a = local_ref_a.origin;
+	Vector3 origin_b = local_ref_b.origin;
+
+	origin_a -= to_godot(body_a->get_jolt_shape()->GetCenterOfMass());
+
+	if (body_b != nullptr) {
+		origin_b -= to_godot(body_b->get_jolt_shape()->GetCenterOfMass());
+	}
+
+	p_shifted_ref_a = Transform3D(local_ref_a.basis, origin_a + p_linear_shift);
+	p_shifted_ref_b = Transform3D(local_ref_b.basis.rotated(p_angular_shift), origin_b);
 }
 
 String JoltJointImpl3D::owners_to_string() const {

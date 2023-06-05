@@ -40,17 +40,7 @@ JoltSliderJointImpl3D::JoltSliderJointImpl3D(
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b, p_lock) {
-	rebuild(p_lock);
-}
-
-JoltSliderJointImpl3D::JoltSliderJointImpl3D(
-	JoltBodyImpl3D* p_body_a,
-	[[maybe_unused]] const Transform3D& p_local_ref_a,
-	const Transform3D& p_local_ref_b,
-	bool p_lock
-)
-	: JoltJointImpl3D(p_body_a, p_local_ref_b) {
+	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b) {
 	rebuild(p_lock);
 }
 
@@ -386,17 +376,24 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 		constraint_settings.mLimitsMax = extent;
 	}
 
-	const Vector3 linear_shift = {axis_shift, 0.0f, 0.0f};
-	const Vector3 shifted_origin = world_ref.xform(linear_shift);
+	Transform3D shifted_ref_a;
+	Transform3D shifted_ref_b;
 
-	constraint_settings.mSpace = JPH::EConstraintSpace::WorldSpace;
+	shift_reference_frames(
+		Vector3(axis_shift, 0.0f, 0.0f),
+		Vector3(),
+		shifted_ref_a,
+		shifted_ref_b
+	);
+
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
 	constraint_settings.mAutoDetectPoint = false;
-	constraint_settings.mPoint1 = to_jolt(shifted_origin);
-	constraint_settings.mSliderAxis1 = to_jolt(world_ref.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mNormalAxis1 = to_jolt(-world_ref.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mPoint2 = to_jolt(world_ref.origin);
-	constraint_settings.mSliderAxis2 = to_jolt(world_ref.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mNormalAxis2 = to_jolt(-world_ref.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mPoint1 = to_jolt(shifted_ref_a.origin);
+	constraint_settings.mSliderAxis1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mNormalAxis1 = to_jolt(-shifted_ref_a.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mPoint2 = to_jolt(shifted_ref_b.origin);
+	constraint_settings.mSliderAxis2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mNormalAxis2 = to_jolt(-shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
 
 	if (body_b != nullptr) {
 		const JoltWritableBody3D jolt_body_a = bodies[0];

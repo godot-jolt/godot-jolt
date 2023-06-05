@@ -18,17 +18,7 @@ JoltConeTwistJointImpl3D::JoltConeTwistJointImpl3D(
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b, p_lock) {
-	rebuild(p_lock);
-}
-
-JoltConeTwistJointImpl3D::JoltConeTwistJointImpl3D(
-	JoltBodyImpl3D* p_body_a,
-	[[maybe_unused]] const Transform3D& p_local_ref_a,
-	const Transform3D& p_local_ref_b,
-	bool p_lock
-)
-	: JoltJointImpl3D(p_body_a, p_local_ref_b) {
+	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b) {
 	rebuild(p_lock);
 }
 
@@ -147,13 +137,18 @@ void JoltConeTwistJointImpl3D::rebuild(bool p_lock) {
 		constraint_settings.mTwistMaxAngle = JPH::JPH_PI;
 	}
 
-	constraint_settings.mSpace = JPH::EConstraintSpace::WorldSpace;
-	constraint_settings.mPosition1 = to_jolt(world_ref.origin);
-	constraint_settings.mTwistAxis1 = to_jolt(-world_ref.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mPlaneAxis1 = to_jolt(-world_ref.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mPosition2 = to_jolt(world_ref.origin);
-	constraint_settings.mTwistAxis2 = to_jolt(-world_ref.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mPlaneAxis2 = to_jolt(-world_ref.basis.get_column(Vector3::AXIS_Z));
+	Transform3D shifted_ref_a;
+	Transform3D shifted_ref_b;
+
+	shift_reference_frames(Vector3(), Vector3(), shifted_ref_a, shifted_ref_b);
+
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+	constraint_settings.mPosition1 = to_jolt(shifted_ref_a.origin);
+	constraint_settings.mTwistAxis1 = to_jolt(-shifted_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mPlaneAxis1 = to_jolt(-shifted_ref_a.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mPosition2 = to_jolt(shifted_ref_b.origin);
+	constraint_settings.mTwistAxis2 = to_jolt(-shifted_ref_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mPlaneAxis2 = to_jolt(-shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
 
 	if (body_b != nullptr) {
 		const JoltWritableBody3D jolt_body_a = bodies[0];

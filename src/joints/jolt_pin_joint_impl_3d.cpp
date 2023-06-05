@@ -18,41 +18,17 @@ JoltPinJointImpl3D::JoltPinJointImpl3D(
 	const Vector3& p_local_b,
 	bool p_lock
 )
-	: JoltJointImpl3D(p_body_a, p_body_b, Transform3D({}, p_local_a), Transform3D({}, p_local_b))
-	, local_a(p_local_a)
-	, local_b(p_local_b) {
-	rebuild(p_lock);
-}
-
-JoltPinJointImpl3D::JoltPinJointImpl3D(
-	JoltBodyImpl3D* p_body_a,
-	const Vector3& p_local_a,
-	const Vector3& p_local_b,
-	bool p_lock
-)
-	: JoltJointImpl3D(p_body_a, Transform3D({}, p_local_b))
-	, local_a(p_local_a)
-	, local_b(p_local_b) {
+	: JoltJointImpl3D(p_body_a, p_body_b, Transform3D({}, p_local_a), Transform3D({}, p_local_b)) {
 	rebuild(p_lock);
 }
 
 void JoltPinJointImpl3D::set_local_a(const Vector3& p_local_a, bool p_lock) {
-	local_a = p_local_a;
-
-	world_ref = body_a->get_transform_scaled(p_lock) * Transform3D({}, local_a);
-
+	local_ref_a = Transform3D({}, p_local_a);
 	rebuild(p_lock);
 }
 
 void JoltPinJointImpl3D::set_local_b(const Vector3& p_local_b, bool p_lock) {
-	local_b = p_local_b;
-
-	if (body_b != nullptr) {
-		world_ref = body_b->get_transform_scaled(p_lock) * Transform3D({}, local_b);
-	} else {
-		world_ref = Transform3D({}, local_b);
-	}
-
+	local_ref_b = Transform3D({}, p_local_b);
 	rebuild(p_lock);
 }
 
@@ -130,10 +106,15 @@ void JoltPinJointImpl3D::rebuild(bool p_lock) {
 
 	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, body_count, p_lock);
 
+	Transform3D shifted_ref_a;
+	Transform3D shifted_ref_b;
+
+	shift_reference_frames(Vector3(), Vector3(), shifted_ref_a, shifted_ref_b);
+
 	JPH::PointConstraintSettings constraint_settings;
-	constraint_settings.mSpace = JPH::EConstraintSpace::WorldSpace;
-	constraint_settings.mPoint1 = to_jolt(world_ref.origin);
-	constraint_settings.mPoint2 = to_jolt(world_ref.origin);
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+	constraint_settings.mPoint1 = to_jolt(shifted_ref_a.origin);
+	constraint_settings.mPoint2 = to_jolt(shifted_ref_b.origin);
 
 	if (body_b != nullptr) {
 		const JoltWritableBody3D jolt_body_a = bodies[0];
