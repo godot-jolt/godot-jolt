@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue where having scaled bodies attached to a joint would result in the bodies being
+  displaced from their starting position.
+
 ## [0.2.0] - 2023-06-06
 
 ### Changed
