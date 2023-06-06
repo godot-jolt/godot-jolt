@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.2.1] - 2023-06-06
+
 ### Fixed
 
 - Fixed issue where having scaled bodies attached to a joint would result in the bodies being
@@ -55,6 +57,7 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.1-stable...HEAD
+[0.2.1]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.0-stable...v0.2.1-stable
 [0.2.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.1.0-stable...v0.2.0-stable
 [0.1.0]: https://github.com/godot-jolt/godot-jolt/releases/tag/v0.1.0-stable
