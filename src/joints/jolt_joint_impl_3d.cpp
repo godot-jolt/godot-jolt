@@ -115,9 +115,11 @@ void JoltJointImpl3D::shift_reference_frames(
 	Vector3 origin_a = local_ref_a.origin;
 	Vector3 origin_b = local_ref_b.origin;
 
+	origin_a *= body_a->get_scale();
 	origin_a -= to_godot(body_a->get_jolt_shape()->GetCenterOfMass());
 
 	if (body_b != nullptr) {
+		origin_b *= body_b->get_scale();
 		origin_b -= to_godot(body_b->get_jolt_shape()->GetCenterOfMass());
 	}
 
