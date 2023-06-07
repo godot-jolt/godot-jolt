@@ -708,8 +708,6 @@ void JoltBodyImpl3D::integrate_forces(float p_step, bool p_lock) {
 		jolt_body->AddForce(to_jolt(constant_force));
 		jolt_body->AddTorque(to_jolt(constant_torque));
 	}
-
-	sync_state = true;
 }
 
 void JoltBodyImpl3D::call_queries() {
@@ -749,6 +747,14 @@ void JoltBodyImpl3D::pre_step(float p_step) {
 	}
 
 	contact_count = 0;
+}
+
+void JoltBodyImpl3D::post_step(float p_step) {
+	if (!is_static()) {
+		sync_state = true;
+	}
+
+	JoltObjectImpl3D::post_step(p_step);
 }
 
 JoltPhysicsDirectBodyState3D* JoltBodyImpl3D::get_direct_state() {

@@ -9,6 +9,10 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue where `AnimatableBody3D` would de-sync from its underlying body when moved.
+
 ## [0.2.1] - 2023-06-06
 
 ### Fixed
