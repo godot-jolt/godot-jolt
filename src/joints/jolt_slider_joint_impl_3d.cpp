@@ -412,3 +412,7 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 
 	space->add_joint(this);
 }
+
+void JoltSliderJointImpl3D::limits_changed(bool p_lock) {
+	rebuild(p_lock);
+}

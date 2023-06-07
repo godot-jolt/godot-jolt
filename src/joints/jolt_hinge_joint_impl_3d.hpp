@@ -27,13 +27,25 @@ public:
 	void rebuild(bool p_lock = true) override;
 
 private:
-	double estimate_max_motor_torque() const;
+	void update_motor_state();
+
+	void update_motor_velocity();
+
+	void update_motor_limit();
+
+	void limits_changed(bool p_lock = true);
+
+	void motor_state_changed();
+
+	void motor_speed_changed();
+
+	void motor_limit_changed();
 
 	double limit_lower = 0.0;
 
 	double limit_upper = 0.0;
 
-	double motor_target_velocity = 0.0f;
+	double motor_target_speed = 0.0f;
 
 	double motor_max_impulse = 0.0;
 

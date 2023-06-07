@@ -51,11 +51,25 @@ public:
 	void rebuild(bool p_lock = true) override;
 
 private:
+	void update_motor_state(int32_t p_axis);
+
+	void update_motor_velocity(int32_t p_axis);
+
+	void update_motor_limit(int32_t p_axis);
+
+	void limits_changed(bool p_lock = true);
+
+	void motor_state_changed(int32_t p_axis);
+
+	void motor_speed_changed(int32_t p_axis);
+
+	void motor_limit_changed(int32_t p_axis);
+
 	double limit_lower[AXIS_COUNT] = {};
 
 	double limit_upper[AXIS_COUNT] = {};
 
-	double motor_velocity[AXIS_COUNT] = {};
+	double motor_speed[AXIS_COUNT] = {};
 
 	double motor_limit[AXIS_COUNT] = {};
 

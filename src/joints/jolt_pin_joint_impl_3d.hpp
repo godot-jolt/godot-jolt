@@ -30,4 +30,7 @@ public:
 	void set_param(PhysicsServer3D::PinJointParam p_param, double p_value);
 
 	void rebuild(bool p_lock = true) override;
+
+private:
+	void points_changed(bool p_lock = true);
 };

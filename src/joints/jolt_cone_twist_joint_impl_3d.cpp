@@ -53,11 +53,11 @@ void JoltConeTwistJointImpl3D::set_param(
 	switch (p_param) {
 		case PhysicsServer3D::CONE_TWIST_JOINT_SWING_SPAN: {
 			swing_span = p_value;
-			rebuild(p_lock);
+			limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_TWIST_SPAN: {
 			twist_span = p_value;
-			rebuild(p_lock);
+			limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_BIAS)) {
@@ -166,4 +166,8 @@ void JoltConeTwistJointImpl3D::rebuild(bool p_lock) {
 	}
 
 	space->add_joint(this);
+}
+
+void JoltConeTwistJointImpl3D::limits_changed(bool p_lock) {
+	rebuild(p_lock);
 }
