@@ -27,6 +27,8 @@ public:
 	void rebuild(bool p_lock = true) override;
 
 private:
+	void limits_changed(bool p_lock = true);
+
 	double swing_span = 0.0;
 
 	double twist_span = 0.0;

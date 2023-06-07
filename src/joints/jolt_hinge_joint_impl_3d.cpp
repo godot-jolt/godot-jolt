@@ -44,7 +44,7 @@ double JoltHingeJointImpl3D::get_param(PhysicsServer3D::HingeJointParam p_param)
 			return DEFAULT_RELAXATION;
 		}
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_TARGET_VELOCITY: {
-			return motor_target_velocity;
+			return motor_target_speed;
 		}
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_MAX_IMPULSE: {
 			return motor_max_impulse;
@@ -73,11 +73,11 @@ void JoltHingeJointImpl3D::set_param(
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_UPPER: {
 			limit_upper = p_value;
-			rebuild(p_lock);
+			limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_LOWER: {
 			limit_lower = p_value;
-			rebuild(p_lock);
+			limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LIMIT_BIAS)) {
@@ -110,22 +110,12 @@ void JoltHingeJointImpl3D::set_param(
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_TARGET_VELOCITY: {
-			motor_target_velocity = p_value;
-
-			if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
-				constraint->SetTargetAngularVelocity((float)p_value);
-			}
+			motor_target_speed = p_value;
+			motor_speed_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_MAX_IMPULSE: {
 			motor_max_impulse = p_value;
-
-			const double max_torque = estimate_max_motor_torque();
-
-			if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
-				JPH::MotorSettings& motor_settings = constraint->GetMotorSettings();
-				motor_settings.mMinTorqueLimit = (float)-max_torque;
-				motor_settings.mMaxTorqueLimit = (float)max_torque;
-			}
+			motor_limit_changed();
 		} break;
 		default: {
 			ERR_FAIL_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
@@ -155,16 +145,11 @@ void JoltHingeJointImpl3D::set_flag(
 	switch (p_flag) {
 		case PhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT: {
 			use_limits = p_enabled;
-			rebuild(p_lock);
+			limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_FLAG_ENABLE_MOTOR: {
 			motor_enabled = p_enabled;
-
-			if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
-				constraint->SetMotorState(
-					motor_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
-				);
-			}
+			motor_state_changed();
 		} break;
 		default: {
 			ERR_FAIL_MSG(vformat("Unhandled hinge joint flag: '%d'", p_flag));
@@ -226,11 +211,6 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 	constraint_settings.mHingeAxis2 = to_jolt(-shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mNormalAxis2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 
-	const double max_torque = estimate_max_motor_torque();
-
-	constraint_settings.mMotorSettings.mMinTorqueLimit = (float)-max_torque;
-	constraint_settings.mMotorSettings.mMaxTorqueLimit = (float)max_torque;
-
 	if (body_b != nullptr) {
 		const JoltWritableBody3D jolt_body_a = bodies[0];
 		ERR_FAIL_COND(jolt_body_a.is_invalid());
@@ -248,19 +228,51 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 
 	space->add_joint(this);
 
-	auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
+	update_motor_state();
+	update_motor_velocity();
+	update_motor_limit();
+}
 
-	constraint->SetTargetAngularVelocity((float)motor_target_velocity);
-
-	if (motor_enabled) {
-		constraint->SetMotorState(JPH::EMotorState::Velocity);
+void JoltHingeJointImpl3D::update_motor_state() {
+	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
+		constraint->SetMotorState(
+			motor_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
+		);
 	}
 }
 
-double JoltHingeJointImpl3D::estimate_max_motor_torque() const {
-	// HACK(mihe): This will break if the physics time step changes in any way during the
-	// lifetime of this joint, but it can't really be fixed since Godot only provides a max
-	// impulse and not a max force. As far as I can tell this is similarly broken in Godot
-	// Physics as well, so at least we're being consistent.
-	return motor_max_impulse / estimate_physics_step();
+void JoltHingeJointImpl3D::update_motor_velocity() {
+	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
+		constraint->SetTargetAngularVelocity((float)motor_target_speed);
+	}
+}
+
+void JoltHingeJointImpl3D::update_motor_limit() {
+	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
+		// HACK(mihe): This will break if the physics time step changes in any way during the
+		// lifetime of this joint, but this can't really be fixed since Godot only provides a max
+		// impulse and not a max force. As far as I can tell this is similarly broken in Godot
+		// Physics as well, so at least we're being consistent.
+		const double max_torque = motor_max_impulse / estimate_physics_step();
+
+		JPH::MotorSettings& motor_settings = constraint->GetMotorSettings();
+		motor_settings.mMinTorqueLimit = (float)-max_torque;
+		motor_settings.mMaxTorqueLimit = (float)max_torque;
+	}
+}
+
+void JoltHingeJointImpl3D::limits_changed(bool p_lock) {
+	rebuild(p_lock);
+}
+
+void JoltHingeJointImpl3D::motor_state_changed() {
+	update_motor_state();
+}
+
+void JoltHingeJointImpl3D::motor_speed_changed() {
+	update_motor_velocity();
+}
+
+void JoltHingeJointImpl3D::motor_limit_changed() {
+	update_motor_limit();
 }

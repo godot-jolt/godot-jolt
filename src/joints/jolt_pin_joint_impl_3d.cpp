@@ -24,12 +24,12 @@ JoltPinJointImpl3D::JoltPinJointImpl3D(
 
 void JoltPinJointImpl3D::set_local_a(const Vector3& p_local_a, bool p_lock) {
 	local_ref_a = Transform3D({}, p_local_a);
-	rebuild(p_lock);
+	points_changed(p_lock);
 }
 
 void JoltPinJointImpl3D::set_local_b(const Vector3& p_local_b, bool p_lock) {
 	local_ref_b = Transform3D({}, p_local_b);
-	rebuild(p_lock);
+	points_changed(p_lock);
 }
 
 double JoltPinJointImpl3D::get_param(PhysicsServer3D::PinJointParam p_param) const {
@@ -132,4 +132,8 @@ void JoltPinJointImpl3D::rebuild(bool p_lock) {
 	}
 
 	space->add_joint(this);
+}
+
+void JoltPinJointImpl3D::points_changed(bool p_lock) {
+	rebuild(p_lock);
 }
