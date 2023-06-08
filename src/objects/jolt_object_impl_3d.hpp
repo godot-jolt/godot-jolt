@@ -127,8 +127,6 @@ protected:
 
 	JPH::ObjectLayer get_object_layer() const;
 
-	virtual bool moves_kinematically() const = 0;
-
 	virtual bool has_custom_center_of_mass() const = 0;
 
 	virtual Vector3 get_center_of_mass_custom() const = 0;
@@ -142,6 +140,8 @@ protected:
 	virtual void remove_from_space(bool p_lock = true);
 
 	virtual void destroy_in_space(bool p_lock = true);
+
+	virtual void apply_transform(const Transform3D& p_transform, bool p_lock = true);
 
 	void create_begin();
 

@@ -120,25 +120,7 @@ void JoltObjectImpl3D::set_transform(Transform3D p_transform, bool p_lock) {
 		return;
 	}
 
-	if (moves_kinematically()) {
-		const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
-		ERR_FAIL_COND(body.is_invalid());
-
-		float step = space->get_last_step();
-
-		if (unlikely(step == 0.0f)) {
-			step = (float)estimate_physics_step();
-		}
-
-		body->MoveKinematic(to_jolt(p_transform.origin), to_jolt(p_transform.basis), step);
-	} else {
-		space->get_body_iface(p_lock).SetPositionAndRotation(
-			jolt_id,
-			to_jolt(p_transform.origin),
-			to_jolt(p_transform.basis),
-			JPH::EActivation::DontActivate
-		);
-	}
+	apply_transform(p_transform);
 
 	transform_changed(p_lock);
 }
@@ -441,6 +423,15 @@ void JoltObjectImpl3D::destroy_in_space(bool p_lock) {
 	space->get_body_iface(p_lock).DestroyBody(jolt_id);
 
 	jolt_id = {};
+}
+
+void JoltObjectImpl3D::apply_transform(const Transform3D& p_transform, bool p_lock) {
+	space->get_body_iface(p_lock).SetPositionAndRotation(
+		jolt_id,
+		to_jolt(p_transform.origin),
+		to_jolt(p_transform.basis),
+		JPH::EActivation::DontActivate
+	);
 }
 
 void JoltObjectImpl3D::pre_step([[maybe_unused]] float p_step) { }

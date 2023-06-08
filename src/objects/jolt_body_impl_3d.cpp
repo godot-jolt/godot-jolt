@@ -735,6 +735,19 @@ void JoltBodyImpl3D::call_queries() {
 
 		body_state_callback.callv(arguments);
 
+		if (is_kinematic()) {
+			// HACK(mihe): We need to clear any velocities that are currently set on the kinematic
+			// body as part of `MoveKinematic`, since Jolt won't do that for us. Ideally we'd do
+			// this right before `physics_process`, but since we have no hook like that the end of
+			// `call_queries` becomes the next best thing.
+
+			const JoltWritableBody3D jolt_body = space->write_body(jolt_id, false);
+			ERR_FAIL_COND(jolt_body.is_invalid());
+
+			jolt_body->SetLinearVelocity(JPH::Vec3::sZero());
+			jolt_body->SetAngularVelocity(JPH::Vec3::sZero());
+		}
+
 		sync_state = false;
 	}
 }
@@ -745,6 +758,15 @@ void JoltBodyImpl3D::pre_step(float p_step) {
 	if (is_rigid() && !is_sleeping(false)) {
 		integrate_forces(p_step, false);
 		sync_state = true;
+	} else if (is_kinematic()) {
+		const JoltWritableBody3D body = space->write_body(jolt_id, false);
+		ERR_FAIL_COND(body.is_invalid());
+
+		body->MoveKinematic(
+			to_jolt(kinematic_transform.origin),
+			to_jolt(kinematic_transform.basis),
+			space->get_last_step()
+		);
 	}
 
 	contact_count = 0;
@@ -1011,6 +1033,15 @@ void JoltBodyImpl3D::create_in_space() {
 	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
 }
 
+void JoltBodyImpl3D::apply_transform(const Transform3D& p_transform, bool p_lock) {
+	if (is_kinematic()) {
+		kinematic_transform = p_transform;
+		sync_state = true;
+	} else {
+		JoltObjectImpl3D::apply_transform(p_transform, p_lock);
+	}
+}
+
 JPH::MassProperties JoltBodyImpl3D::calculate_mass_properties(const JPH::Shape& p_shape) const {
 	const bool calculate_mass = mass <= 0;
 	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
@@ -1226,10 +1257,6 @@ void JoltBodyImpl3D::joints_changed(bool p_lock) {
 
 void JoltBodyImpl3D::transform_changed(bool p_lock) {
 	wake_up(p_lock);
-
-	if (moves_kinematically()) {
-		sync_state = true;
-	}
 }
 
 void JoltBodyImpl3D::motion_changed(bool p_lock) {

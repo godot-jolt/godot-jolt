@@ -159,8 +159,6 @@ private:
 
 	void create_in_space() override;
 
-	bool moves_kinematically() const override { return false; }
-
 	void add_shape_pair(
 		Overlap& p_overlap,
 		const JPH::BodyID& p_body_id,

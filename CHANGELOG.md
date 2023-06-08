@@ -12,6 +12,8 @@ Breaking changes are denoted with ⚠️.
 ### Fixed
 
 - Fixed issue where `AnimatableBody3D` would de-sync from its underlying body when moved.
+- Fixed issue where `CharacterBody3D` and other kinematic bodies would sometimes maintain a velocity
+  after having moved.
 
 ## [0.2.1] - 2023-06-06
 
