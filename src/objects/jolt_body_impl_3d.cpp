@@ -672,13 +672,10 @@ void JoltBodyImpl3D::remove_joint(JoltJointImpl3D* p_joint, bool p_lock) {
 	joints_changed(p_lock);
 }
 
-void JoltBodyImpl3D::integrate_forces(float p_step, bool p_lock) {
-	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
-	ERR_FAIL_COND(jolt_body.is_invalid());
-
+void JoltBodyImpl3D::integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 	gravity = Vector3();
 
-	const Vector3 position = to_godot(jolt_body->GetPosition());
+	const Vector3 position = to_godot(p_jolt_body.GetPosition());
 
 	bool gravity_done = false;
 
@@ -696,7 +693,7 @@ void JoltBodyImpl3D::integrate_forces(float p_step, bool p_lock) {
 		gravity += space->get_default_area()->compute_gravity(position);
 	}
 
-	JPH::MotionProperties& motion_properties = *jolt_body->GetMotionPropertiesUnchecked();
+	JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
 
 	gravity *= motion_properties.GetGravityFactor();
 
@@ -705,12 +702,12 @@ void JoltBodyImpl3D::integrate_forces(float p_step, bool p_lock) {
 			motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
 		);
 
-		jolt_body->AddForce(to_jolt(constant_force));
-		jolt_body->AddTorque(to_jolt(constant_torque));
+		p_jolt_body.AddForce(to_jolt(constant_force));
+		p_jolt_body.AddTorque(to_jolt(constant_torque));
 	}
 }
 
-void JoltBodyImpl3D::call_queries() {
+void JoltBodyImpl3D::call_queries(JPH::Body& p_jolt_body) {
 	if (is_rigid() && force_integration_callback.is_valid()) {
 		static thread_local Array arguments = []() {
 			Array array;
@@ -741,32 +738,34 @@ void JoltBodyImpl3D::call_queries() {
 			// this right before `physics_process`, but since we have no hook like that the end of
 			// `call_queries` becomes the next best thing.
 
-			const JoltWritableBody3D jolt_body = space->write_body(jolt_id, false);
-			ERR_FAIL_COND(jolt_body.is_invalid());
-
-			jolt_body->SetLinearVelocity(JPH::Vec3::sZero());
-			jolt_body->SetAngularVelocity(JPH::Vec3::sZero());
+			p_jolt_body.SetLinearVelocity(JPH::Vec3::sZero());
+			p_jolt_body.SetAngularVelocity(JPH::Vec3::sZero());
 		}
 
 		sync_state = false;
 	}
 }
 
-void JoltBodyImpl3D::pre_step(float p_step) {
-	JoltObjectImpl3D::pre_step(p_step);
+void JoltBodyImpl3D::pre_step(float p_step, JPH::Body& p_jolt_body) {
+	JoltObjectImpl3D::pre_step(p_step, p_jolt_body);
 
-	if (is_rigid() && !is_sleeping(false)) {
-		integrate_forces(p_step, false);
-		sync_state = true;
-	} else if (is_kinematic()) {
-		const JoltWritableBody3D body = space->write_body(jolt_id, false);
-		ERR_FAIL_COND(body.is_invalid());
-
-		body->MoveKinematic(
-			to_jolt(kinematic_transform.origin),
-			to_jolt(kinematic_transform.basis),
-			space->get_last_step()
-		);
+	switch (mode) {
+		case PhysicsServer3D::BODY_MODE_STATIC: {
+		} break;
+		case PhysicsServer3D::BODY_MODE_RIGID:
+		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
+			if (p_jolt_body.IsActive()) {
+				integrate_forces(p_step, p_jolt_body);
+				sync_state = true;
+			}
+		} break;
+		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
+			p_jolt_body.MoveKinematic(
+				to_jolt(kinematic_transform.origin),
+				to_jolt(kinematic_transform.basis),
+				space->get_last_step()
+			);
+		} break;
 	}
 
 	contact_count = 0;

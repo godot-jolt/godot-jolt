@@ -260,7 +260,7 @@ bool JoltAreaImpl3D::shape_exited(
 		area_shape_exited(p_body_id, p_other_shape_id, p_self_shape_id);
 }
 
-void JoltAreaImpl3D::call_queries() {
+void JoltAreaImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
 	flush_events(bodies_by_id, body_monitor_callback);
 	flush_events(areas_by_id, area_monitor_callback);
 }

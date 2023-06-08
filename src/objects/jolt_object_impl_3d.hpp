@@ -112,9 +112,9 @@ public:
 
 	void set_ray_pickable(bool p_enabled) { ray_pickable = p_enabled; }
 
-	virtual void pre_step(float p_step);
+	virtual void pre_step(float p_step, JPH::Body& p_jolt_body);
 
-	virtual void post_step(float p_step);
+	virtual void post_step(float p_step, JPH::Body& p_jolt_body);
 
 	virtual bool generates_contacts() const = 0;
 

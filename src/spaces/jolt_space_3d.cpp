@@ -140,17 +140,21 @@ void JoltSpace3D::call_queries() {
 	const int32_t body_count = body_accessor.get_count();
 
 	for (int32_t i = 0; i < body_count; ++i) {
-		if (const JPH::Body* body = body_accessor.try_get(i)) {
-			if (!body->IsSensor()) {
-				reinterpret_cast<JoltBodyImpl3D*>(body->GetUserData())->call_queries();
+		if (JPH::Body* jolt_body = body_accessor.try_get(i)) {
+			if (!jolt_body->IsSensor()) {
+				auto* body = reinterpret_cast<JoltBodyImpl3D*>(jolt_body->GetUserData());
+
+				body->call_queries(*jolt_body);
 			}
 		}
 	}
 
 	for (int32_t i = 0; i < body_count; ++i) {
-		if (const JPH::Body* body = body_accessor.try_get(i)) {
-			if (body->IsSensor()) {
-				reinterpret_cast<JoltAreaImpl3D*>(body->GetUserData())->call_queries();
+		if (JPH::Body* jolt_body = body_accessor.try_get(i)) {
+			if (jolt_body->IsSensor()) {
+				auto* area = reinterpret_cast<JoltAreaImpl3D*>(jolt_body->GetUserData());
+
+				area->call_queries(*jolt_body);
 			}
 		}
 	}
@@ -400,10 +404,10 @@ void JoltSpace3D::pre_step(float p_step) {
 	const int32_t body_count = body_accessor.get_count();
 
 	for (int32_t i = 0; i < body_count; ++i) {
-		if (const JPH::Body* jolt_body = body_accessor.try_get(i)) {
+		if (JPH::Body* jolt_body = body_accessor.try_get(i)) {
 			auto* object = reinterpret_cast<JoltObjectImpl3D*>(jolt_body->GetUserData());
 
-			object->pre_step(p_step);
+			object->pre_step(p_step, *jolt_body);
 
 			if (object->generates_contacts()) {
 				contact_listener->listen_for(object);
@@ -422,10 +426,10 @@ void JoltSpace3D::post_step(float p_step) {
 	const int32_t body_count = body_accessor.get_count();
 
 	for (int32_t i = 0; i < body_count; ++i) {
-		if (const JPH::Body* jolt_body = body_accessor.try_get(i)) {
+		if (JPH::Body* jolt_body = body_accessor.try_get(i)) {
 			auto* object = reinterpret_cast<JoltObjectImpl3D*>(jolt_body->GetUserData());
 
-			object->post_step(p_step);
+			object->post_step(p_step, *jolt_body);
 		}
 	}
 

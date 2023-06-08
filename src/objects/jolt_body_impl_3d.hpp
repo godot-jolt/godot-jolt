@@ -161,11 +161,11 @@ public:
 
 	void remove_joint(JoltJointImpl3D* p_joint, bool p_lock = true);
 
-	void integrate_forces(float p_step, bool p_lock = true);
+	void integrate_forces(float p_step, JPH::Body& p_jolt_body);
 
-	void call_queries();
+	void call_queries(JPH::Body& p_jolt_body);
 
-	void pre_step(float p_step) override;
+	void pre_step(float p_step, JPH::Body& p_jolt_body) override;
 
 	JoltPhysicsDirectBodyState3D* get_direct_state();
 
