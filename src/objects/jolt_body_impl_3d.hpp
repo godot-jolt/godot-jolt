@@ -167,6 +167,8 @@ public:
 
 	void pre_step(float p_step, JPH::Body& p_jolt_body) override;
 
+	void move_kinematic(float p_step, JPH::Body& p_jolt_body);
+
 	JoltPhysicsDirectBodyState3D* get_direct_state();
 
 	PhysicsServer3D::BodyMode get_mode() const { return mode; }
@@ -253,6 +255,8 @@ private:
 	void update_mass_properties(bool p_lock = true);
 
 	void update_damp(bool p_lock = true);
+
+	void update_kinematic_transform(bool p_lock = true);
 
 	void update_group_filter(bool p_lock = true);
 

@@ -673,6 +673,10 @@ void JoltBodyImpl3D::remove_joint(JoltJointImpl3D* p_joint, bool p_lock) {
 }
 
 void JoltBodyImpl3D::integrate_forces(float p_step, JPH::Body& p_jolt_body) {
+	if (!p_jolt_body.IsActive()) {
+		return;
+	}
+
 	gravity = Vector3();
 
 	const Vector3 position = to_godot(p_jolt_body.GetPosition());
@@ -705,6 +709,8 @@ void JoltBodyImpl3D::integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 		p_jolt_body.AddForce(to_jolt(constant_force));
 		p_jolt_body.AddTorque(to_jolt(constant_torque));
 	}
+
+	sync_state = true;
 }
 
 void JoltBodyImpl3D::call_queries(JPH::Body& p_jolt_body) {
@@ -754,21 +760,30 @@ void JoltBodyImpl3D::pre_step(float p_step, JPH::Body& p_jolt_body) {
 		} break;
 		case PhysicsServer3D::BODY_MODE_RIGID:
 		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
-			if (p_jolt_body.IsActive()) {
-				integrate_forces(p_step, p_jolt_body);
-				sync_state = true;
-			}
+			integrate_forces(p_step, p_jolt_body);
 		} break;
 		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
-			p_jolt_body.MoveKinematic(
-				to_jolt(kinematic_transform.origin),
-				to_jolt(kinematic_transform.basis),
-				space->get_last_step()
-			);
+			move_kinematic(p_step, p_jolt_body);
 		} break;
 	}
 
 	contact_count = 0;
+}
+
+void JoltBodyImpl3D::move_kinematic(float p_step, JPH::Body& p_jolt_body) {
+	const JPH::Vec3 previous_position = p_jolt_body.GetPosition();
+	const JPH::Quat previous_rotation = p_jolt_body.GetRotation();
+
+	const JPH::Vec3 current_position = to_jolt(kinematic_transform.origin);
+	const JPH::Quat current_rotation = to_jolt(kinematic_transform.basis);
+
+	if (current_position == previous_position && current_rotation == previous_rotation) {
+		return;
+	}
+
+	p_jolt_body.MoveKinematic(current_position, current_rotation, p_step);
+
+	sync_state = true;
 }
 
 JoltPhysicsDirectBodyState3D* JoltBodyImpl3D::get_direct_state() {
@@ -1035,7 +1050,6 @@ void JoltBodyImpl3D::create_in_space() {
 void JoltBodyImpl3D::apply_transform(const Transform3D& p_transform, bool p_lock) {
 	if (is_kinematic()) {
 		kinematic_transform = p_transform;
-		sync_state = true;
 	} else {
 		JoltObjectImpl3D::apply_transform(p_transform, p_lock);
 	}
@@ -1145,6 +1159,12 @@ void JoltBodyImpl3D::update_damp(bool p_lock) {
 	motion_changed(false);
 }
 
+void JoltBodyImpl3D::update_kinematic_transform(bool p_lock) {
+	if (is_kinematic()) {
+		kinematic_transform = get_transform_unscaled(p_lock);
+	}
+}
+
 void JoltBodyImpl3D::update_joint_constraints(bool p_lock) {
 	for (JoltJointImpl3D* joint : joints) {
 		joint->rebuild(p_lock);
@@ -1224,6 +1244,7 @@ void JoltBodyImpl3D::update_group_filter(bool p_lock) {
 
 void JoltBodyImpl3D::mode_changed(bool p_lock) {
 	update_object_layer(p_lock);
+	update_kinematic_transform(p_lock);
 	update_axes_constraint(p_lock);
 	wake_up(p_lock);
 }
