@@ -167,8 +167,6 @@ public:
 
 	void pre_step(float p_step) override;
 
-	void post_step(float p_step) override;
-
 	JoltPhysicsDirectBodyState3D* get_direct_state();
 
 	PhysicsServer3D::BodyMode get_mode() const { return mode; }
