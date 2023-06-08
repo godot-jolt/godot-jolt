@@ -15,14 +15,12 @@ _FORCE_INLINE_ void decompose(Basis& p_basis, Vector3& p_scale) {
 		return;
 	}
 
-	p_scale = Vector3(
-		godot::Math::sqrt(scale_squared.x),
-		godot::Math::sqrt(scale_squared.y),
-		godot::Math::sqrt(scale_squared.z)
-	);
+	p_scale = Vector3(sqrt(scale_squared.x), sqrt(scale_squared.y), sqrt(scale_squared.z));
 
 	x /= p_scale.x;
+	y -= x * x.dot(y);
 	y /= p_scale.y;
+	z -= x * x.dot(z) - y * y.dot(z);
 	z /= p_scale.z;
 
 	p_basis.set_column(Vector3::AXIS_X, x);
