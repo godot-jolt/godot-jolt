@@ -439,6 +439,7 @@ void JoltBodyImpl3D::reset_mass_properties(bool p_lock) {
 
 void JoltBodyImpl3D::apply_force(const Vector3& p_force, const Vector3& p_position, bool p_lock) {
 	ERR_FAIL_NULL(space);
+	QUIET_FAIL_COND(!is_rigid());
 
 	if (custom_integrator || p_force == Vector3()) {
 		return;
@@ -454,6 +455,7 @@ void JoltBodyImpl3D::apply_force(const Vector3& p_force, const Vector3& p_positi
 
 void JoltBodyImpl3D::apply_central_force(const Vector3& p_force, bool p_lock) {
 	ERR_FAIL_NULL(space);
+	QUIET_FAIL_COND(!is_rigid());
 
 	if (custom_integrator || p_force == Vector3()) {
 		return;
@@ -473,6 +475,7 @@ void JoltBodyImpl3D::apply_impulse(
 	bool p_lock
 ) {
 	ERR_FAIL_NULL(space);
+	QUIET_FAIL_COND(!is_rigid());
 
 	if (p_impulse == Vector3()) {
 		return;
@@ -488,6 +491,7 @@ void JoltBodyImpl3D::apply_impulse(
 
 void JoltBodyImpl3D::apply_central_impulse(const Vector3& p_impulse, bool p_lock) {
 	ERR_FAIL_NULL(space);
+	QUIET_FAIL_COND(!is_rigid());
 
 	if (p_impulse == Vector3()) {
 		return;
@@ -503,6 +507,7 @@ void JoltBodyImpl3D::apply_central_impulse(const Vector3& p_impulse, bool p_lock
 
 void JoltBodyImpl3D::apply_torque(const Vector3& p_torque, bool p_lock) {
 	ERR_FAIL_NULL(space);
+	QUIET_FAIL_COND(!is_rigid());
 
 	if (custom_integrator || p_torque == Vector3()) {
 		return;
@@ -518,6 +523,7 @@ void JoltBodyImpl3D::apply_torque(const Vector3& p_torque, bool p_lock) {
 
 void JoltBodyImpl3D::apply_torque_impulse(const Vector3& p_impulse, bool p_lock) {
 	ERR_FAIL_NULL(space);
+	QUIET_FAIL_COND(!is_rigid());
 
 	if (p_impulse == Vector3()) {
 		return;
