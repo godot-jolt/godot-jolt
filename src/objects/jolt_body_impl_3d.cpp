@@ -744,17 +744,10 @@ void JoltBodyImpl3D::pre_step(float p_step) {
 
 	if (is_rigid() && !is_sleeping(false)) {
 		integrate_forces(p_step, false);
-	}
-
-	contact_count = 0;
-}
-
-void JoltBodyImpl3D::post_step(float p_step) {
-	if (!is_static()) {
 		sync_state = true;
 	}
 
-	JoltObjectImpl3D::post_step(p_step);
+	contact_count = 0;
 }
 
 JoltPhysicsDirectBodyState3D* JoltBodyImpl3D::get_direct_state() {
@@ -1233,6 +1226,10 @@ void JoltBodyImpl3D::joints_changed(bool p_lock) {
 
 void JoltBodyImpl3D::transform_changed(bool p_lock) {
 	wake_up(p_lock);
+
+	if (moves_kinematically()) {
+		sync_state = true;
+	}
 }
 
 void JoltBodyImpl3D::motion_changed(bool p_lock) {
