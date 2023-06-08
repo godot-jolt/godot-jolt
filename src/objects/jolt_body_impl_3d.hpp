@@ -244,7 +244,7 @@ private:
 
 	void create_in_space() override;
 
-	bool moves_kinematically() const override { return is_kinematic(); }
+	void apply_transform(const Transform3D& p_transform, bool p_lock = true) override;
 
 	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
 
@@ -291,6 +291,8 @@ private:
 	LocalVector<JoltJointImpl3D*> joints;
 
 	Variant force_integration_userdata;
+
+	Transform3D kinematic_transform;
 
 	Vector3 inertia;
 
