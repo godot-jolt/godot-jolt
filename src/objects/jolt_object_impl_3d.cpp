@@ -434,9 +434,15 @@ void JoltObjectImpl3D::apply_transform(const Transform3D& p_transform, bool p_lo
 	);
 }
 
-void JoltObjectImpl3D::pre_step([[maybe_unused]] float p_step) { }
+void JoltObjectImpl3D::pre_step(
+	[[maybe_unused]] float p_step,
+	[[maybe_unused]] JPH::Body& p_jolt_body
+) { }
 
-void JoltObjectImpl3D::post_step([[maybe_unused]] float p_step) {
+void JoltObjectImpl3D::post_step(
+	[[maybe_unused]] float p_step,
+	[[maybe_unused]] JPH::Body& p_jolt_body
+) {
 	previous_jolt_shape = nullptr;
 }
 
