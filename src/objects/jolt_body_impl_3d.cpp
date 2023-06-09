@@ -1056,7 +1056,9 @@ void JoltBodyImpl3D::create_in_space() {
 void JoltBodyImpl3D::apply_transform(const Transform3D& p_transform, bool p_lock) {
 	if (is_kinematic()) {
 		kinematic_transform = p_transform;
-	} else {
+	}
+
+	if (!is_kinematic() || space == nullptr) {
 		JoltObjectImpl3D::apply_transform(p_transform, p_lock);
 	}
 }
