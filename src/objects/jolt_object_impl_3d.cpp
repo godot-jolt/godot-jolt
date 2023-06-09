@@ -113,13 +113,6 @@ void JoltObjectImpl3D::set_transform(Transform3D p_transform, bool p_lock) {
 		shapes_changed(p_lock);
 	}
 
-	if (space == nullptr) {
-		jolt_settings->mPosition = to_jolt(p_transform.origin);
-		jolt_settings->mRotation = to_jolt(p_transform.basis);
-		transform_changed(p_lock);
-		return;
-	}
-
 	apply_transform(p_transform);
 
 	transform_changed(p_lock);
@@ -426,6 +419,12 @@ void JoltObjectImpl3D::destroy_in_space(bool p_lock) {
 }
 
 void JoltObjectImpl3D::apply_transform(const Transform3D& p_transform, bool p_lock) {
+	if (space == nullptr) {
+		jolt_settings->mPosition = to_jolt(p_transform.origin);
+		jolt_settings->mRotation = to_jolt(p_transform.basis);
+		return;
+	}
+
 	space->get_body_iface(p_lock).SetPositionAndRotation(
 		jolt_id,
 		to_jolt(p_transform.origin),
