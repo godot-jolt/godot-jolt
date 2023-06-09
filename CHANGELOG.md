@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.2.2] - 2023-06-09
+
 ### Fixed
 
 - Fixed issue where `AnimatableBody3D` would de-sync from its underlying body when moved.
@@ -63,7 +65,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.1-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.2-stable...HEAD
+[0.2.2]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.1-stable...v0.2.2-stable
 [0.2.1]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.0-stable...v0.2.1-stable
 [0.2.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.1.0-stable...v0.2.0-stable
 [0.1.0]: https://github.com/godot-jolt/godot-jolt/releases/tag/v0.1.0-stable
