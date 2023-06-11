@@ -9,6 +9,13 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue where bodies would transform in unintuitive ways when attached to a joint that was
+  itself rotated.
+- Fixed issue where bodies would sometimes transform in unintuitive ways when attached to a
+  `Generic6DOFJoint` that used both linear and angular limits.
+
 ## [0.2.2] - 2023-06-09
 
 ### Fixed

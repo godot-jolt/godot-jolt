@@ -425,14 +425,14 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 			// result in a negative span then the axis becomes unbounded.
 			constraint_settings.MakeFreeAxis((JoltAxis)axis);
 		} else {
-			const double middle = Math::lerp(lower, upper, 0.5);
+			const double midpoint = (lower + upper) / 2.0f;
 
-			ref_shift[axis] = (float)-middle;
+			ref_shift[axis] = (float)-midpoint;
 
 			if (Math::is_equal_approx(lower, upper)) {
 				constraint_settings.MakeFixedAxis((JoltAxis)axis);
 			} else {
-				const auto extent = (float)Math::abs(middle - lower);
+				const auto extent = float(upper - midpoint);
 				constraint_settings.SetLimitedAxis((JoltAxis)axis, -extent, extent);
 			}
 		}
