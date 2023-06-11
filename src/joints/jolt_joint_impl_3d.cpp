@@ -123,8 +123,14 @@ void JoltJointImpl3D::shift_reference_frames(
 		origin_b -= to_godot(body_b->get_jolt_shape()->GetCenterOfMass());
 	}
 
-	p_shifted_ref_a = Transform3D(local_ref_a.basis.rotated(p_angular_shift), origin_a);
-	p_shifted_ref_b = Transform3D(local_ref_b.basis, origin_b + p_linear_shift);
+	const Basis& basis_a = local_ref_a.basis;
+	const Basis& basis_b = local_ref_b.basis;
+
+	const Basis shifted_basis_a = basis_a * Basis::from_euler(p_angular_shift);
+	const Vector3 shifted_origin_a = origin_a - basis_a.xform(p_linear_shift);
+
+	p_shifted_ref_a = Transform3D(shifted_basis_a, shifted_origin_a);
+	p_shifted_ref_b = Transform3D(basis_b, origin_b);
 }
 
 String JoltJointImpl3D::owners_to_string() const {

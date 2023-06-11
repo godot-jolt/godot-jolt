@@ -367,13 +367,13 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 		constraint_settings.mLimitsMin = -FLT_MAX;
 		constraint_settings.mLimitsMax = FLT_MAX;
 	} else {
-		const double limit_middle = Math::lerp(limit_lower, limit_upper, 0.5);
+		const double limit_midpoint = (limit_lower + limit_upper) / 2.0f;
 
-		axis_shift = (float)-limit_middle;
+		axis_shift = (float)-limit_midpoint;
 
-		const auto extent = (float)Math::abs(limit_middle - limit_lower);
-		constraint_settings.mLimitsMin = -extent;
-		constraint_settings.mLimitsMax = extent;
+		const auto limit_extent = float(limit_upper - limit_midpoint);
+		constraint_settings.mLimitsMin = -limit_extent;
+		constraint_settings.mLimitsMax = limit_extent;
 	}
 
 	Transform3D shifted_ref_a;
