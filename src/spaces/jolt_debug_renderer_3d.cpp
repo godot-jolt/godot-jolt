@@ -237,6 +237,7 @@ void JoltDebugRenderer3D::DrawGeometry(
 		const float lod_distance_sq = lod.mDistance * lod.mDistance;
 		if (camera_distance_sq <= lod_distance_sq * p_lod_scale_sq) {
 			model_lod = &lod;
+			break;
 		}
 	}
 
