@@ -363,7 +363,7 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 
 	float axis_shift = 0.0f;
 
-	if (limit_lower >= limit_upper) {
+	if (limit_lower > limit_upper) {
 		constraint_settings.mLimitsMin = -FLT_MAX;
 		constraint_settings.mLimitsMax = FLT_MAX;
 	} else {
