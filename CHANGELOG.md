@@ -17,6 +17,7 @@ Breaking changes are denoted with ⚠️.
   `Generic6DOFJoint` that used both linear and angular limits.
 - Fixed issue where setting the limits of a `SliderJoint3D` to the same value would make it free
   instead of fixed.
+- Fixed issue where you could still rotate a `RigidBody3D` slightly when using `lock_rotation`.
 
 ## [0.2.2] - 2023-06-09
 
