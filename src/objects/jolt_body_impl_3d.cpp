@@ -1070,14 +1070,23 @@ JPH::MassProperties JoltBodyImpl3D::calculate_mass_properties(const JPH::Shape& 
 	JPH::MassProperties mass_properties = p_shape.GetMassProperties();
 
 	if (calculate_mass && calculate_inertia) {
-		mass_properties.mInertia(3, 3) = 1.0f;
+		// Use the mass properties calculated by the shape
 	} else if (calculate_inertia) {
 		mass_properties.ScaleToMass(mass);
-		mass_properties.mInertia(3, 3) = 1.0f;
 	} else {
 		mass_properties.mMass = mass;
-		mass_properties.mInertia.SetDiagonal3(to_jolt(inertia));
+		mass_properties.mInertia(0, 0) = inertia.x;
+		mass_properties.mInertia(1, 1) = inertia.y;
+		mass_properties.mInertia(2, 2) = inertia.z;
 	}
+
+	if (is_rigid_linear()) {
+		mass_properties.mInertia(0, 0) = INFINITY;
+		mass_properties.mInertia(1, 1) = INFINITY;
+		mass_properties.mInertia(2, 2) = INFINITY;
+	}
+
+	mass_properties.mInertia(3, 3) = 1.0f;
 
 	return mass_properties;
 }
@@ -1192,7 +1201,27 @@ void JoltBodyImpl3D::update_axes_constraint(bool p_lock) {
 
 	destroy_axes_constraint();
 
-	if (!are_axes_locked() && !is_rigid_linear()) {
+	const bool locked_linear_x = is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_X);
+	const bool locked_linear_y = is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Y);
+	const bool locked_linear_z = is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Z);
+
+	bool locked_angular_x = is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_X);
+	bool locked_angular_y = is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Y);
+	bool locked_angular_z = is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Z);
+
+	if (is_rigid_linear()) {
+		// HACK(mihe): The infinite inertia that's used for `BODY_MODE_RIGID_LINEAR` doesn't seem to
+		// play very nicely with angular constraints, resulting in a bunch of NaNs, so we ignore
+		// those locks in that case.
+		locked_angular_x = false;
+		locked_angular_y = false;
+		locked_angular_z = false;
+	}
+
+	const bool locked_linear = locked_linear_x || locked_linear_y || locked_linear_z;
+	const bool locked_angular = locked_angular_x || locked_angular_y || locked_angular_z;
+
+	if (!locked_linear && !locked_angular) {
 		return;
 	}
 
@@ -1203,27 +1232,27 @@ void JoltBodyImpl3D::update_axes_constraint(bool p_lock) {
 	constraint_settings.mPosition1 = jolt_body->GetCenterOfMassPosition();
 	constraint_settings.mPosition2 = constraint_settings.mPosition1;
 
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_X)) {
+	if (locked_linear_x) {
 		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationX);
 	}
 
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Y)) {
+	if (locked_linear_y) {
 		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationY);
 	}
 
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Z)) {
+	if (locked_linear_z) {
 		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationZ);
 	}
 
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_X) || is_rigid_linear()) {
+	if (locked_angular_x) {
 		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationX);
 	}
 
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Y) || is_rigid_linear()) {
+	if (locked_angular_y) {
 		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationY);
 	}
 
-	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Z) || is_rigid_linear()) {
+	if (locked_angular_z) {
 		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationZ);
 	}
 
@@ -1253,6 +1282,7 @@ void JoltBodyImpl3D::update_group_filter(bool p_lock) {
 void JoltBodyImpl3D::mode_changed(bool p_lock) {
 	update_object_layer(p_lock);
 	update_kinematic_transform(p_lock);
+	update_mass_properties(p_lock);
 	update_axes_constraint(p_lock);
 	wake_up(p_lock);
 }
