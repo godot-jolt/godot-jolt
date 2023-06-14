@@ -18,6 +18,7 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where setting the limits of a `SliderJoint3D` to the same value would make it free
   instead of fixed.
 - Fixed issue where you could still rotate a `RigidBody3D` slightly when using `lock_rotation`.
+- Fixed issue where friction would seemingly be applied more on one axis than the other.
 
 ## [0.2.2] - 2023-06-09
 
