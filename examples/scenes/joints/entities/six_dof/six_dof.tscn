@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=4 format=3 uid="uid://b2o4r86oqfc6q"]
 
 [ext_resource type="Material" uid="uid://ctm5wb05otmn4" path="res://scenes/common/materials/green.tres" id="1_ytr74"]
 [ext_resource type="PackedScene" uid="uid://wbibwda2jl66" path="res://scenes/joints/entities/rail/rail.tscn" id="2_fex1v"]
