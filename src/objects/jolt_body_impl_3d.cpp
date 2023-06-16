@@ -1036,8 +1036,13 @@ void JoltBodyImpl3D::create_in_space() {
 	jolt_settings->mAllowDynamicOrKinematic = true;
 	jolt_settings->mMaxLinearVelocity = JoltProjectSettings::get_max_linear_velocity();
 	jolt_settings->mMaxAngularVelocity = JoltProjectSettings::get_max_angular_velocity();
+
+	// HACK(mihe): We need to defer the setting of mass properties, to allow for overriding the
+	// inverse inertia for `BODY_MODE_RIGID_LINEAR`, which we can't do until the body is created, so
+	// we set it to some random values and calculate it properly once the body is created instead.
 	jolt_settings->mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
-	jolt_settings->mMassPropertiesOverride = calculate_mass_properties(*jolt_settings->GetShape());
+	jolt_settings->mMassPropertiesOverride.mMass = 1.0f;
+	jolt_settings->mMassPropertiesOverride.mInertia = JPH::Mat44::sIdentity();
 
 	JPH::Body* body = create_end();
 	ERR_FAIL_NULL(body);
@@ -1080,12 +1085,6 @@ JPH::MassProperties JoltBodyImpl3D::calculate_mass_properties(const JPH::Shape& 
 		mass_properties.mInertia(2, 2) = inertia.z;
 	}
 
-	if (is_rigid_linear()) {
-		mass_properties.mInertia(0, 0) = INFINITY;
-		mass_properties.mInertia(1, 1) = INFINITY;
-		mass_properties.mInertia(2, 2) = INFINITY;
-	}
-
 	mass_properties.mInertia(3, 3) = 1.0f;
 
 	return mass_properties;
@@ -1103,7 +1102,13 @@ void JoltBodyImpl3D::update_mass_properties(bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->GetMotionPropertiesUnchecked()->SetMassProperties(calculate_mass_properties());
+	JPH::MotionProperties& motion_properties = *body->GetMotionPropertiesUnchecked();
+
+	motion_properties.SetMassProperties(calculate_mass_properties());
+
+	if (is_rigid_linear()) {
+		motion_properties.SetInverseInertia(JPH::Vec3::sZero(), JPH::Quat::sIdentity());
+	}
 }
 
 void JoltBodyImpl3D::update_damp(bool p_lock) {
@@ -1298,6 +1303,7 @@ void JoltBodyImpl3D::space_changing([[maybe_unused]] bool p_lock) {
 }
 
 void JoltBodyImpl3D::space_changed(bool p_lock) {
+	update_mass_properties(p_lock);
 	update_group_filter(p_lock);
 	update_joint_constraints(p_lock);
 	update_axes_constraint(p_lock);
