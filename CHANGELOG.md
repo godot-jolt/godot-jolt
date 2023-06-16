@@ -11,14 +11,13 @@ Breaking changes are denoted with ⚠️.
 
 ### Fixed
 
-- Fixed issue where bodies would transform in unintuitive ways when attached to a joint that was
-  itself rotated.
+- Fixed issue where bodies would transform in unintuitive ways when attached to a rotated joint.
 - Fixed issue where bodies would sometimes transform in unintuitive ways when attached to a
   `Generic6DOFJoint` that used both linear and angular limits.
 - Fixed issue where setting the limits of a `SliderJoint3D` to the same value would make it free
   instead of fixed.
-- Fixed issue where you could still rotate a `RigidBody3D` slightly when using `lock_rotation`.
-- Fixed issue where friction would seemingly be applied more on one axis than the other.
+- Fixed issue where you could still rotate a `RigidBody3D` slightly while using `lock_rotation`.
+- Fixed issue where friction would be applied more on one axis than the other.
 
 ## [0.2.2] - 2023-06-09
 
