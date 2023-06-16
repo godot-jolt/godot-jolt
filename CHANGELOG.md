@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.2.3] - 2023-06-16
+
 ### Fixed
 
 - Fixed issue where bodies would transform in unintuitive ways when attached to a rotated joint.
@@ -75,7 +77,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.2-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.3-stable...HEAD
+[0.2.3]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.2-stable...v0.2.3-stable
 [0.2.2]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.1-stable...v0.2.2-stable
 [0.2.1]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.0-stable...v0.2.1-stable
 [0.2.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.1.0-stable...v0.2.0-stable
