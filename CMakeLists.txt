@@ -9,7 +9,7 @@ list(APPEND CMAKE_MODULE_PATH ${cmake_dir})
 
 include(GodotJoltPrelude)
 
-project(godot-jolt VERSION 0.2.3 LANGUAGES CXX)
+project(godot-jolt VERSION 0.2.4 LANGUAGES CXX)
 
 include(GodotJoltSetup)
 include(GodotJoltExternalGodotCpp)
@@ -23,7 +23,7 @@ set(PROJECT_DESCRIPTION "Godot extension that integrates the Jolt physics engine
 set(PROJECT_COPYRIGHT "Copyright (c) Mikael Hermansson and Godot Jolt contributors.")
 set(PROJECT_BUNDLE_IDENTIFIER "org.godot-jolt.godot-jolt")
 set(PROJECT_ENTRY_POINT "godot_jolt_main")
-set(PROJECT_VERSION_STATUS "stable")
+set(PROJECT_VERSION_STATUS "dev")
 set(PROJECT_VERSION_WITH_STATUS ${PROJECT_VERSION}-${PROJECT_VERSION_STATUS})
 set(PROJECT_VERSION_WITH_BUILD ${PROJECT_VERSION_WITH_STATUS}+${PROJECT_VERSION_BUILD})
 
