@@ -188,6 +188,20 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       <td>-</td>
     </tr>
     <tr>
+      <td>Collisions</td>
+      <td>Use Shape Margins</td>
+      <td>
+        Whether or not the <code>margin</code> property on <code>Shape3D</code> should be respected
+        for the applicable convex shape types.
+      </td>
+      <td>
+        When disabled this will force a shape margin of 0, trading in performance for accuracy,
+        which can make things like collision normals more intuitive.
+        <br><br>This only applies to <code>BoxShape3D</code>, <code>CylinderShape3D</code> and
+        <code>ConvexPolygonShape3D</code>. Other shape types do not utilize margins.
+      </td>
+    </tr>
+    <tr>
       <td>Continuous CD</td>
       <td>Movement Threshold</td>
       <td>

@@ -1,5 +1,7 @@
 #include "jolt_box_shape_impl_3d.hpp"
 
+#include "servers/jolt_project_settings.hpp"
+
 namespace {
 
 constexpr float MARGIN_FACTOR = 0.08f;
@@ -39,8 +41,9 @@ String JoltBoxShapeImpl3D::to_string() const {
 JPH::ShapeRefC JoltBoxShapeImpl3D::build() const {
 	const float min_half_extent = half_extents[half_extents.min_axis_index()];
 	const float shrunk_margin = min(margin, min_half_extent * MARGIN_FACTOR);
+	const float actual_margin = JoltProjectSettings::use_shape_margins() ? shrunk_margin : 0.0f;
 
-	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), shrunk_margin);
+	const JPH::BoxShapeSettings shape_settings(to_jolt(half_extents), actual_margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(

@@ -10,6 +10,8 @@ public:
 
 	static float get_sleep_time_threshold();
 
+	static bool use_shape_margins();
+
 	static float get_ccd_movement_threshold();
 
 	static float get_ccd_max_penetration();

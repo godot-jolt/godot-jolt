@@ -1,5 +1,7 @@
 #include "jolt_convex_polygon_shape_impl_3d.hpp"
 
+#include "servers/jolt_project_settings.hpp"
+
 Variant JoltConvexPolygonShapeImpl3D::get_data() const {
 	return vertices;
 }
@@ -54,7 +56,9 @@ JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::build() const {
 		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
 	}
 
-	const JPH::ConvexHullShapeSettings shape_settings(jolt_vertices, margin);
+	const float actual_margin = JoltProjectSettings::use_shape_margins() ? margin : 0.0f;
+
+	const JPH::ConvexHullShapeSettings shape_settings(jolt_vertices, actual_margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
