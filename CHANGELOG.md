@@ -9,6 +9,10 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Added
+
+- Added new project setting, "Use Shape Margins", to allow for globally setting shape margins to 0.
+
 ## [0.2.3] - 2023-06-16
 
 ### Fixed

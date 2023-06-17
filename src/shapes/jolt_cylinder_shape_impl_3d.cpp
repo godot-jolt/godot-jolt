@@ -1,5 +1,7 @@
 #include "jolt_cylinder_shape_impl_3d.hpp"
 
+#include "servers/jolt_project_settings.hpp"
+
 namespace {
 
 constexpr float MARGIN_FACTOR = 0.08f;
@@ -51,8 +53,9 @@ String JoltCylinderShapeImpl3D::to_string() const {
 JPH::ShapeRefC JoltCylinderShapeImpl3D::build() const {
 	const float half_height = height / 2.0f;
 	const float shrunk_margin = min(margin, half_height * MARGIN_FACTOR, radius * MARGIN_FACTOR);
+	const float actual_margin = JoltProjectSettings::use_shape_margins() ? shrunk_margin : 0.0f;
 
-	const JPH::CylinderShapeSettings shape_settings(half_height, radius, shrunk_margin);
+	const JPH::CylinderShapeSettings shape_settings(half_height, radius, actual_margin);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(

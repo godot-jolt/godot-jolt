@@ -6,6 +6,8 @@ constexpr char SLEEP_ENABLED[] = "physics/jolt_3d/sleep/enabled";
 constexpr char SLEEP_VELOCITY_THRESHOLD[] = "physics/jolt_3d/sleep/velocity_threshold";
 constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_3d/sleep/time_threshold";
 
+constexpr char USE_SHAPE_MARGINS[] = "physics/jolt_3d/collisions/use_shape_margins";
+
 constexpr char CCD_MOVEMENT_THRESHOLD[] = "physics/jolt_3d/continuous_cd/movement_threshold";
 constexpr char CCD_MAX_PENETRATION[] = "physics/jolt_3d/continuous_cd/max_penetration";
 
@@ -114,6 +116,8 @@ void JoltProjectSettings::register_settings() {
 	register_setting_hinted(SLEEP_VELOCITY_THRESHOLD, 0.03f, U"suffix:m/s");
 	register_setting_ranged(SLEEP_TIME_THRESHOLD, 0.5f, U"0,5,0.01,or_greater,suffix:s");
 
+	register_setting_plain(USE_SHAPE_MARGINS, true, true);
+
 	register_setting_ranged(CCD_MOVEMENT_THRESHOLD, 75.0f, U"0,100,0.1,suffix:%");
 	register_setting_ranged(CCD_MAX_PENETRATION, 25.0f, U"0,100,0.1,suffix:%");
 
@@ -147,6 +151,11 @@ float JoltProjectSettings::get_sleep_velocity_threshold() {
 
 float JoltProjectSettings::get_sleep_time_threshold() {
 	static const auto value = get_setting<float>(SLEEP_TIME_THRESHOLD);
+	return value;
+}
+
+bool JoltProjectSettings::use_shape_margins() {
+	static const auto value = get_setting<bool>(USE_SHAPE_MARGINS);
 	return value;
 }
 
