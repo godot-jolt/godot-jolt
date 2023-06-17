@@ -13,6 +13,11 @@ Breaking changes are denoted with ⚠️.
 
 - Added new project setting, "Use Shape Margins", to allow for globally setting shape margins to 0.
 
+### Fixed
+
+- Fixed issue where a `RigidBody3D` frozen with the "Kinematic" freeze mode wouldn't have its
+  `_integrate_forces` method called when monitoring contacts.
+
 ## [0.2.3] - 2023-06-16
 
 ### Fixed
