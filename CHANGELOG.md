@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- ⚠️ Changed collision layers/masks to behave like they do in Godot Physics, which allows for
+  asymmetrical collisions.
+
 ### Added
 
 - Added new project setting, "Use Shape Margins", to allow for globally setting shape margins to 0.

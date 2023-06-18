@@ -106,6 +106,12 @@ private:
 
 	void flush_area_exits();
 
+	void override_collision_response(
+		const JPH::Body& p_body1,
+		const JPH::Body& p_body2,
+		JPH::ContactSettings& p_settings
+	);
+
 	void apply_surface_velocities(
 		const JPH::Body& p_body1,
 		const JPH::Body& p_body2,
