@@ -46,6 +46,8 @@ void JoltContactListener3D::OnContactAdded(
 	add_debug_contacts(p_manifold);
 #endif // GDJ_CONFIG_EDITOR
 
+	override_collision_response(p_body1, p_body2, p_settings);
+
 	apply_surface_velocities(p_body1, p_body2, p_manifold, p_settings);
 
 	if (!is_listening_for(p_body1) && !is_listening_for(p_body2)) {
@@ -73,6 +75,8 @@ void JoltContactListener3D::OnContactPersisted(
 #ifdef GDJ_CONFIG_EDITOR
 	add_debug_contacts(p_manifold);
 #endif // GDJ_CONFIG_EDITOR
+
+	override_collision_response(p_body1, p_body2, p_settings);
 
 	apply_surface_velocities(p_body1, p_body2, p_manifold, p_settings);
 
@@ -331,6 +335,53 @@ void JoltContactListener3D::flush_area_exits() {
 	}
 
 	area_exits.clear();
+}
+
+void JoltContactListener3D::override_collision_response(
+	const JPH::Body& p_body1,
+	const JPH::Body& p_body2,
+	JPH::ContactSettings& p_settings
+) {
+	if (p_body1.IsSensor() || p_body2.IsSensor()) {
+		return;
+	}
+
+	if (!p_body1.IsDynamic() && !p_body2.IsDynamic()) {
+		return;
+	}
+
+	JPH::BroadPhaseLayer broad_phase_layer1 = {};
+	uint32_t collision_layer1 = 0;
+	uint32_t collision_mask1 = 0;
+
+	space->map_from_object_layer(
+		p_body1.GetObjectLayer(),
+		broad_phase_layer1,
+		collision_layer1,
+		collision_mask1
+	);
+
+	JPH::BroadPhaseLayer broad_phase_layer2 = {};
+	uint32_t collision_layer2 = 0;
+	uint32_t collision_mask2 = 0;
+
+	space->map_from_object_layer(
+		p_body2.GetObjectLayer(),
+		broad_phase_layer2,
+		collision_layer2,
+		collision_mask2
+	);
+
+	const bool first_scans_second = (collision_mask1 & collision_layer2) != 0;
+	const bool second_scans_first = (collision_mask2 & collision_layer1) != 0;
+
+	if (first_scans_second && !second_scans_first) {
+		p_settings.mInvMassScale2 = 0.0f;
+		p_settings.mInvInertiaScale2 = 0.0f;
+	} else if (second_scans_first && !first_scans_second) {
+		p_settings.mInvMassScale1 = 0.0f;
+		p_settings.mInvInertiaScale1 = 0.0f;
+	}
 }
 
 void JoltContactListener3D::apply_surface_velocities(

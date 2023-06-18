@@ -47,7 +47,6 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What else is different?
 
-- Collision layers/masks behave like they did in Godot 3, meaning no asymmetrical collisions
 - Ray-casts will hit the back-faces of all shape types, not just concave polygons and height maps
 - Shape-casts should be more accurate, but their cost also scale with the cast distance
 - Shape margins are used, but are treated as an upper bound and scale with the shape's extents
