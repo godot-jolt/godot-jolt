@@ -763,13 +763,14 @@ void JoltBodyImpl3D::pre_step(float p_step, JPH::Body& p_jolt_body) {
 
 	switch (mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {
+			pre_step_static(p_step, p_jolt_body);
 		} break;
 		case PhysicsServer3D::BODY_MODE_RIGID:
 		case PhysicsServer3D::BODY_MODE_RIGID_LINEAR: {
-			integrate_forces(p_step, p_jolt_body);
+			pre_step_rigid(p_step, p_jolt_body);
 		} break;
 		case PhysicsServer3D::BODY_MODE_KINEMATIC: {
-			move_kinematic(p_step, p_jolt_body);
+			pre_step_kinematic(p_step, p_jolt_body);
 		} break;
 	}
 
@@ -1056,6 +1057,28 @@ void JoltBodyImpl3D::create_in_space() {
 	JoltGroupFilterRID::encode_rid(rid, group_id, sub_group_id);
 
 	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
+}
+
+void JoltBodyImpl3D::pre_step_static(
+	[[maybe_unused]] float p_step,
+	[[maybe_unused]] JPH::Body& p_jolt_body
+) {
+	// Nothing to do
+}
+
+void JoltBodyImpl3D::pre_step_rigid(float p_step, JPH::Body& p_jolt_body) {
+	integrate_forces(p_step, p_jolt_body);
+}
+
+void JoltBodyImpl3D::pre_step_kinematic(float p_step, JPH::Body& p_jolt_body) {
+	move_kinematic(p_step, p_jolt_body);
+
+	if (generates_contacts()) {
+		// HACK(mihe): This seems to emulate the behavior of Godot Physics, where kinematic bodies
+		// are set as active (and thereby have their state synchronized on every step) only if its
+		// max reported contacts is non-zero.
+		sync_state = true;
+	}
 }
 
 void JoltBodyImpl3D::apply_transform(const Transform3D& p_transform, bool p_lock) {

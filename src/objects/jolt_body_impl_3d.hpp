@@ -246,6 +246,12 @@ private:
 
 	void create_in_space() override;
 
+	void pre_step_static(float p_step, JPH::Body& p_jolt_body);
+
+	void pre_step_rigid(float p_step, JPH::Body& p_jolt_body);
+
+	void pre_step_kinematic(float p_step, JPH::Body& p_jolt_body);
+
 	void apply_transform(const Transform3D& p_transform, bool p_lock = true) override;
 
 	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
