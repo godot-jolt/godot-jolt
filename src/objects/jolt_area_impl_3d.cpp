@@ -1,6 +1,7 @@
 #include "jolt_area_impl_3d.hpp"
 
 #include "objects/jolt_body_impl_3d.hpp"
+#include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
@@ -270,6 +271,10 @@ void JoltAreaImpl3D::create_in_space() {
 
 	jolt_settings->mIsSensor = true;
 	jolt_settings->mUseManifoldReduction = false;
+
+	if (JoltProjectSettings::areas_detect_static_bodies()) {
+		jolt_settings->mSensorDetectsStatic = true;
+	}
 
 	create_end();
 }

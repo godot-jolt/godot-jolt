@@ -17,6 +17,9 @@ Breaking changes are denoted with ⚠️.
 ### Added
 
 - Added new project setting, "Use Shape Margins", to allow for globally setting shape margins to 0.
+- Added new project setting, "Areas Detect Static Bodies", to allow `Area3D` to detect overlaps with
+  `StaticBody3D`, as well as `RigidBody3D` frozen with the "Static" freeze mode, with a potentially
+  heavy performance/memory cost.
 
 ### Fixed
 
