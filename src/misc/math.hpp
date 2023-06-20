@@ -3,19 +3,15 @@
 namespace godot::Math {
 
 _FORCE_INLINE_ void decompose(Basis& p_basis, Vector3& p_scale) {
-	p_scale = Vector3(1.0f, 1.0f, 1.0f);
+	p_scale = p_basis.get_scale();
+
+	if (p_scale == Vector3(1.0f, 1.0f, 1.0f)) {
+		return;
+	}
 
 	Vector3 x = p_basis.get_column(Vector3::AXIS_X);
 	Vector3 y = p_basis.get_column(Vector3::AXIS_Y);
 	Vector3 z = p_basis.get_column(Vector3::AXIS_Z);
-
-	const Vector3 scale_squared(x.length_squared(), y.length_squared(), z.length_squared());
-
-	if (p_scale == scale_squared) {
-		return;
-	}
-
-	p_scale = Vector3(sqrt(scale_squared.x), sqrt(scale_squared.y), sqrt(scale_squared.z));
 
 	x /= p_scale.x;
 	y -= x * x.dot(y);
