@@ -202,6 +202,21 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       </td>
     </tr>
     <tr>
+      <td>Collisions</td>
+      <td>Areas Detect Static Bodies</td>
+      <td>
+        Whether or not <code>Area3D</code> is able to detect overlaps with <code>StaticBody3D</code>
+        and <code>RigidBody3D</code> frozen with <code>FREEZE_MODE_STATIC</code>.
+      </td>
+      <td>
+        ⚠️ This can come at a heavy performance and memory cost if you allow many/large areas to
+        overlap with complex static geometry, such as <code>ConcavePolygonShape3D</code> or
+        <code>HeightMapShape3D</code>.
+        <br><br>It is strongly recommended that you set up your collision layers and masks in such a
+        way that only a few small <code>Area3D</code> can detect static bodies.
+      </td>
+    </tr>
+    <tr>
       <td>Continuous CD</td>
       <td>Movement Threshold</td>
       <td>

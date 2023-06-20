@@ -1,5 +1,6 @@
 #include "jolt_layer_mapper.hpp"
 
+#include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 
 namespace {
@@ -10,7 +11,7 @@ class JoltBroadPhaseLayerTable {
 	using UnderlyingType = LayerType::Type;
 
 public:
-	constexpr JoltBroadPhaseLayerTable() {
+	JoltBroadPhaseLayerTable() {
 		using namespace JoltBroadPhaseLayer;
 
 		allow_collision(BODY_STATIC, BODY_DYNAMIC);
@@ -26,21 +27,28 @@ public:
 
 		allow_collision(AREA_UNDETECTABLE, BODY_DYNAMIC);
 		allow_collision(AREA_UNDETECTABLE, AREA_DETECTABLE);
+
+		if (JoltProjectSettings::areas_detect_static_bodies()) {
+			allow_collision(BODY_STATIC, AREA_DETECTABLE);
+			allow_collision(BODY_STATIC, AREA_UNDETECTABLE);
+			allow_collision(AREA_DETECTABLE, BODY_STATIC);
+			allow_collision(AREA_UNDETECTABLE, BODY_STATIC);
+		}
 	}
 
-	constexpr void allow_collision(UnderlyingType p_layer1, UnderlyingType p_layer2) {
+	void allow_collision(UnderlyingType p_layer1, UnderlyingType p_layer2) {
 		table[p_layer1][p_layer2] = true;
 	}
 
-	constexpr void allow_collision(LayerType p_layer1, LayerType p_layer2) {
+	void allow_collision(LayerType p_layer1, LayerType p_layer2) {
 		allow_collision((UnderlyingType)p_layer1, (UnderlyingType)p_layer2);
 	}
 
-	constexpr bool should_collide(UnderlyingType p_layer1, UnderlyingType p_layer2) const {
+	bool should_collide(UnderlyingType p_layer1, UnderlyingType p_layer2) const {
 		return table[p_layer1][p_layer2];
 	}
 
-	constexpr bool should_collide(LayerType p_layer1, LayerType p_layer2) const {
+	bool should_collide(LayerType p_layer1, LayerType p_layer2) const {
 		return should_collide((UnderlyingType)p_layer1, (UnderlyingType)p_layer2);
 	}
 
@@ -194,7 +202,7 @@ bool JoltLayerMapper::ShouldCollide(
 	JPH::ObjectLayer p_encoded_layer1,
 	JPH::BroadPhaseLayer p_broad_phase_layer2
 ) const {
-	static constexpr JoltBroadPhaseLayerTable table;
+	static const JoltBroadPhaseLayerTable table;
 
 	JPH::BroadPhaseLayer broad_phase_layer1 = {};
 	JPH::ObjectLayer object_layer1 = 0;
