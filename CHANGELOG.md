@@ -26,6 +26,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where a `RigidBody3D` frozen with the "Kinematic" freeze mode wouldn't have its
   `_integrate_forces` method called when monitoring contacts.
 - Fixed issue where scaling bodies/shapes with negative values would break them in various ways.
+- Fixed issue where kinematic bodies would always report a zero velocity from collisions performed
+  in `_physics_process`.
 
 ## [0.2.3] - 2023-06-16
 
