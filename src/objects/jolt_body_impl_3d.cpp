@@ -719,7 +719,7 @@ void JoltBodyImpl3D::integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 	sync_state = true;
 }
 
-void JoltBodyImpl3D::call_queries(JPH::Body& p_jolt_body) {
+void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
 	if (is_rigid() && force_integration_callback.is_valid()) {
 		static thread_local Array arguments = []() {
 			Array array;
@@ -743,16 +743,6 @@ void JoltBodyImpl3D::call_queries(JPH::Body& p_jolt_body) {
 		arguments[0] = get_direct_state();
 
 		body_state_callback.callv(arguments);
-
-		if (is_kinematic()) {
-			// HACK(mihe): We need to clear any velocities that are currently set on the kinematic
-			// body as part of `MoveKinematic`, since Jolt won't do that for us. Ideally we'd do
-			// this right before `physics_process`, but since we have no hook like that the end of
-			// `call_queries` becomes the next best thing.
-
-			p_jolt_body.SetLinearVelocity(JPH::Vec3::sZero());
-			p_jolt_body.SetAngularVelocity(JPH::Vec3::sZero());
-		}
 
 		sync_state = false;
 	}
@@ -778,6 +768,9 @@ void JoltBodyImpl3D::pre_step(float p_step, JPH::Body& p_jolt_body) {
 }
 
 void JoltBodyImpl3D::move_kinematic(float p_step, JPH::Body& p_jolt_body) {
+	p_jolt_body.SetLinearVelocity(JPH::Vec3::sZero());
+	p_jolt_body.SetAngularVelocity(JPH::Vec3::sZero());
+
 	const JPH::Vec3 previous_position = p_jolt_body.GetPosition();
 	const JPH::Quat previous_rotation = p_jolt_body.GetRotation();
 
