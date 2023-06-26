@@ -11,23 +11,25 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
-- ⚠️ Changed collision layers/masks to behave like they do in Godot Physics, which allows for
-  asymmetrical collisions.
+- ⚠️ Changed collision layers and masks to behave as they do in Godot Physics, allowing for
+  asymmetrical collisions, where the body whose mask does not contain the layer of the other body
+  effectively gets infinite mass and inertia in the context of that collision.
 
 ### Added
 
-- Added new project setting, "Use Shape Margins", to allow for globally setting shape margins to 0.
+- Added new project setting, "Use Shape Margins", which when disabled leads to all shape margins
+  being ignored and instead set to 0, at a slight performance cost.
 - Added new project setting, "Areas Detect Static Bodies", to allow `Area3D` to detect overlaps with
-  `StaticBody3D`, as well as `RigidBody3D` frozen with the "Static" freeze mode, with a potentially
-  heavy performance/memory cost.
+  static bodies (including `RigidBody3D` using `FREEZE_MODE_STATIC`) at a potentially heavy
+  performance/memory cost.
 
 ### Fixed
 
-- Fixed issue where a `RigidBody3D` frozen with the "Kinematic" freeze mode wouldn't have its
+- Fixed issue where a `RigidBody3D` using `FREEZE_MODE_KINEMATIC` wouldn't have its
   `_integrate_forces` method called when monitoring contacts.
 - Fixed issue where scaling bodies/shapes with negative values would break them in various ways.
-- Fixed issue where kinematic bodies would always report a zero velocity from collisions performed
-  in `_physics_process`.
+- Fixed issue where `CharacterBody3D` platform velocities would always be zero.
+- Fixed issue where the velocity of kinematic colliders would always be zero in `_physics_process`.
 
 ## [0.2.3] - 2023-06-16
 
