@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.3.0] - 2023-06-28
+
 ### Changed
 
 - ⚠️ Changed collision layers and masks to behave as they do in Godot Physics, allowing for
@@ -99,7 +101,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.3-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.3.0-stable...HEAD
+[0.3.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.3-stable...v0.3.0-stable
 [0.2.3]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.2-stable...v0.2.3-stable
 [0.2.2]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.1-stable...v0.2.2-stable
 [0.2.1]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.0-stable...v0.2.1-stable
