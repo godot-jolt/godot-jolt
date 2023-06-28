@@ -119,6 +119,8 @@ public:
 
 	const JoltSpace3D& get_space() const { return inner.get_space(); }
 
+	int32_t get_count() const { return inner.get_count(); }
+
 	const JPH::BodyID& get_at(int32_t p_index) const { return inner.get_at(p_index); }
 
 	~JoltScopedBodyAccessor3D() { inner.release(); }
@@ -196,7 +198,11 @@ public:
 		: accessor(p_space, p_ids, p_id_count, p_lock) { }
 
 	JoltAccessibleBody3D<TAccessor, TBody> operator[](int32_t p_index) const {
-		return {accessor.get_space(), accessor.get_at(p_index), false};
+		const JPH::BodyID& body_id = p_index < accessor.get_count()
+			? accessor.get_at(p_index)
+			: JPH::BodyID();
+
+		return {accessor.get_space(), body_id, false};
 	}
 
 private:
