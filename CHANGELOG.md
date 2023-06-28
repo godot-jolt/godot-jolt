@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- ⚠️ Changed the `cast_motion` method in `PhysicsDirectSpaceState3D` to return `[1.0, 1.0]` when no
+  collision was detected, to match Godot Physics.
+
 ## [0.3.0] - 2023-06-28
 
 ### Changed

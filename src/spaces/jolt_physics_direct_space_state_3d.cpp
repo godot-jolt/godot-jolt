@@ -227,7 +227,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
-	return cast_motion(
+	cast_motion(
 		*jolt_shape,
 		transform_com,
 		scale,
@@ -241,6 +241,8 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		*p_closest_safe,
 		*p_closest_unsafe
 	);
+
+	return true;
 }
 
 bool JoltPhysicsDirectSpaceState3D::_collide_shape(
