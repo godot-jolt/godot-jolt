@@ -27,6 +27,21 @@ public:
 	void rebuild(bool p_lock = true) override;
 
 private:
+	static JPH::Constraint* build_hinge(
+		JPH::Body* p_jolt_body_a,
+		JPH::Body* p_jolt_body_b,
+		const Transform3D& p_shifted_ref_a,
+		const Transform3D& p_shifted_ref_b,
+		float p_limit
+	);
+
+	static JPH::Constraint* build_fixed(
+		JPH::Body* p_jolt_body_a,
+		JPH::Body* p_jolt_body_b,
+		const Transform3D& p_shifted_ref_a,
+		const Transform3D& p_shifted_ref_b
+	);
+
 	void update_motor_state();
 
 	void update_motor_velocity();

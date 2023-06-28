@@ -357,23 +357,22 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 		body_count = 2;
 	}
 
-	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, body_count, p_lock);
+	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count, p_lock);
 
-	JPH::SliderConstraintSettings constraint_settings;
+	auto* jolt_body_a = static_cast<JPH::Body*>(jolt_bodies[0]);
+	ERR_FAIL_COND(jolt_body_a == nullptr);
+
+	auto* jolt_body_b = static_cast<JPH::Body*>(jolt_bodies[1]);
+	ERR_FAIL_COND(jolt_body_b == nullptr && body_count == 2);
 
 	float axis_shift = 0.0f;
+	float limit = FLT_MAX;
 
-	if (limit_lower > limit_upper) {
-		constraint_settings.mLimitsMin = -FLT_MAX;
-		constraint_settings.mLimitsMax = FLT_MAX;
-	} else {
+	if (limit_lower <= limit_upper) {
 		const double limit_midpoint = (limit_lower + limit_upper) / 2.0f;
 
-		axis_shift = (float)-limit_midpoint;
-
-		const auto limit_extent = float(limit_upper - limit_midpoint);
-		constraint_settings.mLimitsMin = -limit_extent;
-		constraint_settings.mLimitsMax = limit_extent;
+		axis_shift = float(-limit_midpoint);
+		limit = float(limit_upper - limit_midpoint);
 	}
 
 	Transform3D shifted_ref_a;
@@ -386,31 +385,64 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 		shifted_ref_b
 	);
 
-	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mAutoDetectPoint = false;
-	constraint_settings.mPoint1 = to_jolt(shifted_ref_a.origin);
-	constraint_settings.mSliderAxis1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mNormalAxis1 = to_jolt(-shifted_ref_a.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mPoint2 = to_jolt(shifted_ref_b.origin);
-	constraint_settings.mSliderAxis2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mNormalAxis2 = to_jolt(-shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
-
-	if (body_b != nullptr) {
-		const JoltWritableBody3D jolt_body_a = bodies[0];
-		ERR_FAIL_COND(jolt_body_a.is_invalid());
-
-		const JoltWritableBody3D jolt_body_b = bodies[1];
-		ERR_FAIL_COND(jolt_body_b.is_invalid());
-
-		jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
+	if (limit_lower != limit_upper) {
+		jolt_ref = build_slider(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limit);
 	} else {
-		const JoltWritableBody3D jolt_body_a = bodies[0];
-		ERR_FAIL_COND(jolt_body_a.is_invalid());
-
-		jolt_ref = constraint_settings.Create(*jolt_body_a, JPH::Body::sFixedToWorld);
+		jolt_ref = build_fixed(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
 	}
 
 	space->add_joint(this);
+}
+
+JPH::Constraint* JoltSliderJointImpl3D::build_slider(
+	JPH::Body* p_jolt_body_a,
+	JPH::Body* p_jolt_body_b,
+	const Transform3D& p_shifted_ref_a,
+	const Transform3D& p_shifted_ref_b,
+	float p_limit
+) {
+	JPH::SliderConstraintSettings constraint_settings;
+
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+	constraint_settings.mAutoDetectPoint = false;
+	constraint_settings.mPoint1 = to_jolt(p_shifted_ref_a.origin);
+	constraint_settings.mSliderAxis1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mNormalAxis1 = to_jolt(-p_shifted_ref_a.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mPoint2 = to_jolt(p_shifted_ref_b.origin);
+	constraint_settings.mSliderAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mNormalAxis2 = to_jolt(-p_shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mLimitsMin = -p_limit;
+	constraint_settings.mLimitsMax = p_limit;
+
+	if (p_jolt_body_b != nullptr) {
+		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
+	} else {
+		return constraint_settings.Create(*p_jolt_body_a, JPH::Body::sFixedToWorld);
+	}
+}
+
+JPH::Constraint* JoltSliderJointImpl3D::build_fixed(
+	JPH::Body* p_jolt_body_a,
+	JPH::Body* p_jolt_body_b,
+	const Transform3D& p_shifted_ref_a,
+	const Transform3D& p_shifted_ref_b
+) {
+	JPH::FixedConstraintSettings constraint_settings;
+
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+	constraint_settings.mAutoDetectPoint = false;
+	constraint_settings.mPoint1 = to_jolt(p_shifted_ref_a.origin);
+	constraint_settings.mAxisX1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
+	constraint_settings.mPoint2 = to_jolt(p_shifted_ref_b.origin);
+	constraint_settings.mAxisX2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
+
+	if (p_jolt_body_b != nullptr) {
+		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
+	} else {
+		return constraint_settings.Create(*p_jolt_body_a, JPH::Body::sFixedToWorld);
+	}
 }
 
 void JoltSliderJointImpl3D::limits_changed(bool p_lock) {

@@ -27,6 +27,15 @@ public:
 	void rebuild(bool p_lock = true) override;
 
 private:
+	static JPH::Constraint* build_swing_twist(
+		JPH::Body* p_jolt_body_a,
+		JPH::Body* p_jolt_body_b,
+		const Transform3D& p_shifted_ref_a,
+		const Transform3D& p_shifted_ref_b,
+		float p_swing_limit,
+		float p_twist_limit
+	);
+
 	void limits_changed(bool p_lock = true);
 
 	double swing_span = 0.0;

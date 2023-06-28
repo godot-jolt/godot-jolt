@@ -405,36 +405,30 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 		body_count = 2;
 	}
 
-	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, body_count, p_lock);
+	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count, p_lock);
 
-	JPH::SixDOFConstraintSettings constraint_settings;
+	auto* jolt_body_a = static_cast<JPH::Body*>(jolt_bodies[0]);
+	ERR_FAIL_COND(jolt_body_a == nullptr);
+
+	auto* jolt_body_b = static_cast<JPH::Body*>(jolt_bodies[1]);
+	ERR_FAIL_COND(jolt_body_b == nullptr && body_count == 2);
 
 	float ref_shift[AXIS_COUNT] = {};
+	float limits[AXIS_COUNT] = {FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX};
 
 	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
 		if (!use_limits[axis]) {
-			constraint_settings.MakeFreeAxis((JoltAxis)axis);
 			continue;
 		}
 
 		const double lower = limit_lower[axis];
 		const double upper = limit_upper[axis];
 
-		if (lower > upper) {
-			// HACK(mihe): This seems to emulate the behavior of Godot Physics, where if the limits
-			// result in a negative span then the axis becomes unbounded.
-			constraint_settings.MakeFreeAxis((JoltAxis)axis);
-		} else {
+		if (lower <= upper) {
 			const double midpoint = (lower + upper) / 2.0f;
 
-			ref_shift[axis] = (float)-midpoint;
-
-			if (Math::is_equal_approx(lower, upper)) {
-				constraint_settings.MakeFixedAxis((JoltAxis)axis);
-			} else {
-				const auto extent = float(upper - midpoint);
-				constraint_settings.SetLimitedAxis((JoltAxis)axis, -extent, extent);
-			}
+			ref_shift[axis] = float(-midpoint);
+			limits[axis] = float(upper - midpoint);
 		}
 	}
 
@@ -453,28 +447,7 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 
 	shift_reference_frames(linear_shift, angular_shift, shifted_ref_a, shifted_ref_b);
 
-	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPosition1 = to_jolt(shifted_ref_a.origin);
-	constraint_settings.mAxisX1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mAxisY1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
-	constraint_settings.mPosition2 = to_jolt(shifted_ref_b.origin);
-	constraint_settings.mAxisX2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mAxisY2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
-
-	if (body_b != nullptr) {
-		const JoltWritableBody3D jolt_body_a = bodies[0];
-		ERR_FAIL_COND(jolt_body_a.is_invalid());
-
-		const JoltWritableBody3D jolt_body_b = bodies[1];
-		ERR_FAIL_COND(jolt_body_b.is_invalid());
-
-		jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
-	} else {
-		const JoltWritableBody3D jolt_body_a = bodies[0];
-		ERR_FAIL_COND(jolt_body_a.is_invalid());
-
-		jolt_ref = constraint_settings.Create(*jolt_body_a, JPH::Body::sFixedToWorld);
-	}
+	jolt_ref = build_6dof(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limits);
 
 	space->add_joint(this);
 
@@ -482,6 +455,42 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 		update_motor_state(axis);
 		update_motor_velocity(axis);
 		update_motor_limit(axis);
+	}
+}
+
+JPH::Constraint* JoltGeneric6DOFJointImpl3D::build_6dof(
+	JPH::Body* p_jolt_body_a,
+	JPH::Body* p_jolt_body_b,
+	const Transform3D& p_shifted_ref_a,
+	const Transform3D& p_shifted_ref_b,
+	const float p_limits[AXIS_COUNT]
+) {
+	JPH::SixDOFConstraintSettings constraint_settings;
+
+	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
+		const float limit = p_limits[axis];
+
+		if (limit == 0.0f) {
+			constraint_settings.MakeFixedAxis((JoltAxis)axis);
+		} else if (limit == FLT_MAX) {
+			constraint_settings.MakeFreeAxis((JoltAxis)axis);
+		} else {
+			constraint_settings.SetLimitedAxis((JoltAxis)axis, -limit, limit);
+		}
+	}
+
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+	constraint_settings.mPosition1 = to_jolt(p_shifted_ref_a.origin);
+	constraint_settings.mAxisX1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
+	constraint_settings.mPosition2 = to_jolt(p_shifted_ref_b.origin);
+	constraint_settings.mAxisX2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
+
+	if (p_jolt_body_b != nullptr) {
+		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
+	} else {
+		return constraint_settings.Create(*p_jolt_body_a, JPH::Body::sFixedToWorld);
 	}
 }
 
