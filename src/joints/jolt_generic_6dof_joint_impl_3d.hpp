@@ -51,6 +51,14 @@ public:
 	void rebuild(bool p_lock = true) override;
 
 private:
+	static JPH::Constraint* build_6dof(
+		JPH::Body* p_jolt_body_a,
+		JPH::Body* p_jolt_body_b,
+		const Transform3D& p_shifted_ref_a,
+		const Transform3D& p_shifted_ref_b,
+		const float p_limits[AXIS_COUNT]
+	);
+
 	void update_motor_state(int32_t p_axis);
 
 	void update_motor_velocity(int32_t p_axis);

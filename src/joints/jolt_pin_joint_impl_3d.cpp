@@ -104,34 +104,40 @@ void JoltPinJointImpl3D::rebuild(bool p_lock) {
 		body_count = 2;
 	}
 
-	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, body_count, p_lock);
+	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count, p_lock);
+
+	auto* jolt_body_a = static_cast<JPH::Body*>(jolt_bodies[0]);
+	ERR_FAIL_COND(jolt_body_a == nullptr);
+
+	auto* jolt_body_b = static_cast<JPH::Body*>(jolt_bodies[1]);
+	ERR_FAIL_COND(jolt_body_b == nullptr && body_count == 2);
 
 	Transform3D shifted_ref_a;
 	Transform3D shifted_ref_b;
 
 	shift_reference_frames(Vector3(), Vector3(), shifted_ref_a, shifted_ref_b);
 
-	JPH::PointConstraintSettings constraint_settings;
-	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPoint1 = to_jolt(shifted_ref_a.origin);
-	constraint_settings.mPoint2 = to_jolt(shifted_ref_b.origin);
-
-	if (body_b != nullptr) {
-		const JoltWritableBody3D jolt_body_a = bodies[0];
-		ERR_FAIL_COND(jolt_body_a.is_invalid());
-
-		const JoltWritableBody3D jolt_body_b = bodies[1];
-		ERR_FAIL_COND(jolt_body_b.is_invalid());
-
-		jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
-	} else {
-		const JoltWritableBody3D jolt_body_a = bodies[0];
-		ERR_FAIL_COND(jolt_body_a.is_invalid());
-
-		jolt_ref = constraint_settings.Create(*jolt_body_a, JPH::Body::sFixedToWorld);
-	}
+	jolt_ref = build_pin(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
 
 	space->add_joint(this);
+}
+
+JPH::Constraint* JoltPinJointImpl3D::build_pin(
+	JPH::Body* p_jolt_body_a,
+	JPH::Body* p_jolt_body_b,
+	const Transform3D& p_shifted_ref_a,
+	const Transform3D& p_shifted_ref_b
+) {
+	JPH::PointConstraintSettings constraint_settings;
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+	constraint_settings.mPoint1 = to_jolt(p_shifted_ref_a.origin);
+	constraint_settings.mPoint2 = to_jolt(p_shifted_ref_b.origin);
+
+	if (p_jolt_body_b != nullptr) {
+		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
+	} else {
+		return constraint_settings.Create(*p_jolt_body_a, JPH::Body::sFixedToWorld);
+	}
 }
 
 void JoltPinJointImpl3D::points_changed(bool p_lock) {
