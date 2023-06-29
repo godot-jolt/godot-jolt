@@ -202,10 +202,10 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 		shifted_ref_b
 	);
 
-	if (limit_lower != limit_upper) {
-		jolt_ref = build_hinge(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limit);
-	} else {
+	if (is_fixed()) {
 		jolt_ref = build_fixed(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
+	} else {
+		jolt_ref = build_hinge(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limit);
 	}
 
 	space->add_joint(this);
@@ -266,6 +266,8 @@ JPH::Constraint* JoltHingeJointImpl3D::build_fixed(
 }
 
 void JoltHingeJointImpl3D::update_motor_state() {
+	QUIET_FAIL_COND(is_fixed());
+
 	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
 		constraint->SetMotorState(
 			motor_enabled ? JPH::EMotorState::Velocity : JPH::EMotorState::Off
@@ -274,12 +276,16 @@ void JoltHingeJointImpl3D::update_motor_state() {
 }
 
 void JoltHingeJointImpl3D::update_motor_velocity() {
+	QUIET_FAIL_COND(is_fixed());
+
 	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
 		constraint->SetTargetAngularVelocity((float)motor_target_speed);
 	}
 }
 
 void JoltHingeJointImpl3D::update_motor_limit() {
+	QUIET_FAIL_COND(is_fixed());
+
 	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
 		// HACK(mihe): This will break if the physics time step changes in any way during the
 		// lifetime of this joint, but this can't really be fixed since Godot only provides a max

@@ -385,10 +385,10 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 		shifted_ref_b
 	);
 
-	if (limit_lower != limit_upper) {
-		jolt_ref = build_slider(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limit);
-	} else {
+	if (is_fixed()) {
 		jolt_ref = build_fixed(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
+	} else {
+		jolt_ref = build_slider(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limit);
 	}
 
 	space->add_joint(this);
