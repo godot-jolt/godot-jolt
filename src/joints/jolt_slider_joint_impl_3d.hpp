@@ -38,6 +38,8 @@ private:
 		const Transform3D& p_shifted_ref_b
 	);
 
+	bool is_fixed() const { return limit_lower == limit_upper; }
+
 	void limits_changed(bool p_lock = true);
 
 	double limit_upper = 0.0;
