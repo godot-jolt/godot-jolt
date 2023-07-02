@@ -14,6 +14,12 @@ Breaking changes are denoted with ⚠️.
 - ⚠️ Changed the `cast_motion` method in `PhysicsDirectSpaceState3D` to return `[1.0, 1.0]` when no
   collision was detected, to match Godot Physics.
 
+### Fixed
+
+- Fixed issue where angular surface velocities (like `constant_angular_velocity` on `StaticBody3D`)
+  wouldn't be applied as expected if the imparted upon body was placed across the imparting body's
+  center of mass.
+
 ## [0.3.0] - 2023-06-28
 
 ### Changed
