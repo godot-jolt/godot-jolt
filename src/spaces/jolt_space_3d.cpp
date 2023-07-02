@@ -87,7 +87,7 @@ void JoltSpace3D::step(float p_step) {
 
 	pre_step(p_step);
 
-	switch (physics_system->Update(p_step, 1, 1, temp_allocator, job_system)) {
+	switch (physics_system->Update(p_step, 1, temp_allocator, job_system)) {
 		case JPH::EPhysicsUpdateError::None: {
 			// All good!
 		} break;
