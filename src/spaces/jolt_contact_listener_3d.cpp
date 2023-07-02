@@ -48,7 +48,7 @@ void JoltContactListener3D::OnContactAdded(
 
 	override_collision_response(p_body1, p_body2, p_settings);
 
-	apply_surface_velocities(p_body1, p_body2, p_manifold, p_settings);
+	apply_surface_velocities(p_body1, p_body2, p_settings);
 
 	if (!is_listening_for(p_body1) && !is_listening_for(p_body2)) {
 		return;
@@ -78,7 +78,7 @@ void JoltContactListener3D::OnContactPersisted(
 
 	override_collision_response(p_body1, p_body2, p_settings);
 
-	apply_surface_velocities(p_body1, p_body2, p_manifold, p_settings);
+	apply_surface_velocities(p_body1, p_body2, p_settings);
 
 	if (p_body1.IsSensor() || p_body2.IsSensor()) {
 		return;
@@ -385,76 +385,51 @@ void JoltContactListener3D::override_collision_response(
 }
 
 void JoltContactListener3D::apply_surface_velocities(
-	const JPH::Body& p_body1,
-	const JPH::Body& p_body2,
-	const JPH::ContactManifold& p_manifold,
+	const JPH::Body& p_jolt_body1,
+	const JPH::Body& p_jolt_body2,
 	JPH::ContactSettings& p_settings
 ) {
-	if (p_body1.IsSensor() || p_body2.IsSensor()) {
+	if (p_jolt_body1.IsSensor() || p_jolt_body2.IsSensor()) {
 		return;
 	}
 
-	const bool supports_surface_velocity1 = !p_body1.IsDynamic();
-	const bool supports_surface_velocity2 = !p_body2.IsDynamic();
+	const bool supports_surface_velocity1 = !p_jolt_body1.IsDynamic();
+	const bool supports_surface_velocity2 = !p_jolt_body2.IsDynamic();
 
 	if (supports_surface_velocity1 == supports_surface_velocity2) {
 		return;
 	}
 
-	auto has_surface_velocity = [](const JPH::Body& p_jolt_body) {
-		const auto* body = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body.GetUserData());
+	const auto* body1 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body1.GetUserData());
+	const auto* body2 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body2.GetUserData());
 
-		const Vector3 linear_velocity = body->get_linear_surface_velocity();
-		const Vector3 angular_velocity = body->get_angular_surface_velocity();
+	const bool has_surface_velocity1 = supports_surface_velocity1 &&
+		(body1->get_linear_surface_velocity() != Vector3() ||
+		 body1->get_angular_surface_velocity() != Vector3());
 
-		return linear_velocity != Vector3() || angular_velocity != Vector3();
-	};
-
-	const bool has_surface_velocity1 = supports_surface_velocity1 && has_surface_velocity(p_body1);
-	const bool has_surface_velocity2 = supports_surface_velocity2 && has_surface_velocity(p_body2);
+	const bool has_surface_velocity2 = supports_surface_velocity2 &&
+		(body2->get_linear_surface_velocity() != Vector3() ||
+		 body2->get_angular_surface_velocity() != Vector3());
 
 	if (has_surface_velocity1 == has_surface_velocity2) {
 		return;
 	}
 
-	auto average_contacts = [](const JPH::ContactPoints& p_contacts) {
-		JPH::Vec3 sum = JPH::Vec3::sZero();
+	const JPH::Vec3 linear_velocity1 = to_jolt(body1->get_linear_surface_velocity());
+	const JPH::Vec3 angular_velocity1 = to_jolt(body1->get_angular_surface_velocity());
 
-		for (const JPH::Vec3& contact : p_contacts) {
-			sum += contact;
-		}
+	const JPH::Vec3 linear_velocity2 = to_jolt(body2->get_linear_surface_velocity());
+	const JPH::Vec3 angular_velocity2 = to_jolt(body2->get_angular_surface_velocity());
 
-		return sum / (float)p_contacts.size();
-	};
+	const JPH::Vec3 com1 = p_jolt_body1.GetCenterOfMassPosition();
+	const JPH::Vec3 com2 = p_jolt_body2.GetCenterOfMassPosition();
+	const JPH::Vec3 rel_com2 = com2 - com1;
 
-	auto calculate_surface_velocity = [](const JPH::Body& p_jolt_body, JPH::Vec3Arg p_point) {
-		const auto* body = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body.GetUserData());
+	const JPH::Vec3 angular_linear_velocity2 = rel_com2.Cross(angular_velocity2);
+	const JPH::Vec3 total_linear_velocity2 = linear_velocity2 + angular_linear_velocity2;
 
-		const JPH::Vec3 linear_velocity = to_jolt(body->get_linear_surface_velocity());
-		const JPH::Vec3 angular_velocity = to_jolt(body->get_angular_surface_velocity());
-
-		const JPH::Vec3 to_point = p_point - p_jolt_body.GetCenterOfMassPosition();
-
-		return linear_velocity + angular_velocity.Cross(to_point);
-	};
-
-	JPH::Vec3 surface_velocity1 = JPH::Vec3::sZero();
-
-	if (has_surface_velocity1) {
-		const JPH::Vec3 relative_point = average_contacts(p_manifold.mRelativeContactPointsOn1);
-		const JPH::Vec3 point = p_manifold.mBaseOffset + relative_point;
-		surface_velocity1 = calculate_surface_velocity(p_body1, point);
-	}
-
-	JPH::Vec3 surface_velocity2 = JPH::Vec3::sZero();
-
-	if (has_surface_velocity2) {
-		const JPH::Vec3 relative_point = average_contacts(p_manifold.mRelativeContactPointsOn2);
-		const JPH::Vec3 point = p_manifold.mBaseOffset + relative_point;
-		surface_velocity2 = calculate_surface_velocity(p_body2, point);
-	}
-
-	p_settings.mRelativeSurfaceVelocity = surface_velocity2 - surface_velocity1;
+	p_settings.mRelativeSurfaceVelocity = total_linear_velocity2 - linear_velocity1;
+	p_settings.mRelativeAngularSurfaceVelocity = angular_velocity2 - angular_velocity1;
 }
 
 #ifdef GDJ_CONFIG_EDITOR

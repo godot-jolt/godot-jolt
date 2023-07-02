@@ -113,9 +113,8 @@ private:
 	);
 
 	void apply_surface_velocities(
-		const JPH::Body& p_body1,
-		const JPH::Body& p_body2,
-		const JPH::ContactManifold& p_manifold,
+		const JPH::Body& p_jolt_body1,
+		const JPH::Body& p_jolt_body2,
 		JPH::ContactSettings& p_settings
 	);
 
