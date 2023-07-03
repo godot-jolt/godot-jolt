@@ -379,7 +379,7 @@ void JoltBodyImpl3D::set_center_of_mass_custom(const Vector3& p_center_of_mass, 
 	custom_center_of_mass = true;
 	center_of_mass_custom = p_center_of_mass;
 
-	build_shape(p_lock);
+	shapes_changed(p_lock);
 }
 
 void JoltBodyImpl3D::add_contact(
@@ -431,9 +431,15 @@ void JoltBodyImpl3D::add_contact(
 }
 
 void JoltBodyImpl3D::reset_mass_properties(bool p_lock) {
+	if (custom_center_of_mass) {
+		custom_center_of_mass = false;
+		center_of_mass_custom.zero();
+
+		shapes_changed(p_lock);
+	}
+
 	inertia.zero();
-	custom_center_of_mass = false;
-	center_of_mass_custom.zero();
+
 	update_mass_properties(p_lock);
 }
 

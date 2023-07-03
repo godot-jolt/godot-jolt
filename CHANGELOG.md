@@ -19,6 +19,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where angular surface velocities (like `constant_angular_velocity` on `StaticBody3D`)
   wouldn't be applied as expected if the imparted upon body was placed across the imparting body's
   center of mass.
+- Fixed issue where going from `CENTER_OF_MASS_MODE_CUSTOM` to `CENTER_OF_MASS_MODE_AUTO` wouldn't
+  actually reset the body's center-of-mass.
 
 ## [0.3.0] - 2023-06-28
 
