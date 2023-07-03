@@ -140,7 +140,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint linear limit softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -150,7 +150,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint linear restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -160,7 +160,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint linear damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -178,7 +178,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -188,7 +188,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -198,7 +198,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -216,7 +216,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint angular limit softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -226,7 +226,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint angular damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -236,7 +236,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint angular restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -246,7 +246,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF angular force limit is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -256,7 +256,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF angular ERP is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -274,7 +274,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -284,7 +284,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -294,7 +294,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -360,7 +360,7 @@ void JoltGeneric6DOFJointImpl3D::set_flag(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -370,7 +370,7 @@ void JoltGeneric6DOFJointImpl3D::set_flag(
 					"Generic 6DOF joint springs are not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;

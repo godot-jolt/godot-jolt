@@ -67,7 +67,7 @@ void JoltHingeJointImpl3D::set_param(
 					"Hinge joint bias is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -85,7 +85,7 @@ void JoltHingeJointImpl3D::set_param(
 					"Hinge joint bias limit is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -95,7 +95,7 @@ void JoltHingeJointImpl3D::set_param(
 					"Hinge joint softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -105,7 +105,7 @@ void JoltHingeJointImpl3D::set_param(
 					"Hinge joint relaxation is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;

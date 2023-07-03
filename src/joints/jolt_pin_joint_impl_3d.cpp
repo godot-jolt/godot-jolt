@@ -57,7 +57,7 @@ void JoltPinJointImpl3D::set_param(PhysicsServer3D::PinJointParam p_param, doubl
 					"Pin joint bias is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -67,7 +67,7 @@ void JoltPinJointImpl3D::set_param(PhysicsServer3D::PinJointParam p_param, doubl
 					"Pin joint damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
@@ -77,7 +77,7 @@ void JoltPinJointImpl3D::set_param(PhysicsServer3D::PinJointParam p_param, doubl
 					"Pin joint impulse clamp is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					owners_to_string()
+					bodies_to_string()
 				));
 			}
 		} break;
