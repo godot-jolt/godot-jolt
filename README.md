@@ -80,7 +80,7 @@ compatible with the one found in Ubuntu 20.04 (Focal Fossa).
 
 ## How do I get started?
 
-1. Download the [latest release][rls] from GitHub
+1. Download it from [GitHub][rls] or from [Godot Asset Library][ast]
 2. Extract the files to your project directory
 3. Start (or restart) Godot
 4. Open your project settings
@@ -135,6 +135,7 @@ Godot Jolt is distributed under the MIT license. See [`LICENSE.txt`][lic] for mo
 [jst]: docs/settings.md#jolt-3d
 [jdc]: https://jrouwe.github.io/JoltPhysics/
 [rls]: https://github.com/godot-jolt/godot-jolt/releases/latest
+[ast]: https://godotengine.org/asset-library/asset/1918
 [prj]: https://github.com/orgs/godot-jolt/projects/1
 [set]: docs/settings.md
 [bld]: docs/building.md
