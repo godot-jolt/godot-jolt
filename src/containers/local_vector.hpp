@@ -141,9 +141,9 @@ public:
 
 	_FORCE_INLINE_ void sort() { std::sort(begin(), end()); }
 
-	template<typename TComparer>
-	_FORCE_INLINE_ void sort(TComparer&& p_comparer) {
-		std::sort(begin(), end(), std::forward<TComparer>(p_comparer));
+	template<typename TComparator>
+	_FORCE_INLINE_ void sort(TComparator&& p_comparator) {
+		std::sort(begin(), end(), std::forward<TComparator>(p_comparator));
 	}
 
 	_FORCE_INLINE_ TElement* ptr() { return impl.data(); }
