@@ -730,17 +730,17 @@ void JoltBodyImpl3D::move_kinematic(float p_step, JPH::Body& p_jolt_body) {
 	p_jolt_body.SetLinearVelocity(JPH::Vec3::sZero());
 	p_jolt_body.SetAngularVelocity(JPH::Vec3::sZero());
 
-	const JPH::Vec3 previous_position = p_jolt_body.GetPosition();
-	const JPH::Quat previous_rotation = p_jolt_body.GetRotation();
+	const JPH::Vec3 current_position = p_jolt_body.GetPosition();
+	const JPH::Quat current_rotation = p_jolt_body.GetRotation();
 
-	const JPH::Vec3 current_position = to_jolt(kinematic_transform.origin);
-	const JPH::Quat current_rotation = to_jolt(kinematic_transform.basis);
+	const JPH::Vec3 new_position = to_jolt(kinematic_transform.origin);
+	const JPH::Quat new_rotation = to_jolt(kinematic_transform.basis);
 
-	if (current_position == previous_position && current_rotation == previous_rotation) {
+	if (new_position == current_position && new_rotation == current_rotation) {
 		return;
 	}
 
-	p_jolt_body.MoveKinematic(current_position, current_rotation, p_step);
+	p_jolt_body.MoveKinematic(new_position, new_rotation, p_step);
 
 	sync_state = true;
 }
