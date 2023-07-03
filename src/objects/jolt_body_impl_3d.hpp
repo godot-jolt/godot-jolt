@@ -161,8 +161,6 @@ public:
 
 	void remove_joint(JoltJointImpl3D* p_joint, bool p_lock = true);
 
-	void integrate_forces(float p_step, JPH::Body& p_jolt_body);
-
 	void call_queries(JPH::Body& p_jolt_body);
 
 	void pre_step(float p_step, JPH::Body& p_jolt_body) override;
@@ -245,6 +243,8 @@ private:
 	JPH::EMotionType get_motion_type() const override;
 
 	void create_in_space() override;
+
+	void integrate_forces(float p_step, JPH::Body& p_jolt_body);
 
 	void pre_step_static(float p_step, JPH::Body& p_jolt_body);
 

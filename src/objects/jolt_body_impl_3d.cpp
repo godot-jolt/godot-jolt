@@ -678,47 +678,6 @@ void JoltBodyImpl3D::remove_joint(JoltJointImpl3D* p_joint, bool p_lock) {
 	joints_changed(p_lock);
 }
 
-void JoltBodyImpl3D::integrate_forces(float p_step, JPH::Body& p_jolt_body) {
-	if (!p_jolt_body.IsActive()) {
-		return;
-	}
-
-	gravity = Vector3();
-
-	const Vector3 position = to_godot(p_jolt_body.GetPosition());
-
-	bool gravity_done = false;
-
-	for (const JoltAreaImpl3D* area : areas) {
-		gravity_done = integrate(gravity, area->get_gravity_mode(), [&]() {
-			return area->compute_gravity(position);
-		});
-
-		if (gravity_done) {
-			break;
-		}
-	}
-
-	if (!gravity_done) {
-		gravity += space->get_default_area()->compute_gravity(position);
-	}
-
-	JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
-
-	gravity *= motion_properties.GetGravityFactor();
-
-	if (!custom_integrator) {
-		motion_properties.SetLinearVelocityClamped(
-			motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
-		);
-
-		p_jolt_body.AddForce(to_jolt(constant_force));
-		p_jolt_body.AddTorque(to_jolt(constant_torque));
-	}
-
-	sync_state = true;
-}
-
 void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
 	if (is_rigid() && custom_integration_callback.is_valid()) {
 		static thread_local Array arguments = []() {
@@ -1050,6 +1009,47 @@ void JoltBodyImpl3D::create_in_space() {
 	JoltGroupFilterRID::encode_rid(rid, group_id, sub_group_id);
 
 	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
+}
+
+void JoltBodyImpl3D::integrate_forces(float p_step, JPH::Body& p_jolt_body) {
+	if (!p_jolt_body.IsActive()) {
+		return;
+	}
+
+	gravity = Vector3();
+
+	const Vector3 position = to_godot(p_jolt_body.GetPosition());
+
+	bool gravity_done = false;
+
+	for (const JoltAreaImpl3D* area : areas) {
+		gravity_done = integrate(gravity, area->get_gravity_mode(), [&]() {
+			return area->compute_gravity(position);
+		});
+
+		if (gravity_done) {
+			break;
+		}
+	}
+
+	if (!gravity_done) {
+		gravity += space->get_default_area()->compute_gravity(position);
+	}
+
+	JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
+
+	gravity *= motion_properties.GetGravityFactor();
+
+	if (!custom_integrator) {
+		motion_properties.SetLinearVelocityClamped(
+			motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
+		);
+
+		p_jolt_body.AddForce(to_jolt(constant_force));
+		p_jolt_body.AddTorque(to_jolt(constant_torque));
+	}
+
+	sync_state = true;
 }
 
 void JoltBodyImpl3D::pre_step_static(
