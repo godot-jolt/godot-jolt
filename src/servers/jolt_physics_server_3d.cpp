@@ -954,7 +954,7 @@ void JoltPhysicsServer3D::_body_set_force_integration_callback(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	body->set_force_integration_callback(p_callable, p_userdata);
+	body->set_custom_integration_callback(p_callable, p_userdata);
 }
 
 void JoltPhysicsServer3D::_body_set_ray_pickable(const RID& p_body, bool p_enable) {

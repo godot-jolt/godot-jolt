@@ -720,7 +720,7 @@ void JoltBodyImpl3D::integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 }
 
 void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
-	if (is_rigid() && force_integration_callback.is_valid()) {
+	if (is_rigid() && custom_integration_callback.is_valid()) {
 		static thread_local Array arguments = []() {
 			Array array;
 			array.resize(2);
@@ -728,9 +728,9 @@ void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
 		}();
 
 		arguments[0] = get_direct_state();
-		arguments[1] = force_integration_userdata;
+		arguments[1] = custom_integration_userdata;
 
-		force_integration_callback.callv(arguments);
+		custom_integration_callback.callv(arguments);
 	}
 
 	if (sync_state && body_state_callback.is_valid()) {
