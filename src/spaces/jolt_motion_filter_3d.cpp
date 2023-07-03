@@ -11,8 +11,8 @@
 
 JoltMotionFilter3D::JoltMotionFilter3D(const JoltBodyImpl3D& p_body, bool p_collide_separation_ray)
 	: physics_server(*static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton()))
-	, body(p_body)
-	, space(*body.get_space())
+	, body_self(p_body)
+	, space(*body_self.get_space())
 	, collide_separation_ray(p_collide_separation_ray) { }
 
 bool JoltMotionFilter3D::ShouldCollide(JPH::BroadPhaseLayer p_broad_phase_layer) const {
@@ -45,20 +45,18 @@ bool JoltMotionFilter3D::ShouldCollide(JPH::ObjectLayer p_object_layer) const {
 		object_collision_mask
 	);
 
-	return (body.get_collision_mask() & object_collision_layer) != 0;
+	return (body_self.get_collision_mask() & object_collision_layer) != 0;
 }
 
-bool JoltMotionFilter3D::ShouldCollide(const JPH::BodyID& p_jolt_id_other) const {
-	return p_jolt_id_other != body.get_jolt_id();
+bool JoltMotionFilter3D::ShouldCollide(const JPH::BodyID& p_jolt_id) const {
+	return p_jolt_id != body_self.get_jolt_id();
 }
 
-bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_jolt_body_other) const {
-	const auto* object_other = reinterpret_cast<const JoltObjectImpl3D*>(
-		p_jolt_body_other.GetUserData()
-	);
+bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_jolt_body) const {
+	const auto* object = reinterpret_cast<const JoltObjectImpl3D*>(p_jolt_body.GetUserData());
 
-	if (physics_server.body_test_motion_is_excluding_object(object_other->get_instance_id()) ||
-		physics_server.body_test_motion_is_excluding_body(object_other->get_rid()))
+	if (physics_server.body_test_motion_is_excluding_object(object->get_instance_id()) ||
+		physics_server.body_test_motion_is_excluding_body(object->get_rid()))
 	{
 		return false;
 	}
@@ -67,21 +65,21 @@ bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_jolt_body_other)
 	// checking against, so we could deadlock if we try. Since we're not actually using the locks
 	// for anything crucial we can get away with not locking here, but a more robust solution should
 	// be implemented down the line.
-	const JoltReadableBody3D jolt_body = space.read_body(body, false);
+	const JoltReadableBody3D jolt_body_self = space.read_body(body_self, false);
 
-	return jolt_body->GetCollisionGroup().CanCollide(p_jolt_body_other.GetCollisionGroup());
+	return jolt_body_self->GetCollisionGroup().CanCollide(p_jolt_body.GetCollisionGroup());
 }
 
 bool JoltMotionFilter3D::ShouldCollide(
-	[[maybe_unused]] const JPH::Shape* p_jolt_shape_other,
-	[[maybe_unused]] const JPH::SubShapeID& p_jolt_shape_id_other
+	[[maybe_unused]] const JPH::Shape* p_jolt_shape,
+	[[maybe_unused]] const JPH::SubShapeID& p_jolt_shape_id
 ) const {
 	return true;
 }
 
 bool JoltMotionFilter3D::ShouldCollide(
-	const JPH::Shape* p_jolt_shape,
-	[[maybe_unused]] const JPH::SubShapeID& p_jolt_shape_id,
+	const JPH::Shape* p_jolt_shape_self,
+	[[maybe_unused]] const JPH::SubShapeID& p_jolt_shape_id_self,
 	[[maybe_unused]] const JPH::Shape* p_jolt_shape_other,
 	[[maybe_unused]] const JPH::SubShapeID& p_jolt_shape_id_other
 ) const {
@@ -89,8 +87,8 @@ bool JoltMotionFilter3D::ShouldCollide(
 		return true;
 	}
 
-	const auto* motion_shape = static_cast<const JoltCustomMotionShape*>(p_jolt_shape);
-	const JPH::ConvexShape& actual_shape = motion_shape->get_inner_shape();
+	const auto* motion_shape = static_cast<const JoltCustomMotionShape*>(p_jolt_shape_self);
+	const JPH::ConvexShape& actual_shape_self = motion_shape->get_inner_shape();
 
-	return actual_shape.GetSubType() != JoltCustomShapeSubType::RAY;
+	return actual_shape_self.GetSubType() != JoltCustomShapeSubType::RAY;
 }
