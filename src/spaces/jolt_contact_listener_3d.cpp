@@ -113,9 +113,10 @@ void JoltContactListener3D::update_contacts(
 ) {
 	const JPH::SubShapeIDPair shape_pair = pair_contact(p_body1, p_body2, p_manifold);
 
-	const MutexLock write_lock(write_mutex);
-
-	Manifold& manifold = manifolds_by_shape_pair[shape_pair];
+	auto& manifold = [&]() -> Manifold& {
+		const MutexLock write_lock(write_mutex);
+		return manifolds_by_shape_pair[shape_pair];
+	}();
 
 	const JPH::uint contact_count = p_manifold.mRelativeContactPointsOn1.size();
 
