@@ -182,25 +182,20 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 	auto* jolt_body_b = static_cast<JPH::Body*>(jolt_bodies[1]);
 	ERR_FAIL_COND(jolt_body_b == nullptr && body_count == 2);
 
-	float axis_shift = 0.0f;
+	float ref_shift = 0.0f;
 	float limit = JPH::JPH_PI;
 
 	if (use_limits && limit_lower <= limit_upper) {
 		const double limit_midpoint = (limit_lower + limit_upper) / 2.0f;
 
-		axis_shift = float(-limit_midpoint);
+		ref_shift = float(-limit_midpoint);
 		limit = float(limit_upper - limit_midpoint);
 	}
 
 	Transform3D shifted_ref_a;
 	Transform3D shifted_ref_b;
 
-	shift_reference_frames(
-		Vector3(),
-		Vector3(0.0f, 0.0f, axis_shift),
-		shifted_ref_a,
-		shifted_ref_b
-	);
+	shift_reference_frames(Vector3(), Vector3(0.0f, 0.0f, ref_shift), shifted_ref_a, shifted_ref_b);
 
 	if (is_fixed()) {
 		jolt_ref = build_fixed(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
