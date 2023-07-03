@@ -91,12 +91,38 @@ private:
 
 	bool is_listening_for(const JPH::Body& p_body) const;
 
-	void update_contacts(
+	bool try_override_collision_response(
+		const JPH::Body& p_body1,
+		const JPH::Body& p_body2,
+		JPH::ContactSettings& p_settings
+	);
+
+	bool try_apply_surface_velocities(
+		const JPH::Body& p_jolt_body1,
+		const JPH::Body& p_jolt_body2,
+		JPH::ContactSettings& p_settings
+	);
+
+	bool try_add_contacts(
 		const JPH::Body& p_body1,
 		const JPH::Body& p_body2,
 		const JPH::ContactManifold& p_manifold,
-		const JPH::ContactSettings& p_settings
+		JPH::ContactSettings& p_settings
 	);
+
+	bool try_add_area_overlap(
+		const JPH::Body& p_body1,
+		const JPH::Body& p_body2,
+		const JPH::ContactManifold& p_manifold
+	);
+
+	bool try_remove_contacts(const JPH::SubShapeIDPair& p_shape_pair);
+
+	bool try_remove_area_overlap(const JPH::SubShapeIDPair& p_shape_pair);
+
+#ifdef GDJ_CONFIG_EDITOR
+	bool try_add_debug_contacts(const JPH::ContactManifold& p_manifold);
+#endif // GDJ_CONFIG_EDITOR
 
 	void flush_contacts();
 
@@ -105,22 +131,6 @@ private:
 	void flush_area_shifts();
 
 	void flush_area_exits();
-
-	void override_collision_response(
-		const JPH::Body& p_body1,
-		const JPH::Body& p_body2,
-		JPH::ContactSettings& p_settings
-	);
-
-	void apply_surface_velocities(
-		const JPH::Body& p_jolt_body1,
-		const JPH::Body& p_jolt_body2,
-		JPH::ContactSettings& p_settings
-	);
-
-#ifdef GDJ_CONFIG_EDITOR
-	void add_debug_contacts(const JPH::ContactManifold& p_manifold);
-#endif // GDJ_CONFIG_EDITOR
 
 	ManifoldsByShapePair manifolds_by_shape_pair;
 

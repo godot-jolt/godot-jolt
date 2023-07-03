@@ -42,28 +42,14 @@ void JoltContactListener3D::OnContactAdded(
 	const JPH::ContactManifold& p_manifold,
 	JPH::ContactSettings& p_settings
 ) {
+	try_override_collision_response(p_body1, p_body2, p_settings);
+	try_apply_surface_velocities(p_body1, p_body2, p_settings);
+	try_add_contacts(p_body1, p_body2, p_manifold, p_settings);
+	try_add_area_overlap(p_body1, p_body2, p_manifold);
+
 #ifdef GDJ_CONFIG_EDITOR
-	add_debug_contacts(p_manifold);
+	try_add_debug_contacts(p_manifold);
 #endif // GDJ_CONFIG_EDITOR
-
-	override_collision_response(p_body1, p_body2, p_settings);
-
-	apply_surface_velocities(p_body1, p_body2, p_settings);
-
-	if (!is_listening_for(p_body1) && !is_listening_for(p_body2)) {
-		return;
-	}
-
-	if (p_body1.IsSensor() || p_body2.IsSensor()) {
-		const JPH::SubShapeIDPair shape_pair = pair_contact(p_body1, p_body2, p_manifold);
-
-		const MutexLock write_lock(write_mutex);
-
-		area_enters.insert(shape_pair);
-		area_overlaps.insert(shape_pair);
-	} else {
-		update_contacts(p_body1, p_body2, p_manifold, p_settings);
-	}
 }
 
 void JoltContactListener3D::OnContactPersisted(
@@ -72,32 +58,18 @@ void JoltContactListener3D::OnContactPersisted(
 	const JPH::ContactManifold& p_manifold,
 	JPH::ContactSettings& p_settings
 ) {
+	try_override_collision_response(p_body1, p_body2, p_settings);
+	try_apply_surface_velocities(p_body1, p_body2, p_settings);
+	try_add_contacts(p_body1, p_body2, p_manifold, p_settings);
+
 #ifdef GDJ_CONFIG_EDITOR
-	add_debug_contacts(p_manifold);
+	try_add_debug_contacts(p_manifold);
 #endif // GDJ_CONFIG_EDITOR
-
-	override_collision_response(p_body1, p_body2, p_settings);
-
-	apply_surface_velocities(p_body1, p_body2, p_settings);
-
-	if (p_body1.IsSensor() || p_body2.IsSensor()) {
-		return;
-	}
-
-	if (!is_listening_for(p_body1) && !is_listening_for(p_body2)) {
-		return;
-	}
-
-	update_contacts(p_body1, p_body2, p_manifold, p_settings);
 }
 
 void JoltContactListener3D::OnContactRemoved(const JPH::SubShapeIDPair& p_shape_pair) {
-	const MutexLock write_lock(write_mutex);
-
-	if (area_overlaps.erase(p_shape_pair)) {
-		area_exits.insert(p_shape_pair);
-	} else {
-		manifolds_by_shape_pair.erase(p_shape_pair);
+	if (!try_remove_contacts(p_shape_pair)) {
+		try_remove_area_overlap(p_shape_pair);
 	}
 }
 
@@ -105,12 +77,119 @@ bool JoltContactListener3D::is_listening_for(const JPH::Body& p_body) const {
 	return listening_for.has(p_body.GetID());
 }
 
-void JoltContactListener3D::update_contacts(
+bool JoltContactListener3D::try_override_collision_response(
+	const JPH::Body& p_body1,
+	const JPH::Body& p_body2,
+	JPH::ContactSettings& p_settings
+) {
+	if (p_body1.IsSensor() || p_body2.IsSensor()) {
+		return false;
+	}
+
+	if (!p_body1.IsDynamic() && !p_body2.IsDynamic()) {
+		return false;
+	}
+
+	JPH::BroadPhaseLayer broad_phase_layer1 = {};
+	uint32_t collision_layer1 = 0;
+	uint32_t collision_mask1 = 0;
+
+	space->map_from_object_layer(
+		p_body1.GetObjectLayer(),
+		broad_phase_layer1,
+		collision_layer1,
+		collision_mask1
+	);
+
+	JPH::BroadPhaseLayer broad_phase_layer2 = {};
+	uint32_t collision_layer2 = 0;
+	uint32_t collision_mask2 = 0;
+
+	space->map_from_object_layer(
+		p_body2.GetObjectLayer(),
+		broad_phase_layer2,
+		collision_layer2,
+		collision_mask2
+	);
+
+	const bool first_scans_second = (collision_mask1 & collision_layer2) != 0;
+	const bool second_scans_first = (collision_mask2 & collision_layer1) != 0;
+
+	if (first_scans_second && !second_scans_first) {
+		p_settings.mInvMassScale2 = 0.0f;
+		p_settings.mInvInertiaScale2 = 0.0f;
+	} else if (second_scans_first && !first_scans_second) {
+		p_settings.mInvMassScale1 = 0.0f;
+		p_settings.mInvInertiaScale1 = 0.0f;
+	}
+
+	return true;
+}
+
+bool JoltContactListener3D::try_apply_surface_velocities(
+	const JPH::Body& p_jolt_body1,
+	const JPH::Body& p_jolt_body2,
+	JPH::ContactSettings& p_settings
+) {
+	if (p_jolt_body1.IsSensor() || p_jolt_body2.IsSensor()) {
+		return false;
+	}
+
+	const bool supports_surface_velocity1 = !p_jolt_body1.IsDynamic();
+	const bool supports_surface_velocity2 = !p_jolt_body2.IsDynamic();
+
+	if (supports_surface_velocity1 == supports_surface_velocity2) {
+		return false;
+	}
+
+	const auto* body1 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body1.GetUserData());
+	const auto* body2 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body2.GetUserData());
+
+	const bool has_surface_velocity1 = supports_surface_velocity1 &&
+		(body1->get_linear_surface_velocity() != Vector3() ||
+		 body1->get_angular_surface_velocity() != Vector3());
+
+	const bool has_surface_velocity2 = supports_surface_velocity2 &&
+		(body2->get_linear_surface_velocity() != Vector3() ||
+		 body2->get_angular_surface_velocity() != Vector3());
+
+	if (has_surface_velocity1 == has_surface_velocity2) {
+		return false;
+	}
+
+	const JPH::Vec3 linear_velocity1 = to_jolt(body1->get_linear_surface_velocity());
+	const JPH::Vec3 angular_velocity1 = to_jolt(body1->get_angular_surface_velocity());
+
+	const JPH::Vec3 linear_velocity2 = to_jolt(body2->get_linear_surface_velocity());
+	const JPH::Vec3 angular_velocity2 = to_jolt(body2->get_angular_surface_velocity());
+
+	const JPH::Vec3 com1 = p_jolt_body1.GetCenterOfMassPosition();
+	const JPH::Vec3 com2 = p_jolt_body2.GetCenterOfMassPosition();
+	const JPH::Vec3 rel_com2 = com2 - com1;
+
+	const JPH::Vec3 angular_linear_velocity2 = rel_com2.Cross(angular_velocity2);
+	const JPH::Vec3 total_linear_velocity2 = linear_velocity2 + angular_linear_velocity2;
+
+	p_settings.mRelativeSurfaceVelocity = total_linear_velocity2 - linear_velocity1;
+	p_settings.mRelativeAngularSurfaceVelocity = angular_velocity2 - angular_velocity1;
+
+	return true;
+}
+
+bool JoltContactListener3D::try_add_contacts(
 	const JPH::Body& p_body1,
 	const JPH::Body& p_body2,
 	const JPH::ContactManifold& p_manifold,
-	const JPH::ContactSettings& p_settings
+	JPH::ContactSettings& p_settings
 ) {
+	if (p_body1.IsSensor() || p_body2.IsSensor()) {
+		return false;
+	}
+
+	if (!is_listening_for(p_body1) && !is_listening_for(p_body2)) {
+		return false;
+	}
+
 	const JPH::SubShapeIDPair shape_pair = pair_contact(p_body1, p_body2, p_manifold);
 
 	auto& manifold = [&]() -> Manifold& {
@@ -169,7 +248,90 @@ void JoltContactListener3D::update_contacts(
 		contact2.velocity_other = p_body1.GetPointVelocity(world_point2);
 		contact2.impulse = combined_impulse;
 	}
+
+	return true;
 }
+
+bool JoltContactListener3D::try_add_area_overlap(
+	const JPH::Body& p_body1,
+	const JPH::Body& p_body2,
+	const JPH::ContactManifold& p_manifold
+) {
+	if (!p_body1.IsSensor() && !p_body2.IsSensor()) {
+		return false;
+	}
+
+	if (!is_listening_for(p_body1) && !is_listening_for(p_body2)) {
+		return false;
+	}
+
+	const JPH::SubShapeIDPair shape_pair = pair_contact(p_body1, p_body2, p_manifold);
+
+	const MutexLock write_lock(write_mutex);
+
+	area_enters.insert(shape_pair);
+	area_overlaps.insert(shape_pair);
+
+	return true;
+}
+
+bool JoltContactListener3D::try_remove_contacts(const JPH::SubShapeIDPair& p_shape_pair) {
+	const MutexLock write_lock(write_mutex);
+
+	return manifolds_by_shape_pair.erase(p_shape_pair);
+}
+
+bool JoltContactListener3D::try_remove_area_overlap(const JPH::SubShapeIDPair& p_shape_pair) {
+	const MutexLock write_lock(write_mutex);
+
+	if (!area_overlaps.erase(p_shape_pair)) {
+		return false;
+	}
+
+	area_exits.insert(p_shape_pair);
+
+	return true;
+}
+
+#ifdef GDJ_CONFIG_EDITOR
+
+bool JoltContactListener3D::try_add_debug_contacts(const JPH::ContactManifold& p_manifold) {
+	const int64_t max_count = debug_contacts.size();
+
+	if (max_count == 0) {
+		return false;
+	}
+
+	const auto additional_pairs = (int32_t)p_manifold.mRelativeContactPointsOn1.size();
+	const int32_t additional_contacts = additional_pairs * 2;
+
+	int32_t current_count = debug_contact_count;
+	bool exchanged = false;
+
+	do {
+		const int32_t new_count = current_count + additional_contacts;
+
+		if (new_count > max_count) {
+			return false;
+		}
+
+		exchanged = debug_contact_count.compare_exchange_weak(current_count, new_count);
+	} while (!exchanged);
+
+	for (int32_t i = 0; i < additional_pairs; ++i) {
+		const int32_t pair_index = current_count + i * 2;
+
+		const JPH::Vec3 point_on_1 = p_manifold.GetWorldSpaceContactPointOn1((JPH::uint)i);
+		const JPH::Vec3 point_on_2 = p_manifold.GetWorldSpaceContactPointOn2((JPH::uint)i);
+
+		debug_contacts[pair_index + 0] = to_godot(point_on_1);
+		debug_contacts[pair_index + 1] = to_godot(point_on_2);
+	}
+
+	return true;
+}
+
+#endif // GDJ_CONFIG_EDITOR
 
 void JoltContactListener3D::flush_contacts() {
 	for (auto&& [shape_pair, manifold] : manifolds_by_shape_pair) {
@@ -337,136 +499,3 @@ void JoltContactListener3D::flush_area_exits() {
 
 	area_exits.clear();
 }
-
-void JoltContactListener3D::override_collision_response(
-	const JPH::Body& p_body1,
-	const JPH::Body& p_body2,
-	JPH::ContactSettings& p_settings
-) {
-	if (p_body1.IsSensor() || p_body2.IsSensor()) {
-		return;
-	}
-
-	if (!p_body1.IsDynamic() && !p_body2.IsDynamic()) {
-		return;
-	}
-
-	JPH::BroadPhaseLayer broad_phase_layer1 = {};
-	uint32_t collision_layer1 = 0;
-	uint32_t collision_mask1 = 0;
-
-	space->map_from_object_layer(
-		p_body1.GetObjectLayer(),
-		broad_phase_layer1,
-		collision_layer1,
-		collision_mask1
-	);
-
-	JPH::BroadPhaseLayer broad_phase_layer2 = {};
-	uint32_t collision_layer2 = 0;
-	uint32_t collision_mask2 = 0;
-
-	space->map_from_object_layer(
-		p_body2.GetObjectLayer(),
-		broad_phase_layer2,
-		collision_layer2,
-		collision_mask2
-	);
-
-	const bool first_scans_second = (collision_mask1 & collision_layer2) != 0;
-	const bool second_scans_first = (collision_mask2 & collision_layer1) != 0;
-
-	if (first_scans_second && !second_scans_first) {
-		p_settings.mInvMassScale2 = 0.0f;
-		p_settings.mInvInertiaScale2 = 0.0f;
-	} else if (second_scans_first && !first_scans_second) {
-		p_settings.mInvMassScale1 = 0.0f;
-		p_settings.mInvInertiaScale1 = 0.0f;
-	}
-}
-
-void JoltContactListener3D::apply_surface_velocities(
-	const JPH::Body& p_jolt_body1,
-	const JPH::Body& p_jolt_body2,
-	JPH::ContactSettings& p_settings
-) {
-	if (p_jolt_body1.IsSensor() || p_jolt_body2.IsSensor()) {
-		return;
-	}
-
-	const bool supports_surface_velocity1 = !p_jolt_body1.IsDynamic();
-	const bool supports_surface_velocity2 = !p_jolt_body2.IsDynamic();
-
-	if (supports_surface_velocity1 == supports_surface_velocity2) {
-		return;
-	}
-
-	const auto* body1 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body1.GetUserData());
-	const auto* body2 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body2.GetUserData());
-
-	const bool has_surface_velocity1 = supports_surface_velocity1 &&
-		(body1->get_linear_surface_velocity() != Vector3() ||
-		 body1->get_angular_surface_velocity() != Vector3());
-
-	const bool has_surface_velocity2 = supports_surface_velocity2 &&
-		(body2->get_linear_surface_velocity() != Vector3() ||
-		 body2->get_angular_surface_velocity() != Vector3());
-
-	if (has_surface_velocity1 == has_surface_velocity2) {
-		return;
-	}
-
-	const JPH::Vec3 linear_velocity1 = to_jolt(body1->get_linear_surface_velocity());
-	const JPH::Vec3 angular_velocity1 = to_jolt(body1->get_angular_surface_velocity());
-
-	const JPH::Vec3 linear_velocity2 = to_jolt(body2->get_linear_surface_velocity());
-	const JPH::Vec3 angular_velocity2 = to_jolt(body2->get_angular_surface_velocity());
-
-	const JPH::Vec3 com1 = p_jolt_body1.GetCenterOfMassPosition();
-	const JPH::Vec3 com2 = p_jolt_body2.GetCenterOfMassPosition();
-	const JPH::Vec3 rel_com2 = com2 - com1;
-
-	const JPH::Vec3 angular_linear_velocity2 = rel_com2.Cross(angular_velocity2);
-	const JPH::Vec3 total_linear_velocity2 = linear_velocity2 + angular_linear_velocity2;
-
-	p_settings.mRelativeSurfaceVelocity = total_linear_velocity2 - linear_velocity1;
-	p_settings.mRelativeAngularSurfaceVelocity = angular_velocity2 - angular_velocity1;
-}
-
-#ifdef GDJ_CONFIG_EDITOR
-
-void JoltContactListener3D::add_debug_contacts(const JPH::ContactManifold& p_manifold) {
-	const int64_t max_count = debug_contacts.size();
-
-	if (max_count == 0) {
-		return;
-	}
-
-	const auto additional_pairs = (int32_t)p_manifold.mRelativeContactPointsOn1.size();
-	const int32_t additional_contacts = additional_pairs * 2;
-
-	int32_t current_count = debug_contact_count;
-	bool exchanged = false;
-
-	do {
-		const int32_t new_count = current_count + additional_contacts;
-
-		if (new_count > max_count) {
-			return;
-		}
-
-		exchanged = debug_contact_count.compare_exchange_weak(current_count, new_count);
-	} while (!exchanged);
-
-	for (int32_t i = 0; i < additional_pairs; ++i) {
-		const int32_t pair_index = current_count + i * 2;
-
-		const JPH::Vec3 point_on_1 = p_manifold.GetWorldSpaceContactPointOn1((JPH::uint)i);
-		const JPH::Vec3 point_on_2 = p_manifold.GetWorldSpaceContactPointOn2((JPH::uint)i);
-
-		debug_contacts[pair_index + 0] = to_godot(point_on_1);
-		debug_contacts[pair_index + 1] = to_godot(point_on_2);
-	}
-}
-
-#endif // GDJ_CONFIG_EDITOR

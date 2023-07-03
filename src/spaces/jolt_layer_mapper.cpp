@@ -6,12 +6,12 @@
 namespace {
 
 template<uint8_t TSize = JoltBroadPhaseLayer::COUNT>
-class JoltBroadPhaseLayerTable {
+class JoltBroadPhaseMatrix {
 	using LayerType = JPH::BroadPhaseLayer;
 	using UnderlyingType = LayerType::Type;
 
 public:
-	JoltBroadPhaseLayerTable() {
+	JoltBroadPhaseMatrix() {
 		using namespace JoltBroadPhaseLayer;
 
 		allow_collision(BODY_STATIC, BODY_DYNAMIC);
@@ -37,7 +37,7 @@ public:
 	}
 
 	void allow_collision(UnderlyingType p_layer1, UnderlyingType p_layer2) {
-		table[p_layer1][p_layer2] = true;
+		masks[p_layer1] |= uint8_t(1U << p_layer2);
 	}
 
 	void allow_collision(LayerType p_layer1, LayerType p_layer2) {
@@ -45,7 +45,7 @@ public:
 	}
 
 	bool should_collide(UnderlyingType p_layer1, UnderlyingType p_layer2) const {
-		return table[p_layer1][p_layer2];
+		return (masks[p_layer1] & uint8_t(1U << p_layer2)) != 0;
 	}
 
 	bool should_collide(LayerType p_layer1, LayerType p_layer2) const {
@@ -53,7 +53,7 @@ public:
 	}
 
 private:
-	bool table[TSize][TSize] = {};
+	uint8_t masks[TSize] = {};
 };
 
 constexpr JPH::ObjectLayer encode_layers(
@@ -202,13 +202,13 @@ bool JoltLayerMapper::ShouldCollide(
 	JPH::ObjectLayer p_encoded_layer1,
 	JPH::BroadPhaseLayer p_broad_phase_layer2
 ) const {
-	static const JoltBroadPhaseLayerTable table;
+	static const JoltBroadPhaseMatrix matrix;
 
 	JPH::BroadPhaseLayer broad_phase_layer1 = {};
 	JPH::ObjectLayer object_layer1 = 0;
 	decode_layers(p_encoded_layer1, broad_phase_layer1, object_layer1);
 
-	return table.should_collide(broad_phase_layer1, p_broad_phase_layer2);
+	return matrix.should_collide(broad_phase_layer1, p_broad_phase_layer2);
 }
 
 JPH::ObjectLayer JoltLayerMapper::allocate_object_layer(uint64_t p_collision) {

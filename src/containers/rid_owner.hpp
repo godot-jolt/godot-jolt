@@ -12,7 +12,12 @@ public:
 
 	~RID_PtrOwner() {
 		if (ptrs_by_id.size() > 0) {
-			ERR_PRINT(vformat("%d RIDs were leaked.", ptrs_by_id.size()));
+			ERR_PRINT(vformat(
+				"%d RIDs in Godot Jolt were found to not have been freed. "
+				"This should not happen under normal circumstances. "
+				"Consider reporting this issue.",
+				ptrs_by_id.size()
+			));
 		}
 	}
 

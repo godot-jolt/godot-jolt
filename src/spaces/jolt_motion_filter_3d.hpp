@@ -16,18 +16,16 @@ public:
 
 	bool ShouldCollide(JPH::ObjectLayer p_object_layer) const override;
 
-	bool ShouldCollide(const JPH::BodyID& p_jolt_id_other) const override;
+	bool ShouldCollide(const JPH::BodyID& p_jolt_id) const override;
 
-	bool ShouldCollideLocked(const JPH::Body& p_jolt_body_other) const override;
+	bool ShouldCollideLocked(const JPH::Body& p_jolt_body) const override;
 
-	bool ShouldCollide(
-		const JPH::Shape* p_jolt_shape_other,
-		const JPH::SubShapeID& p_jolt_shape_id_other
-	) const override;
+	bool ShouldCollide(const JPH::Shape* p_jolt_shape, const JPH::SubShapeID& p_jolt_shape_id)
+		const override;
 
 	bool ShouldCollide(
-		const JPH::Shape* p_jolt_shape,
-		const JPH::SubShapeID& p_jolt_shape_id,
+		const JPH::Shape* p_jolt_shape_self,
+		const JPH::SubShapeID& p_jolt_shape_id_self,
 		const JPH::Shape* p_jolt_shape_other,
 		const JPH::SubShapeID& p_jolt_shape_id_other
 	) const override;
@@ -35,7 +33,7 @@ public:
 private:
 	const JoltPhysicsServer3D& physics_server;
 
-	const JoltBodyImpl3D& body;
+	const JoltBodyImpl3D& body_self;
 
 	const JoltSpace3D& space;
 

@@ -466,7 +466,7 @@ void JoltPhysicsServer3D::_area_set_ray_pickable(const RID& p_area, bool p_enabl
 	JoltAreaImpl3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
-	area->set_ray_pickable(p_enable);
+	area->set_pickable(p_enable);
 }
 
 RID JoltPhysicsServer3D::_body_create() {
@@ -954,14 +954,14 @@ void JoltPhysicsServer3D::_body_set_force_integration_callback(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	body->set_force_integration_callback(p_callable, p_userdata);
+	body->set_custom_integration_callback(p_callable, p_userdata);
 }
 
 void JoltPhysicsServer3D::_body_set_ray_pickable(const RID& p_body, bool p_enable) {
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	body->set_ray_pickable(p_enable);
+	body->set_pickable(p_enable);
 }
 
 bool JoltPhysicsServer3D::_body_test_motion(

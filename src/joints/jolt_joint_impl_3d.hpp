@@ -46,7 +46,7 @@ protected:
 		Transform3D& p_shifted_ref_b
 	);
 
-	String owners_to_string() const;
+	String bodies_to_string() const;
 
 	bool collision_disabled = false;
 

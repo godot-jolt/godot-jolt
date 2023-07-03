@@ -678,49 +678,8 @@ void JoltBodyImpl3D::remove_joint(JoltJointImpl3D* p_joint, bool p_lock) {
 	joints_changed(p_lock);
 }
 
-void JoltBodyImpl3D::integrate_forces(float p_step, JPH::Body& p_jolt_body) {
-	if (!p_jolt_body.IsActive()) {
-		return;
-	}
-
-	gravity = Vector3();
-
-	const Vector3 position = to_godot(p_jolt_body.GetPosition());
-
-	bool gravity_done = false;
-
-	for (const JoltAreaImpl3D* area : areas) {
-		gravity_done = integrate(gravity, area->get_gravity_mode(), [&]() {
-			return area->compute_gravity(position);
-		});
-
-		if (gravity_done) {
-			break;
-		}
-	}
-
-	if (!gravity_done) {
-		gravity += space->get_default_area()->compute_gravity(position);
-	}
-
-	JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
-
-	gravity *= motion_properties.GetGravityFactor();
-
-	if (!custom_integrator) {
-		motion_properties.SetLinearVelocityClamped(
-			motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
-		);
-
-		p_jolt_body.AddForce(to_jolt(constant_force));
-		p_jolt_body.AddTorque(to_jolt(constant_torque));
-	}
-
-	sync_state = true;
-}
-
 void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
-	if (is_rigid() && force_integration_callback.is_valid()) {
+	if (is_rigid() && custom_integration_callback.is_valid()) {
 		static thread_local Array arguments = []() {
 			Array array;
 			array.resize(2);
@@ -728,9 +687,9 @@ void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
 		}();
 
 		arguments[0] = get_direct_state();
-		arguments[1] = force_integration_userdata;
+		arguments[1] = custom_integration_userdata;
 
-		force_integration_callback.callv(arguments);
+		custom_integration_callback.callv(arguments);
 	}
 
 	if (sync_state && body_state_callback.is_valid()) {
@@ -771,17 +730,17 @@ void JoltBodyImpl3D::move_kinematic(float p_step, JPH::Body& p_jolt_body) {
 	p_jolt_body.SetLinearVelocity(JPH::Vec3::sZero());
 	p_jolt_body.SetAngularVelocity(JPH::Vec3::sZero());
 
-	const JPH::Vec3 previous_position = p_jolt_body.GetPosition();
-	const JPH::Quat previous_rotation = p_jolt_body.GetRotation();
+	const JPH::Vec3 current_position = p_jolt_body.GetPosition();
+	const JPH::Quat current_rotation = p_jolt_body.GetRotation();
 
-	const JPH::Vec3 current_position = to_jolt(kinematic_transform.origin);
-	const JPH::Quat current_rotation = to_jolt(kinematic_transform.basis);
+	const JPH::Vec3 new_position = to_jolt(kinematic_transform.origin);
+	const JPH::Quat new_rotation = to_jolt(kinematic_transform.basis);
 
-	if (current_position == previous_position && current_rotation == previous_rotation) {
+	if (new_position == current_position && new_rotation == current_rotation) {
 		return;
 	}
 
-	p_jolt_body.MoveKinematic(current_position, current_rotation, p_step);
+	p_jolt_body.MoveKinematic(new_position, new_rotation, p_step);
 
 	sync_state = true;
 }
@@ -1050,6 +1009,47 @@ void JoltBodyImpl3D::create_in_space() {
 	JoltGroupFilterRID::encode_rid(rid, group_id, sub_group_id);
 
 	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
+}
+
+void JoltBodyImpl3D::integrate_forces(float p_step, JPH::Body& p_jolt_body) {
+	if (!p_jolt_body.IsActive()) {
+		return;
+	}
+
+	gravity = Vector3();
+
+	const Vector3 position = to_godot(p_jolt_body.GetPosition());
+
+	bool gravity_done = false;
+
+	for (const JoltAreaImpl3D* area : areas) {
+		gravity_done = integrate(gravity, area->get_gravity_mode(), [&]() {
+			return area->compute_gravity(position);
+		});
+
+		if (gravity_done) {
+			break;
+		}
+	}
+
+	if (!gravity_done) {
+		gravity += space->get_default_area()->compute_gravity(position);
+	}
+
+	JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
+
+	gravity *= motion_properties.GetGravityFactor();
+
+	if (!custom_integrator) {
+		motion_properties.SetLinearVelocityClamped(
+			motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
+		);
+
+		p_jolt_body.AddForce(to_jolt(constant_force));
+		p_jolt_body.AddTorque(to_jolt(constant_torque));
+	}
+
+	sync_state = true;
 }
 
 void JoltBodyImpl3D::pre_step_static(

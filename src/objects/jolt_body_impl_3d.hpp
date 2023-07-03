@@ -50,11 +50,11 @@ public:
 
 	void set_state_sync_callback(const Callable& p_callback) { body_state_callback = p_callback; }
 
-	bool has_force_integration_callback() const { return force_integration_callback.is_valid(); }
+	bool has_custom_integration_callback() const { return custom_integration_callback.is_valid(); }
 
-	void set_force_integration_callback(const Callable& p_callback, const Variant& p_userdata) {
-		force_integration_callback = p_callback;
-		force_integration_userdata = p_userdata;
+	void set_custom_integration_callback(const Callable& p_callback, const Variant& p_userdata) {
+		custom_integration_callback = p_callback;
+		custom_integration_userdata = p_userdata;
 	}
 
 	bool has_custom_integrator() const { return custom_integrator; }
@@ -161,8 +161,6 @@ public:
 
 	void remove_joint(JoltJointImpl3D* p_joint, bool p_lock = true);
 
-	void integrate_forces(float p_step, JPH::Body& p_jolt_body);
-
 	void call_queries(JPH::Body& p_jolt_body);
 
 	void pre_step(float p_step, JPH::Body& p_jolt_body) override;
@@ -246,6 +244,8 @@ private:
 
 	void create_in_space() override;
 
+	void integrate_forces(float p_step, JPH::Body& p_jolt_body);
+
 	void pre_step_static(float p_step, JPH::Body& p_jolt_body);
 
 	void pre_step_rigid(float p_step, JPH::Body& p_jolt_body);
@@ -300,7 +300,7 @@ private:
 
 	LocalVector<JoltJointImpl3D*> joints;
 
-	Variant force_integration_userdata;
+	Variant custom_integration_userdata;
 
 	Transform3D kinematic_transform;
 
@@ -320,7 +320,7 @@ private:
 
 	Callable body_state_callback;
 
-	Callable force_integration_callback;
+	Callable custom_integration_callback;
 
 	JoltPhysicsDirectBodyState3D* direct_state = nullptr;
 
