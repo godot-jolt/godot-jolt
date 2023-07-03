@@ -28,16 +28,6 @@ _FORCE_INLINE_ void decompose(Transform3D& p_transform, Vector3& p_scale) {
 	decompose(p_transform.basis, p_scale);
 }
 
-_FORCE_INLINE_ void decompose(Basis& p_basis) {
-	Vector3 scale;
-	decompose(p_basis, scale);
-}
-
-_FORCE_INLINE_ void decompose(Transform3D& p_transform) {
-	Vector3 scale;
-	decompose(p_transform, scale);
-}
-
 _FORCE_INLINE_ Basis decomposed(Basis p_basis, Vector3& p_scale) {
 	decompose(p_basis, p_scale);
 	return p_basis;
@@ -45,16 +35,6 @@ _FORCE_INLINE_ Basis decomposed(Basis p_basis, Vector3& p_scale) {
 
 _FORCE_INLINE_ Transform3D decomposed(Transform3D p_transform, Vector3& p_scale) {
 	decompose(p_transform, p_scale);
-	return p_transform;
-}
-
-_FORCE_INLINE_ Basis decomposed(Basis p_basis) {
-	decompose(p_basis);
-	return p_basis;
-}
-
-_FORCE_INLINE_ Transform3D decomposed(Transform3D p_transform) {
-	decompose(p_transform);
 	return p_transform;
 }
 
