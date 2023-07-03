@@ -13,16 +13,16 @@ else()
 	set(output_name mimalloc)
 endif()
 
-set(c_flags "")
+set(cflags "")
 
 if(DEFINED ENV{CFLAGS})
-	set(c_flags "${c_flags} $ENV{CFLAGS}")
+	set(cflags "${cflags} $ENV{CFLAGS}")
 endif()
 
 if(MSVC)
-	set(c_flags "${c_flags} /W0")
+	set(cflags "${cflags} /W0")
 else()
-	set(c_flags "${c_flags} -w")
+	set(cflags "${cflags} -w")
 endif()
 
 gdj_add_external_library(mimalloc "${configurations}"
@@ -33,7 +33,7 @@ gdj_add_external_library(mimalloc "${configurations}"
 	INCLUDE_DIRECTORIES
 		<SOURCE_DIR>/include
 	ENVIRONMENT
-		CFLAGS=${c_flags}
+		CFLAGS=${cflags}
 	CMAKE_CACHE_ARGS
 		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO=${GDJ_INTERPROCEDURAL_OPTIMIZATION}
 		-DMI_OVERRIDE=FALSE
