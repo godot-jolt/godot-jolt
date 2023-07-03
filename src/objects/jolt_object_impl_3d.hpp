@@ -61,6 +61,16 @@ public:
 
 	Vector3 get_velocity_at_position(const Vector3& p_position, bool p_lock = true) const;
 
+	virtual bool has_custom_center_of_mass() const = 0;
+
+	virtual Vector3 get_center_of_mass_custom() const = 0;
+
+	bool is_ray_pickable() const { return ray_pickable; }
+
+	void set_ray_pickable(bool p_enabled) { ray_pickable = p_enabled; }
+
+	virtual bool generates_contacts() const = 0;
+
 	JPH::ShapeRefC try_build_shape();
 
 	void build_shape(bool p_lock = true);
@@ -108,15 +118,9 @@ public:
 
 	void set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock = true);
 
-	bool is_ray_pickable() const { return ray_pickable; }
-
-	void set_ray_pickable(bool p_enabled) { ray_pickable = p_enabled; }
-
 	virtual void pre_step(float p_step, JPH::Body& p_jolt_body);
 
 	virtual void post_step(float p_step, JPH::Body& p_jolt_body);
-
-	virtual bool generates_contacts() const = 0;
 
 	String to_string() const;
 
@@ -126,10 +130,6 @@ protected:
 	virtual JPH::BroadPhaseLayer get_broad_phase_layer() const = 0;
 
 	JPH::ObjectLayer get_object_layer() const;
-
-	virtual bool has_custom_center_of_mass() const = 0;
-
-	virtual Vector3 get_center_of_mass_custom() const = 0;
 
 	virtual JPH::EMotionType get_motion_type() const = 0;
 
