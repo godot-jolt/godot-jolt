@@ -65,9 +65,9 @@ public:
 
 	virtual Vector3 get_center_of_mass_custom() const = 0;
 
-	bool is_ray_pickable() const { return ray_pickable; }
+	bool is_pickable() const { return pickable; }
 
-	void set_ray_pickable(bool p_enabled) { ray_pickable = p_enabled; }
+	void set_pickable(bool p_enabled) { pickable = p_enabled; }
 
 	virtual bool generates_contacts() const = 0;
 
@@ -185,5 +185,5 @@ protected:
 
 	uint32_t collision_mask = 1;
 
-	bool ray_pickable = false;
+	bool pickable = false;
 };
