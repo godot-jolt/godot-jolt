@@ -14,6 +14,10 @@ Breaking changes are denoted with ⚠️.
 - ⚠️ Changed the `cast_motion` method in `PhysicsDirectSpaceState3D` to return `[1.0, 1.0]` when no
   collision was detected, to match Godot Physics.
 
+### Added
+
+- Added support for springs in `Generic6DOFJoint3D`.
+
 ### Fixed
 
 - Fixed issue where angular surface velocities (like `constant_angular_velocity` on `StaticBody3D`)
