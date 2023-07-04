@@ -37,7 +37,7 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What's not supported?
 
-- Joints do not support springs or soft limits (yet)
+- Joints do not support soft limits (yet)
 - `SoftBody3D` is not supported
 - `WorldBoundaryShape3D` is not supported
 - The physics server is not thread-safe (yet)
@@ -48,6 +48,7 @@ should not be relied upon if determinism is a hard requirement.
 
 - `Area3D` detecting static bodies is opt-in, with a potentially [heavy performance/memory
   cost][jst]
+- Springs are actually implemented in `Generic6DOFJoint3D`
 - Ray-casts will hit the back-faces of all shape types, not just concave polygons and height maps
 - Shape-casts should be more accurate, but their cost also scale with the cast distance
 - Shape margins are used, but are treated as an upper bound and scale with the shape's extents

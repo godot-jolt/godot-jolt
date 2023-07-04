@@ -51,19 +51,17 @@ public:
 	void rebuild(bool p_lock = true) override;
 
 private:
-	static JPH::Constraint* build_6dof(
-		JPH::Body* p_jolt_body_a,
-		JPH::Body* p_jolt_body_b,
-		const Transform3D& p_shifted_ref_a,
-		const Transform3D& p_shifted_ref_b,
-		const float p_limits[AXIS_COUNT]
-	);
-
 	void update_motor_state(int32_t p_axis);
 
 	void update_motor_velocity(int32_t p_axis);
 
 	void update_motor_limit(int32_t p_axis);
+
+	void update_spring_stiffness(int32_t p_axis);
+
+	void update_spring_damping(int32_t p_axis);
+
+	void update_spring_equilibrium(int32_t p_axis);
 
 	void limits_changed(bool p_lock = true);
 
@@ -73,6 +71,14 @@ private:
 
 	void motor_limit_changed(int32_t p_axis);
 
+	void spring_state_changed(int32_t p_axis);
+
+	void spring_stiffness_changed(int32_t p_axis);
+
+	void spring_damping_changed(int32_t p_axis);
+
+	void spring_equilibrium_changed(int32_t p_axis);
+
 	double limit_lower[AXIS_COUNT] = {};
 
 	double limit_upper[AXIS_COUNT] = {};
@@ -81,7 +87,15 @@ private:
 
 	double motor_limit[AXIS_COUNT] = {};
 
+	double spring_stiffness[AXIS_COUNT] = {};
+
+	double spring_damping[AXIS_COUNT] = {};
+
+	double spring_equilibrium[AXIS_COUNT] = {};
+
 	bool use_limits[AXIS_COUNT] = {};
 
 	bool motor_enabled[AXIS_COUNT] = {};
+
+	bool spring_enabled[AXIS_COUNT] = {};
 };

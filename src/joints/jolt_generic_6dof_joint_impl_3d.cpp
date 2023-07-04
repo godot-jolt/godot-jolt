@@ -9,19 +9,11 @@ constexpr double DEFAULT_LINEAR_LIMIT_SOFTNESS = 0.7;
 constexpr double DEFAULT_LINEAR_RESTITUTION = 0.5;
 constexpr double DEFAULT_LINEAR_DAMPING = 1.0;
 
-constexpr double DEFAULT_LINEAR_SPRING_STIFFNESS = 0.01;
-constexpr double DEFAULT_LINEAR_SPRING_DAMPING = 0.01;
-constexpr double DEFAULT_LINEAR_SPRING_EQUILIBRIUM_POINT = 0.0;
-
 constexpr double DEFAULT_ANGULAR_LIMIT_SOFTNESS = 0.5;
 constexpr double DEFAULT_ANGULAR_DAMPING = 1.0;
 constexpr double DEFAULT_ANGULAR_RESTITUTION = 0.0;
 constexpr double DEFAULT_ANGULAR_FORCE_LIMIT = 0.0;
 constexpr double DEFAULT_ANGULAR_ERP = 0.5;
-
-constexpr double DEFAULT_ANGULAR_SPRING_STIFFNESS = 0.0;
-constexpr double DEFAULT_ANGULAR_SPRING_DAMPING = 0.0;
-constexpr double DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT = 0.0;
 
 } // namespace
 
@@ -66,13 +58,13 @@ double JoltGeneric6DOFJointImpl3D::get_param(
 			return motor_limit[axis_lin];
 		}
 		case 7: /* G6DOF_JOINT_LINEAR_SPRING_STIFFNESS */ {
-			return DEFAULT_LINEAR_SPRING_STIFFNESS;
+			return spring_stiffness[axis_lin];
 		}
 		case 8: /* G6DOF_JOINT_LINEAR_SPRING_DAMPING */ {
-			return DEFAULT_LINEAR_SPRING_DAMPING;
+			return spring_damping[axis_lin];
 		}
 		case 9: /* G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT */ {
-			return DEFAULT_LINEAR_SPRING_EQUILIBRIUM_POINT;
+			return spring_equilibrium[axis_lin];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LOWER_LIMIT: {
 			return limit_lower[axis_ang];
@@ -102,13 +94,13 @@ double JoltGeneric6DOFJointImpl3D::get_param(
 			return motor_limit[axis_ang];
 		}
 		case 19: /* G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS */ {
-			return DEFAULT_ANGULAR_SPRING_STIFFNESS;
+			return spring_stiffness[axis_ang];
 		}
 		case 20: /* G6DOF_JOINT_ANGULAR_SPRING_DAMPING */ {
-			return DEFAULT_ANGULAR_SPRING_DAMPING;
+			return spring_damping[axis_ang];
 		}
 		case 21: /* G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT */ {
-			return DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT;
+			return spring_equilibrium[axis_ang];
 		}
 		default: {
 			ERR_FAIL_D_MSG(vformat("Unhandled 6DOF joint parameter: '%d'", p_param));
@@ -173,34 +165,16 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 			motor_limit_changed(axis_lin);
 		} break;
 		case 7: /* G6DOF_JOINT_LINEAR_SPRING_STIFFNESS */ {
-			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_STIFFNESS)) {
-				WARN_PRINT(vformat(
-					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored. "
-					"This joint connects %s.",
-					bodies_to_string()
-				));
-			}
+			spring_stiffness[axis_lin] = p_value;
+			spring_stiffness_changed(axis_lin);
 		} break;
 		case 8: /* G6DOF_JOINT_LINEAR_SPRING_DAMPING */ {
-			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_DAMPING)) {
-				WARN_PRINT(vformat(
-					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored. "
-					"This joint connects %s.",
-					bodies_to_string()
-				));
-			}
+			spring_damping[axis_lin] = p_value;
+			spring_damping_changed(axis_lin);
 		} break;
 		case 9: /* G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT */ {
-			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_SPRING_EQUILIBRIUM_POINT)) {
-				WARN_PRINT(vformat(
-					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored. "
-					"This joint connects %s.",
-					bodies_to_string()
-				));
-			}
+			spring_equilibrium[axis_lin] = p_value;
+			spring_equilibrium_changed(axis_lin);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LOWER_LIMIT: {
 			limit_lower[axis_ang] = p_value;
@@ -269,34 +243,16 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 			motor_limit_changed(axis_ang);
 		} break;
 		case 19: /* G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS */ {
-			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_STIFFNESS)) {
-				WARN_PRINT(vformat(
-					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored. "
-					"This joint connects %s.",
-					bodies_to_string()
-				));
-			}
+			spring_stiffness[axis_ang] = p_value;
+			spring_stiffness_changed(axis_ang);
 		} break;
 		case 20: /* G6DOF_JOINT_ANGULAR_SPRING_DAMPING */ {
-			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_DAMPING)) {
-				WARN_PRINT(vformat(
-					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored. "
-					"This joint connects %s.",
-					bodies_to_string()
-				));
-			}
+			spring_damping[axis_ang] = p_value;
+			spring_damping_changed(axis_ang);
 		} break;
 		case 21: /* G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT */ {
-			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_SPRING_EQUILIBRIUM_POINT)) {
-				WARN_PRINT(vformat(
-					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored. "
-					"This joint connects %s.",
-					bodies_to_string()
-				));
-			}
+			spring_equilibrium[axis_ang] = p_value;
+			spring_equilibrium_changed(axis_ang);
 		} break;
 		default: {
 			ERR_FAIL_MSG(vformat("Unhandled 6DOF joint parameter: '%d'", p_param));
@@ -319,10 +275,10 @@ bool JoltGeneric6DOFJointImpl3D::get_flag(
 			return use_limits[axis_ang];
 		}
 		case 2: /* G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING */ {
-			return false;
+			return spring_enabled[axis_ang];
 		}
 		case 3: /* G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING */ {
-			return false;
+			return spring_enabled[axis_lin];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_MOTOR: {
 			return motor_enabled[axis_ang];
@@ -355,24 +311,12 @@ void JoltGeneric6DOFJointImpl3D::set_flag(
 			limits_changed(p_lock);
 		} break;
 		case 2: /* G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING */ {
-			if (p_enabled) {
-				WARN_PRINT(vformat(
-					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored. "
-					"This joint connects %s.",
-					bodies_to_string()
-				));
-			}
+			spring_enabled[axis_ang] = p_enabled;
+			spring_state_changed(axis_ang);
 		} break;
 		case 3: /* G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING */ {
-			if (p_enabled) {
-				WARN_PRINT(vformat(
-					"Generic 6DOF joint springs are not supported by Godot Jolt. "
-					"Any such value will be ignored. "
-					"This joint connects %s.",
-					bodies_to_string()
-				));
-			}
+			spring_enabled[axis_lin] = p_enabled;
+			spring_state_changed(axis_lin);
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_MOTOR: {
 			motor_enabled[axis_ang] = p_enabled;
@@ -405,30 +349,36 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 		body_count = 2;
 	}
 
-	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count, p_lock);
+	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, body_count, p_lock);
 
-	auto* jolt_body_a = static_cast<JPH::Body*>(jolt_bodies[0]);
-	ERR_FAIL_COND(jolt_body_a == nullptr);
-
-	auto* jolt_body_b = static_cast<JPH::Body*>(jolt_bodies[1]);
-	ERR_FAIL_COND(jolt_body_b == nullptr && body_count == 2);
+	JPH::SixDOFConstraintSettings constraint_settings;
 
 	float ref_shift[AXIS_COUNT] = {};
-	float limits[AXIS_COUNT] = {FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX};
 
 	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
 		if (!use_limits[axis]) {
+			constraint_settings.MakeFreeAxis((JoltAxis)axis);
 			continue;
 		}
 
 		const double lower = limit_lower[axis];
 		const double upper = limit_upper[axis];
 
-		if (lower <= upper) {
+		if (lower > upper) {
+			// HACK(mihe): This seems to emulate the behavior of Godot Physics, where if the limits
+			// result in a negative span then the axis becomes unbounded.
+			constraint_settings.MakeFreeAxis((JoltAxis)axis);
+		} else {
 			const double midpoint = (lower + upper) / 2.0f;
 
-			ref_shift[axis] = float(-midpoint);
-			limits[axis] = float(upper - midpoint);
+			ref_shift[axis] = (float)-midpoint;
+
+			if (Math::is_equal_approx(lower, upper)) {
+				constraint_settings.MakeFixedAxis((JoltAxis)axis);
+			} else {
+				const auto extent = float(upper - midpoint);
+				constraint_settings.SetLimitedAxis((JoltAxis)axis, -extent, extent);
+			}
 		}
 	}
 
@@ -447,7 +397,32 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 
 	shift_reference_frames(linear_shift, angular_shift, shifted_ref_a, shifted_ref_b);
 
-	jolt_ref = build_6dof(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limits);
+	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+	constraint_settings.mPosition1 = to_jolt(shifted_ref_a.origin);
+	constraint_settings.mAxisX1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
+	constraint_settings.mPosition2 = to_jolt(shifted_ref_b.origin);
+	constraint_settings.mAxisX2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
+
+	for (JPH::MotorSettings& motor_settings : constraint_settings.mMotorSettings) {
+		motor_settings.mSpringSettings.mMode = JPH::ESpringMode::StiffnessAndDamping;
+	}
+
+	if (body_b != nullptr) {
+		const JoltWritableBody3D jolt_body_a = bodies[0];
+		ERR_FAIL_COND(jolt_body_a.is_invalid());
+
+		const JoltWritableBody3D jolt_body_b = bodies[1];
+		ERR_FAIL_COND(jolt_body_b.is_invalid());
+
+		jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
+	} else {
+		const JoltWritableBody3D jolt_body_a = bodies[0];
+		ERR_FAIL_COND(jolt_body_a.is_invalid());
+
+		jolt_ref = constraint_settings.Create(*jolt_body_a, JPH::Body::sFixedToWorld);
+	}
 
 	space->add_joint(this);
 
@@ -455,42 +430,9 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 		update_motor_state(axis);
 		update_motor_velocity(axis);
 		update_motor_limit(axis);
-	}
-}
-
-JPH::Constraint* JoltGeneric6DOFJointImpl3D::build_6dof(
-	JPH::Body* p_jolt_body_a,
-	JPH::Body* p_jolt_body_b,
-	const Transform3D& p_shifted_ref_a,
-	const Transform3D& p_shifted_ref_b,
-	const float p_limits[AXIS_COUNT]
-) {
-	JPH::SixDOFConstraintSettings constraint_settings;
-
-	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
-		const float limit = p_limits[axis];
-
-		if (limit == 0.0f) {
-			constraint_settings.MakeFixedAxis((JoltAxis)axis);
-		} else if (limit == FLT_MAX) {
-			constraint_settings.MakeFreeAxis((JoltAxis)axis);
-		} else {
-			constraint_settings.SetLimitedAxis((JoltAxis)axis, -limit, limit);
-		}
-	}
-
-	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPosition1 = to_jolt(p_shifted_ref_a.origin);
-	constraint_settings.mAxisX1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mAxisY1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
-	constraint_settings.mPosition2 = to_jolt(p_shifted_ref_b.origin);
-	constraint_settings.mAxisX2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mAxisY2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
-
-	if (p_jolt_body_b != nullptr) {
-		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
-	} else {
-		return constraint_settings.Create(*p_jolt_body_a, JPH::Body::sFixedToWorld);
+		update_spring_stiffness(axis);
+		update_spring_damping(axis);
+		update_spring_equilibrium(axis);
 	}
 }
 
@@ -498,6 +440,8 @@ void JoltGeneric6DOFJointImpl3D::update_motor_state(int32_t p_axis) {
 	if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
 		if (motor_enabled[p_axis]) {
 			constraint->SetMotorState((JoltAxis)p_axis, JPH::EMotorState::Velocity);
+		} else if (spring_enabled[p_axis]) {
+			constraint->SetMotorState((JoltAxis)p_axis, JPH::EMotorState::Position);
 		} else {
 			constraint->SetMotorState((JoltAxis)p_axis, JPH::EMotorState::Off);
 		}
@@ -529,12 +473,54 @@ void JoltGeneric6DOFJointImpl3D::update_motor_limit(int32_t p_axis) {
 	if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
 		JPH::MotorSettings& motor_settings = constraint->GetMotorSettings((JoltAxis)p_axis);
 
-		const auto limit = (float)motor_limit[p_axis];
+		// HACK(mihe): We only apply the motor limit if we're actually using a velocity motor, since
+		// it would otherwise affect a position motor as well, which doesn't seem to be how this is
+		// applied in the Bullet implementation in Godot 3.
+		const auto limit = motor_enabled[p_axis] ? (float)motor_limit[p_axis] : FLT_MAX;
 
 		if (p_axis >= AXIS_LINEAR_X && p_axis <= AXIS_LINEAR_Z) {
 			motor_settings.SetForceLimit(limit);
 		} else {
 			motor_settings.SetTorqueLimit(limit);
+		}
+	}
+}
+
+void JoltGeneric6DOFJointImpl3D::update_spring_stiffness(int32_t p_axis) {
+	if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
+		JPH::MotorSettings& motor_settings = constraint->GetMotorSettings((JoltAxis)p_axis);
+		motor_settings.mSpringSettings.mStiffness = (float)spring_stiffness[p_axis];
+	}
+}
+
+void JoltGeneric6DOFJointImpl3D::update_spring_damping(int32_t p_axis) {
+	if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
+		JPH::MotorSettings& motor_settings = constraint->GetMotorSettings((JoltAxis)p_axis);
+		motor_settings.mSpringSettings.mDamping = (float)spring_damping[p_axis];
+	}
+}
+
+void JoltGeneric6DOFJointImpl3D::update_spring_equilibrium(int32_t p_axis) {
+	if (auto* constraint = static_cast<JPH::SixDOFConstraint*>(jolt_ref.GetPtr())) {
+		if (p_axis >= AXIS_LINEAR_X && p_axis <= AXIS_LINEAR_Z) {
+			const Vector3 target_position = Vector3(
+				(float)-spring_equilibrium[AXIS_LINEAR_X],
+				(float)-spring_equilibrium[AXIS_LINEAR_Y],
+				(float)-spring_equilibrium[AXIS_LINEAR_Z]
+			);
+
+			constraint->SetTargetPositionCS(to_jolt(target_position));
+		} else {
+			// HACK(mihe): These are flipped to match Bullet in Godot 3, presumably for the same
+			// reason that the angular motor velocity needs to be flipped. Godot 4 does not
+			// currently have springs implemented, so can't be used as a reference.
+			const Basis target_orientation = Basis::from_euler(
+				{(float)spring_equilibrium[AXIS_ANGULAR_X],
+				 (float)spring_equilibrium[AXIS_ANGULAR_Y],
+				 (float)spring_equilibrium[AXIS_ANGULAR_Z]}
+			);
+
+			constraint->SetTargetOrientationCS(to_jolt(target_orientation));
 		}
 	}
 }
@@ -545,6 +531,7 @@ void JoltGeneric6DOFJointImpl3D::limits_changed(bool p_lock) {
 
 void JoltGeneric6DOFJointImpl3D::motor_state_changed(int32_t p_axis) {
 	update_motor_state(p_axis);
+	update_motor_limit(p_axis);
 }
 
 void JoltGeneric6DOFJointImpl3D::motor_speed_changed(int32_t p_axis) {
@@ -553,4 +540,20 @@ void JoltGeneric6DOFJointImpl3D::motor_speed_changed(int32_t p_axis) {
 
 void JoltGeneric6DOFJointImpl3D::motor_limit_changed(int32_t p_axis) {
 	update_motor_limit(p_axis);
+}
+
+void JoltGeneric6DOFJointImpl3D::spring_state_changed(int32_t p_axis) {
+	update_motor_state(p_axis);
+}
+
+void JoltGeneric6DOFJointImpl3D::spring_stiffness_changed(int32_t p_axis) {
+	update_spring_stiffness(p_axis);
+}
+
+void JoltGeneric6DOFJointImpl3D::spring_damping_changed(int32_t p_axis) {
+	update_spring_damping(p_axis);
+}
+
+void JoltGeneric6DOFJointImpl3D::spring_equilibrium_changed(int32_t p_axis) {
+	update_spring_equilibrium(p_axis);
 }
