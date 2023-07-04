@@ -6,7 +6,6 @@
 namespace {
 
 constexpr double DEFAULT_BIAS = 0.3;
-constexpr double DEFAULT_LIMIT_BIAS = 0.3;
 constexpr double DEFAULT_SOFTNESS = 0.9;
 constexpr double DEFAULT_RELAXATION = 1.0;
 
@@ -35,7 +34,7 @@ double JoltHingeJointImpl3D::get_param(PhysicsServer3D::HingeJointParam p_param)
 			return limit_lower;
 		}
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
-			return DEFAULT_LIMIT_BIAS;
+			return limit_bias;
 		}
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_SOFTNESS: {
 			return DEFAULT_SOFTNESS;
@@ -80,14 +79,8 @@ void JoltHingeJointImpl3D::set_param(
 			limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
-			if (!Math::is_equal_approx(p_value, DEFAULT_LIMIT_BIAS)) {
-				WARN_PRINT(vformat(
-					"Hinge joint bias limit is not supported by Godot Jolt. "
-					"Any such value will be ignored. "
-					"This joint connects %s.",
-					bodies_to_string()
-				));
-			}
+			limit_bias = p_value;
+			limit_bias_changed(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_SOFTNESS)) {
@@ -205,6 +198,7 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 
 	space->add_joint(this);
 
+	update_limit_spring();
 	update_motor_state();
 	update_motor_velocity();
 	update_motor_limit();
@@ -228,6 +222,8 @@ JPH::Constraint* JoltHingeJointImpl3D::build_hinge(
 	constraint_settings.mNormalAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mLimitsMin = -p_limit;
 	constraint_settings.mLimitsMax = p_limit;
+
+	constraint_settings.mLimitsSpringSettings.mMode = JPH::ESpringMode::FrequencyAndDamping;
 
 	if (p_jolt_body_b != nullptr) {
 		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
@@ -257,6 +253,24 @@ JPH::Constraint* JoltHingeJointImpl3D::build_fixed(
 		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
 	} else {
 		return constraint_settings.Create(*p_jolt_body_a, JPH::Body::sFixedToWorld);
+	}
+}
+
+void JoltHingeJointImpl3D::update_limit_spring() {
+	QUIET_FAIL_COND(is_fixed());
+
+	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
+		constexpr double sqrt5 = 2.2360679774997896964091736687313;
+
+		// HACK(mihe): This magic constant makes the limit spring behave similar to how it behaves
+		// with Bullet's hinge joint in Godot 3.
+		constexpr double magic = 0.003;
+
+		const double frequency = Math::sqrt(limit_bias) / (Math_TAU * sqrt5 * magic);
+		const double damping = 1.0 / (2.0 * Math_TAU * frequency * magic);
+
+		constraint->GetLimitsSpringSettings().mFrequency = (float)frequency;
+		constraint->GetLimitsSpringSettings().mDamping = (float)damping;
 	}
 }
 
@@ -295,6 +309,10 @@ void JoltHingeJointImpl3D::update_motor_limit() {
 }
 
 void JoltHingeJointImpl3D::limits_changed(bool p_lock) {
+	rebuild(p_lock);
+}
+
+void JoltHingeJointImpl3D::limit_bias_changed(bool p_lock) {
 	rebuild(p_lock);
 }
 

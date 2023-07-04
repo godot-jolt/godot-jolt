@@ -42,7 +42,11 @@ private:
 		const Transform3D& p_shifted_ref_b
 	);
 
-	bool is_fixed() const { return limit_lower == limit_upper; }
+	bool is_sprung() const { return limit_bias != FLT_MAX; }
+
+	bool is_fixed() const { return limit_lower == limit_upper && !is_sprung(); }
+
+	void update_limit_spring();
 
 	void update_motor_state();
 
@@ -51,6 +55,8 @@ private:
 	void update_motor_limit();
 
 	void limits_changed(bool p_lock = true);
+
+	void limit_bias_changed(bool p_lock = true);
 
 	void motor_state_changed();
 
@@ -61,6 +67,8 @@ private:
 	double limit_lower = 0.0;
 
 	double limit_upper = 0.0;
+
+	double limit_bias = FLT_MAX;
 
 	double motor_target_speed = 0.0f;
 
