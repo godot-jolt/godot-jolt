@@ -11,10 +11,10 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
-- ⚠️ Changed the `cast_motion` method in `PhysicsDirectSpaceState3D` to return `[1.0, 1.0]` when no
-  collision was detected, to match Godot Physics.
-- ⚠️ Changed contact positions to be absolute global coordinates instead of relative global
-  coordinates, to match the new behavior in Godot Physics.
+- ⚠️ Changed the `cast_motion` method in `PhysicsDirectSpaceState3D` to return `[1.0, 1.0]` instead
+  of `[]` when no collision was detected, to match Godot Physics.
+- ⚠️ Changed contact positions to be absolute global positions instead of relative global positions,
+  to match the new behavior in Godot Physics.
 
 ### Added
 
@@ -30,8 +30,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where any usage of `PhysicsServer3D`, `PhysicsDirectBodyState3D` or
   `PhysicsDirectSpaceState3D` in C# scripts would trigger an exception.
 - Fixed issue where the `recovery_as_collision` parameter in the `move_and_collide` and `test_move`
-  methods on bodies was always `true`.
-- Fixed issue where the `input_ray_pickable` property on bodies and areas was always `true`.
+  methods on bodies would always be `true`.
+- Fixed issue where the `input_ray_pickable` property on bodies and areas would always be `true`.
 
 ## [0.3.0] - 2023-06-28
 
