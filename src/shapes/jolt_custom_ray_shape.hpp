@@ -58,7 +58,7 @@ public:
 
 	float GetInnerRadius() const override { return 0.0f; }
 
-	JPH::MassProperties GetMassProperties() const override { return {}; }
+	JPH::MassProperties GetMassProperties() const override;
 
 	JPH::Vec3 GetSurfaceNormal(
 		[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id,

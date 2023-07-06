@@ -202,6 +202,17 @@ JPH::AABox JoltCustomRayShape::GetLocalBounds() const {
 	return {JPH::Vec3::sZero(), JPH::Vec3(0.0f, 0.0f, length)};
 }
 
+JPH::MassProperties JoltCustomRayShape::GetMassProperties() const {
+	JPH::MassProperties mass_properties;
+
+	// HACK(mihe): Since this shape has no volume we can't really give it a correct set of mass
+	// properties, so instead we just give it some random/arbitrary ones.
+	mass_properties.mMass = 1.0f;
+	mass_properties.mInertia = JPH::Mat44::sScale(0.1f);
+
+	return mass_properties;
+}
+
 #ifdef JPH_DEBUG_RENDERER
 
 void JoltCustomRayShape::Draw(
