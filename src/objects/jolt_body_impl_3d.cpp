@@ -390,6 +390,7 @@ void JoltBodyImpl3D::add_contact(
 	const Vector3& p_normal,
 	const Vector3& p_position,
 	const Vector3& p_collider_position,
+	const Vector3& p_velocity,
 	const Vector3& p_collider_velocity,
 	const Vector3& p_impulse
 ) {
@@ -425,6 +426,7 @@ void JoltBodyImpl3D::add_contact(
 		contact->normal = p_normal;
 		contact->position = p_position;
 		contact->collider_position = p_collider_position;
+		contact->velocity = p_velocity;
 		contact->collider_velocity = p_collider_velocity;
 		contact->impulse = p_impulse;
 	}

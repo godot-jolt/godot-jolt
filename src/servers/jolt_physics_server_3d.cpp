@@ -971,6 +971,7 @@ bool JoltPhysicsServer3D::_body_test_motion(
 	double p_margin,
 	int32_t p_max_collisions,
 	bool p_collide_separation_ray,
+	bool p_recovery_as_collision,
 	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
@@ -986,6 +987,7 @@ bool JoltPhysicsServer3D::_body_test_motion(
 		(float)p_margin,
 		p_max_collisions,
 		p_collide_separation_ray,
+		p_recovery_as_collision,
 		p_result
 	);
 }

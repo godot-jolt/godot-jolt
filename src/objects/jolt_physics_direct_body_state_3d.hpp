@@ -86,6 +86,8 @@ public:
 
 	int32_t _get_contact_local_shape(int32_t p_contact_idx) const override;
 
+	Vector3 _get_contact_local_velocity_at_position(int32_t p_contact_idx) const override;
+
 	RID _get_contact_collider(int32_t p_contact_idx) const override;
 
 	Vector3 _get_contact_collider_position(int32_t p_contact_idx) const override;

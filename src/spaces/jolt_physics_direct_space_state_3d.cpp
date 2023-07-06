@@ -23,10 +23,16 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	bool p_collide_with_areas,
 	bool p_hit_from_inside,
 	bool p_hit_back_faces,
+	bool p_pick_ray,
 	PhysicsServer3DExtensionRayResult* p_result
 ) {
-	const JoltQueryFilter3D
-		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
+	const JoltQueryFilter3D query_filter(
+		*this,
+		p_collision_mask,
+		p_collide_with_bodies,
+		p_collide_with_areas,
+		p_pick_ray
+	);
 
 	const JPH::Vec3 from = to_jolt(p_from);
 	const JPH::Vec3 to = to_jolt(p_to);
@@ -491,6 +497,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	float p_margin,
 	int32_t p_max_collisions,
 	bool p_collide_separation_ray,
+	bool p_recovery_as_collision,
 	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
 	p_margin = max(p_margin, 0.0001f);
@@ -521,7 +528,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 
 	bool collided = false;
 
-	if (hit || (recovered /* && p_recovery_as_collision */)) {
+	if (hit || (recovered && p_recovery_as_collision)) {
 		collided = body_motion_collide(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),

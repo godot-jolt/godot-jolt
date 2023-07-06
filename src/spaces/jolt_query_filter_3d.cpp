@@ -9,13 +9,15 @@ JoltQueryFilter3D::JoltQueryFilter3D(
 	const JoltPhysicsDirectSpaceState3D& p_space_state,
 	uint32_t p_collision_mask,
 	bool p_collide_with_bodies,
-	bool p_collide_with_areas
+	bool p_collide_with_areas,
+	bool p_picking
 )
 	: space_state(p_space_state)
 	, space(space_state.get_space())
 	, collision_mask(p_collision_mask)
 	, collide_with_bodies(p_collide_with_bodies)
-	, collide_with_areas(p_collide_with_areas) { }
+	, collide_with_areas(p_collide_with_areas)
+	, picking(p_picking) { }
 
 bool JoltQueryFilter3D::ShouldCollide(JPH::BroadPhaseLayer p_broad_phase_layer) const {
 	const auto broad_phase_layer = (JPH::BroadPhaseLayer::Type)p_broad_phase_layer;
@@ -55,7 +57,8 @@ bool JoltQueryFilter3D::ShouldCollide([[maybe_unused]] const JPH::BodyID& p_body
 }
 
 bool JoltQueryFilter3D::ShouldCollideLocked(const JPH::Body& p_body) const {
-	return !space_state.is_body_excluded_from_query(
-		reinterpret_cast<JoltObjectImpl3D*>(p_body.GetUserData())->get_rid()
-	);
+	auto* object = reinterpret_cast<JoltObjectImpl3D*>(p_body.GetUserData());
+
+	return (!picking || object->is_pickable()) &&
+		!space_state.is_body_excluded_from_query(object->get_rid());
 }

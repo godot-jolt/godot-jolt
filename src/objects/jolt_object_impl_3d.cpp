@@ -20,7 +20,7 @@ JoltObjectImpl3D::~JoltObjectImpl3D() {
 }
 
 GodotObject* JoltObjectImpl3D::get_instance() const {
-	return internal::gde_interface->object_get_instance_from_id(instance_id);
+	return internal::gdextension_interface_object_get_instance_from_id(instance_id);
 }
 
 Object* JoltObjectImpl3D::get_instance_unsafe() const {
