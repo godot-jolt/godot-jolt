@@ -12,7 +12,8 @@ public:
 		const JoltPhysicsDirectSpaceState3D& p_space_state,
 		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
-		bool p_collide_with_areas
+		bool p_collide_with_areas,
+		bool p_picking = false
 	);
 
 	bool ShouldCollide(JPH::BroadPhaseLayer p_broad_phase_layer) const override;
@@ -33,4 +34,6 @@ private:
 	bool collide_with_bodies = false;
 
 	bool collide_with_areas = false;
+
+	bool picking = false;
 };

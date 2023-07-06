@@ -31,6 +31,8 @@ class JoltContactListener3D final : public JPH::ContactListener {
 
 		JPH::Vec3 point_other = {};
 
+		JPH::Vec3 velocity_self = {};
+
 		JPH::Vec3 velocity_other = {};
 
 		JPH::Vec3 impulse = {};

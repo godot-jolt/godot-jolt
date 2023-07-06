@@ -13,6 +13,8 @@ Breaking changes are denoted with ⚠️.
 
 - ⚠️ Changed the `cast_motion` method in `PhysicsDirectSpaceState3D` to return `[1.0, 1.0]` when no
   collision was detected, to match Godot Physics.
+- ⚠️ Changed contact positions to be absolute global coordinates instead of relative global
+  coordinates, to match the new behavior in Godot Physics.
 
 ### Added
 
@@ -25,6 +27,11 @@ Breaking changes are denoted with ⚠️.
   center of mass.
 - Fixed issue where going from `CENTER_OF_MASS_MODE_CUSTOM` to `CENTER_OF_MASS_MODE_AUTO` wouldn't
   actually reset the body's center-of-mass.
+- Fixed issue where any usage of `PhysicsServer3D`, `PhysicsDirectBodyState3D` or
+  `PhysicsDirectSpaceState3D` in C# scripts would trigger an exception.
+- Fixed issue where the `recovery_as_collision` parameter in the `move_and_collide` and `test_move`
+  methods on bodies was always `true`.
+- Fixed issue where the `input_ray_pickable` property on bodies and areas was always `true`.
 
 ## [0.3.0] - 2023-06-28
 

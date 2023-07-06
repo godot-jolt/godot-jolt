@@ -24,6 +24,7 @@ public:
 		bool p_collide_with_areas,
 		bool p_hit_from_inside,
 		bool p_hit_back_faces,
+		bool p_pick_ray,
 		PhysicsServer3DExtensionRayResult* p_result
 	) override;
 
@@ -95,6 +96,7 @@ public:
 		float p_margin,
 		int32_t p_max_collisions,
 		bool p_collide_separation_ray,
+		bool p_recovery_as_collision,
 		PhysicsServer3DExtensionMotionResult* p_result
 	) const;
 

@@ -199,6 +199,13 @@ int32_t JoltPhysicsDirectBodyState3D::_get_contact_local_shape(int32_t p_contact
 	return body->get_contact(p_contact_idx).shape_index;
 }
 
+Vector3 JoltPhysicsDirectBodyState3D::_get_contact_local_velocity_at_position(int32_t p_contact_idx
+) const {
+	QUIET_FAIL_NULL_D_ED(body);
+	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
+	return body->get_contact(p_contact_idx).velocity;
+}
+
 RID JoltPhysicsDirectBodyState3D::_get_contact_collider(int32_t p_contact_idx) const {
 	QUIET_FAIL_NULL_D_ED(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
