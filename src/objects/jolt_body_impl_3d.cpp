@@ -1128,7 +1128,7 @@ void JoltBodyImpl3D::update_mass_properties(bool p_lock) {
 
 	JPH::MotionProperties& motion_properties = *body->GetMotionPropertiesUnchecked();
 
-	motion_properties.SetMassProperties(calculate_mass_properties());
+	motion_properties.SetMassProperties(JPH::EAllowedDOFs::All, calculate_mass_properties());
 
 	if (is_rigid_linear()) {
 		motion_properties.SetInverseInertia(JPH::Vec3::sZero(), JPH::Quat::sIdentity());
