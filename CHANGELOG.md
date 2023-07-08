@@ -13,8 +13,8 @@ Breaking changes are denoted with ⚠️.
 
 ### Fixed
 
-- Fixed issue where colliding with certain types of degenerate triangles would cause the application
-  to hang or emit a vast amount of errors.
+- Fixed issue where colliding with certain types of degenerate triangles in `ConcavePolygonShape3D`
+  would cause the application to hang or emit a vast amount of errors.
 
 ## [0.4.0] - 2023-07-08
 
