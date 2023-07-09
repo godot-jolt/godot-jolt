@@ -1131,8 +1131,8 @@ JPH::EAllowedDOFs JoltBodyImpl3D::calculate_allowed_dofs() const {
 		vformat(
 			"Invalid axis locks for '%s'. "
 			"Locking all axes is not supported by Godot Jolt. "
-			"All axes will be unlocked."
-			"Considering freezing the body as static instead. ",
+			"All axes will be unlocked. "
+			"Considering freezing the body as static instead.",
 			to_string()
 		)
 	);
