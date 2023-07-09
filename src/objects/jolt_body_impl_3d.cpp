@@ -750,6 +750,8 @@ void JoltBodyImpl3D::move_kinematic(float p_step, JPH::Body& p_jolt_body) {
 
 	p_jolt_body.MoveKinematic(new_position, new_rotation, p_step);
 
+	stop_locked_axes(p_jolt_body);
+
 	sync_state = true;
 }
 
@@ -998,9 +1000,9 @@ void JoltBodyImpl3D::create_in_space() {
 	jolt_settings->mMaxLinearVelocity = JoltProjectSettings::get_max_linear_velocity();
 	jolt_settings->mMaxAngularVelocity = JoltProjectSettings::get_max_angular_velocity();
 
-	// HACK(mihe): We need to defer the setting of mass properties, to allow for overriding the
-	// inverse inertia for `BODY_MODE_RIGID_LINEAR`, which we can't do until the body is created, so
-	// we set it to some random values and calculate it properly once the body is created instead.
+	// HACK(mihe): We need to defer the setting of mass properties, to allow for modifying the
+	// inverse inertia for the axis-locking, which we can't do until the body is created, so we set
+	// it to some random values and calculate it properly once the body is created instead.
 	jolt_settings->mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
 	jolt_settings->mMassPropertiesOverride.mMass = 1.0f;
 	jolt_settings->mMassPropertiesOverride.mInertia = JPH::Mat44::sIdentity();
@@ -1092,6 +1094,52 @@ void JoltBodyImpl3D::apply_transform(const Transform3D& p_transform, bool p_lock
 	}
 }
 
+JPH::EAllowedDOFs JoltBodyImpl3D::calculate_allowed_dofs() const {
+	if (is_static() || is_kinematic()) {
+		return JPH::EAllowedDOFs::All;
+	}
+
+	JPH::EAllowedDOFs allowed_dofs = JPH::EAllowedDOFs::All;
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_X)) {
+		allowed_dofs &= ~JPH::EAllowedDOFs::TranslationX;
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Y)) {
+		allowed_dofs &= ~JPH::EAllowedDOFs::TranslationY;
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Z)) {
+		allowed_dofs &= ~JPH::EAllowedDOFs::TranslationZ;
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_X) || is_rigid_linear()) {
+		allowed_dofs &= ~JPH::EAllowedDOFs::RotationX;
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Y) || is_rigid_linear()) {
+		allowed_dofs &= ~JPH::EAllowedDOFs::RotationY;
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Z) || is_rigid_linear()) {
+		allowed_dofs &= ~JPH::EAllowedDOFs::RotationZ;
+	}
+
+	ERR_FAIL_COND_V_MSG(
+		allowed_dofs == JPH::EAllowedDOFs::None,
+		JPH::EAllowedDOFs::All,
+		vformat(
+			"Invalid axis locks for '%s'. "
+			"Locking all axes is not supported by Godot Jolt. "
+			"All axes will be unlocked."
+			"Considering freezing the body as static instead. ",
+			to_string()
+		)
+	);
+
+	return allowed_dofs;
+}
+
 JPH::MassProperties JoltBodyImpl3D::calculate_mass_properties(const JPH::Shape& p_shape) const {
 	const bool calculate_mass = mass <= 0;
 	const bool calculate_inertia = inertia.x <= 0 || inertia.y <= 0 || inertia.z <= 0;
@@ -1118,6 +1166,44 @@ JPH::MassProperties JoltBodyImpl3D::calculate_mass_properties() const {
 	return calculate_mass_properties(*jolt_shape);
 }
 
+void JoltBodyImpl3D::stop_locked_axes(JPH::Body& p_jolt_body) const {
+	if (!are_axes_locked() && !is_rigid_linear()) {
+		return;
+	}
+
+	JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
+
+	JPH::Vec3 linear_velocity = motion_properties.GetLinearVelocity();
+	JPH::Vec3 angular_velocity = motion_properties.GetAngularVelocity();
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_X)) {
+		linear_velocity.SetX(0.0f);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Y)) {
+		linear_velocity.SetY(0.0f);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Z)) {
+		linear_velocity.SetZ(0.0f);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_X) || is_rigid_linear()) {
+		angular_velocity.SetX(0.0f);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Y) || is_rigid_linear()) {
+		angular_velocity.SetY(0.0f);
+	}
+
+	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Z) || is_rigid_linear()) {
+		angular_velocity.SetZ(0.0f);
+	}
+
+	motion_properties.SetLinearVelocity(linear_velocity);
+	motion_properties.SetAngularVelocity(angular_velocity);
+}
+
 void JoltBodyImpl3D::update_mass_properties(bool p_lock) {
 	if (space == nullptr) {
 		return;
@@ -1128,10 +1214,40 @@ void JoltBodyImpl3D::update_mass_properties(bool p_lock) {
 
 	JPH::MotionProperties& motion_properties = *body->GetMotionPropertiesUnchecked();
 
-	motion_properties.SetMassProperties(JPH::EAllowedDOFs::All, calculate_mass_properties());
+	const JPH::EAllowedDOFs allowed_dofs = calculate_allowed_dofs();
+	JPH::MassProperties mass_properties = calculate_mass_properties();
 
-	if (is_rigid_linear()) {
-		motion_properties.SetInverseInertia(JPH::Vec3::sZero(), JPH::Quat::sIdentity());
+	if (allowed_dofs != JPH::EAllowedDOFs::All) {
+		// HACK(mihe): We need to take the inertia into global space in order for any locked angular
+		// axes to actually be applied in global space. We then bring it back into local space once
+		// we've called `SetMassProperties`.
+
+		const JPH::Mat44& inertia_local = mass_properties.mInertia;
+		const JPH::Mat44 rotation_global = JPH::Mat44::sRotation(body->GetRotation());
+		const JPH::Mat44 rotation_global_inv = rotation_global.Transposed();
+		const JPH::Mat44 inertia_global = inertia_local.Multiply3x3(rotation_global_inv);
+		const JPH::Mat44 inertia_global_rotated = rotation_global.Multiply3x3(inertia_global);
+
+		mass_properties.mInertia = inertia_global_rotated;
+	}
+
+	motion_properties.SetMassProperties(allowed_dofs, mass_properties);
+
+	if (allowed_dofs != JPH::EAllowedDOFs::All) {
+		// HACK(mihe): We need to take the inertia back into local space since it's still in global
+		// space after our transformations above.
+
+		const JPH::Vec3 inertia_diagonal = motion_properties.GetInverseInertiaDiagonal();
+		const JPH::Quat inertia_rotation_global = motion_properties.GetInertiaRotation();
+		const JPH::Quat rotation_global_inv = body->GetRotation().Conjugated();
+		const JPH::Quat inertia_rotation_local = rotation_global_inv * inertia_rotation_global;
+
+		motion_properties.SetInverseInertia(inertia_diagonal, inertia_rotation_local);
+
+		// HACK(mihe): Because Jolt doesn't reset the velocities when first omitting the angular
+		// degrees-of-freedom we do it ourselves instead.
+
+		stop_locked_axes(*body);
 	}
 }
 
@@ -1223,80 +1339,6 @@ void JoltBodyImpl3D::destroy_joint_constraints() {
 	}
 }
 
-void JoltBodyImpl3D::update_axes_constraint(bool p_lock) {
-	if (space == nullptr) {
-		return;
-	}
-
-	destroy_axes_constraint();
-
-	const bool locked_linear_x = is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_X);
-	const bool locked_linear_y = is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Y);
-	const bool locked_linear_z = is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Z);
-
-	bool locked_angular_x = is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_X);
-	bool locked_angular_y = is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Y);
-	bool locked_angular_z = is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Z);
-
-	if (is_rigid_linear()) {
-		// HACK(mihe): The infinite inertia that's used for `BODY_MODE_RIGID_LINEAR` doesn't seem to
-		// play very nicely with angular constraints, resulting in a bunch of NaNs, so we ignore
-		// those locks in that case.
-		locked_angular_x = false;
-		locked_angular_y = false;
-		locked_angular_z = false;
-	}
-
-	const bool locked_linear = locked_linear_x || locked_linear_y || locked_linear_z;
-	const bool locked_angular = locked_angular_x || locked_angular_y || locked_angular_z;
-
-	if (!locked_linear && !locked_angular) {
-		return;
-	}
-
-	const JoltWritableBody3D jolt_body = space->write_body(jolt_id, p_lock);
-	ERR_FAIL_COND(jolt_body.is_invalid());
-
-	JPH::SixDOFConstraintSettings constraint_settings;
-	constraint_settings.mPosition1 = jolt_body->GetCenterOfMassPosition();
-	constraint_settings.mPosition2 = constraint_settings.mPosition1;
-
-	if (locked_linear_x) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationX);
-	}
-
-	if (locked_linear_y) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationY);
-	}
-
-	if (locked_linear_z) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::TranslationZ);
-	}
-
-	if (locked_angular_x) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationX);
-	}
-
-	if (locked_angular_y) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationY);
-	}
-
-	if (locked_angular_z) {
-		constraint_settings.MakeFixedAxis(JPH::SixDOFConstraintSettings::EAxis::RotationZ);
-	}
-
-	axes_constraint = constraint_settings.Create(JPH::Body::sFixedToWorld, *jolt_body);
-
-	space->add_joint(axes_constraint);
-}
-
-void JoltBodyImpl3D::destroy_axes_constraint() {
-	if (space != nullptr && axes_constraint != nullptr) {
-		space->remove_joint(axes_constraint);
-		axes_constraint = nullptr;
-	}
-}
-
 void JoltBodyImpl3D::update_group_filter(bool p_lock) {
 	if (space == nullptr) {
 		return;
@@ -1312,7 +1354,6 @@ void JoltBodyImpl3D::mode_changed(bool p_lock) {
 	update_object_layer(p_lock);
 	update_kinematic_transform(p_lock);
 	update_mass_properties(p_lock);
-	update_axes_constraint(p_lock);
 	wake_up(p_lock);
 }
 
@@ -1323,14 +1364,12 @@ void JoltBodyImpl3D::shapes_built(bool p_lock) {
 
 void JoltBodyImpl3D::space_changing([[maybe_unused]] bool p_lock) {
 	destroy_joint_constraints();
-	destroy_axes_constraint();
 }
 
 void JoltBodyImpl3D::space_changed(bool p_lock) {
 	update_mass_properties(p_lock);
 	update_group_filter(p_lock);
 	update_joint_constraints(p_lock);
-	update_axes_constraint(p_lock);
 	areas_changed(p_lock);
 }
 
@@ -1356,6 +1395,6 @@ void JoltBodyImpl3D::exceptions_changed(bool p_lock) {
 }
 
 void JoltBodyImpl3D::axis_lock_changed(bool p_lock) {
-	update_axes_constraint(p_lock);
+	update_mass_properties(p_lock);
 	wake_up(p_lock);
 }

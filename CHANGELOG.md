@@ -9,6 +9,16 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Removed
+
+- ⚠️ Removed the ability to lock all axes of a `RigidBody3D`. Consider freezing the body as static
+  instead.
+
+### Fixed
+
+- Fixed issue where linear axis locks could be budged a bit if enough force was applied.
+- Fixed issue where `CharacterBody3D` and other kinematic bodies wouldn't respect locked axes.
+
 ## [0.4.1] - 2023-07-08
 
 ### Fixed

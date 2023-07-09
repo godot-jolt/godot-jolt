@@ -55,8 +55,6 @@ should not be relied upon if determinism is a hard requirement.
 - Manipulating a body's shape(s) after it has entered a scene tree can be costly
 - Contact impulses are estimations and won't be accurate when colliding with multiple bodies
 - `HeightMapShape3D` only supports square height maps with dimensions that are power-of-two
-- Axis-locking is implemented using joints, which means a body can technically deviate a bit from
-  its locked axes
 
 Also consider this note from Jolt's [documentation][jdc]:
 

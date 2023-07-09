@@ -257,9 +257,13 @@ private:
 
 	void apply_transform(const Transform3D& p_transform, bool p_lock = true) override;
 
+	JPH::EAllowedDOFs calculate_allowed_dofs() const;
+
 	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
 
 	JPH::MassProperties calculate_mass_properties() const;
+
+	void stop_locked_axes(JPH::Body& p_jolt_body) const;
 
 	void update_mass_properties(bool p_lock = true);
 
@@ -272,10 +276,6 @@ private:
 	void update_joint_constraints(bool p_lock = true);
 
 	void destroy_joint_constraints();
-
-	void update_axes_constraint(bool p_lock = true);
-
-	void destroy_axes_constraint();
 
 	void mode_changed(bool p_lock = true);
 
@@ -328,8 +328,6 @@ private:
 	JoltPhysicsDirectBodyState3D* direct_state = nullptr;
 
 	JPH::Ref<JoltGroupFilterRID> group_filter;
-
-	JPH::Ref<JPH::Constraint> axes_constraint;
 
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
 
