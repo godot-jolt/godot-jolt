@@ -92,7 +92,7 @@ compatible with the one found in Ubuntu 20.04 (Focal Fossa).
 
 In no particular order, here are some of the bigger items:
 
-- Adding substitutes for the joints, allowing for things like springs
+- Adding substitutes for the joints, allowing for things soft limits and breakable joints
 - Adding new types of joints, like Jolt's `DistanceConstraint`
 - Adding support for double-precision, allowing for large worlds
 - Adding support for iOS and Android
