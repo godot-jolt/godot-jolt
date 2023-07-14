@@ -19,6 +19,7 @@ class JoltGeneric6DOFJointImpl3D final : public JoltJointImpl3D {
 
 public:
 	JoltGeneric6DOFJointImpl3D(
+		const JoltJointImpl3D& p_old_joint,
 		JoltBodyImpl3D* p_body_a,
 		JoltBodyImpl3D* p_body_b,
 		const Transform3D& p_local_ref_a,

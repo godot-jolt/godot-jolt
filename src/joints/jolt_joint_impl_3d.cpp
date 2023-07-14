@@ -10,13 +10,16 @@ constexpr int32_t DEFAULT_SOLVER_PRIORITY = 1;
 } // namespace
 
 JoltJointImpl3D::JoltJointImpl3D(
+	const JoltJointImpl3D& p_old_joint,
 	JoltBodyImpl3D* p_body_a,
 	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b
 )
-	: body_a(p_body_a)
+	: collision_disabled(p_old_joint.collision_disabled)
+	, body_a(p_body_a)
 	, body_b(p_body_b)
+	, rid(p_old_joint.rid)
 	, local_ref_a(p_local_ref_a)
 	, local_ref_b(p_local_ref_b) {
 	body_a->add_joint(this);

@@ -8,6 +8,7 @@ class JoltSpace3D;
 class JoltPinJointImpl3D final : public JoltJointImpl3D {
 public:
 	JoltPinJointImpl3D(
+		const JoltJointImpl3D& p_old_joint,
 		JoltBodyImpl3D* p_body_a,
 		JoltBodyImpl3D* p_body_b,
 		const Vector3& p_local_a,

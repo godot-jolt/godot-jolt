@@ -1267,10 +1267,9 @@ void JoltPhysicsServer3D::_joint_make_pin(
 	JoltBodyImpl3D* body_b = body_owner.get_or_null(p_body_b);
 	ERR_FAIL_COND(body_a == body_b);
 
-	JoltJointImpl3D* new_joint = memnew(JoltPinJointImpl3D(body_a, body_b, p_local_a, p_local_b));
-
-	new_joint->set_rid(old_joint->get_rid());
-	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
+	JoltJointImpl3D* new_joint = memnew(
+		JoltPinJointImpl3D(*old_joint, body_a, body_b, p_local_a, p_local_b)
+	);
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
@@ -1356,10 +1355,9 @@ void JoltPhysicsServer3D::_joint_make_hinge(
 	JoltBodyImpl3D* body_b = body_owner.get_or_null(p_body_b);
 	ERR_FAIL_COND(body_a == body_b);
 
-	JoltJointImpl3D* new_joint = memnew(JoltHingeJointImpl3D(body_a, body_b, p_hinge_a, p_hinge_b));
-
-	new_joint->set_rid(old_joint->get_rid());
-	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
+	JoltJointImpl3D* new_joint = memnew(
+		JoltHingeJointImpl3D(*old_joint, body_a, body_b, p_hinge_a, p_hinge_b)
+	);
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
@@ -1445,11 +1443,8 @@ void JoltPhysicsServer3D::_joint_make_slider(
 	ERR_FAIL_COND(body_a == body_b);
 
 	JoltJointImpl3D* new_joint = memnew(
-		JoltSliderJointImpl3D(body_a, body_b, p_local_ref_a, p_local_ref_b)
+		JoltSliderJointImpl3D(*old_joint, body_a, body_b, p_local_ref_a, p_local_ref_b)
 	);
-
-	new_joint->set_rid(old_joint->get_rid());
-	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
@@ -1497,11 +1492,8 @@ void JoltPhysicsServer3D::_joint_make_cone_twist(
 	ERR_FAIL_COND(body_a == body_b);
 
 	JoltJointImpl3D* new_joint = memnew(
-		JoltConeTwistJointImpl3D(body_a, body_b, p_local_ref_a, p_local_ref_b)
+		JoltConeTwistJointImpl3D(*old_joint, body_a, body_b, p_local_ref_a, p_local_ref_b)
 	);
-
-	new_joint->set_rid(old_joint->get_rid());
-	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
@@ -1551,11 +1543,8 @@ void JoltPhysicsServer3D::_joint_make_generic_6dof(
 	ERR_FAIL_COND(body_a == body_b);
 
 	JoltJointImpl3D* new_joint = memnew(
-		JoltGeneric6DOFJointImpl3D(body_a, body_b, p_local_ref_a, p_local_ref_b)
+		JoltGeneric6DOFJointImpl3D(*old_joint, body_a, body_b, p_local_ref_a, p_local_ref_b)
 	);
-
-	new_joint->set_rid(old_joint->get_rid());
-	new_joint->set_collision_disabled(old_joint->is_collision_disabled());
 
 	memdelete_safely(old_joint);
 	joint_owner.replace(p_joint, new_joint);
