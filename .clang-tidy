@@ -282,16 +282,20 @@ CheckOptions:
   modernize-deprecated-headers.CheckHeaderFile: true
   modernize-use-auto.MinTypeNameLength: 0
   modernize-use-default-member-init.UseAssignment: true
+  readability-identifier-naming.AggressiveDependentMemberLookup: true
   readability-identifier-naming.ClassCase: CamelCase
   readability-identifier-naming.EnumCase: CamelCase
   readability-identifier-naming.EnumConstantCase: UPPER_CASE
   readability-identifier-naming.FunctionCase: lower_case
+  readability-identifier-naming.GetConfigPerFile: false
   readability-identifier-naming.GlobalConstantCase: UPPER_CASE
   readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
   readability-identifier-naming.MemberCase: lower_case
   readability-identifier-naming.NamespaceCase: lower_case
   readability-identifier-naming.ParameterCase: lower_case
   readability-identifier-naming.ParameterPrefix: p_
+  readability-identifier-naming.PrivateMethodPrefix: _
+  readability-identifier-naming.ProtectedMethodPrefix: _
   readability-identifier-naming.ScopedEnumConstantCase: UPPER_CASE
   readability-identifier-naming.TemplateParameterCase: CamelCase
   readability-identifier-naming.TemplateParameterPrefix: T

@@ -139,7 +139,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint linear limit softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -149,7 +149,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint linear limit restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -159,7 +159,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint linear limit damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -169,7 +169,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint linear motion softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -179,7 +179,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint linear motion restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -189,7 +189,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint linear motion damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -199,7 +199,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint linear ortho softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -209,7 +209,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint linear ortho restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -219,7 +219,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint linear ortho damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -230,7 +230,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Any such value will be ignored. "
 					"Try using Generic6DOFJoint3D instead. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -241,7 +241,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Any such value will be ignored. "
 					"Try using Generic6DOFJoint3D instead. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -251,7 +251,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint angular limit softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -261,7 +261,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint angular limit restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -271,7 +271,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint angular limit damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -281,7 +281,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint angular motion softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -291,7 +291,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint angular motion restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -301,7 +301,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint angular motion damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -311,7 +311,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint angular ortho softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -321,7 +321,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint angular ortho restitution is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -331,7 +331,7 @@ void JoltSliderJointImpl3D::set_param(
 					"Slider joint angular ortho damping is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -379,18 +379,23 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 	Transform3D shifted_ref_a;
 	Transform3D shifted_ref_b;
 
-	shift_reference_frames(Vector3(ref_shift, 0.0f, 0.0f), Vector3(), shifted_ref_a, shifted_ref_b);
+	_shift_reference_frames(
+		Vector3(ref_shift, 0.0f, 0.0f),
+		Vector3(),
+		shifted_ref_a,
+		shifted_ref_b
+	);
 
-	if (is_fixed()) {
-		jolt_ref = build_fixed(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
+	if (_is_fixed()) {
+		jolt_ref = _build_fixed(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
 	} else {
-		jolt_ref = build_slider(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limit);
+		jolt_ref = _build_slider(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limit);
 	}
 
 	space->add_joint(this);
 }
 
-JPH::Constraint* JoltSliderJointImpl3D::build_slider(
+JPH::Constraint* JoltSliderJointImpl3D::_build_slider(
 	JPH::Body* p_jolt_body_a,
 	JPH::Body* p_jolt_body_b,
 	const Transform3D& p_shifted_ref_a,
@@ -417,7 +422,7 @@ JPH::Constraint* JoltSliderJointImpl3D::build_slider(
 	}
 }
 
-JPH::Constraint* JoltSliderJointImpl3D::build_fixed(
+JPH::Constraint* JoltSliderJointImpl3D::_build_fixed(
 	JPH::Body* p_jolt_body_a,
 	JPH::Body* p_jolt_body_b,
 	const Transform3D& p_shifted_ref_a,
@@ -441,6 +446,6 @@ JPH::Constraint* JoltSliderJointImpl3D::build_fixed(
 	}
 }
 
-void JoltSliderJointImpl3D::limits_changed(bool p_lock) {
+void JoltSliderJointImpl3D::_limits_changed(bool p_lock) {
 	rebuild(p_lock);
 }

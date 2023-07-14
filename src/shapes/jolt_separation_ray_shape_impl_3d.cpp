@@ -11,7 +11,7 @@ Variant JoltSeparationRayShapeImpl3D::get_data() const {
 
 void JoltSeparationRayShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		invalidated();
+		_invalidated();
 	};
 
 	destroy();
@@ -34,7 +34,7 @@ String JoltSeparationRayShapeImpl3D::to_string() const {
 	return vformat("{length=%f slide_on_slope=%s}", length, slide_on_slope);
 }
 
-JPH::ShapeRefC JoltSeparationRayShapeImpl3D::build() const {
+JPH::ShapeRefC JoltSeparationRayShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		length <= 0.0f,
 		vformat(
@@ -42,7 +42,7 @@ JPH::ShapeRefC JoltSeparationRayShapeImpl3D::build() const {
 			"Its length must be greater than 0. "
 			"This shape belongs to %s.",
 			to_string(),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 
@@ -57,7 +57,7 @@ JPH::ShapeRefC JoltSeparationRayShapeImpl3D::build() const {
 			"This shape belongs to %s.",
 			to_string(),
 			to_godot(shape_result.GetError()),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 

@@ -6,7 +6,7 @@ Variant JoltSphereShapeImpl3D::get_data() const {
 
 void JoltSphereShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		invalidated();
+		_invalidated();
 	};
 
 	destroy();
@@ -20,7 +20,7 @@ String JoltSphereShapeImpl3D::to_string() const {
 	return vformat("{radius=%f}", radius);
 }
 
-JPH::ShapeRefC JoltSphereShapeImpl3D::build() const {
+JPH::ShapeRefC JoltSphereShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		radius <= 0.0f,
 		vformat(
@@ -28,7 +28,7 @@ JPH::ShapeRefC JoltSphereShapeImpl3D::build() const {
 			"Its radius must be greater than 0. "
 			"This shape belongs to %s.",
 			to_string(),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 
@@ -43,7 +43,7 @@ JPH::ShapeRefC JoltSphereShapeImpl3D::build() const {
 			"This shape belongs to %s.",
 			to_string(),
 			to_godot(shape_result.GetError()),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 

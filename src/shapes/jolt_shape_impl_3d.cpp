@@ -41,14 +41,14 @@ void JoltShapeImpl3D::set_solver_bias(float p_bias) {
 			"Custom solver bias for shapes is not supported by Godot Jolt. "
 			"Any such value will be ignored. "
 			"This shape belongs to %s.",
-			owners_to_string()
+			_owners_to_string()
 		));
 	}
 }
 
 JPH::ShapeRefC JoltShapeImpl3D::try_build() {
 	if (jolt_ref == nullptr) {
-		jolt_ref = build();
+		jolt_ref = _build();
 	}
 
 	return jolt_ref;
@@ -178,13 +178,13 @@ JPH::ShapeRefC JoltShapeImpl3D::with_user_data(const JPH::Shape* p_shape, uint64
 	return shape_result.Get();
 }
 
-void JoltShapeImpl3D::invalidated(bool p_lock) {
+void JoltShapeImpl3D::_invalidated(bool p_lock) {
 	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
-		owner->shapes_changed(p_lock);
+		owner->_shapes_changed(p_lock);
 	}
 }
 
-String JoltShapeImpl3D::owners_to_string() const {
+String JoltShapeImpl3D::_owners_to_string() const {
 	const int32_t owner_count = ref_counts_by_owner.size();
 
 	if (owner_count == 0) {

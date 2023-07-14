@@ -54,7 +54,7 @@ JoltSpace3D* JoltJointImpl3D::get_space() const {
 				"Joint was found to connect bodies in different physics spaces. "
 				"This joint will effectively be disabled. "
 				"This joint connects %s.",
-				bodies_to_string()
+				_bodies_to_string()
 			)
 		);
 	}
@@ -72,7 +72,7 @@ void JoltJointImpl3D::set_solver_priority(int32_t p_priority) {
 			"Joint solver priority is not supported by Godot Jolt. "
 			"Any such value will be ignored."
 			"This joint connects %s.",
-			bodies_to_string()
+			_bodies_to_string()
 		));
 	}
 }
@@ -109,7 +109,7 @@ void JoltJointImpl3D::destroy() {
 	jolt_ref = nullptr;
 }
 
-void JoltJointImpl3D::shift_reference_frames(
+void JoltJointImpl3D::_shift_reference_frames(
 	const Vector3& p_linear_shift,
 	const Vector3& p_angular_shift,
 	Transform3D& p_shifted_ref_a,
@@ -136,7 +136,7 @@ void JoltJointImpl3D::shift_reference_frames(
 	p_shifted_ref_b = Transform3D(basis_b, origin_b);
 }
 
-String JoltJointImpl3D::bodies_to_string() const {
+String JoltJointImpl3D::_bodies_to_string() const {
 	return vformat(
 		"'%s' and '%s'",
 		body_a != nullptr ? body_a->to_string() : "<unknown>",

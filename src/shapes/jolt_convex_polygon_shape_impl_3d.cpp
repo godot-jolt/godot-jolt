@@ -8,7 +8,7 @@ Variant JoltConvexPolygonShapeImpl3D::get_data() const {
 
 void JoltConvexPolygonShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		invalidated();
+		_invalidated();
 	};
 
 	destroy();
@@ -20,7 +20,7 @@ void JoltConvexPolygonShapeImpl3D::set_data(const Variant& p_data) {
 
 void JoltConvexPolygonShapeImpl3D::set_margin(float p_margin) {
 	ON_SCOPE_EXIT {
-		invalidated();
+		_invalidated();
 	};
 
 	destroy();
@@ -32,7 +32,7 @@ String JoltConvexPolygonShapeImpl3D::to_string() const {
 	return vformat("{vertex_count=%d margin=%f}", vertices.size(), margin);
 }
 
-JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::build() const {
+JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::_build() const {
 	const auto vertex_count = (int32_t)vertices.size();
 
 	ERR_FAIL_COND_D_MSG(
@@ -42,7 +42,7 @@ JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::build() const {
 			"It must have a vertex count of at least 3. "
 			"This shape belongs to %s.",
 			to_string(),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 
@@ -69,7 +69,7 @@ JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::build() const {
 			"This shape belongs to %s.",
 			to_string(),
 			to_godot(shape_result.GetError()),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 

@@ -233,7 +233,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
-	cast_motion(
+	_cast_motion_impl(
 		*jolt_shape,
 		transform_com,
 		scale,
@@ -509,14 +509,14 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	const Vector3 direction = p_motion.normalized();
 
 	Vector3 recovery;
-	const bool recovered = body_motion_recover(p_body, transform, direction, p_margin, recovery);
+	const bool recovered = _body_motion_recover(p_body, transform, direction, p_margin, recovery);
 
 	transform.origin += recovery;
 
 	float safe_fraction = 1.0f;
 	float unsafe_fraction = 1.0f;
 
-	const bool hit = body_motion_cast(
+	const bool hit = _body_motion_cast(
 		p_body,
 		transform,
 		scale,
@@ -529,7 +529,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	bool collided = false;
 
 	if (hit || (recovered && p_recovery_as_collision)) {
-		collided = body_motion_collide(
+		collided = _body_motion_collide(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),
 			direction,
@@ -560,7 +560,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	return collided;
 }
 
-bool JoltPhysicsDirectSpaceState3D::cast_motion(
+bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 	const JPH::Shape& p_jolt_shape,
 	const Transform3D& p_transform_com,
 	const Vector3& p_scale,
@@ -697,7 +697,7 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(
 	return collided;
 }
 
-bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
+bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_direction,
@@ -806,7 +806,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_recover(
 	return recovered;
 }
 
-bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
+bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_scale,
@@ -848,7 +848,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 		float shape_safe_fraction = 1.0f;
 		float shape_unsafe_fraction = 1.0f;
 
-		collided |= cast_motion(
+		collided |= _cast_motion_impl(
 			*jolt_shape,
 			transform_com_unscaled,
 			scale,
@@ -870,7 +870,7 @@ bool JoltPhysicsDirectSpaceState3D::body_motion_cast(
 	return collided;
 }
 
-bool JoltPhysicsDirectSpaceState3D::body_motion_collide(
+bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_direction,

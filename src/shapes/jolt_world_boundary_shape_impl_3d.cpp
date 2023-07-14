@@ -6,7 +6,7 @@ Variant JoltWorldBoundaryShapeImpl3D::get_data() const {
 
 void JoltWorldBoundaryShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		invalidated();
+		_invalidated();
 	};
 
 	destroy();
@@ -16,11 +16,11 @@ void JoltWorldBoundaryShapeImpl3D::set_data(const Variant& p_data) {
 	plane = p_data;
 }
 
-JPH::ShapeRefC JoltWorldBoundaryShapeImpl3D::build() const {
+JPH::ShapeRefC JoltWorldBoundaryShapeImpl3D::_build() const {
 	ERR_FAIL_D_MSG(vformat(
 		"WorldBoundaryShape3D is not supported by Godot Jolt. "
 		"Consider using one or more reasonably sized BoxShape3D instead. "
 		"This shape belongs to %s.",
-		owners_to_string()
+		_owners_to_string()
 	));
 }

@@ -35,7 +35,7 @@ private:
 	bool ShouldCollide(JPH::ObjectLayer p_encoded_layer1, JPH::BroadPhaseLayer p_broad_phase_layer2)
 		const override;
 
-	JPH::ObjectLayer allocate_object_layer(uint64_t p_collision);
+	JPH::ObjectLayer _allocate_object_layer(uint64_t p_collision);
 
 	InlineVector<uint64_t, 32> collisions_by_layer;
 

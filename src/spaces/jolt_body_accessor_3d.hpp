@@ -44,9 +44,9 @@ public:
 	const JPH::BodyID& get_at(int32_t p_index) const;
 
 protected:
-	virtual void acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) = 0;
+	virtual void _acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) = 0;
 
-	virtual void release_internal() = 0;
+	virtual void _release_internal() = 0;
 
 	const JoltSpace3D* space = nullptr;
 
@@ -66,9 +66,9 @@ public:
 	const JPH::Body* try_get() const;
 
 private:
-	void acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) override;
+	void _acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) override;
 
-	void release_internal() override;
+	void _release_internal() override;
 
 	JPH::BodyLockInterface::MutexMask mutex_mask = 0;
 };
@@ -84,9 +84,9 @@ public:
 	JPH::Body* try_get() const;
 
 private:
-	void acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) override;
+	void _acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) override;
 
-	void release_internal() override;
+	void _release_internal() override;
 
 	JPH::BodyLockInterface::MutexMask mutex_mask = 0;
 };

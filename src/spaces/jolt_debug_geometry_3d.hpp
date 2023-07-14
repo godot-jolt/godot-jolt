@@ -15,7 +15,6 @@ public:
 	};
 
 private:
-	// NOLINTNEXTLINE(readability-identifier-naming)
 	static void _bind_methods();
 
 public:

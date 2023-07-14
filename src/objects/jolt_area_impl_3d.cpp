@@ -143,12 +143,6 @@ void JoltAreaImpl3D::set_param(PhysicsServer3D::AreaParameter p_param, const Var
 	}
 }
 
-JPH::BroadPhaseLayer JoltAreaImpl3D::get_broad_phase_layer() const {
-	return monitorable
-		? JoltBroadPhaseLayer::AREA_DETECTABLE
-		: JoltBroadPhaseLayer::AREA_UNDETECTABLE;
-}
-
 void JoltAreaImpl3D::set_body_monitor_callback(const Callable& p_callback) {
 	if (p_callback == body_monitor_callback) {
 		return;
@@ -156,7 +150,7 @@ void JoltAreaImpl3D::set_body_monitor_callback(const Callable& p_callback) {
 
 	body_monitor_callback = p_callback;
 
-	body_monitoring_changed();
+	_body_monitoring_changed();
 }
 
 void JoltAreaImpl3D::set_area_monitor_callback(const Callable& p_callback) {
@@ -166,7 +160,7 @@ void JoltAreaImpl3D::set_area_monitor_callback(const Callable& p_callback) {
 
 	area_monitor_callback = p_callback;
 
-	area_monitoring_changed();
+	_area_monitoring_changed();
 }
 
 void JoltAreaImpl3D::set_monitorable(bool p_monitorable, bool p_lock) {
@@ -176,7 +170,7 @@ void JoltAreaImpl3D::set_monitorable(bool p_monitorable, bool p_lock) {
 
 	monitorable = p_monitorable;
 
-	monitorable_changed(p_lock);
+	_monitorable_changed(p_lock);
 }
 
 Vector3 JoltAreaImpl3D::compute_gravity(const Vector3& p_position, bool p_lock) const {
@@ -202,10 +196,10 @@ void JoltAreaImpl3D::body_shape_entered(
 	Overlap& overlap = bodies_by_id[p_body_id];
 
 	if (overlap.shape_pairs.is_empty()) {
-		notify_body_entered(p_body_id, false);
+		_notify_body_entered(p_body_id, false);
 	}
 
-	add_shape_pair(overlap, p_body_id, p_other_shape_id, p_self_shape_id);
+	_add_shape_pair(overlap, p_body_id, p_other_shape_id, p_self_shape_id);
 }
 
 bool JoltAreaImpl3D::body_shape_exited(
@@ -219,12 +213,12 @@ bool JoltAreaImpl3D::body_shape_exited(
 		return false;
 	}
 
-	if (!remove_shape_pair(*overlap, p_other_shape_id, p_self_shape_id)) {
+	if (!_remove_shape_pair(*overlap, p_other_shape_id, p_self_shape_id)) {
 		return false;
 	}
 
 	if (overlap->shape_pairs.is_empty()) {
-		notify_body_exited(p_body_id, false);
+		_notify_body_exited(p_body_id, false);
 	}
 
 	return true;
@@ -235,7 +229,7 @@ void JoltAreaImpl3D::area_shape_entered(
 	const JPH::SubShapeID& p_other_shape_id,
 	const JPH::SubShapeID& p_self_shape_id
 ) {
-	add_shape_pair(areas_by_id[p_body_id], p_body_id, p_other_shape_id, p_self_shape_id);
+	_add_shape_pair(areas_by_id[p_body_id], p_body_id, p_other_shape_id, p_self_shape_id);
 }
 
 bool JoltAreaImpl3D::area_shape_exited(
@@ -249,7 +243,7 @@ bool JoltAreaImpl3D::area_shape_exited(
 		return false;
 	}
 
-	return remove_shape_pair(*overlap, p_other_shape_id, p_self_shape_id);
+	return _remove_shape_pair(*overlap, p_other_shape_id, p_self_shape_id);
 }
 
 bool JoltAreaImpl3D::shape_exited(
@@ -262,12 +256,18 @@ bool JoltAreaImpl3D::shape_exited(
 }
 
 void JoltAreaImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
-	flush_events(bodies_by_id, body_monitor_callback);
-	flush_events(areas_by_id, area_monitor_callback);
+	_flush_events(bodies_by_id, body_monitor_callback);
+	_flush_events(areas_by_id, area_monitor_callback);
 }
 
-void JoltAreaImpl3D::create_in_space() {
-	create_begin();
+JPH::BroadPhaseLayer JoltAreaImpl3D::_get_broad_phase_layer() const {
+	return monitorable
+		? JoltBroadPhaseLayer::AREA_DETECTABLE
+		: JoltBroadPhaseLayer::AREA_UNDETECTABLE;
+}
+
+void JoltAreaImpl3D::_create_in_space() {
+	_create_begin();
 
 	jolt_settings->mIsSensor = true;
 	jolt_settings->mUseManifoldReduction = false;
@@ -276,10 +276,10 @@ void JoltAreaImpl3D::create_in_space() {
 		jolt_settings->mSensorDetectsStatic = true;
 	}
 
-	create_end();
+	_create_end();
 }
 
-void JoltAreaImpl3D::add_shape_pair(
+void JoltAreaImpl3D::_add_shape_pair(
 	Overlap& p_overlap,
 	const JPH::BodyID& p_body_id,
 	const JPH::SubShapeID& p_other_shape_id,
@@ -300,7 +300,7 @@ void JoltAreaImpl3D::add_shape_pair(
 	p_overlap.pending_added.push_back(shape_indices);
 }
 
-bool JoltAreaImpl3D::remove_shape_pair(
+bool JoltAreaImpl3D::_remove_shape_pair(
 	Overlap& p_overlap,
 	const JPH::SubShapeID& p_other_shape_id,
 	const JPH::SubShapeID& p_self_shape_id
@@ -317,13 +317,13 @@ bool JoltAreaImpl3D::remove_shape_pair(
 	return true;
 }
 
-void JoltAreaImpl3D::flush_events(OverlapsById& p_objects, const Callable& p_callback) {
+void JoltAreaImpl3D::_flush_events(OverlapsById& p_objects, const Callable& p_callback) {
 	p_objects.erase_if([&](auto& p_pair) {
 		auto& [id, overlap] = p_pair;
 
 		if (p_callback.is_valid()) {
 			for (auto& shape_indices : overlap.pending_removed) {
-				report_event(
+				_report_event(
 					p_callback,
 					PhysicsServer3D::AREA_BODY_REMOVED,
 					overlap.rid,
@@ -334,7 +334,7 @@ void JoltAreaImpl3D::flush_events(OverlapsById& p_objects, const Callable& p_cal
 			}
 
 			for (auto& shape_indices : overlap.pending_added) {
-				report_event(
+				_report_event(
 					p_callback,
 					PhysicsServer3D::AREA_BODY_ADDED,
 					overlap.rid,
@@ -352,7 +352,7 @@ void JoltAreaImpl3D::flush_events(OverlapsById& p_objects, const Callable& p_cal
 	});
 }
 
-void JoltAreaImpl3D::report_event(
+void JoltAreaImpl3D::_report_event(
 	const Callable& p_callback,
 	PhysicsServer3D::AreaBodyStatus p_status,
 	const RID& p_other_rid,
@@ -377,7 +377,7 @@ void JoltAreaImpl3D::report_event(
 	p_callback.callv(arguments);
 }
 
-void JoltAreaImpl3D::notify_body_entered(const JPH::BodyID& p_body_id, bool p_lock) {
+void JoltAreaImpl3D::_notify_body_entered(const JPH::BodyID& p_body_id, bool p_lock) {
 	const JoltReadableBody3D jolt_body = space->read_body(p_body_id, p_lock);
 
 	JoltBodyImpl3D* body = jolt_body.as_body();
@@ -386,7 +386,7 @@ void JoltAreaImpl3D::notify_body_entered(const JPH::BodyID& p_body_id, bool p_lo
 	body->add_area(this, false);
 }
 
-void JoltAreaImpl3D::notify_body_exited(const JPH::BodyID& p_body_id, bool p_lock) {
+void JoltAreaImpl3D::_notify_body_exited(const JPH::BodyID& p_body_id, bool p_lock) {
 	const JoltReadableBody3D jolt_body = space->read_body(p_body_id, p_lock);
 
 	JoltBodyImpl3D* body = jolt_body.as_body();
@@ -395,7 +395,7 @@ void JoltAreaImpl3D::notify_body_exited(const JPH::BodyID& p_body_id, bool p_loc
 	body->remove_area(this, false);
 }
 
-void JoltAreaImpl3D::force_bodies_entered() {
+void JoltAreaImpl3D::_force_bodies_entered() {
 	for (auto& [id, body] : bodies_by_id) {
 		for (const auto& [id_pair, index_pair] : body.shape_pairs) {
 			body.pending_added.push_back(index_pair);
@@ -403,7 +403,7 @@ void JoltAreaImpl3D::force_bodies_entered() {
 	}
 }
 
-void JoltAreaImpl3D::force_bodies_exited(bool p_remove, bool p_lock) {
+void JoltAreaImpl3D::_force_bodies_exited(bool p_remove, bool p_lock) {
 	for (auto& [id, body] : bodies_by_id) {
 		for (const auto& [id_pair, index_pair] : body.shape_pairs) {
 			body.pending_removed.push_back(index_pair);
@@ -411,12 +411,12 @@ void JoltAreaImpl3D::force_bodies_exited(bool p_remove, bool p_lock) {
 
 		if (p_remove) {
 			body.shape_pairs.clear();
-			notify_body_exited(id, p_lock);
+			_notify_body_exited(id, p_lock);
 		}
 	}
 }
 
-void JoltAreaImpl3D::force_areas_entered() {
+void JoltAreaImpl3D::_force_areas_entered() {
 	for (auto& [id, area] : areas_by_id) {
 		for (const auto& [id_pair, index_pair] : area.shape_pairs) {
 			area.pending_added.push_back(index_pair);
@@ -424,7 +424,7 @@ void JoltAreaImpl3D::force_areas_entered() {
 	}
 }
 
-void JoltAreaImpl3D::force_areas_exited(bool p_remove, [[maybe_unused]] bool p_lock) {
+void JoltAreaImpl3D::_force_areas_exited(bool p_remove, [[maybe_unused]] bool p_lock) {
 	for (auto& [id, area] : areas_by_id) {
 		for (const auto& [id_pair, index_pair] : area.shape_pairs) {
 			area.pending_removed.push_back(index_pair);
@@ -436,33 +436,33 @@ void JoltAreaImpl3D::force_areas_exited(bool p_remove, [[maybe_unused]] bool p_l
 	}
 }
 
-void JoltAreaImpl3D::space_changing(bool p_lock) {
+void JoltAreaImpl3D::_space_changing(bool p_lock) {
 	if (space != nullptr) {
 		// HACK(mihe): Ideally we would rely on our contact listener to report all the exits when we
 		// move between (or out of) spaces, but because our Jolt body is going to be destroyed when
 		// we leave this space the contact listener won't be able to retrieve the corresponding area
 		// and as such cannot report any exits, so we're forced to do it manually instead.
-		force_bodies_exited(true, p_lock);
-		force_areas_exited(true, p_lock);
+		_force_bodies_exited(true, p_lock);
+		_force_areas_exited(true, p_lock);
 	}
 }
 
-void JoltAreaImpl3D::body_monitoring_changed() {
+void JoltAreaImpl3D::_body_monitoring_changed() {
 	if (has_body_monitor_callback()) {
-		force_bodies_entered();
+		_force_bodies_entered();
 	} else {
-		force_bodies_exited(false);
+		_force_bodies_exited(false);
 	}
 }
 
-void JoltAreaImpl3D::area_monitoring_changed() {
+void JoltAreaImpl3D::_area_monitoring_changed() {
 	if (has_area_monitor_callback()) {
-		force_areas_entered();
+		_force_areas_entered();
 	} else {
-		force_areas_exited(false);
+		_force_areas_exited(false);
 	}
 }
 
-void JoltAreaImpl3D::monitorable_changed(bool p_lock) {
-	update_object_layer(p_lock);
+void JoltAreaImpl3D::_monitorable_changed(bool p_lock) {
+	_update_object_layer(p_lock);
 }

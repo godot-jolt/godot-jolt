@@ -52,33 +52,33 @@ public:
 	void rebuild(bool p_lock = true) override;
 
 private:
-	void update_motor_state(int32_t p_axis);
+	void _update_motor_state(int32_t p_axis);
 
-	void update_motor_velocity(int32_t p_axis);
+	void _update_motor_velocity(int32_t p_axis);
 
-	void update_motor_limit(int32_t p_axis);
+	void _update_motor_limit(int32_t p_axis);
 
-	void update_spring_stiffness(int32_t p_axis);
+	void _update_spring_stiffness(int32_t p_axis);
 
-	void update_spring_damping(int32_t p_axis);
+	void _update_spring_damping(int32_t p_axis);
 
-	void update_spring_equilibrium(int32_t p_axis);
+	void _update_spring_equilibrium(int32_t p_axis);
 
-	void limits_changed(bool p_lock = true);
+	void _limits_changed(bool p_lock = true);
 
-	void motor_state_changed(int32_t p_axis);
+	void _motor_state_changed(int32_t p_axis);
 
-	void motor_speed_changed(int32_t p_axis);
+	void _motor_speed_changed(int32_t p_axis);
 
-	void motor_limit_changed(int32_t p_axis);
+	void _motor_limit_changed(int32_t p_axis);
 
-	void spring_state_changed(int32_t p_axis);
+	void _spring_state_changed(int32_t p_axis);
 
-	void spring_stiffness_changed(int32_t p_axis);
+	void _spring_stiffness_changed(int32_t p_axis);
 
-	void spring_damping_changed(int32_t p_axis);
+	void _spring_damping_changed(int32_t p_axis);
 
-	void spring_equilibrium_changed(int32_t p_axis);
+	void _spring_equilibrium_changed(int32_t p_axis);
 
 	double limit_lower[AXIS_COUNT] = {};
 

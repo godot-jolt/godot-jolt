@@ -80,18 +80,18 @@ private:
 		float p_height = 0.5f
 	) override;
 
-	void reserve_triangles(int32_t p_extra_capacity);
+	void _reserve_triangles(int32_t p_extra_capacity);
 
-	void reserve_lines(int32_t p_extra_capacity);
+	void _reserve_lines(int32_t p_extra_capacity);
 
-	void add_triangle(
+	void _add_triangle(
 		const Vector3& p_vertex1,
 		const Vector3& p_vertex2,
 		const Vector3& p_vertex3,
 		uint32_t p_color_abgr
 	);
 
-	void add_line(const Vector3& p_from, const Vector3& p_to, uint32_t p_color_abgr);
+	void _add_line(const Vector3& p_from, const Vector3& p_to, uint32_t p_color_abgr);
 
 	inline static JoltDebugRenderer3D* singleton = nullptr;
 

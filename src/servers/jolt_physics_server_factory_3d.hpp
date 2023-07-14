@@ -6,7 +6,6 @@ class JoltPhysicsServerFactory3D final : public Object {
 	GDCLASS_NO_WARN(JoltPhysicsServerFactory3D, Object)
 
 private:
-	// NOLINTNEXTLINE(readability-identifier-naming)
 	static void _bind_methods() {
 		ClassDB::bind_method(D_METHOD("create_server"), &JoltPhysicsServerFactory3D::create_server);
 	}

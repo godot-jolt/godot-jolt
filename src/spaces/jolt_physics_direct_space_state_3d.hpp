@@ -8,7 +8,6 @@ class JoltPhysicsDirectSpaceState3D final : public PhysicsDirectSpaceState3DExte
 	GDCLASS_NO_WARN(JoltPhysicsDirectSpaceState3D, PhysicsDirectSpaceState3DExtension)
 
 private:
-	// NOLINTNEXTLINE(readability-identifier-naming)
 	static void _bind_methods() { }
 
 public:
@@ -103,7 +102,7 @@ public:
 	JoltSpace3D& get_space() const { return *space; }
 
 private:
-	bool cast_motion(
+	bool _cast_motion_impl(
 		const JPH::Shape& p_jolt_shape,
 		const Transform3D& p_transform_com,
 		const Vector3& p_scale,
@@ -118,7 +117,7 @@ private:
 		float& p_closest_unsafe
 	) const;
 
-	bool body_motion_recover(
+	bool _body_motion_recover(
 		const JoltBodyImpl3D& p_body,
 		const Transform3D& p_transform,
 		const Vector3& p_direction,
@@ -126,7 +125,7 @@ private:
 		Vector3& p_recovery
 	) const;
 
-	bool body_motion_cast(
+	bool _body_motion_cast(
 		const JoltBodyImpl3D& p_body,
 		const Transform3D& p_transform,
 		const Vector3& p_scale,
@@ -136,7 +135,7 @@ private:
 		float& p_unsafe_fraction
 	) const;
 
-	bool body_motion_collide(
+	bool _body_motion_collide(
 		const JoltBodyImpl3D& p_body,
 		const Transform3D& p_transform,
 		const Vector3& p_direction,
