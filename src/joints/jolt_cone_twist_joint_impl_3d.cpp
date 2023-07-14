@@ -12,13 +12,14 @@ constexpr double DEFAULT_RELAXATION = 1.0;
 } // namespace
 
 JoltConeTwistJointImpl3D::JoltConeTwistJointImpl3D(
+	const JoltJointImpl3D& p_old_joint,
 	JoltBodyImpl3D* p_body_a,
 	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b,
 	bool p_lock
 )
-	: JoltJointImpl3D(p_body_a, p_body_b, p_local_ref_a, p_local_ref_b) {
+	: JoltJointImpl3D(p_old_joint, p_body_a, p_body_b, p_local_ref_a, p_local_ref_b) {
 	rebuild(p_lock);
 }
 

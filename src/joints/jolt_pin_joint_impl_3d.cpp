@@ -12,13 +12,20 @@ constexpr double DEFAULT_IMPULSE_CLAMP = 0.0;
 } // namespace
 
 JoltPinJointImpl3D::JoltPinJointImpl3D(
+	const JoltJointImpl3D& p_old_joint,
 	JoltBodyImpl3D* p_body_a,
 	JoltBodyImpl3D* p_body_b,
 	const Vector3& p_local_a,
 	const Vector3& p_local_b,
 	bool p_lock
 )
-	: JoltJointImpl3D(p_body_a, p_body_b, Transform3D({}, p_local_a), Transform3D({}, p_local_b)) {
+	: JoltJointImpl3D(
+		  p_old_joint,
+		  p_body_a,
+		  p_body_b,
+		  Transform3D({}, p_local_a),
+		  Transform3D({}, p_local_b)
+	  ) {
 	rebuild(p_lock);
 }
 
