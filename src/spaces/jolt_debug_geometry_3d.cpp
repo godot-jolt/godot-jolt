@@ -43,34 +43,34 @@ void JoltDebugGeometry3D::_bind_methods() {
 
 	ADD_GROUP("Draw", "draw_");
 
-	BIND_PROPERTY(draw_bodies, Variant::BOOL);
+	BIND_PROPERTY("draw_bodies", Variant::BOOL);
 
-	BIND_PROPERTY(draw_shapes, Variant::BOOL);
+	BIND_PROPERTY("draw_shapes", Variant::BOOL);
 
-	BIND_PROPERTY(draw_constraints, Variant::BOOL);
+	BIND_PROPERTY("draw_constraints", Variant::BOOL);
 
-	BIND_PROPERTY(draw_bounding_boxes, Variant::BOOL);
+	BIND_PROPERTY("draw_bounding_boxes", Variant::BOOL);
 
-	BIND_PROPERTY(draw_centers_of_mass, Variant::BOOL);
+	BIND_PROPERTY("draw_centers_of_mass", Variant::BOOL);
 
-	BIND_PROPERTY(draw_transforms, Variant::BOOL);
+	BIND_PROPERTY("draw_transforms", Variant::BOOL);
 
-	BIND_PROPERTY(draw_velocities, Variant::BOOL);
+	BIND_PROPERTY("draw_velocities", Variant::BOOL);
 
-	BIND_PROPERTY(draw_constraint_reference_frames, Variant::BOOL);
+	BIND_PROPERTY("draw_constraint_reference_frames", Variant::BOOL);
 
-	BIND_PROPERTY(draw_constraint_limits, Variant::BOOL);
+	BIND_PROPERTY("draw_constraint_limits", Variant::BOOL);
 
-	BIND_PROPERTY(draw_as_wireframe, Variant::BOOL);
+	BIND_PROPERTY("draw_as_wireframe", Variant::BOOL);
 
 	BIND_PROPERTY_ENUM(
-		draw_with_color_scheme,
+		"draw_with_color_scheme",
 		"Instance,Shape Type,Motion Type,Sleep State,Island"
 	);
 
 	ADD_GROUP("Material", "material_");
 
-	BIND_PROPERTY(material_depth_test, Variant::BOOL);
+	BIND_PROPERTY("material_depth_test", Variant::BOOL);
 
 	BIND_ENUM_CONSTANT(COLOR_SCHEME_INSTANCE);
 	BIND_ENUM_CONSTANT(COLOR_SCHEME_SHAPE_TYPE);
