@@ -28,13 +28,13 @@ func _input(event: InputEvent):
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			if event.pressed:
-				step_speed_up(event.factor)
+				_step_speed_up(event.factor)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			if event.pressed:
-				step_speed_down(event.factor)
+				_step_speed_down(event.factor)
 	elif event is InputEventMouseMotion:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			rotate_from_mouse(event.relative)
+			_rotate_from_mouse(event.relative)
 
 func _process(delta: float):
 	if not current:
@@ -58,13 +58,13 @@ func _process(delta: float):
 
 	position = position.lerp(target_position, interpolation_speed * delta)
 
-func step_speed_up(factor: float = 1.0):
-	scale_speed(1.0 + (speed_step_factor - 1.0) * factor)
+func _step_speed_up(factor: float = 1.0):
+	_scale_speed(1.0 + (speed_step_factor - 1.0) * factor)
 
-func step_speed_down(factor: float = 1.0):
-	scale_speed(1.0 / (1.0 + (speed_step_factor - 1.0) * factor))
+func _step_speed_down(factor: float = 1.0):
+	_scale_speed(1.0 / (1.0 + (speed_step_factor - 1.0) * factor))
 
-func scale_speed(factor: float):
+func _scale_speed(factor: float):
 	var min_speed := near * 4
 	var max_speed := far / 4
 
@@ -73,7 +73,7 @@ func scale_speed(factor: float):
 	else:
 		speed = (min_speed + max_speed) / 2.0;
 
-func rotate_from_mouse(relative: Vector2):
+func _rotate_from_mouse(relative: Vector2):
 	var delta := -relative * 0.0015 * mouse_sensitivity
 
 	rotation = Vector3(

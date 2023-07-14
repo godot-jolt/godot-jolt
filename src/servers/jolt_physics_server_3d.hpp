@@ -11,7 +11,6 @@ class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
 	GDCLASS_NO_WARN(JoltPhysicsServer3D, PhysicsServer3DExtension)
 
 private:
-	// NOLINTNEXTLINE(readability-identifier-naming)
 	static void _bind_methods() { }
 
 public:

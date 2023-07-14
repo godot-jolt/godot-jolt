@@ -19,7 +19,7 @@ public:
 	String to_string() const;
 
 private:
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC _build() const override;
 
 	float radius = 0.0f;
 };

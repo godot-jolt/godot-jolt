@@ -28,7 +28,7 @@ public:
 	void rebuild(bool p_lock = true) override;
 
 private:
-	static JPH::Constraint* build_hinge(
+	static JPH::Constraint* _build_hinge(
 		JPH::Body* p_jolt_body_a,
 		JPH::Body* p_jolt_body_b,
 		const Transform3D& p_shifted_ref_a,
@@ -36,28 +36,28 @@ private:
 		float p_limit
 	);
 
-	static JPH::Constraint* build_fixed(
+	static JPH::Constraint* _build_fixed(
 		JPH::Body* p_jolt_body_a,
 		JPH::Body* p_jolt_body_b,
 		const Transform3D& p_shifted_ref_a,
 		const Transform3D& p_shifted_ref_b
 	);
 
-	bool is_fixed() const { return limit_lower == limit_upper; }
+	bool _is_fixed() const { return limit_lower == limit_upper; }
 
-	void update_motor_state();
+	void _update_motor_state();
 
-	void update_motor_velocity();
+	void _update_motor_velocity();
 
-	void update_motor_limit();
+	void _update_motor_limit();
 
-	void limits_changed(bool p_lock = true);
+	void _limits_changed(bool p_lock = true);
 
-	void motor_state_changed();
+	void _motor_state_changed();
 
-	void motor_speed_changed();
+	void _motor_speed_changed();
 
-	void motor_limit_changed();
+	void _motor_limit_changed();
 
 	double limit_lower = 0.0;
 

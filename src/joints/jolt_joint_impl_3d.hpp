@@ -40,14 +40,14 @@ public:
 	virtual void rebuild([[maybe_unused]] bool p_lock = true) { }
 
 protected:
-	void shift_reference_frames(
+	void _shift_reference_frames(
 		const Vector3& p_linear_shift,
 		const Vector3& p_angular_shift,
 		Transform3D& p_shifted_ref_a,
 		Transform3D& p_shifted_ref_b
 	);
 
-	String bodies_to_string() const;
+	String _bodies_to_string() const;
 
 	bool collision_disabled = false;
 

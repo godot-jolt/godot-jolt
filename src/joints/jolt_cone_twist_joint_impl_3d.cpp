@@ -54,11 +54,11 @@ void JoltConeTwistJointImpl3D::set_param(
 	switch (p_param) {
 		case PhysicsServer3D::CONE_TWIST_JOINT_SWING_SPAN: {
 			swing_span = p_value;
-			limits_changed(p_lock);
+			_limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_TWIST_SPAN: {
 			twist_span = p_value;
-			limits_changed(p_lock);
+			_limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_BIAS)) {
@@ -66,7 +66,7 @@ void JoltConeTwistJointImpl3D::set_param(
 					"Cone twist joint bias is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -76,7 +76,7 @@ void JoltConeTwistJointImpl3D::set_param(
 					"Cone twist joint softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. ",
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -86,7 +86,7 @@ void JoltConeTwistJointImpl3D::set_param(
 					"Cone twist joint relaxation is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -124,9 +124,9 @@ void JoltConeTwistJointImpl3D::rebuild(bool p_lock) {
 	Transform3D shifted_ref_a;
 	Transform3D shifted_ref_b;
 
-	shift_reference_frames(Vector3(), Vector3(), shifted_ref_a, shifted_ref_b);
+	_shift_reference_frames(Vector3(), Vector3(), shifted_ref_a, shifted_ref_b);
 
-	jolt_ref = build_swing_twist(
+	jolt_ref = _build_swing_twist(
 		jolt_body_a,
 		jolt_body_b,
 		shifted_ref_a,
@@ -138,7 +138,7 @@ void JoltConeTwistJointImpl3D::rebuild(bool p_lock) {
 	space->add_joint(this);
 }
 
-JPH::Constraint* JoltConeTwistJointImpl3D::build_swing_twist(
+JPH::Constraint* JoltConeTwistJointImpl3D::_build_swing_twist(
 	JPH::Body* p_jolt_body_a,
 	JPH::Body* p_jolt_body_b,
 	const Transform3D& p_shifted_ref_a,
@@ -184,6 +184,6 @@ JPH::Constraint* JoltConeTwistJointImpl3D::build_swing_twist(
 	}
 }
 
-void JoltConeTwistJointImpl3D::limits_changed(bool p_lock) {
+void JoltConeTwistJointImpl3D::_limits_changed(bool p_lock) {
 	rebuild(p_lock);
 }

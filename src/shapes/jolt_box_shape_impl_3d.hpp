@@ -19,7 +19,7 @@ public:
 	String to_string() const;
 
 private:
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC _build() const override;
 
 	Vector3 half_extents;
 

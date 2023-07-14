@@ -46,8 +46,6 @@ public:
 
 	void set_param(PhysicsServer3D::BodyParameter p_param, const Variant& p_value);
 
-	JPH::BroadPhaseLayer get_broad_phase_layer() const override;
-
 	bool has_state_sync_callback() const { return body_state_callback.is_valid(); }
 
 	void set_state_sync_callback(const Callable& p_callback) { body_state_callback = p_callback; }
@@ -243,59 +241,61 @@ public:
 	bool are_axes_locked() const { return locked_axes != 0; }
 
 private:
-	JPH::EMotionType get_motion_type() const override;
+	JPH::BroadPhaseLayer _get_broad_phase_layer() const override;
 
-	void create_in_space() override;
+	JPH::EMotionType _get_motion_type() const override;
 
-	void integrate_forces(float p_step, JPH::Body& p_jolt_body);
+	void _create_in_space() override;
 
-	void pre_step_static(float p_step, JPH::Body& p_jolt_body);
+	void _integrate_forces(float p_step, JPH::Body& p_jolt_body);
 
-	void pre_step_rigid(float p_step, JPH::Body& p_jolt_body);
+	void _pre_step_static(float p_step, JPH::Body& p_jolt_body);
 
-	void pre_step_kinematic(float p_step, JPH::Body& p_jolt_body);
+	void _pre_step_rigid(float p_step, JPH::Body& p_jolt_body);
 
-	void apply_transform(const Transform3D& p_transform, bool p_lock = true) override;
+	void _pre_step_kinematic(float p_step, JPH::Body& p_jolt_body);
 
-	JPH::EAllowedDOFs calculate_allowed_dofs() const;
+	void _apply_transform(const Transform3D& p_transform, bool p_lock = true) override;
 
-	JPH::MassProperties calculate_mass_properties(const JPH::Shape& p_shape) const;
+	JPH::EAllowedDOFs _calculate_allowed_dofs() const;
 
-	JPH::MassProperties calculate_mass_properties() const;
+	JPH::MassProperties _calculate_mass_properties(const JPH::Shape& p_shape) const;
 
-	void stop_locked_axes(JPH::Body& p_jolt_body) const;
+	JPH::MassProperties _calculate_mass_properties() const;
 
-	void update_mass_properties(bool p_lock = true);
+	void _stop_locked_axes(JPH::Body& p_jolt_body) const;
 
-	void update_damp(bool p_lock = true);
+	void _update_mass_properties(bool p_lock = true);
 
-	void update_kinematic_transform(bool p_lock = true);
+	void _update_damp(bool p_lock = true);
 
-	void update_group_filter(bool p_lock = true);
+	void _update_kinematic_transform(bool p_lock = true);
 
-	void update_joint_constraints(bool p_lock = true);
+	void _update_group_filter(bool p_lock = true);
 
-	void destroy_joint_constraints();
+	void _update_joint_constraints(bool p_lock = true);
 
-	void mode_changed(bool p_lock = true);
+	void _destroy_joint_constraints();
 
-	void shapes_built(bool p_lock) override;
+	void _mode_changed(bool p_lock = true);
 
-	void space_changing(bool p_lock = true) override;
+	void _shapes_built(bool p_lock) override;
 
-	void space_changed(bool p_lock = true) override;
+	void _space_changing(bool p_lock = true) override;
 
-	void areas_changed(bool p_lock = true);
+	void _space_changed(bool p_lock = true) override;
 
-	void joints_changed(bool p_lock = true);
+	void _areas_changed(bool p_lock = true);
 
-	void transform_changed(bool p_lock = true) override;
+	void _joints_changed(bool p_lock = true);
 
-	void motion_changed(bool p_lock = true);
+	void _transform_changed(bool p_lock = true) override;
 
-	void exceptions_changed(bool p_lock = true);
+	void _motion_changed(bool p_lock = true);
 
-	void axis_lock_changed(bool p_lock = true);
+	void _exceptions_changed(bool p_lock = true);
+
+	void _axis_lock_changed(bool p_lock = true);
 
 	LocalVector<Contact> contacts;
 

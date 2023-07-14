@@ -91,48 +91,48 @@ private:
 
 	void OnContactRemoved(const JPH::SubShapeIDPair& p_shape_pair) override;
 
-	bool is_listening_for(const JPH::Body& p_body) const;
+	bool _is_listening_for(const JPH::Body& p_body) const;
 
-	bool try_override_collision_response(
+	bool _try_override_collision_response(
 		const JPH::Body& p_body1,
 		const JPH::Body& p_body2,
 		JPH::ContactSettings& p_settings
 	);
 
-	bool try_apply_surface_velocities(
+	bool _try_apply_surface_velocities(
 		const JPH::Body& p_jolt_body1,
 		const JPH::Body& p_jolt_body2,
 		JPH::ContactSettings& p_settings
 	);
 
-	bool try_add_contacts(
+	bool _try_add_contacts(
 		const JPH::Body& p_body1,
 		const JPH::Body& p_body2,
 		const JPH::ContactManifold& p_manifold,
 		JPH::ContactSettings& p_settings
 	);
 
-	bool try_add_area_overlap(
+	bool _try_add_area_overlap(
 		const JPH::Body& p_body1,
 		const JPH::Body& p_body2,
 		const JPH::ContactManifold& p_manifold
 	);
 
-	bool try_remove_contacts(const JPH::SubShapeIDPair& p_shape_pair);
+	bool _try_remove_contacts(const JPH::SubShapeIDPair& p_shape_pair);
 
-	bool try_remove_area_overlap(const JPH::SubShapeIDPair& p_shape_pair);
+	bool _try_remove_area_overlap(const JPH::SubShapeIDPair& p_shape_pair);
 
 #ifdef GDJ_CONFIG_EDITOR
-	bool try_add_debug_contacts(const JPH::ContactManifold& p_manifold);
+	bool _try_add_debug_contacts(const JPH::ContactManifold& p_manifold);
 #endif // GDJ_CONFIG_EDITOR
 
-	void flush_contacts();
+	void _flush_contacts();
 
-	void flush_area_enters();
+	void _flush_area_enters();
 
-	void flush_area_shifts();
+	void _flush_area_shifts();
 
-	void flush_area_exits();
+	void _flush_area_exits();
 
 	ManifoldsByShapePair manifolds_by_shape_pair;
 

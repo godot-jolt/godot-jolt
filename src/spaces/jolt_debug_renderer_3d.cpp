@@ -156,8 +156,8 @@ int32_t JoltDebugRenderer3D::submit(const RID& p_mesh) {
 }
 
 void JoltDebugRenderer3D::DrawLine(JPH::Vec3 p_from, JPH::Vec3 p_to, JPH::Color p_color) {
-	reserve_lines(1);
-	add_line(to_godot(p_from), to_godot(p_to), to_godot(p_color).to_abgr32());
+	_reserve_lines(1);
+	_add_line(to_godot(p_from), to_godot(p_to), to_godot(p_color).to_abgr32());
 }
 
 void JoltDebugRenderer3D::DrawTriangle(
@@ -166,9 +166,9 @@ void JoltDebugRenderer3D::DrawTriangle(
 	JPH::Vec3 p_vertex3,
 	JPH::Color p_color
 ) {
-	reserve_triangles(1);
+	_reserve_triangles(1);
 
-	add_triangle(
+	_add_triangle(
 		to_godot(p_vertex3),
 		to_godot(p_vertex2),
 		to_godot(p_vertex1),
@@ -255,9 +255,9 @@ void JoltDebugRenderer3D::DrawGeometry(
 
 	if (p_draw_mode == JPH::DebugRenderer::EDrawMode::Solid) {
 		if (p_cull_mode != JPH::DebugRenderer::ECullMode::Off) {
-			reserve_triangles(model_triangle_count);
+			_reserve_triangles(model_triangle_count);
 		} else {
-			reserve_triangles(model_triangle_count * 2);
+			_reserve_triangles(model_triangle_count * 2);
 		}
 
 		for (int32_t i = 0; i < model_triangle_count; ++i) {
@@ -269,19 +269,19 @@ void JoltDebugRenderer3D::DrawGeometry(
 
 			switch (p_cull_mode) {
 				case JPH::DebugRenderer::ECullMode::CullBackFace: {
-					add_triangle(v2, v1, v0, model_color_abgr);
+					_add_triangle(v2, v1, v0, model_color_abgr);
 				} break;
 				case JPH::DebugRenderer::ECullMode::CullFrontFace: {
-					add_triangle(v0, v1, v2, model_color_abgr);
+					_add_triangle(v0, v1, v2, model_color_abgr);
 				} break;
 				case JPH::DebugRenderer::ECullMode::Off: {
-					add_triangle(v0, v1, v2, model_color_abgr);
-					add_triangle(v2, v1, v0, model_color_abgr);
+					_add_triangle(v0, v1, v2, model_color_abgr);
+					_add_triangle(v2, v1, v0, model_color_abgr);
 				} break;
 			}
 		}
 	} else {
-		reserve_lines(model_triangle_count * 3);
+		_reserve_lines(model_triangle_count * 3);
 
 		for (int32_t i = 0; i < model_triangle_count; ++i) {
 			const int32_t vertex_offset = i * 3;
@@ -290,9 +290,9 @@ void JoltDebugRenderer3D::DrawGeometry(
 			const Vector3 v1 = to_godot(p_model_matrix * model_vertices_ptr[vertex_offset + 1]);
 			const Vector3 v2 = to_godot(p_model_matrix * model_vertices_ptr[vertex_offset + 2]);
 
-			add_line(v0, v1, model_color_abgr);
-			add_line(v1, v2, model_color_abgr);
-			add_line(v2, v0, model_color_abgr);
+			_add_line(v0, v1, model_color_abgr);
+			_add_line(v1, v2, model_color_abgr);
+			_add_line(v2, v0, model_color_abgr);
 		}
 	}
 }
@@ -306,7 +306,7 @@ void JoltDebugRenderer3D::DrawText3D(
 	ERR_FAIL_NOT_IMPL();
 }
 
-void JoltDebugRenderer3D::reserve_triangles(int32_t p_extra_capacity) {
+void JoltDebugRenderer3D::_reserve_triangles(int32_t p_extra_capacity) {
 	if (triangle_count + p_extra_capacity <= triangle_capacity) {
 		return;
 	}
@@ -318,7 +318,7 @@ void JoltDebugRenderer3D::reserve_triangles(int32_t p_extra_capacity) {
 	triangle_attributes.resize(vertex_count * DEBUG_ATTRIBUTE_STRIDE);
 }
 
-void JoltDebugRenderer3D::reserve_lines(int32_t p_extra_capacity) {
+void JoltDebugRenderer3D::_reserve_lines(int32_t p_extra_capacity) {
 	if (line_count + p_extra_capacity <= line_capacity) {
 		return;
 	}
@@ -330,7 +330,7 @@ void JoltDebugRenderer3D::reserve_lines(int32_t p_extra_capacity) {
 	line_attributes.resize(vertex_count * DEBUG_ATTRIBUTE_STRIDE);
 }
 
-void JoltDebugRenderer3D::add_triangle(
+void JoltDebugRenderer3D::_add_triangle(
 	const Vector3& p_vertex1,
 	const Vector3& p_vertex2,
 	const Vector3& p_vertex3,
@@ -356,7 +356,7 @@ void JoltDebugRenderer3D::add_triangle(
 	triangle_count++;
 }
 
-void JoltDebugRenderer3D::add_line(
+void JoltDebugRenderer3D::_add_line(
 	const Vector3& p_from,
 	const Vector3& p_to,
 	uint32_t p_color_abgr

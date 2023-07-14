@@ -68,17 +68,17 @@ void JoltHingeJointImpl3D::set_param(
 					"Hinge joint bias is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_UPPER: {
 			limit_upper = p_value;
-			limits_changed(p_lock);
+			_limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_LOWER: {
 			limit_lower = p_value;
-			limits_changed(p_lock);
+			_limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_LIMIT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LIMIT_BIAS)) {
@@ -86,7 +86,7 @@ void JoltHingeJointImpl3D::set_param(
 					"Hinge joint bias limit is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -96,7 +96,7 @@ void JoltHingeJointImpl3D::set_param(
 					"Hinge joint softness is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
@@ -106,17 +106,17 @@ void JoltHingeJointImpl3D::set_param(
 					"Hinge joint relaxation is not supported by Godot Jolt. "
 					"Any such value will be ignored. "
 					"This joint connects %s.",
-					bodies_to_string()
+					_bodies_to_string()
 				));
 			}
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_TARGET_VELOCITY: {
 			motor_target_speed = p_value;
-			motor_speed_changed();
+			_motor_speed_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_MAX_IMPULSE: {
 			motor_max_impulse = p_value;
-			motor_limit_changed();
+			_motor_limit_changed();
 		} break;
 		default: {
 			ERR_FAIL_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
@@ -146,11 +146,11 @@ void JoltHingeJointImpl3D::set_flag(
 	switch (p_flag) {
 		case PhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT: {
 			use_limits = p_enabled;
-			limits_changed(p_lock);
+			_limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_FLAG_ENABLE_MOTOR: {
 			motor_enabled = p_enabled;
-			motor_state_changed();
+			_motor_state_changed();
 		} break;
 		default: {
 			ERR_FAIL_MSG(vformat("Unhandled hinge joint flag: '%d'", p_flag));
@@ -196,22 +196,27 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 	Transform3D shifted_ref_a;
 	Transform3D shifted_ref_b;
 
-	shift_reference_frames(Vector3(), Vector3(0.0f, 0.0f, ref_shift), shifted_ref_a, shifted_ref_b);
+	_shift_reference_frames(
+		Vector3(),
+		Vector3(0.0f, 0.0f, ref_shift),
+		shifted_ref_a,
+		shifted_ref_b
+	);
 
-	if (is_fixed()) {
-		jolt_ref = build_fixed(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
+	if (_is_fixed()) {
+		jolt_ref = _build_fixed(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
 	} else {
-		jolt_ref = build_hinge(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limit);
+		jolt_ref = _build_hinge(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b, limit);
 	}
 
 	space->add_joint(this);
 
-	update_motor_state();
-	update_motor_velocity();
-	update_motor_limit();
+	_update_motor_state();
+	_update_motor_velocity();
+	_update_motor_limit();
 }
 
-JPH::Constraint* JoltHingeJointImpl3D::build_hinge(
+JPH::Constraint* JoltHingeJointImpl3D::_build_hinge(
 	JPH::Body* p_jolt_body_a,
 	JPH::Body* p_jolt_body_b,
 	const Transform3D& p_shifted_ref_a,
@@ -237,7 +242,7 @@ JPH::Constraint* JoltHingeJointImpl3D::build_hinge(
 	}
 }
 
-JPH::Constraint* JoltHingeJointImpl3D::build_fixed(
+JPH::Constraint* JoltHingeJointImpl3D::_build_fixed(
 	JPH::Body* p_jolt_body_a,
 	JPH::Body* p_jolt_body_b,
 	const Transform3D& p_shifted_ref_a,
@@ -261,8 +266,8 @@ JPH::Constraint* JoltHingeJointImpl3D::build_fixed(
 	}
 }
 
-void JoltHingeJointImpl3D::update_motor_state() {
-	QUIET_FAIL_COND(is_fixed());
+void JoltHingeJointImpl3D::_update_motor_state() {
+	QUIET_FAIL_COND(_is_fixed());
 
 	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
 		constraint->SetMotorState(
@@ -271,16 +276,16 @@ void JoltHingeJointImpl3D::update_motor_state() {
 	}
 }
 
-void JoltHingeJointImpl3D::update_motor_velocity() {
-	QUIET_FAIL_COND(is_fixed());
+void JoltHingeJointImpl3D::_update_motor_velocity() {
+	QUIET_FAIL_COND(_is_fixed());
 
 	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
 		constraint->SetTargetAngularVelocity((float)motor_target_speed);
 	}
 }
 
-void JoltHingeJointImpl3D::update_motor_limit() {
-	QUIET_FAIL_COND(is_fixed());
+void JoltHingeJointImpl3D::_update_motor_limit() {
+	QUIET_FAIL_COND(_is_fixed());
 
 	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
 		// HACK(mihe): This will break if the physics time step changes in any way during the
@@ -295,18 +300,18 @@ void JoltHingeJointImpl3D::update_motor_limit() {
 	}
 }
 
-void JoltHingeJointImpl3D::limits_changed(bool p_lock) {
+void JoltHingeJointImpl3D::_limits_changed(bool p_lock) {
 	rebuild(p_lock);
 }
 
-void JoltHingeJointImpl3D::motor_state_changed() {
-	update_motor_state();
+void JoltHingeJointImpl3D::_motor_state_changed() {
+	_update_motor_state();
 }
 
-void JoltHingeJointImpl3D::motor_speed_changed() {
-	update_motor_velocity();
+void JoltHingeJointImpl3D::_motor_speed_changed() {
+	_update_motor_velocity();
 }
 
-void JoltHingeJointImpl3D::motor_limit_changed() {
-	update_motor_limit();
+void JoltHingeJointImpl3D::_motor_limit_changed() {
+	_update_motor_limit();
 }

@@ -92,7 +92,7 @@ constexpr void decode_collision(
 } // namespace
 
 JoltLayerMapper::JoltLayerMapper() {
-	allocate_object_layer(0);
+	_allocate_object_layer(0);
 }
 
 JPH::ObjectLayer JoltLayerMapper::to_object_layer(
@@ -122,7 +122,7 @@ JPH::ObjectLayer JoltLayerMapper::to_object_layer(
 			)
 		);
 
-		object_layer = allocate_object_layer(collision);
+		object_layer = _allocate_object_layer(collision);
 	}
 
 	return encode_layers(p_broad_phase_layer, object_layer);
@@ -211,7 +211,7 @@ bool JoltLayerMapper::ShouldCollide(
 	return matrix.should_collide(broad_phase_layer1, p_broad_phase_layer2);
 }
 
-JPH::ObjectLayer JoltLayerMapper::allocate_object_layer(uint64_t p_collision) {
+JPH::ObjectLayer JoltLayerMapper::_allocate_object_layer(uint64_t p_collision) {
 	const JPH::ObjectLayer new_object_layer = next_object_layer++;
 
 	collisions_by_layer.resize(new_object_layer + 1);

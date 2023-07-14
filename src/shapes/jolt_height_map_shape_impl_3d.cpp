@@ -10,7 +10,7 @@ Variant JoltHeightMapShapeImpl3D::get_data() const {
 
 void JoltHeightMapShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		invalidated();
+		_invalidated();
 	};
 
 	destroy();
@@ -37,7 +37,7 @@ String JoltHeightMapShapeImpl3D::to_string() const {
 	return vformat("{height_count=%d width=%d depth=%d}", heights.size(), width, depth);
 }
 
-JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
+JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build() const {
 	const auto height_count = (int32_t)heights.size();
 
 	// NOTE(mihe): This somewhat arbitrary limit depends on what the block size is set to, which by
@@ -49,7 +49,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 			"Height count must be at least 16. "
 			"This shape belongs to %s.",
 			to_string(),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 
@@ -60,7 +60,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 			"Height count must be the product of width and depth. "
 			"This shape belongs to %s.",
 			to_string(),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 
@@ -71,7 +71,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 			"Width must be equal to depth. "
 			"This shape belongs to %s.",
 			to_string(),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 
@@ -82,7 +82,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 			"Width/depth must be a power-of-two. "
 			"This shape belongs to %s.",
 			to_string(),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 
@@ -111,7 +111,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::build() const {
 			"This shape belongs to %s.",
 			to_string(),
 			to_godot(shape_result.GetError()),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 

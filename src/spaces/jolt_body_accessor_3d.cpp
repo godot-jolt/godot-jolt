@@ -24,7 +24,7 @@ void JoltBodyAccessor3D::acquire(const JPH::BodyID* p_ids, int32_t p_id_count, b
 
 	lock_iface = &space->get_lock_iface(p_lock);
 	ids = BodyIDSpan(p_ids, p_id_count);
-	acquire_internal(p_ids, p_id_count);
+	_acquire_internal(p_ids, p_id_count);
 }
 
 void JoltBodyAccessor3D::acquire(const JPH::BodyID& p_id, bool p_lock) {
@@ -32,7 +32,7 @@ void JoltBodyAccessor3D::acquire(const JPH::BodyID& p_id, bool p_lock) {
 
 	lock_iface = &space->get_lock_iface(p_lock);
 	ids = p_id;
-	acquire_internal(&p_id, 1);
+	_acquire_internal(&p_id, 1);
 }
 
 void JoltBodyAccessor3D::acquire_active(bool p_lock) {
@@ -49,7 +49,7 @@ void JoltBodyAccessor3D::acquire_active(bool p_lock) {
 
 	space->get_physics_system().GetActiveBodies(*vector);
 
-	acquire_internal(vector->data(), (int32_t)vector->size());
+	_acquire_internal(vector->data(), (int32_t)vector->size());
 }
 
 void JoltBodyAccessor3D::acquire_all(bool p_lock) {
@@ -66,11 +66,11 @@ void JoltBodyAccessor3D::acquire_all(bool p_lock) {
 
 	space->get_physics_system().GetBodies(*vector);
 
-	acquire_internal(vector->data(), (int32_t)vector->size());
+	_acquire_internal(vector->data(), (int32_t)vector->size());
 }
 
 void JoltBodyAccessor3D::release() {
-	release_internal();
+	_release_internal();
 	lock_iface = nullptr;
 }
 
@@ -133,12 +133,12 @@ const JPH::Body* JoltBodyReader3D::try_get() const {
 	return try_get(0);
 }
 
-void JoltBodyReader3D::acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) {
+void JoltBodyReader3D::_acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) {
 	mutex_mask = lock_iface->GetMutexMask(p_ids, p_id_count);
 	lock_iface->LockRead(mutex_mask);
 }
 
-void JoltBodyReader3D::release_internal() {
+void JoltBodyReader3D::_release_internal() {
 	ERR_FAIL_COND(not_acquired());
 	lock_iface->UnlockRead(mutex_mask);
 }
@@ -161,12 +161,12 @@ JPH::Body* JoltBodyWriter3D::try_get() const {
 	return try_get(0);
 }
 
-void JoltBodyWriter3D::acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) {
+void JoltBodyWriter3D::_acquire_internal(const JPH::BodyID* p_ids, int32_t p_id_count) {
 	mutex_mask = lock_iface->GetMutexMask(p_ids, p_id_count);
 	lock_iface->LockWrite(mutex_mask);
 }
 
-void JoltBodyWriter3D::release_internal() {
+void JoltBodyWriter3D::_release_internal() {
 	ERR_FAIL_COND(not_acquired());
 	lock_iface->UnlockWrite(mutex_mask);
 }

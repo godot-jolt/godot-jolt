@@ -99,9 +99,9 @@ public:
 #endif // GDJ_CONFIG_EDITOR
 
 private:
-	void pre_step(float p_step);
+	void _pre_step(float p_step);
 
-	void post_step(float p_step);
+	void _post_step(float p_step);
 
 	JoltBodyWriter3D body_accessor;
 

@@ -85,7 +85,7 @@ JoltSpace3D::~JoltSpace3D() {
 void JoltSpace3D::step(float p_step) {
 	last_step = p_step;
 
-	pre_step(p_step);
+	_pre_step(p_step);
 
 	switch (physics_system->Update(p_step, 1, temp_allocator, job_system)) {
 		case JPH::EPhysicsUpdateError::None: {
@@ -120,7 +120,7 @@ void JoltSpace3D::step(float p_step) {
 		} break;
 	}
 
-	post_step(p_step);
+	_post_step(p_step);
 
 	has_stepped = true;
 }
@@ -396,7 +396,7 @@ void JoltSpace3D::set_max_debug_contacts(int32_t p_count) {
 
 #endif // GDJ_CONFIG_EDITOR
 
-void JoltSpace3D::pre_step(float p_step) {
+void JoltSpace3D::_pre_step(float p_step) {
 	body_accessor.acquire_all(true);
 
 	contact_listener->pre_step();
@@ -418,7 +418,7 @@ void JoltSpace3D::pre_step(float p_step) {
 	body_accessor.release();
 }
 
-void JoltSpace3D::post_step(float p_step) {
+void JoltSpace3D::_post_step(float p_step) {
 	body_accessor.acquire_all(true);
 
 	contact_listener->post_step();

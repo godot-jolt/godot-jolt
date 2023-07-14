@@ -36,7 +36,7 @@ private:
 		Job& operator=(Job&& p_other) = delete;
 
 	private:
-		static void execute(void* p_user_data);
+		static void _execute(void* p_user_data);
 
 		inline static std::atomic<Job*> completed_head = nullptr;
 

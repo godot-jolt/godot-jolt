@@ -6,43 +6,43 @@ class_name HeightMap3D extends StaticBody3D
 var collision_shape := NodePath():
 	set(value):
 		collision_shape = value
-		properties_changed()
+		_properties_changed()
 
 @export_node_path("MeshInstance3D")
 var mesh_instance := NodePath():
 	set(value):
 		mesh_instance = value
-		properties_changed()
+		_properties_changed()
 
 @export_range(4, 64, 1, "or_greater")
 var resolution: int = 16:
 	set(value):
 		resolution = value
-		properties_changed()
+		_properties_changed()
 
 @export_range(0.1, 10.0, 0.1, "or_greater")
 var amplitude: float = 1.0:
 	set(value):
 		amplitude = value
-		properties_changed()
+		_properties_changed()
 
 @export
 var noise_seed: int = 0:
 	set(value):
 		noise_seed = value
-		properties_changed()
+		_properties_changed()
 
 @export
 var noise_frequency: float = 0.2:
 	set(value):
 		noise_frequency = value
-		properties_changed()
+		_properties_changed()
 
-func properties_changed():
+func _properties_changed():
 	if Engine.is_editor_hint():
-		generate()
+		_generate()
 
-func generate():
+func _generate():
 	var _collision_shape := get_node_or_null(collision_shape)
 	if not _collision_shape:
 		return

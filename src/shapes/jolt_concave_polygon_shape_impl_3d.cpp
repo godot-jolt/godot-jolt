@@ -9,7 +9,7 @@ Variant JoltConcavePolygonShapeImpl3D::get_data() const {
 
 void JoltConcavePolygonShapeImpl3D::set_data(const Variant& p_data) {
 	ON_SCOPE_EXIT {
-		invalidated();
+		_invalidated();
 	};
 
 	destroy();
@@ -32,7 +32,7 @@ String JoltConcavePolygonShapeImpl3D::to_string() const {
 	return vformat("{vertex_count=%d}", faces.size());
 }
 
-JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
+JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build() const {
 	const auto vertex_count = (int32_t)faces.size();
 	const int32_t face_count = vertex_count / 3;
 	const int32_t excess_vertex_count = vertex_count % 3;
@@ -49,7 +49,7 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
 			"It must have a vertex count of at least 3. "
 			"This shape belongs to %s.",
 			to_string(),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 
@@ -60,7 +60,7 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
 			"It must have a vertex count that is divisible by 3. "
 			"This shape belongs to %s.",
 			to_string(),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 
@@ -101,7 +101,7 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::build() const {
 			"This shape belongs to %s.",
 			to_string(),
 			to_godot(shape_result.GetError()),
-			owners_to_string()
+			_owners_to_string()
 		)
 	);
 

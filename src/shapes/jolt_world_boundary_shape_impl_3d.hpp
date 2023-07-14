@@ -17,7 +17,7 @@ public:
 	void set_margin([[maybe_unused]] float p_margin) override { }
 
 private:
-	JPH::ShapeRefC build() const override;
+	JPH::ShapeRefC _build() const override;
 
 	Plane plane;
 };
