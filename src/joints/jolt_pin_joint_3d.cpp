@@ -12,14 +12,14 @@ JoltPhysicsServer3D* get_physics_server() {
 } // namespace
 
 void JoltPinJoint3D::_bind_methods() {
-	BIND_METHOD(JoltPinJoint3D, get_total_lambda_position);
+	BIND_METHOD(JoltPinJoint3D, get_linear_impulse);
 }
 
-Vector3 JoltPinJoint3D::get_total_lambda_position() const {
+Vector3 JoltPinJoint3D::get_linear_impulse() const {
 	JoltPhysicsServer3D* physics_server = get_physics_server();
 	ERR_FAIL_NULL_D(physics_server);
 
-	return physics_server->pin_joint_get_total_lambda_position(rid);
+	return physics_server->pin_joint_get_linear_impulse(rid);
 }
 
 void JoltPinJoint3D::_configure(PhysicsBody3D* p_body_a, PhysicsBody3D* p_body_b) {

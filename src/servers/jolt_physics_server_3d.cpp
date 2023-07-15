@@ -1810,12 +1810,12 @@ void JoltPhysicsServer3D::joint_set_solver_position_iterations(
 	return joint->set_solver_position_iterations(p_iterations);
 }
 
-Vector3 JoltPhysicsServer3D::pin_joint_get_total_lambda_position(const RID& p_joint) {
+Vector3 JoltPhysicsServer3D::pin_joint_get_linear_impulse(const RID& p_joint) {
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_PIN);
 	auto* pin_joint = static_cast<JoltPinJointImpl3D*>(joint);
 
-	return pin_joint->get_total_lambda_position();
+	return pin_joint->get_linear_impulse();
 }
