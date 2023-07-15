@@ -9,15 +9,15 @@ private:
 public:
 	JoltJoint3D();
 
-	~JoltJoint3D();
+	~JoltJoint3D() override;
 
 	NodePath get_node_a() const { return node_a; }
 
-	void set_node_a(NodePath p_path);
+	void set_node_a(const NodePath& p_path);
 
 	NodePath get_node_b() const { return node_b; }
 
-	void set_node_b(NodePath p_path);
+	void set_node_b(const NodePath& p_path);
 
 	PhysicsBody3D* get_body_a() const;
 

@@ -39,7 +39,7 @@ void JoltJointGizmoPlugin3D::_redraw(const Ref<EditorNode3DGizmo>& p_gizmo) {
 	Ref<Material> material_body_a = get_material(U"joint_body_a", p_gizmo);
 	Ref<Material> material_body_b = get_material(U"joint_body_b", p_gizmo);
 
-	if (auto* pin_joint = Object::cast_to<JoltPinJoint3D>(joint)) {
+	if (Object::cast_to<JoltPinJoint3D>(joint) != nullptr) {
 		constexpr float size = 0.25f;
 
 		PackedVector3Array points;

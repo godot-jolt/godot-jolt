@@ -68,7 +68,7 @@ JoltJoint3D::~JoltJoint3D() {
 	physics_server->free_rid(rid);
 }
 
-void JoltJoint3D::set_node_a(NodePath p_path) {
+void JoltJoint3D::set_node_a(const NodePath& p_path) {
 	if (node_a == p_path) {
 		return;
 	}
@@ -78,7 +78,7 @@ void JoltJoint3D::set_node_a(NodePath p_path) {
 	_nodes_changed();
 }
 
-void JoltJoint3D::set_node_b(NodePath p_path) {
+void JoltJoint3D::set_node_b(const NodePath& p_path) {
 	if (node_b == p_path) {
 		return;
 	}
@@ -161,6 +161,9 @@ void JoltJoint3D::_notification(int32_t p_what) {
 		case NOTIFICATION_EXIT_TREE: {
 			_destroy();
 		} break;
+
+		default: {
+		} break;
 	}
 }
 
@@ -172,11 +175,11 @@ void JoltJoint3D::_connect_bodies() {
 
 	const Callable exit_callable(this, "body_exiting_tree");
 
-	if (body_a) {
+	if (body_a != nullptr) {
 		body_a->connect(exit_signal, exit_callable);
 	}
 
-	if (body_b) {
+	if (body_b != nullptr) {
 		body_b->connect(exit_signal, exit_callable);
 	}
 }
@@ -236,9 +239,9 @@ bool JoltJoint3D::_configure() {
 	PhysicsBody3D* body_a = get_body_a();
 	PhysicsBody3D* body_b = get_body_b();
 
-	if (body_a) {
+	if (body_a != nullptr) {
 		_configure(body_a, body_b);
-	} else if (body_b) {
+	} else if (body_b != nullptr) {
 		_configure(body_b, nullptr);
 	}
 
