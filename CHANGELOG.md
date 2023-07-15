@@ -9,6 +9,12 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Added
+
+- Added a substitute for `PinJoint3D`, called `JoltPinJoint3D`, which adds some Jolt-specific
+  features, like the ability to enable/disable the joint, get the impulse that was last applied to
+  it, and the ability to override solver velocity/position iterations for that specific joint.
+
 ### Removed
 
 - ⚠️ Removed the ability to lock all axes of a `RigidBody3D`. Consider freezing the body as static
