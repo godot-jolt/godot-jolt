@@ -94,6 +94,14 @@ void JoltPinJointImpl3D::set_param(PhysicsServer3D::PinJointParam p_param, doubl
 	}
 }
 
+Vector3 JoltPinJointImpl3D::get_linear_impulse() const {
+	ERR_FAIL_NULL_D(jolt_ref);
+
+	auto* constraint = static_cast<JPH::PointConstraint*>(jolt_ref.GetPtr());
+
+	return to_godot(constraint->GetTotalLambdaPosition());
+}
+
 void JoltPinJointImpl3D::rebuild(bool p_lock) {
 	destroy();
 
@@ -127,6 +135,9 @@ void JoltPinJointImpl3D::rebuild(bool p_lock) {
 	jolt_ref = _build_pin(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
 
 	space->add_joint(this);
+
+	_update_enabled();
+	_update_iterations();
 }
 
 JPH::Constraint* JoltPinJointImpl3D::_build_pin(

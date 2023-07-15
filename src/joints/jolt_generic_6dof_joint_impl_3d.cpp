@@ -427,6 +427,9 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 
 	space->add_joint(this);
 
+	_update_enabled();
+	_update_iterations();
+
 	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
 		_update_motor_state(axis);
 		_update_motor_velocity(axis);

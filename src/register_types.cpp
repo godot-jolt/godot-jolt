@@ -1,4 +1,7 @@
+#include "joints/jolt_joint_gizmo_plugin_3d.hpp"
+#include "joints/jolt_pin_joint_3d.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
+#include "servers/jolt_editor_plugin.hpp"
 #include "servers/jolt_globals.hpp"
 #include "servers/jolt_physics_server_3d.hpp"
 #include "servers/jolt_physics_server_factory_3d.hpp"
@@ -35,8 +38,15 @@ void on_initialize(ModuleInitializationLevel p_level) {
 			JoltProjectSettings::register_settings();
 
 			ClassDB::register_class<JoltDebugGeometry3D>();
+			ClassDB::register_class<JoltJoint3D>();
+			ClassDB::register_class<JoltPinJoint3D>();
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
+#ifdef GDJ_CONFIG_EDITOR
+			ClassDB::register_class<JoltJointGizmoPlugin3D>();
+			ClassDB::register_class<JoltEditorPlugin>();
+			EditorPlugins::add_by_type<JoltEditorPlugin>();
+#endif // GDJ_CONFIG_EDITOR
 		} break;
 	}
 }

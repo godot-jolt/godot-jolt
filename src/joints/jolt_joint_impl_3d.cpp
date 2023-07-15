@@ -16,7 +16,8 @@ JoltJointImpl3D::JoltJointImpl3D(
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b
 )
-	: collision_disabled(p_old_joint.collision_disabled)
+	: enabled(p_old_joint.enabled)
+	, collision_disabled(p_old_joint.collision_disabled)
 	, body_a(p_body_a)
 	, body_b(p_body_b)
 	, rid(p_old_joint.rid)
@@ -62,6 +63,16 @@ JoltSpace3D* JoltJointImpl3D::get_space() const {
 	return space_a;
 }
 
+void JoltJointImpl3D::set_enabled(bool p_enabled) {
+	if (enabled == p_enabled) {
+		return;
+	}
+
+	enabled = p_enabled;
+
+	_enabled_changed();
+}
+
 int32_t JoltJointImpl3D::get_solver_priority() const {
 	return DEFAULT_SOLVER_PRIORITY;
 }
@@ -75,6 +86,26 @@ void JoltJointImpl3D::set_solver_priority(int32_t p_priority) {
 			_bodies_to_string()
 		));
 	}
+}
+
+void JoltJointImpl3D::set_solver_velocity_iterations(int32_t p_iterations) {
+	if (velocity_iterations == p_iterations) {
+		return;
+	}
+
+	velocity_iterations = p_iterations;
+
+	_iterations_changed();
+}
+
+void JoltJointImpl3D::set_solver_position_iterations(int32_t p_iterations) {
+	if (position_iterations == p_iterations) {
+		return;
+	}
+
+	position_iterations = p_iterations;
+
+	_iterations_changed();
 }
 
 void JoltJointImpl3D::set_collision_disabled(bool p_disabled) {
@@ -134,6 +165,27 @@ void JoltJointImpl3D::_shift_reference_frames(
 
 	p_shifted_ref_a = Transform3D(shifted_basis_a, shifted_origin_a);
 	p_shifted_ref_b = Transform3D(basis_b, origin_b);
+}
+
+void JoltJointImpl3D::_update_enabled() {
+	if (jolt_ref != nullptr) {
+		jolt_ref->SetEnabled(enabled);
+	}
+}
+
+void JoltJointImpl3D::_update_iterations() {
+	if (jolt_ref != nullptr) {
+		jolt_ref->SetNumVelocityStepsOverride(velocity_iterations);
+		jolt_ref->SetNumPositionStepsOverride(position_iterations);
+	}
+}
+
+void JoltJointImpl3D::_enabled_changed() {
+	_update_enabled();
+}
+
+void JoltJointImpl3D::_iterations_changed() {
+	_update_iterations();
 }
 
 String JoltJointImpl3D::_bodies_to_string() const {

@@ -393,6 +393,9 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 	}
 
 	space->add_joint(this);
+
+	_update_enabled();
+	_update_iterations();
 }
 
 JPH::Constraint* JoltSliderJointImpl3D::_build_slider(
