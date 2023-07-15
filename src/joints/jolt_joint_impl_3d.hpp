@@ -27,6 +27,10 @@ public:
 
 	JPH::Constraint* get_jolt_ref() const { return jolt_ref; }
 
+	bool is_enabled() const { return enabled; }
+
+	void set_enabled(bool p_enabled);
+
 	int32_t get_solver_priority() const;
 
 	void set_solver_priority(int32_t p_priority);
@@ -47,7 +51,13 @@ protected:
 		Transform3D& p_shifted_ref_b
 	);
 
+	void _update_enabled();
+
+	void _enabled_changed();
+
 	String _bodies_to_string() const;
+
+	bool enabled = true;
 
 	bool collision_disabled = false;
 

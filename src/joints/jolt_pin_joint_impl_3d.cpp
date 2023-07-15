@@ -127,6 +127,8 @@ void JoltPinJointImpl3D::rebuild(bool p_lock) {
 	jolt_ref = _build_pin(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
 
 	space->add_joint(this);
+
+	_update_enabled();
 }
 
 JPH::Constraint* JoltPinJointImpl3D::_build_pin(

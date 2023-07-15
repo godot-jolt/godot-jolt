@@ -11,7 +11,7 @@ class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
 	GDCLASS_NO_WARN(JoltPhysicsServer3D, PhysicsServer3DExtension)
 
 private:
-	static void _bind_methods() { }
+	static void _bind_methods();
 
 public:
 	RID _world_boundary_shape_create() override;
@@ -566,6 +566,10 @@ public:
 	JoltShapeImpl3D* get_shape(const RID& p_rid) const { return shape_owner.get_or_null(p_rid); }
 
 	JoltJointImpl3D* get_joint(const RID& p_rid) const { return joint_owner.get_or_null(p_rid); }
+
+	bool joint_get_enabled(const RID& p_joint) const;
+
+	void joint_set_enabled(const RID& p_joint, bool p_enabled);
 
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;

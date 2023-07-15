@@ -136,6 +136,8 @@ void JoltConeTwistJointImpl3D::rebuild(bool p_lock) {
 	);
 
 	space->add_joint(this);
+
+	_update_enabled();
 }
 
 JPH::Constraint* JoltConeTwistJointImpl3D::_build_swing_twist(

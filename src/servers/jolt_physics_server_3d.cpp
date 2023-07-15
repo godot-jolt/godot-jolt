@@ -22,6 +22,11 @@
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
+void JoltPhysicsServer3D::_bind_methods() {
+	BIND_METHOD(JoltPhysicsServer3D, joint_get_enabled);
+	BIND_METHOD(JoltPhysicsServer3D, joint_set_enabled);
+}
+
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
 	JoltShapeImpl3D* shape = memnew(JoltWorldBoundaryShapeImpl3D);
 	RID rid = shape_owner.make_rid(shape);
@@ -1755,4 +1760,18 @@ void JoltPhysicsServer3D::free_joint(JoltJointImpl3D* p_joint) {
 
 	joint_owner.free(p_joint->get_rid());
 	memdelete_safely(p_joint);
+}
+
+bool JoltPhysicsServer3D::joint_get_enabled(const RID& p_joint) const {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	return joint->is_enabled();
+}
+
+void JoltPhysicsServer3D::joint_set_enabled(const RID& p_joint, bool p_enabled) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	joint->set_enabled(p_enabled);
 }

@@ -16,7 +16,8 @@ JoltJointImpl3D::JoltJointImpl3D(
 	const Transform3D& p_local_ref_a,
 	const Transform3D& p_local_ref_b
 )
-	: collision_disabled(p_old_joint.collision_disabled)
+	: enabled(p_old_joint.enabled)
+	, collision_disabled(p_old_joint.collision_disabled)
 	, body_a(p_body_a)
 	, body_b(p_body_b)
 	, rid(p_old_joint.rid)
@@ -60,6 +61,16 @@ JoltSpace3D* JoltJointImpl3D::get_space() const {
 	}
 
 	return space_a;
+}
+
+void JoltJointImpl3D::set_enabled(bool p_enabled) {
+	if (enabled == p_enabled) {
+		return;
+	}
+
+	enabled = p_enabled;
+
+	_enabled_changed();
 }
 
 int32_t JoltJointImpl3D::get_solver_priority() const {
@@ -134,6 +145,16 @@ void JoltJointImpl3D::_shift_reference_frames(
 
 	p_shifted_ref_a = Transform3D(shifted_basis_a, shifted_origin_a);
 	p_shifted_ref_b = Transform3D(basis_b, origin_b);
+}
+
+void JoltJointImpl3D::_update_enabled() {
+	if (jolt_ref != nullptr) {
+		jolt_ref->SetEnabled(enabled);
+	}
+}
+
+void JoltJointImpl3D::_enabled_changed() {
+	_update_enabled();
 }
 
 String JoltJointImpl3D::_bodies_to_string() const {
