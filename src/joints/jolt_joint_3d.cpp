@@ -2,15 +2,6 @@
 
 #include "servers/jolt_physics_server_3d.hpp"
 
-namespace {
-
-JoltPhysicsServer3D* get_physics_server() {
-	static auto* singleton = dynamic_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-	return singleton;
-}
-
-} // namespace
-
 void JoltJoint3D::_bind_methods() {
 	BIND_METHOD(JoltJoint3D, get_enabled);
 	BIND_METHOD(JoltJoint3D, set_enabled);
@@ -55,14 +46,14 @@ void JoltJoint3D::_bind_methods() {
 }
 
 JoltJoint3D::JoltJoint3D() {
-	JoltPhysicsServer3D* physics_server = get_physics_server();
+	PhysicsServer3D* physics_server = _get_physics_server();
 	ERR_FAIL_NULL(physics_server);
 
 	rid = physics_server->joint_create();
 }
 
 JoltJoint3D::~JoltJoint3D() {
-	JoltPhysicsServer3D* physics_server = get_physics_server();
+	PhysicsServer3D* physics_server = _get_physics_server();
 	ERR_FAIL_NULL(physics_server);
 
 	physics_server->free_rid(rid);
@@ -148,6 +139,24 @@ PackedStringArray JoltJoint3D::_get_configuration_warnings() const {
 	}
 
 	return warnings;
+}
+
+PhysicsServer3D* JoltJoint3D::_get_physics_server() {
+	return PhysicsServer3D::get_singleton();
+}
+
+JoltPhysicsServer3D* JoltJoint3D::_get_jolt_physics_server() {
+	static auto* physics_server = dynamic_cast<JoltPhysicsServer3D*>(_get_physics_server());
+
+	if (unlikely(physics_server == nullptr)) {
+		ERR_PRINT_ONCE(
+			"JoltJoint3D was unable to retrieve the Jolt-based physics server. "
+			"Make sure that you have 'JoltPhysics3D' set as the currently active physics server. "
+			"All Jolt-specific functionality will be ignored."
+		);
+	}
+
+	return physics_server;
 }
 
 void JoltJoint3D::_notification(int32_t p_what) {
@@ -264,7 +273,7 @@ bool JoltJoint3D::_build() {
 }
 
 void JoltJoint3D::_destroy() {
-	JoltPhysicsServer3D* physics_server = get_physics_server();
+	PhysicsServer3D* physics_server = _get_physics_server();
 	ERR_FAIL_NULL(physics_server);
 
 	physics_server->joint_disable_collisions_between_bodies(rid, false);
@@ -274,29 +283,29 @@ void JoltJoint3D::_destroy() {
 }
 
 void JoltJoint3D::_update_enabled() {
-	JoltPhysicsServer3D* physics_server = get_physics_server();
-	ERR_FAIL_NULL(physics_server);
+	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	QUIET_FAIL_NULL(physics_server);
 
 	physics_server->joint_set_enabled(rid, enabled);
 }
 
 void JoltJoint3D::_update_collision_exclusion() {
-	JoltPhysicsServer3D* physics_server = get_physics_server();
+	PhysicsServer3D* physics_server = _get_physics_server();
 	ERR_FAIL_NULL(physics_server);
 
 	physics_server->joint_disable_collisions_between_bodies(rid, collision_excluded);
 }
 
 void JoltJoint3D::_update_velocity_iterations() {
-	JoltPhysicsServer3D* physics_server = get_physics_server();
-	ERR_FAIL_NULL(physics_server);
+	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	QUIET_FAIL_NULL(physics_server);
 
 	physics_server->joint_set_solver_velocity_iterations(rid, velocity_iterations);
 }
 
 void JoltJoint3D::_update_position_iterations() {
-	JoltPhysicsServer3D* physics_server = get_physics_server();
-	ERR_FAIL_NULL(physics_server);
+	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	QUIET_FAIL_NULL(physics_server);
 
 	physics_server->joint_set_solver_position_iterations(rid, position_iterations);
 }
