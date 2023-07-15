@@ -88,6 +88,26 @@ void JoltJointImpl3D::set_solver_priority(int32_t p_priority) {
 	}
 }
 
+void JoltJointImpl3D::set_solver_velocity_iterations(int32_t p_iterations) {
+	if (velocity_iterations == p_iterations) {
+		return;
+	}
+
+	velocity_iterations = p_iterations;
+
+	_iterations_changed();
+}
+
+void JoltJointImpl3D::set_solver_position_iterations(int32_t p_iterations) {
+	if (position_iterations == p_iterations) {
+		return;
+	}
+
+	position_iterations = p_iterations;
+
+	_iterations_changed();
+}
+
 void JoltJointImpl3D::set_collision_disabled(bool p_disabled) {
 	collision_disabled = p_disabled;
 
@@ -153,8 +173,19 @@ void JoltJointImpl3D::_update_enabled() {
 	}
 }
 
+void JoltJointImpl3D::_update_iterations() {
+	if (jolt_ref != nullptr) {
+		jolt_ref->SetNumVelocityStepsOverride(velocity_iterations);
+		jolt_ref->SetNumPositionStepsOverride(position_iterations);
+	}
+}
+
 void JoltJointImpl3D::_enabled_changed() {
 	_update_enabled();
+}
+
+void JoltJointImpl3D::_iterations_changed() {
+	_update_iterations();
 }
 
 String JoltJointImpl3D::_bodies_to_string() const {

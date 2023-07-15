@@ -35,6 +35,14 @@ public:
 
 	void set_solver_priority(int32_t p_priority);
 
+	int32_t get_solver_velocity_iterations() const { return velocity_iterations; }
+
+	void set_solver_velocity_iterations(int32_t p_iterations);
+
+	int32_t get_solver_position_iterations() const { return position_iterations; }
+
+	void set_solver_position_iterations(int32_t p_iterations);
+
 	bool is_collision_disabled() const { return collision_disabled; }
 
 	void set_collision_disabled(bool p_disabled);
@@ -53,13 +61,21 @@ protected:
 
 	void _update_enabled();
 
+	void _update_iterations();
+
 	void _enabled_changed();
+
+	void _iterations_changed();
 
 	String _bodies_to_string() const;
 
 	bool enabled = true;
 
 	bool collision_disabled = false;
+
+	int32_t velocity_iterations = 0;
+
+	int32_t position_iterations = 0;
 
 	JPH::Ref<JPH::Constraint> jolt_ref;
 

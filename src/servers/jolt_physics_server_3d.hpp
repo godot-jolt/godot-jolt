@@ -571,6 +571,14 @@ public:
 
 	void joint_set_enabled(const RID& p_joint, bool p_enabled);
 
+	int32_t joint_get_solver_velocity_iterations(const RID& p_joint);
+
+	void joint_set_solver_velocity_iterations(const RID& p_joint, int32_t p_iterations);
+
+	int32_t joint_get_solver_position_iterations(const RID& p_joint);
+
+	void joint_set_solver_position_iterations(const RID& p_joint, int32_t p_iterations);
+
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
 

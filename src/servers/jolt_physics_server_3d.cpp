@@ -1775,3 +1775,37 @@ void JoltPhysicsServer3D::joint_set_enabled(const RID& p_joint, bool p_enabled) 
 
 	joint->set_enabled(p_enabled);
 }
+
+int32_t JoltPhysicsServer3D::joint_get_solver_velocity_iterations(const RID& p_joint) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	return joint->get_solver_velocity_iterations();
+}
+
+void JoltPhysicsServer3D::joint_set_solver_velocity_iterations(
+	const RID& p_joint,
+	int32_t p_iterations
+) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	return joint->set_solver_velocity_iterations(p_iterations);
+}
+
+int32_t JoltPhysicsServer3D::joint_get_solver_position_iterations(const RID& p_joint) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	return joint->get_solver_position_iterations();
+}
+
+void JoltPhysicsServer3D::joint_set_solver_position_iterations(
+	const RID& p_joint,
+	int32_t p_iterations
+) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	return joint->set_solver_position_iterations(p_iterations);
+}

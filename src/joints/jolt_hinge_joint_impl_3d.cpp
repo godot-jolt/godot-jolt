@@ -212,6 +212,7 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 	space->add_joint(this);
 
 	_update_enabled();
+	_update_iterations();
 	_update_motor_state();
 	_update_motor_velocity();
 	_update_motor_limit();
