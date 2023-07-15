@@ -1,5 +1,7 @@
 #pragma once
 
+class JoltPhysicsServer3D;
+
 class JoltJoint3D : public Node3D {
 	GDCLASS_NO_WARN(JoltJoint3D, Node3D)
 
@@ -44,6 +46,10 @@ public:
 	PackedStringArray _get_configuration_warnings() const override;
 
 protected:
+	static PhysicsServer3D* _get_physics_server();
+
+	static JoltPhysicsServer3D* _get_jolt_physics_server();
+
 	virtual void _configure(
 		[[maybe_unused]] PhysicsBody3D* p_body_a,
 		[[maybe_unused]] PhysicsBody3D* p_body_b
