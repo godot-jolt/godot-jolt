@@ -1,3 +1,4 @@
+#include "joints/jolt_pin_joint_3d.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 #include "servers/jolt_globals.hpp"
 #include "servers/jolt_physics_server_3d.hpp"
@@ -35,6 +36,8 @@ void on_initialize(ModuleInitializationLevel p_level) {
 			JoltProjectSettings::register_settings();
 
 			ClassDB::register_class<JoltDebugGeometry3D>();
+			ClassDB::register_class<JoltJoint3D>();
+			ClassDB::register_class<JoltPinJoint3D>();
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 		} break;

@@ -579,6 +579,8 @@ public:
 
 	void joint_set_solver_position_iterations(const RID& p_joint, int32_t p_iterations);
 
+	Vector3 pin_joint_get_total_lambda_position(const RID& p_joint);
+
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
 

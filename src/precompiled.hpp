@@ -18,6 +18,7 @@
 #include <godot_cpp/classes/mesh.hpp>
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/classes/physics_body3d.hpp>
 #include <godot_cpp/classes/physics_direct_body_state3d_extension.hpp>
 #include <godot_cpp/classes/physics_direct_space_state3d_extension.hpp>
 #include <godot_cpp/classes/physics_server3d_extension.hpp>
