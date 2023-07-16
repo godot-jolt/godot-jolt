@@ -535,9 +535,12 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 			direction,
 			p_margin,
 			p_max_collisions,
-			p_result->collisions,
-			p_result->collision_count
+			p_result
 		);
+	}
+
+	if (p_result == nullptr) {
+		return collided;
 	}
 
 	if (collided) {
@@ -876,8 +879,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const Vector3& p_direction,
 	float p_margin,
 	int32_t p_max_collisions,
-	PhysicsServer3DExtensionMotionCollision* p_collisions,
-	int32_t& p_collision_count
+	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
@@ -908,15 +910,15 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		motion_filter
 	);
 
-	if (!collector.had_hit()) {
-		p_collision_count = 0;
+	const bool collided = collector.had_hit();
 
-		return false;
+	if (!collided || p_result == nullptr) {
+		return collided;
 	}
 
-	p_collision_count = collector.get_hit_count();
+	p_result->collision_count = collector.get_hit_count();
 
-	for (int32_t i = 0; i < p_collision_count; ++i) {
+	for (int32_t i = 0; i < p_result->collision_count; ++i) {
 		const JPH::CollideShapeResult& hit = collector.get_hit(i);
 
 		const JoltReadableBody3D collider_jolt_body = space->read_body(hit.mBodyID2);
@@ -931,7 +933,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		const int32_t collider_shape = collider->find_shape_index(hit.mSubShapeID2);
 		ERR_FAIL_COND_D(collider_shape == -1);
 
-		PhysicsServer3DExtensionMotionCollision& collision = *p_collisions++;
+		PhysicsServer3DExtensionMotionCollision& collision = p_result->collisions[i];
 
 		collision.position = position;
 		collision.normal = to_godot(-hit.mPenetrationAxis.Normalized());

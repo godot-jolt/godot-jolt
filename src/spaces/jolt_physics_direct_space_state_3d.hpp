@@ -141,8 +141,7 @@ private:
 		const Vector3& p_direction,
 		float p_margin,
 		int32_t p_max_collisions,
-		PhysicsServer3DExtensionMotionCollision* p_collisions,
-		int32_t& p_collision_count
+		PhysicsServer3DExtensionMotionResult* p_result
 	) const;
 
 	JoltSpace3D* space = nullptr;
