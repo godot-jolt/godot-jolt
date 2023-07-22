@@ -201,6 +201,7 @@ else()
 		PRIVATE -Wcast-qual # Enable warnings about casting away qualifiers
 		PRIVATE -Wshadow # Enable variable/type shadowing warnings
 		PRIVATE -Wundef # Enable warnings about undefined identifiers in `#if` directives
+		PRIVATE -Wno-gnu-zero-variadic-macro-arguments # Disable zero variadic macro args warning
 		PRIVATE -pthread # Use POSIX threads
 		PRIVATE -ffast-math # Enable aggressive floating-point optimizations
 		PRIVATE -fno-exceptions # Disable support for exception-handling

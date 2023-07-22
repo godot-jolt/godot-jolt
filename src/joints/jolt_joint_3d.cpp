@@ -4,22 +4,22 @@
 
 void JoltJoint3D::_bind_methods() {
 	BIND_METHOD(JoltJoint3D, get_enabled);
-	BIND_METHOD(JoltJoint3D, set_enabled);
+	BIND_METHOD(JoltJoint3D, set_enabled, "enabled");
 
 	BIND_METHOD(JoltJoint3D, get_node_a);
-	BIND_METHOD(JoltJoint3D, set_node_a);
+	BIND_METHOD(JoltJoint3D, set_node_a, "path");
 
 	BIND_METHOD(JoltJoint3D, get_node_b);
-	BIND_METHOD(JoltJoint3D, set_node_b);
+	BIND_METHOD(JoltJoint3D, set_node_b, "path");
 
 	BIND_METHOD(JoltJoint3D, get_exclude_nodes_from_collision);
-	BIND_METHOD(JoltJoint3D, set_exclude_nodes_from_collision);
+	BIND_METHOD(JoltJoint3D, set_exclude_nodes_from_collision, "excluded");
 
 	BIND_METHOD(JoltJoint3D, get_solver_velocity_iterations);
-	BIND_METHOD(JoltJoint3D, set_solver_velocity_iterations);
+	BIND_METHOD(JoltJoint3D, set_solver_velocity_iterations, "iterations");
 
 	BIND_METHOD(JoltJoint3D, get_solver_position_iterations);
-	BIND_METHOD(JoltJoint3D, set_solver_position_iterations);
+	BIND_METHOD(JoltJoint3D, set_solver_position_iterations, "iterations");
 
 	BIND_METHOD(JoltJoint3D, body_exiting_tree);
 
