@@ -6,40 +6,40 @@
 
 void JoltDebugGeometry3D::_bind_methods() {
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_bodies);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_bodies);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_bodies, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_shapes);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_shapes);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_shapes, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_constraints);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_constraints);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_constraints, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_bounding_boxes);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_bounding_boxes);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_bounding_boxes, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_centers_of_mass);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_centers_of_mass);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_centers_of_mass, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_transforms);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_transforms);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_transforms, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_velocities);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_velocities);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_velocities, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_constraint_reference_frames);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_constraint_reference_frames);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_constraint_reference_frames, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_constraint_limits);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_constraint_limits);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_constraint_limits, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_as_wireframe);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_as_wireframe);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_as_wireframe, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_with_color_scheme);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_with_color_scheme);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_with_color_scheme, "color_scheme");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_material_depth_test);
-	BIND_METHOD(JoltDebugGeometry3D, set_material_depth_test);
+	BIND_METHOD(JoltDebugGeometry3D, set_material_depth_test, "enabled");
 
 	ADD_GROUP("Draw", "draw_");
 
