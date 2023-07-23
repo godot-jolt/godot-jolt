@@ -32,7 +32,7 @@ void JoltPhysicsServer3D::_bind_methods() {
 	BIND_METHOD(JoltPhysicsServer3D, joint_get_solver_position_iterations, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, joint_set_solver_position_iterations, "joint", "value");
 
-	BIND_METHOD(JoltPhysicsServer3D, pin_joint_get_linear_impulse, "joint");
+	BIND_METHOD(JoltPhysicsServer3D, pin_joint_get_impulse, "joint");
 
 	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_jolt_param, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_set_jolt_param, "joint", "value");
@@ -40,8 +40,8 @@ void JoltPhysicsServer3D::_bind_methods() {
 	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_jolt_flag, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_set_jolt_flag, "joint", "value");
 
-	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_linear_impulse, "joint");
-	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_angular_impulse, "joint");
+	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_impulse, "joint");
+	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_torque_impulse, "joint");
 
 	BIND_ENUM_CONSTANT(HINGE_JOINT_LIMIT_SPRING_FREQUENCY);
 	BIND_ENUM_CONSTANT(HINGE_JOINT_LIMIT_SPRING_DAMPING);
@@ -1833,14 +1833,14 @@ void JoltPhysicsServer3D::joint_set_solver_position_iterations(
 	return joint->set_solver_position_iterations(p_value);
 }
 
-Vector3 JoltPhysicsServer3D::pin_joint_get_linear_impulse(const RID& p_joint) {
+Vector3 JoltPhysicsServer3D::pin_joint_get_impulse(const RID& p_joint) {
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_PIN);
 	auto* pin_joint = static_cast<JoltPinJointImpl3D*>(joint);
 
-	return pin_joint->get_linear_impulse();
+	return pin_joint->get_impulse();
 }
 
 double JoltPhysicsServer3D::hinge_joint_get_jolt_param(
@@ -1895,22 +1895,22 @@ void JoltPhysicsServer3D::hinge_joint_set_jolt_flag(
 	return hinge_joint->set_jolt_flag(p_flag, p_enabled);
 }
 
-Vector3 JoltPhysicsServer3D::hinge_joint_get_linear_impulse(const RID& p_joint) {
+Vector3 JoltPhysicsServer3D::hinge_joint_get_impulse(const RID& p_joint) {
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
 	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->get_linear_impulse();
+	return hinge_joint->get_impulse();
 }
 
-Vector3 JoltPhysicsServer3D::hinge_joint_get_angular_impulse(const RID& p_joint) {
+Vector3 JoltPhysicsServer3D::hinge_joint_get_torque_impulse(const RID& p_joint) {
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
 	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->get_angular_impulse();
+	return hinge_joint->get_torque_impulse();
 }

@@ -3,14 +3,14 @@
 #include "servers/jolt_physics_server_3d.hpp"
 
 void JoltPinJoint3D::_bind_methods() {
-	BIND_METHOD(JoltPinJoint3D, get_linear_impulse);
+	BIND_METHOD(JoltPinJoint3D, get_impulse);
 }
 
-Vector3 JoltPinJoint3D::get_linear_impulse() const {
+Vector3 JoltPinJoint3D::get_impulse() const {
 	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
-	return physics_server->pin_joint_get_linear_impulse(rid);
+	return physics_server->pin_joint_get_impulse(rid);
 }
 
 void JoltPinJoint3D::_configure(PhysicsBody3D* p_body_a, PhysicsBody3D* p_body_b) {

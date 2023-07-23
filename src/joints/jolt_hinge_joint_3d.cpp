@@ -39,8 +39,8 @@ void JoltHingeJoint3D::_bind_methods() {
 	BIND_METHOD(JoltHingeJoint3D, get_motor_max_torque);
 	BIND_METHOD(JoltHingeJoint3D, set_motor_max_torque, "value");
 
-	BIND_METHOD(JoltHingeJoint3D, get_linear_impulse);
-	BIND_METHOD(JoltHingeJoint3D, get_angular_impulse);
+	BIND_METHOD(JoltHingeJoint3D, get_impulse);
+	BIND_METHOD(JoltHingeJoint3D, get_torque_impulse);
 
 	ADD_GROUP("Limit", "limit_");
 
@@ -151,18 +151,18 @@ void JoltHingeJoint3D::set_motor_max_torque(double p_value) {
 	_param_changed(PARAM_MOTOR_MAX_TORQUE);
 }
 
-Vector3 JoltHingeJoint3D::get_linear_impulse() const {
+Vector3 JoltHingeJoint3D::get_impulse() const {
 	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
-	return physics_server->hinge_joint_get_linear_impulse(rid);
+	return physics_server->hinge_joint_get_impulse(rid);
 }
 
-Vector3 JoltHingeJoint3D::get_angular_impulse() const {
+Vector3 JoltHingeJoint3D::get_torque_impulse() const {
 	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
-	return physics_server->hinge_joint_get_angular_impulse(rid);
+	return physics_server->hinge_joint_get_torque_impulse(rid);
 }
 
 void JoltHingeJoint3D::_configure(PhysicsBody3D* p_body_a, PhysicsBody3D* p_body_b) {

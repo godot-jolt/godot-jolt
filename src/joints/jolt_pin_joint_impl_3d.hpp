@@ -30,7 +30,7 @@ public:
 
 	void set_param(PhysicsServer3D::PinJointParam p_param, double p_value);
 
-	Vector3 get_linear_impulse() const;
+	Vector3 get_impulse() const;
 
 	void rebuild(bool p_lock = true) override;
 
