@@ -11,9 +11,10 @@ Breaking changes are denoted with ⚠️.
 
 ### Added
 
-- Added a substitute for `PinJoint3D`, called `JoltPinJoint3D`, which adds some Jolt-specific
-  features, like the ability to enable/disable the joint, get the impulse that was last applied to
-  it, and the ability to override solver velocity/position iterations for that specific joint.
+- Added substitutes for `PinJoint3D` and `HingeJoint3D`, called `JoltPinJoint3D` and
+  `JoltHingeJoint3D` respectively. These mostly adhere to the same interface as the default joints
+  while adding Jolt-specific features, like the ability to enable/disable the joint, get the impulse
+  that was last applied to it, and the ability to override solver velocity/position iterations.
 
 ### Removed
 
