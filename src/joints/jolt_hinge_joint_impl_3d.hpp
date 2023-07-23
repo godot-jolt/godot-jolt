@@ -1,8 +1,17 @@
 #pragma once
 
 #include "joints/jolt_joint_impl_3d.hpp"
+#include "servers/jolt_physics_server_3d.hpp"
 
 class JoltHingeJointImpl3D final : public JoltJointImpl3D {
+	using Parameter = PhysicsServer3D::HingeJointParam;
+
+	using JoltParameter = JoltPhysicsServer3D::HingeJointParamJolt;
+
+	using Flag = PhysicsServer3D::HingeJointFlag;
+
+	using JoltFlag = JoltPhysicsServer3D::HingeJointFlagJolt;
+
 public:
 	JoltHingeJointImpl3D(
 		const JoltJointImpl3D& p_old_joint,
@@ -17,33 +26,47 @@ public:
 		return PhysicsServer3D::JOINT_TYPE_HINGE;
 	}
 
-	double get_param(PhysicsServer3D::HingeJointParam p_param) const;
+	double get_parameter(Parameter p_param) const;
 
-	void set_param(PhysicsServer3D::HingeJointParam p_param, double p_value, bool p_lock = true);
+	void set_parameter(Parameter p_param, double p_value, bool p_lock = true);
 
-	bool get_flag(PhysicsServer3D::HingeJointFlag p_flag) const;
+	double get_jolt_param(JoltParameter p_param) const;
 
-	void set_flag(PhysicsServer3D::HingeJointFlag p_flag, bool p_enabled, bool p_lock = true);
+	void set_jolt_param(JoltParameter p_param, double p_value, bool p_lock = true);
+
+	bool get_flag(Flag p_flag) const;
+
+	void set_flag(Flag p_flag, bool p_enabled, bool p_lock = true);
+
+	bool get_jolt_flag(JoltFlag p_flag) const;
+
+	void set_jolt_flag(JoltFlag p_flag, bool p_enabled, bool p_lock = true);
+
+	Vector3 get_linear_impulse() const;
+
+	Vector3 get_angular_impulse() const;
 
 	void rebuild(bool p_lock = true) override;
 
 private:
-	static JPH::Constraint* _build_hinge(
+	JPH::Constraint* _build_hinge(
 		JPH::Body* p_jolt_body_a,
 		JPH::Body* p_jolt_body_b,
 		const Transform3D& p_shifted_ref_a,
 		const Transform3D& p_shifted_ref_b,
 		float p_limit
-	);
+	) const;
 
-	static JPH::Constraint* _build_fixed(
+	JPH::Constraint* _build_fixed(
 		JPH::Body* p_jolt_body_a,
 		JPH::Body* p_jolt_body_b,
 		const Transform3D& p_shifted_ref_a,
 		const Transform3D& p_shifted_ref_b
-	);
+	) const;
 
-	bool _is_fixed() const { return limit_lower == limit_upper; }
+	bool _is_sprung() const { return limit_spring_enabled && limit_spring_frequency > 0.0; }
+
+	bool _is_fixed() const { return limits_enabled && limit_lower == limit_upper && !_is_sprung(); }
 
 	void _update_motor_state();
 
@@ -52,6 +75,8 @@ private:
 	void _update_motor_limit();
 
 	void _limits_changed(bool p_lock = true);
+
+	void _limit_spring_changed(bool p_lock = true);
 
 	void _motor_state_changed();
 
@@ -63,11 +88,17 @@ private:
 
 	double limit_upper = 0.0;
 
+	double limit_spring_frequency = 0.0;
+
+	double limit_spring_damping = 0.0;
+
 	double motor_target_speed = 0.0f;
 
-	double motor_max_impulse = 0.0;
+	double motor_max_torque = 0.0;
 
-	bool use_limits = false;
+	bool limits_enabled = false;
+
+	bool limit_spring_enabled = false;
 
 	bool motor_enabled = false;
 };

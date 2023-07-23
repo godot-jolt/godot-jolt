@@ -1,3 +1,4 @@
+#include "joints/jolt_hinge_joint_3d.hpp"
 #include "joints/jolt_joint_gizmo_plugin_3d.hpp"
 #include "joints/jolt_pin_joint_3d.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
@@ -40,6 +41,7 @@ void on_initialize(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<JoltDebugGeometry3D>();
 			ClassDB::register_class<JoltJoint3D>();
 			ClassDB::register_class<JoltPinJoint3D>();
+			ClassDB::register_class<JoltHingeJoint3D>();
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 #ifdef GDJ_CONFIG_EDITOR

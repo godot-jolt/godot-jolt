@@ -10,6 +10,17 @@ class JoltSpace3D;
 class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
 	GDCLASS_NO_WARN(JoltPhysicsServer3D, PhysicsServer3DExtension)
 
+public:
+	enum HingeJointParamJolt {
+		HINGE_JOINT_LIMIT_SPRING_FREQUENCY = 100,
+		HINGE_JOINT_LIMIT_SPRING_DAMPING,
+		HINGE_JOINT_MOTOR_MAX_TORQUE,
+	};
+
+	enum HingeJointFlagJolt {
+		HINGE_JOINT_FLAG_USE_LIMIT_SPRING = 100
+	};
+
 private:
 	static void _bind_methods();
 
@@ -573,13 +584,29 @@ public:
 
 	int32_t joint_get_solver_velocity_iterations(const RID& p_joint);
 
-	void joint_set_solver_velocity_iterations(const RID& p_joint, int32_t p_iterations);
+	void joint_set_solver_velocity_iterations(const RID& p_joint, int32_t p_value);
 
 	int32_t joint_get_solver_position_iterations(const RID& p_joint);
 
-	void joint_set_solver_position_iterations(const RID& p_joint, int32_t p_iterations);
+	void joint_set_solver_position_iterations(const RID& p_joint, int32_t p_value);
 
 	Vector3 pin_joint_get_linear_impulse(const RID& p_joint);
+
+	double hinge_joint_get_jolt_param(const RID& p_joint, HingeJointParamJolt p_param) const;
+
+	void hinge_joint_set_jolt_param(
+		const RID& p_joint,
+		HingeJointParamJolt p_param,
+		double p_value
+	);
+
+	bool hinge_joint_get_jolt_flag(const RID& p_joint, HingeJointFlagJolt p_flag) const;
+
+	void hinge_joint_set_jolt_flag(const RID& p_joint, HingeJointFlagJolt p_flag, bool p_enabled);
+
+	Vector3 hinge_joint_get_linear_impulse(const RID& p_joint);
+
+	Vector3 hinge_joint_get_angular_impulse(const RID& p_joint);
 
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
@@ -600,3 +627,6 @@ private:
 
 	bool flushing_queries = false;
 };
+
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointParamJolt);
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointFlagJolt);

@@ -245,6 +245,8 @@ bool JoltJoint3D::_configure() {
 		return false;
 	}
 
+	valid = true;
+
 	PhysicsBody3D* body_a = get_body_a();
 	PhysicsBody3D* body_b = get_body_b();
 
@@ -280,6 +282,8 @@ void JoltJoint3D::_destroy() {
 	physics_server->joint_clear(rid);
 
 	_disconnect_bodies();
+
+	valid = false;
 }
 
 void JoltJoint3D::_update_enabled() {
