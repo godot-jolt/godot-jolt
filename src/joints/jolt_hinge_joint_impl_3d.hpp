@@ -42,9 +42,9 @@ public:
 
 	void set_jolt_flag(JoltFlag p_flag, bool p_enabled, bool p_lock = true);
 
-	Vector3 get_linear_impulse() const;
+	Vector3 get_impulse() const;
 
-	Vector3 get_angular_impulse() const;
+	Vector3 get_torque_impulse() const;
 
 	void rebuild(bool p_lock = true) override;
 

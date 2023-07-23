@@ -94,7 +94,7 @@ void JoltPinJointImpl3D::set_param(PhysicsServer3D::PinJointParam p_param, doubl
 	}
 }
 
-Vector3 JoltPinJointImpl3D::get_linear_impulse() const {
+Vector3 JoltPinJointImpl3D::get_impulse() const {
 	ERR_FAIL_NULL_D(jolt_ref);
 
 	auto* constraint = static_cast<JPH::PointConstraint*>(jolt_ref.GetPtr());

@@ -216,7 +216,7 @@ void JoltHingeJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled, bool p
 	}
 }
 
-Vector3 JoltHingeJointImpl3D::get_linear_impulse() const {
+Vector3 JoltHingeJointImpl3D::get_impulse() const {
 	ERR_FAIL_NULL_D(jolt_ref);
 
 	if (_is_fixed()) {
@@ -228,7 +228,7 @@ Vector3 JoltHingeJointImpl3D::get_linear_impulse() const {
 	}
 }
 
-Vector3 JoltHingeJointImpl3D::get_angular_impulse() const {
+Vector3 JoltHingeJointImpl3D::get_torque_impulse() const {
 	ERR_FAIL_NULL_D(jolt_ref);
 
 	if (_is_fixed()) {
