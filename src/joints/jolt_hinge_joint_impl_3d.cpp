@@ -24,7 +24,7 @@ JoltHingeJointImpl3D::JoltHingeJointImpl3D(
 	rebuild(p_lock);
 }
 
-double JoltHingeJointImpl3D::get_param(PhysicsServer3D::HingeJointParam p_param) const {
+double JoltHingeJointImpl3D::get_parameter(Parameter p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
 			return DEFAULT_BIAS;
@@ -48,19 +48,17 @@ double JoltHingeJointImpl3D::get_param(PhysicsServer3D::HingeJointParam p_param)
 			return motor_target_speed;
 		}
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_MAX_IMPULSE: {
-			return motor_max_impulse;
+			// HACK(mihe): With Godot using max impulse instead of max torque we don't have much
+			// choice but to calculate this and hope the timestep doesn't change.
+			return motor_max_torque * estimate_physics_step();
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
+			ERR_FAIL_D_MSG(vformat("Unhandled parameter: '%d'", p_param));
 		}
 	}
 }
 
-void JoltHingeJointImpl3D::set_param(
-	PhysicsServer3D::HingeJointParam p_param,
-	double p_value,
-	bool p_lock
-) {
+void JoltHingeJointImpl3D::set_parameter(Parameter p_param, double p_value, bool p_lock) {
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_BIAS)) {
@@ -115,37 +113,72 @@ void JoltHingeJointImpl3D::set_param(
 			_motor_speed_changed();
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_MOTOR_MAX_IMPULSE: {
-			motor_max_impulse = p_value;
+			// HACK(mihe): With Godot using max impulse instead of max torque we don't have much
+			// choice but to calculate this and hope the timestep doesn't change.
+			motor_max_torque = p_value / estimate_physics_step();
 			_motor_limit_changed();
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled hinge joint parameter: '%d'", p_param));
+			ERR_FAIL_MSG(vformat("Unhandled parameter: '%d'", p_param));
 		} break;
 	}
 }
 
-bool JoltHingeJointImpl3D::get_flag(PhysicsServer3D::HingeJointFlag p_flag) const {
-	switch (p_flag) {
-		case PhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT: {
-			return use_limits;
+double JoltHingeJointImpl3D::get_jolt_param(JoltParameter p_param) const {
+	switch (p_param) {
+		case JoltPhysicsServer3D::HINGE_JOINT_LIMIT_SPRING_FREQUENCY: {
+			return limit_spring_frequency;
+		}
+		case JoltPhysicsServer3D::HINGE_JOINT_LIMIT_SPRING_DAMPING: {
+			return limit_spring_damping;
+		}
+		case JoltPhysicsServer3D::HINGE_JOINT_MOTOR_MAX_TORQUE: {
+			return motor_max_torque;
+		}
+		default: {
+			ERR_FAIL_D_MSG(vformat("Unhandled parameter: '%d'", p_param));
+		}
+	}
+}
+
+void JoltHingeJointImpl3D::set_jolt_param(JoltParameter p_param, double p_value, bool p_lock) {
+	switch (p_param) {
+		case JoltPhysicsServer3D::HINGE_JOINT_LIMIT_SPRING_FREQUENCY: {
+			limit_spring_frequency = p_value;
+			_limit_spring_changed(p_lock);
 		} break;
-		case PhysicsServer3D::HINGE_JOINT_FLAG_ENABLE_MOTOR: {
-			return motor_enabled;
+		case JoltPhysicsServer3D::HINGE_JOINT_LIMIT_SPRING_DAMPING: {
+			limit_spring_damping = p_value;
+			_limit_spring_changed(p_lock);
+		} break;
+		case JoltPhysicsServer3D::HINGE_JOINT_MOTOR_MAX_TORQUE: {
+			motor_max_torque = p_value;
+			_motor_limit_changed();
 		} break;
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled hinge joint flag: '%d'", p_flag));
-		} break;
+			ERR_FAIL_MSG(vformat("Unhandled parameter: '%d'", p_param));
+		}
 	}
 }
 
-void JoltHingeJointImpl3D::set_flag(
-	PhysicsServer3D::HingeJointFlag p_flag,
-	bool p_enabled,
-	bool p_lock
-) {
+bool JoltHingeJointImpl3D::get_flag(Flag p_flag) const {
 	switch (p_flag) {
 		case PhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT: {
-			use_limits = p_enabled;
+			return limits_enabled;
+		}
+		case PhysicsServer3D::HINGE_JOINT_FLAG_ENABLE_MOTOR: {
+			return motor_enabled;
+		}
+		default: {
+			ERR_FAIL_D_MSG(vformat("Unhandled flag: '%d'", p_flag));
+		}
+	}
+}
+
+void JoltHingeJointImpl3D::set_flag(Flag p_flag, bool p_enabled, bool p_lock) {
+	switch (p_flag) {
+		case PhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT: {
+			limits_enabled = p_enabled;
 			_limits_changed(p_lock);
 		} break;
 		case PhysicsServer3D::HINGE_JOINT_FLAG_ENABLE_MOTOR: {
@@ -153,8 +186,59 @@ void JoltHingeJointImpl3D::set_flag(
 			_motor_state_changed();
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled hinge joint flag: '%d'", p_flag));
+			ERR_FAIL_MSG(vformat("Unhandled flag: '%d'", p_flag));
 		} break;
+	}
+}
+
+bool JoltHingeJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
+	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
+	switch (p_flag) {
+		case JoltPhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT_SPRING: {
+			return limit_spring_enabled;
+		}
+		default: {
+			ERR_FAIL_D_MSG(vformat("Unhandled Jolt flag: '%d'", p_flag));
+		}
+	}
+}
+
+void JoltHingeJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled, bool p_lock) {
+	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
+	switch (p_flag) {
+		case JoltPhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT_SPRING: {
+			limit_spring_enabled = p_enabled;
+			_limit_spring_changed(p_lock);
+		} break;
+		default: {
+			ERR_FAIL_MSG(vformat("Unhandled Jolt flag: '%d'", p_flag));
+		} break;
+	}
+}
+
+Vector3 JoltHingeJointImpl3D::get_linear_impulse() const {
+	ERR_FAIL_NULL_D(jolt_ref);
+
+	if (_is_fixed()) {
+		auto* constraint = static_cast<JPH::FixedConstraint*>(jolt_ref.GetPtr());
+		return to_godot(constraint->GetTotalLambdaPosition());
+	} else {
+		auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
+		return to_godot(constraint->GetTotalLambdaPosition());
+	}
+}
+
+Vector3 JoltHingeJointImpl3D::get_angular_impulse() const {
+	ERR_FAIL_NULL_D(jolt_ref);
+
+	if (_is_fixed()) {
+		auto* constraint = static_cast<JPH::FixedConstraint*>(jolt_ref.GetPtr());
+		const JPH::Vec3 lambda = constraint->GetTotalLambdaRotation();
+		return {lambda.GetX(), lambda.GetY(), lambda.GetZ()};
+	} else {
+		auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
+		const JPH::Vector<2> lambda = constraint->GetTotalLambdaRotation();
+		return {0.0f, -lambda[0], -lambda[1]};
 	}
 }
 
@@ -186,7 +270,7 @@ void JoltHingeJointImpl3D::rebuild(bool p_lock) {
 	float ref_shift = 0.0f;
 	float limit = JPH::JPH_PI;
 
-	if (use_limits && limit_lower <= limit_upper) {
+	if (limits_enabled && limit_lower <= limit_upper) {
 		const double limit_midpoint = (limit_lower + limit_upper) / 2.0f;
 
 		ref_shift = float(-limit_midpoint);
@@ -224,7 +308,7 @@ JPH::Constraint* JoltHingeJointImpl3D::_build_hinge(
 	const Transform3D& p_shifted_ref_a,
 	const Transform3D& p_shifted_ref_b,
 	float p_limit
-) {
+) const {
 	JPH::HingeConstraintSettings constraint_settings;
 
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
@@ -236,6 +320,11 @@ JPH::Constraint* JoltHingeJointImpl3D::_build_hinge(
 	constraint_settings.mNormalAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mLimitsMin = -p_limit;
 	constraint_settings.mLimitsMax = p_limit;
+
+	if (limit_spring_enabled) {
+		constraint_settings.mLimitsSpringSettings.mFrequency = (float)limit_spring_frequency;
+		constraint_settings.mLimitsSpringSettings.mDamping = (float)limit_spring_damping;
+	}
 
 	if (p_jolt_body_b != nullptr) {
 		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
@@ -249,7 +338,7 @@ JPH::Constraint* JoltHingeJointImpl3D::_build_fixed(
 	JPH::Body* p_jolt_body_b,
 	const Transform3D& p_shifted_ref_a,
 	const Transform3D& p_shifted_ref_b
-) {
+) const {
 	JPH::FixedConstraintSettings constraint_settings;
 
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
@@ -290,19 +379,17 @@ void JoltHingeJointImpl3D::_update_motor_limit() {
 	QUIET_FAIL_COND(_is_fixed());
 
 	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
-		// HACK(mihe): This will break if the physics time step changes in any way during the
-		// lifetime of this joint, but this can't really be fixed since Godot only provides a max
-		// impulse and not a max force. As far as I can tell this is similarly broken in Godot
-		// Physics as well, so at least we're being consistent.
-		const double max_torque = motor_max_impulse / estimate_physics_step();
-
 		JPH::MotorSettings& motor_settings = constraint->GetMotorSettings();
-		motor_settings.mMinTorqueLimit = (float)-max_torque;
-		motor_settings.mMaxTorqueLimit = (float)max_torque;
+		motor_settings.mMinTorqueLimit = (float)-motor_max_torque;
+		motor_settings.mMaxTorqueLimit = (float)motor_max_torque;
 	}
 }
 
 void JoltHingeJointImpl3D::_limits_changed(bool p_lock) {
+	rebuild(p_lock);
+}
+
+void JoltHingeJointImpl3D::_limit_spring_changed(bool p_lock) {
 	rebuild(p_lock);
 }
 

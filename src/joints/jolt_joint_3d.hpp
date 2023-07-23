@@ -50,6 +50,10 @@ protected:
 
 	static JoltPhysicsServer3D* _get_jolt_physics_server();
 
+	bool _is_valid() const { return valid; }
+
+	bool _is_invalid() const { return !valid; }
+
 	virtual void _configure(
 		[[maybe_unused]] PhysicsBody3D* p_body_a,
 		[[maybe_unused]] PhysicsBody3D* p_body_b
@@ -102,6 +106,8 @@ protected:
 	int32_t velocity_iterations = 0;
 
 	int32_t position_iterations = 0;
+
+	bool valid = false;
 
 	bool enabled = true;
 
