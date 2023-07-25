@@ -216,29 +216,33 @@ void JoltHingeJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled, bool p
 	}
 }
 
-Vector3 JoltHingeJointImpl3D::get_impulse() const {
+float JoltHingeJointImpl3D::get_applied_force() const {
 	ERR_FAIL_NULL_D(jolt_ref);
+
+	JoltSpace3D* space = get_space();
+	ERR_FAIL_NULL_D(space);
 
 	if (_is_fixed()) {
 		auto* constraint = static_cast<JPH::FixedConstraint*>(jolt_ref.GetPtr());
-		return to_godot(constraint->GetTotalLambdaPosition());
+		return constraint->GetTotalLambdaPosition().Length() / space->get_last_step();
 	} else {
 		auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
-		return to_godot(constraint->GetTotalLambdaPosition());
+		return constraint->GetTotalLambdaPosition().Length() / space->get_last_step();
 	}
 }
 
-Vector3 JoltHingeJointImpl3D::get_torque_impulse() const {
+float JoltHingeJointImpl3D::get_applied_torque() const {
 	ERR_FAIL_NULL_D(jolt_ref);
+
+	JoltSpace3D* space = get_space();
+	ERR_FAIL_NULL_D(space);
 
 	if (_is_fixed()) {
 		auto* constraint = static_cast<JPH::FixedConstraint*>(jolt_ref.GetPtr());
-		const JPH::Vec3 lambda = constraint->GetTotalLambdaRotation();
-		return {lambda.GetX(), lambda.GetY(), lambda.GetZ()};
+		return constraint->GetTotalLambdaRotation().Length() / space->get_last_step();
 	} else {
 		auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
-		const JPH::Vector<2> lambda = constraint->GetTotalLambdaRotation();
-		return {0.0f, -lambda[0], -lambda[1]};
+		return constraint->GetTotalLambdaRotation().Length() / space->get_last_step();
 	}
 }
 

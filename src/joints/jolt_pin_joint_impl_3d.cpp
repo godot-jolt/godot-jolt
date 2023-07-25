@@ -94,12 +94,14 @@ void JoltPinJointImpl3D::set_param(PhysicsServer3D::PinJointParam p_param, doubl
 	}
 }
 
-Vector3 JoltPinJointImpl3D::get_impulse() const {
-	ERR_FAIL_NULL_D(jolt_ref);
-
+float JoltPinJointImpl3D::get_applied_force() const {
 	auto* constraint = static_cast<JPH::PointConstraint*>(jolt_ref.GetPtr());
+	ERR_FAIL_NULL_D(constraint);
 
-	return to_godot(constraint->GetTotalLambdaPosition());
+	JoltSpace3D* space = get_space();
+	ERR_FAIL_NULL_D(space);
+
+	return constraint->GetTotalLambdaPosition().Length() / space->get_last_step();
 }
 
 void JoltPinJointImpl3D::rebuild(bool p_lock) {
