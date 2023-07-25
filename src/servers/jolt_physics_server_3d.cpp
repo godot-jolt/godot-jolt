@@ -959,9 +959,11 @@ void JoltPhysicsServer3D::_body_set_omit_force_integration(const RID& p_body, bo
 	body->set_custom_integrator(p_enable);
 }
 
-bool JoltPhysicsServer3D::_body_is_omitting_force_integration([[maybe_unused]] const RID& p_body
-) const {
-	return false;
+bool JoltPhysicsServer3D::_body_is_omitting_force_integration(const RID& p_body) const {
+	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->has_custom_integrator();
 }
 
 void JoltPhysicsServer3D::_body_set_state_sync_callback(
