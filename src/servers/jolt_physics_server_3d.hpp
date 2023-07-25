@@ -590,7 +590,7 @@ public:
 
 	void joint_set_solver_position_iterations(const RID& p_joint, int32_t p_value);
 
-	Vector3 pin_joint_get_impulse(const RID& p_joint);
+	float pin_joint_get_applied_force(const RID& p_joint);
 
 	double hinge_joint_get_jolt_param(const RID& p_joint, HingeJointParamJolt p_param) const;
 
@@ -604,9 +604,9 @@ public:
 
 	void hinge_joint_set_jolt_flag(const RID& p_joint, HingeJointFlagJolt p_flag, bool p_enabled);
 
-	Vector3 hinge_joint_get_impulse(const RID& p_joint);
+	float hinge_joint_get_applied_force(const RID& p_joint);
 
-	Vector3 hinge_joint_get_torque_impulse(const RID& p_joint);
+	float hinge_joint_get_applied_torque(const RID& p_joint);
 
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;

@@ -70,9 +70,9 @@ public:
 
 	void set_motor_max_torque(double p_value);
 
-	Vector3 get_impulse() const;
+	float get_applied_force() const;
 
-	Vector3 get_torque_impulse() const;
+	float get_applied_torque() const;
 
 private:
 	void _configure(PhysicsBody3D* p_body_a, PhysicsBody3D* p_body_b) override;
