@@ -27,6 +27,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where `CharacterBody3D` and other kinematic bodies wouldn't respect locked axes.
 - Fixed issue where omitting or explicitly passing `null` to the `result` parameter for the
   `body_test_motion` method in `PhysicsServer3D` would lead to a crash.
+- Fixed issue where the `body_is_omitting_force_integration` method in `PhysicsServer3D` would
+  always return `false`.
 
 ## [0.4.1] - 2023-07-08
 
