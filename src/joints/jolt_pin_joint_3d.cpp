@@ -3,10 +3,10 @@
 #include "servers/jolt_physics_server_3d.hpp"
 
 void JoltPinJoint3D::_bind_methods() {
-	BIND_METHOD(JoltPinJoint3D, get_impulse);
+	BIND_METHOD(JoltPinJoint3D, get_applied_force);
 }
 
-float JoltPinJoint3D::get_impulse() const {
+float JoltPinJoint3D::get_applied_force() const {
 	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
