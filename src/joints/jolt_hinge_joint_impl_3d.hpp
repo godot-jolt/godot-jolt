@@ -26,9 +26,9 @@ public:
 		return PhysicsServer3D::JOINT_TYPE_HINGE;
 	}
 
-	double get_parameter(Parameter p_param) const;
+	double get_param(Parameter p_param) const;
 
-	void set_parameter(Parameter p_param, double p_value, bool p_lock = true);
+	void set_param(Parameter p_param, double p_value, bool p_lock = true);
 
 	double get_jolt_param(JoltParameter p_param) const;
 

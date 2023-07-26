@@ -169,18 +169,13 @@ void JoltHingeJoint3D::_configure(PhysicsBody3D* p_body_a, PhysicsBody3D* p_body
 	PhysicsServer3D* physics_server = _get_physics_server();
 	ERR_FAIL_NULL(physics_server);
 
-	const Transform3D global_xform = get_global_transform().orthonormalized();
-
-	auto get_local_xform = [&](const PhysicsBody3D& p_body) {
-		return (p_body.get_global_transform().affine_inverse() * global_xform).orthonormalized();
-	};
-
 	physics_server->joint_make_hinge(
 		rid,
 		p_body_a->get_rid(),
-		get_local_xform(*p_body_a),
+		_get_body_local_transform(*p_body_a),
 		p_body_b != nullptr ? p_body_b->get_rid() : RID(),
-		p_body_b != nullptr ? get_local_xform(*p_body_b) : global_xform
+		p_body_b != nullptr ? _get_body_local_transform(*p_body_b)
+							: get_global_transform().orthonormalized()
 	);
 
 	_update_param(PARAM_LIMIT_UPPER);
@@ -242,7 +237,7 @@ void JoltHingeJoint3D::_update_jolt_param(Param p_param) {
 			value = &motor_max_torque;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled Jolt parameter: '%d'", p_param));
+			ERR_FAIL_MSG(vformat("Unhandled parameter: '%d'", p_param));
 		} break;
 	}
 
@@ -285,7 +280,7 @@ void JoltHingeJoint3D::_update_jolt_flag(Flag p_flag) {
 			value = &limit_spring_enabled;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled Jolt flag: '%d'", p_flag));
+			ERR_FAIL_MSG(vformat("Unhandled flag: '%d'", p_flag));
 		} break;
 	}
 

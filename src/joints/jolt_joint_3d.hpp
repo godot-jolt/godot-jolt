@@ -50,6 +50,8 @@ protected:
 
 	static JoltPhysicsServer3D* _get_jolt_physics_server();
 
+	Transform3D _get_body_local_transform(const PhysicsBody3D& p_body) const;
+
 	bool _is_valid() const { return valid; }
 
 	bool _is_invalid() const { return !valid; }

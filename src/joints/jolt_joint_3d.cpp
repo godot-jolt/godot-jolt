@@ -151,12 +151,21 @@ JoltPhysicsServer3D* JoltJoint3D::_get_jolt_physics_server() {
 	if (unlikely(physics_server == nullptr)) {
 		ERR_PRINT_ONCE(
 			"JoltJoint3D was unable to retrieve the Jolt-based physics server. "
-			"Make sure that you have 'JoltPhysics3D' set as the currently active physics server. "
-			"All Jolt-specific functionality will be ignored."
+			"Make sure that you have 'JoltPhysics3D' set as the currently active physics engine. "
+			"All Jolt-specific functionality related to joints will be ignored."
 		);
 	}
 
 	return physics_server;
+}
+
+Transform3D JoltJoint3D::_get_body_local_transform(const PhysicsBody3D& p_body) const {
+	const Transform3D global_transform = get_global_transform().orthonormalized();
+	const Transform3D body_global_transform = p_body.get_global_transform();
+	const Transform3D body_global_transform_inv = body_global_transform.affine_inverse();
+	const Transform3D body_local_transform = body_global_transform_inv * global_transform;
+
+	return body_local_transform.orthonormalized();
 }
 
 void JoltJoint3D::_notification(int32_t p_what) {

@@ -1436,7 +1436,7 @@ void JoltPhysicsServer3D::_hinge_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
 	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->set_parameter(p_param, p_value);
+	return hinge_joint->set_param(p_param, p_value);
 }
 
 double JoltPhysicsServer3D::_hinge_joint_get_param(const RID& p_joint, HingeJointParam p_param)
@@ -1447,7 +1447,7 @@ double JoltPhysicsServer3D::_hinge_joint_get_param(const RID& p_joint, HingeJoin
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
 	const auto* hinge_joint = static_cast<const JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->get_parameter(p_param);
+	return hinge_joint->get_param(p_param);
 }
 
 void JoltPhysicsServer3D::_hinge_joint_set_flag(
