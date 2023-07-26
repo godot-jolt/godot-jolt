@@ -101,7 +101,10 @@ float JoltPinJointImpl3D::get_applied_force() const {
 	JoltSpace3D* space = get_space();
 	ERR_FAIL_NULL_D(space);
 
-	return constraint->GetTotalLambdaPosition().Length() / space->get_last_step();
+	const float last_step = space->get_last_step();
+	QUIET_FAIL_COND_D(last_step == 0.0f);
+
+	return constraint->GetTotalLambdaPosition().Length() / last_step;
 }
 
 void JoltPinJointImpl3D::rebuild(bool p_lock) {
