@@ -9,7 +9,7 @@ private:
 	static void _bind_methods();
 
 public:
-	float get_impulse() const;
+	float get_applied_force() const;
 
 private:
 	void _configure(PhysicsBody3D* p_body_a, PhysicsBody3D* p_body_b) override;
