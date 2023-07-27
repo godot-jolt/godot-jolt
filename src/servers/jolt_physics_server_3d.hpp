@@ -34,6 +34,21 @@ public:
 		SLIDER_JOINT_FLAG_ENABLE_MOTOR
 	};
 
+	enum ConeTwistJointParamJolt {
+		CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Y = 100,
+		CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Z,
+		CONE_TWIST_JOINT_TWIST_MOTOR_TARGET_VELOCITY,
+		CONE_TWIST_JOINT_SWING_MOTOR_MAX_TORQUE,
+		CONE_TWIST_JOINT_TWIST_MOTOR_MAX_TORQUE
+	};
+
+	enum ConeTwistJointFlagJolt {
+		CONE_TWIST_JOINT_FLAG_USE_SWING_LIMIT = 100,
+		CONE_TWIST_JOINT_FLAG_USE_TWIST_LIMIT,
+		CONE_TWIST_JOINT_FLAG_ENABLE_SWING_MOTOR,
+		CONE_TWIST_JOINT_FLAG_ENABLE_TWIST_MOTOR
+	};
+
 private:
 	static void _bind_methods();
 
@@ -637,6 +652,27 @@ public:
 
 	float slider_joint_get_applied_torque(const RID& p_joint);
 
+	double cone_twist_joint_get_jolt_param(const RID& p_joint, ConeTwistJointParamJolt p_param)
+		const;
+
+	void cone_twist_joint_set_jolt_param(
+		const RID& p_joint,
+		ConeTwistJointParamJolt p_param,
+		double p_value
+	);
+
+	bool cone_twist_joint_get_jolt_flag(const RID& p_joint, ConeTwistJointFlagJolt p_flag) const;
+
+	void cone_twist_joint_set_jolt_flag(
+		const RID& p_joint,
+		ConeTwistJointFlagJolt p_flag,
+		bool p_enabled
+	);
+
+	float cone_twist_joint_get_applied_force(const RID& p_joint);
+
+	float cone_twist_joint_get_applied_torque(const RID& p_joint);
+
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
 
@@ -661,3 +697,5 @@ VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointParamJolt);
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointFlagJolt);
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointParamJolt);
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointFlagJolt);
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointParamJolt);
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointFlagJolt);
