@@ -21,6 +21,19 @@ public:
 		HINGE_JOINT_FLAG_USE_LIMIT_SPRING = 100
 	};
 
+	enum SliderJointParamJolt {
+		SLIDER_JOINT_LIMIT_SPRING_FREQUENCY = 100,
+		SLIDER_JOINT_LIMIT_SPRING_DAMPING,
+		SLIDER_JOINT_MOTOR_TARGET_VELOCITY,
+		SLIDER_JOINT_MOTOR_MAX_FORCE
+	};
+
+	enum SliderJointFlagJolt {
+		SLIDER_JOINT_FLAG_USE_LIMIT = 100,
+		SLIDER_JOINT_FLAG_USE_LIMIT_SPRING,
+		SLIDER_JOINT_FLAG_ENABLE_MOTOR
+	};
+
 private:
 	static void _bind_methods();
 
@@ -608,6 +621,22 @@ public:
 
 	float hinge_joint_get_applied_torque(const RID& p_joint);
 
+	double slider_joint_get_jolt_param(const RID& p_joint, SliderJointParamJolt p_param) const;
+
+	void slider_joint_set_jolt_param(
+		const RID& p_joint,
+		SliderJointParamJolt p_param,
+		double p_value
+	);
+
+	bool slider_joint_get_jolt_flag(const RID& p_joint, SliderJointFlagJolt p_flag) const;
+
+	void slider_joint_set_jolt_flag(const RID& p_joint, SliderJointFlagJolt p_flag, bool p_enabled);
+
+	float slider_joint_get_applied_force(const RID& p_joint);
+
+	float slider_joint_get_applied_torque(const RID& p_joint);
+
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
 
@@ -630,3 +659,5 @@ private:
 
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointParamJolt);
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointFlagJolt);
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointParamJolt);
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointFlagJolt);

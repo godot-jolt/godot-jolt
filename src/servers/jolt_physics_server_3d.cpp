@@ -43,11 +43,29 @@ void JoltPhysicsServer3D::_bind_methods() {
 	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_applied_force, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_applied_torque, "joint");
 
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_jolt_param, "joint");
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_set_jolt_param, "joint", "value");
+
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_jolt_flag, "joint");
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_set_jolt_flag, "joint", "value");
+
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_applied_force, "joint");
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_applied_torque, "joint");
+
 	BIND_ENUM_CONSTANT(HINGE_JOINT_LIMIT_SPRING_FREQUENCY);
 	BIND_ENUM_CONSTANT(HINGE_JOINT_LIMIT_SPRING_DAMPING);
 	BIND_ENUM_CONSTANT(HINGE_JOINT_MOTOR_MAX_TORQUE);
 
 	BIND_ENUM_CONSTANT(HINGE_JOINT_FLAG_USE_LIMIT_SPRING);
+
+	BIND_ENUM_CONSTANT(SLIDER_JOINT_LIMIT_SPRING_FREQUENCY);
+	BIND_ENUM_CONSTANT(SLIDER_JOINT_LIMIT_SPRING_DAMPING);
+	BIND_ENUM_CONSTANT(SLIDER_JOINT_MOTOR_TARGET_VELOCITY);
+	BIND_ENUM_CONSTANT(SLIDER_JOINT_MOTOR_MAX_FORCE);
+
+	BIND_ENUM_CONSTANT(SLIDER_JOINT_FLAG_USE_LIMIT);
+	BIND_ENUM_CONSTANT(SLIDER_JOINT_FLAG_USE_LIMIT_SPRING);
+	BIND_ENUM_CONSTANT(SLIDER_JOINT_FLAG_ENABLE_MOTOR);
 }
 
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
@@ -1915,4 +1933,76 @@ float JoltPhysicsServer3D::hinge_joint_get_applied_torque(const RID& p_joint) {
 	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
 	return hinge_joint->get_applied_torque();
+}
+
+double JoltPhysicsServer3D::slider_joint_get_jolt_param(
+	const RID& p_joint,
+	SliderJointParamJolt p_param
+) const {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_SLIDER);
+	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
+
+	return slider_joint->get_jolt_param(p_param);
+}
+
+void JoltPhysicsServer3D::slider_joint_set_jolt_param(
+	const RID& p_joint,
+	SliderJointParamJolt p_param,
+	double p_value
+) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_SLIDER);
+	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
+
+	return slider_joint->set_jolt_param(p_param, p_value);
+}
+
+bool JoltPhysicsServer3D::slider_joint_get_jolt_flag(const RID& p_joint, SliderJointFlagJolt p_flag)
+	const {
+	const JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_SLIDER);
+	const auto* slider_joint = static_cast<const JoltSliderJointImpl3D*>(joint);
+
+	return slider_joint->get_jolt_flag(p_flag);
+}
+
+void JoltPhysicsServer3D::slider_joint_set_jolt_flag(
+	const RID& p_joint,
+	SliderJointFlagJolt p_flag,
+	bool p_enabled
+) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_SLIDER);
+	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
+
+	return slider_joint->set_jolt_flag(p_flag, p_enabled);
+}
+
+float JoltPhysicsServer3D::slider_joint_get_applied_force(const RID& p_joint) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_SLIDER);
+	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
+
+	return slider_joint->get_applied_force();
+}
+
+float JoltPhysicsServer3D::slider_joint_get_applied_torque(const RID& p_joint) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_SLIDER);
+	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
+
+	return slider_joint->get_applied_torque();
 }
