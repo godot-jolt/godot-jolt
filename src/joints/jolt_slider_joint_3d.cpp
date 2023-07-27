@@ -56,7 +56,7 @@ void JoltSliderJoint3D::_bind_methods() {
 	ADD_GROUP("Motor", "motor_");
 
 	BIND_PROPERTY("motor_enabled", Variant::BOOL);
-	BIND_PROPERTY("motor_target_velocity", Variant::FLOAT, U"suffix:m/s");
+	BIND_PROPERTY("motor_target_velocity", Variant::FLOAT, "suffix:m/s");
 	BIND_PROPERTY("motor_max_force", Variant::FLOAT, "suffix:N");
 }
 
@@ -168,18 +168,13 @@ void JoltSliderJoint3D::_configure(PhysicsBody3D* p_body_a, PhysicsBody3D* p_bod
 	PhysicsServer3D* physics_server = _get_physics_server();
 	ERR_FAIL_NULL(physics_server);
 
-	const Transform3D global_xform = get_global_transform().orthonormalized();
-
-	auto get_local_xform = [&](const PhysicsBody3D& p_body) {
-		return (p_body.get_global_transform().affine_inverse() * global_xform).orthonormalized();
-	};
-
 	physics_server->joint_make_slider(
 		rid,
 		p_body_a->get_rid(),
-		get_local_xform(*p_body_a),
+		_get_body_local_transform(*p_body_a),
 		p_body_b != nullptr ? p_body_b->get_rid() : RID(),
-		p_body_b != nullptr ? get_local_xform(*p_body_b) : global_xform
+		p_body_b != nullptr ? _get_body_local_transform(*p_body_b)
+							: get_global_transform().orthonormalized()
 	);
 
 	_update_param(PARAM_LIMIT_UPPER);

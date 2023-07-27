@@ -24,7 +24,7 @@ JoltHingeJointImpl3D::JoltHingeJointImpl3D(
 	rebuild(p_lock);
 }
 
-double JoltHingeJointImpl3D::get_parameter(Parameter p_param) const {
+double JoltHingeJointImpl3D::get_param(Parameter p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
 			return DEFAULT_BIAS;
@@ -58,7 +58,7 @@ double JoltHingeJointImpl3D::get_parameter(Parameter p_param) const {
 	}
 }
 
-void JoltHingeJointImpl3D::set_parameter(Parameter p_param, double p_value, bool p_lock) {
+void JoltHingeJointImpl3D::set_param(Parameter p_param, double p_value, bool p_lock) {
 	switch (p_param) {
 		case PhysicsServer3D::HINGE_JOINT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_BIAS)) {
@@ -198,7 +198,7 @@ bool JoltHingeJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
 			return limit_spring_enabled;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled Jolt flag: '%d'", p_flag));
+			ERR_FAIL_D_MSG(vformat("Unhandled flag: '%d'", p_flag));
 		}
 	}
 }
@@ -211,7 +211,7 @@ void JoltHingeJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled, bool p
 			_limit_spring_changed(p_lock);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled Jolt flag: '%d'", p_flag));
+			ERR_FAIL_MSG(vformat("Unhandled flag: '%d'", p_flag));
 		} break;
 	}
 }

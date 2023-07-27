@@ -26,14 +26,6 @@ private:
 	static void _bind_methods();
 
 public:
-	double get_param(Param p_param) const;
-
-	void set_param(Param p_param, double p_value);
-
-	bool get_flag(Flag p_flag) const;
-
-	void set_flag(Flag p_flag, bool p_enabled);
-
 	bool get_limit_enabled() const { return limit_enabled; }
 
 	void set_limit_enabled(bool p_enabled);
