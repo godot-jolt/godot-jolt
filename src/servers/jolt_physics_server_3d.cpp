@@ -2006,3 +2006,77 @@ float JoltPhysicsServer3D::slider_joint_get_applied_torque(const RID& p_joint) {
 
 	return slider_joint->get_applied_torque();
 }
+
+double JoltPhysicsServer3D::cone_twist_joint_get_jolt_param(
+	const RID& p_joint,
+	ConeTwistJointParamJolt p_param
+) const {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_CONE_TWIST);
+	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
+
+	return cone_twist_joint->get_jolt_param(p_param);
+}
+
+void JoltPhysicsServer3D::cone_twist_joint_set_jolt_param(
+	const RID& p_joint,
+	ConeTwistJointParamJolt p_param,
+	double p_value
+) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_CONE_TWIST);
+	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
+
+	return cone_twist_joint->set_jolt_param(p_param, p_value);
+}
+
+bool JoltPhysicsServer3D::cone_twist_joint_get_jolt_flag(
+	const RID& p_joint,
+	ConeTwistJointFlagJolt p_flag
+) const {
+	const JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_CONE_TWIST);
+	const auto* cone_twist_joint = static_cast<const JoltConeTwistJointImpl3D*>(joint);
+
+	return cone_twist_joint->get_jolt_flag(p_flag);
+}
+
+void JoltPhysicsServer3D::cone_twist_joint_set_jolt_flag(
+	const RID& p_joint,
+	ConeTwistJointFlagJolt p_flag,
+	bool p_enabled
+) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL(joint);
+
+	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_CONE_TWIST);
+	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
+
+	return cone_twist_joint->set_jolt_flag(p_flag, p_enabled);
+}
+
+float JoltPhysicsServer3D::cone_twist_joint_get_applied_force(const RID& p_joint) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_CONE_TWIST);
+	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
+
+	return cone_twist_joint->get_applied_force();
+}
+
+float JoltPhysicsServer3D::cone_twist_joint_get_applied_torque(const RID& p_joint) {
+	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_D(joint);
+
+	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_CONE_TWIST);
+	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
+
+	return cone_twist_joint->get_applied_torque();
+}
