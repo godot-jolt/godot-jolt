@@ -52,6 +52,15 @@ void JoltPhysicsServer3D::_bind_methods() {
 	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_applied_force, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_applied_torque, "joint");
 
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_jolt_param, "joint");
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_set_jolt_param, "joint", "value");
+
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_jolt_flag, "joint");
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_set_jolt_flag, "joint", "value");
+
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_applied_force, "joint");
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_applied_torque, "joint");
+
 	BIND_ENUM_CONSTANT(HINGE_JOINT_LIMIT_SPRING_FREQUENCY);
 	BIND_ENUM_CONSTANT(HINGE_JOINT_LIMIT_SPRING_DAMPING);
 	BIND_ENUM_CONSTANT(HINGE_JOINT_MOTOR_MAX_TORQUE);
@@ -66,6 +75,17 @@ void JoltPhysicsServer3D::_bind_methods() {
 	BIND_ENUM_CONSTANT(SLIDER_JOINT_FLAG_USE_LIMIT);
 	BIND_ENUM_CONSTANT(SLIDER_JOINT_FLAG_USE_LIMIT_SPRING);
 	BIND_ENUM_CONSTANT(SLIDER_JOINT_FLAG_ENABLE_MOTOR);
+
+	BIND_ENUM_CONSTANT(CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Y);
+	BIND_ENUM_CONSTANT(CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Z);
+	BIND_ENUM_CONSTANT(CONE_TWIST_JOINT_TWIST_MOTOR_TARGET_VELOCITY);
+	BIND_ENUM_CONSTANT(CONE_TWIST_JOINT_SWING_MOTOR_MAX_TORQUE);
+	BIND_ENUM_CONSTANT(CONE_TWIST_JOINT_TWIST_MOTOR_MAX_TORQUE);
+
+	BIND_ENUM_CONSTANT(CONE_TWIST_JOINT_FLAG_USE_SWING_LIMIT);
+	BIND_ENUM_CONSTANT(CONE_TWIST_JOINT_FLAG_USE_TWIST_LIMIT);
+	BIND_ENUM_CONSTANT(CONE_TWIST_JOINT_FLAG_ENABLE_SWING_MOTOR);
+	BIND_ENUM_CONSTANT(CONE_TWIST_JOINT_FLAG_ENABLE_TWIST_MOTOR);
 }
 
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
