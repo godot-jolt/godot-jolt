@@ -12,10 +12,10 @@ public:
 
 	~RID_PtrOwner() {
 		if (ptrs_by_id.size() > 0) {
-			ERR_PRINT(vformat(
+			WARN_PRINT(vformat(
 				"%d RIDs in Godot Jolt were found to not have been freed. "
-				"This should not happen under normal circumstances. "
-				"Consider reporting this issue.",
+				"This is likely caused by orphaned nodes. "
+				"If not, consider reporting this issue.",
 				ptrs_by_id.size()
 			));
 		}
