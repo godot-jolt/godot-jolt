@@ -1,11 +1,22 @@
 #pragma once
 
 #include "joints/jolt_joint_impl_3d.hpp"
+#include "servers/jolt_physics_server_3d.hpp"
 
 class JoltGeneric6DOFJointImpl3D final : public JoltJointImpl3D {
+	using Axis = Vector3::Axis;
+
 	using JoltAxis = JPH::SixDOFConstraintSettings::EAxis;
 
-	enum Axis {
+	using Param = PhysicsServer3D::G6DOFJointAxisParam;
+
+	using JoltParam = JoltPhysicsServer3D::G6DOFJointAxisParamJolt;
+
+	using Flag = PhysicsServer3D::G6DOFJointAxisFlag;
+
+	using JoltFlag = JoltPhysicsServer3D::G6DOFJointAxisFlagJolt;
+
+	enum {
 		AXIS_LINEAR_X = JoltAxis::TranslationX,
 		AXIS_LINEAR_Y = JoltAxis::TranslationY,
 		AXIS_LINEAR_Z = JoltAxis::TranslationZ,
@@ -31,40 +42,44 @@ public:
 		return PhysicsServer3D::JOINT_TYPE_6DOF;
 	}
 
-	double get_param(Vector3::Axis p_axis, PhysicsServer3D::G6DOFJointAxisParam p_param) const;
+	double get_param(Axis p_axis, Param p_param) const;
 
-	void set_param(
-		Vector3::Axis p_axis,
-		PhysicsServer3D::G6DOFJointAxisParam p_param,
-		double p_value,
-		bool p_lock = true
-	);
+	void set_param(Axis p_axis, Param p_param, double p_value, bool p_lock = true);
 
-	bool get_flag(Vector3::Axis p_axis, PhysicsServer3D::G6DOFJointAxisFlag p_flag) const;
+	bool get_flag(Axis p_axis, Flag p_flag) const;
 
-	void set_flag(
-		Vector3::Axis p_axis,
-		PhysicsServer3D::G6DOFJointAxisFlag p_flag,
-		bool p_enabled,
-		bool p_lock = true
-	);
+	void set_flag(Axis p_axis, Flag p_flag, bool p_enabled, bool p_lock = true);
+
+	double get_jolt_param(Axis p_axis, JoltParam p_param) const;
+
+	void set_jolt_param(Axis p_axis, JoltParam p_param, double p_value, bool p_lock = true);
+
+	bool get_jolt_flag(Axis p_axis, JoltFlag p_flag) const;
+
+	void set_jolt_flag(Axis p_axis, JoltFlag p_flag, bool p_enabled, bool p_lock = true);
+
+	float get_applied_force() const;
+
+	float get_applied_torque() const;
 
 	void rebuild(bool p_lock = true) override;
 
 private:
+	void _update_limit_spring_parameters(int32_t p_axis);
+
 	void _update_motor_state(int32_t p_axis);
 
 	void _update_motor_velocity(int32_t p_axis);
 
 	void _update_motor_limit(int32_t p_axis);
 
-	void _update_spring_stiffness(int32_t p_axis);
-
-	void _update_spring_damping(int32_t p_axis);
+	void _update_spring_parameters(int32_t p_axis);
 
 	void _update_spring_equilibrium(int32_t p_axis);
 
 	void _limits_changed(bool p_lock = true);
+
+	void _limit_spring_parameters_changed(int32_t p_axis);
 
 	void _motor_state_changed(int32_t p_axis);
 
@@ -74,9 +89,7 @@ private:
 
 	void _spring_state_changed(int32_t p_axis);
 
-	void _spring_stiffness_changed(int32_t p_axis);
-
-	void _spring_damping_changed(int32_t p_axis);
+	void _spring_parameters_changed(int32_t p_axis);
 
 	void _spring_equilibrium_changed(int32_t p_axis);
 
@@ -84,19 +97,29 @@ private:
 
 	double limit_upper[AXIS_COUNT] = {};
 
+	double limit_spring_frequency[AXIS_COUNT] = {};
+
+	double limit_spring_damping[AXIS_COUNT] = {};
+
 	double motor_speed[AXIS_COUNT] = {};
 
 	double motor_limit[AXIS_COUNT] = {};
 
 	double spring_stiffness[AXIS_COUNT] = {};
 
+	double spring_frequency[AXIS_COUNT] = {};
+
 	double spring_damping[AXIS_COUNT] = {};
 
 	double spring_equilibrium[AXIS_COUNT] = {};
 
-	bool use_limits[AXIS_COUNT] = {};
+	bool limit_enabled[AXIS_COUNT] = {};
+
+	bool limit_spring_enabled[AXIS_COUNT] = {};
 
 	bool motor_enabled[AXIS_COUNT] = {};
 
 	bool spring_enabled[AXIS_COUNT] = {};
+
+	bool spring_use_frequency[AXIS_COUNT] = {};
 };

@@ -49,6 +49,33 @@ public:
 		CONE_TWIST_JOINT_FLAG_ENABLE_TWIST_MOTOR
 	};
 
+	enum G6DOFJointAxisParamJolt {
+		G6DOF_JOINT_LINEAR_SPRING_STIFFNESS = 7,
+		G6DOF_JOINT_LINEAR_SPRING_DAMPING = 8,
+		G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT = 9,
+		G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS = 19,
+		G6DOF_JOINT_ANGULAR_SPRING_DAMPING = 20,
+		G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT = 21,
+
+		// HACK(mihe): Any parameters before this point are ones that were missing from the bindings
+
+		G6DOF_JOINT_LINEAR_SPRING_FREQUENCY = 100,
+		G6DOF_JOINT_LINEAR_LIMIT_SPRING_FREQUENCY,
+		G6DOF_JOINT_LINEAR_LIMIT_SPRING_DAMPING,
+		G6DOF_JOINT_ANGULAR_SPRING_FREQUENCY
+	};
+
+	enum G6DOFJointAxisFlagJolt {
+		G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING = 2,
+		G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING = 3,
+
+		// HACK(mihe): Any flags before this point are ones that were missing from the bindings
+
+		G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT_SPRING = 100,
+		G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING_FREQUENCY,
+		G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING_FREQUENCY,
+	};
+
 private:
 	static void _bind_methods();
 
@@ -673,6 +700,36 @@ public:
 
 	float cone_twist_joint_get_applied_torque(const RID& p_joint);
 
+	double generic_6dof_joint_get_jolt_param(
+		const RID& p_joint,
+		Vector3::Axis p_axis,
+		G6DOFJointAxisParamJolt p_param
+	) const;
+
+	void generic_6dof_joint_set_jolt_param(
+		const RID& p_joint,
+		Vector3::Axis p_axis,
+		G6DOFJointAxisParamJolt p_param,
+		double p_value
+	);
+
+	bool generic_6dof_joint_get_jolt_flag(
+		const RID& p_joint,
+		Vector3::Axis p_axis,
+		G6DOFJointAxisFlagJolt p_flag
+	) const;
+
+	void generic_6dof_joint_set_jolt_flag(
+		const RID& p_joint,
+		Vector3::Axis p_axis,
+		G6DOFJointAxisFlagJolt p_flag,
+		bool p_enabled
+	);
+
+	float generic_6dof_joint_get_applied_force(const RID& p_joint);
+
+	float generic_6dof_joint_get_applied_torque(const RID& p_joint);
+
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
 
@@ -699,3 +756,5 @@ VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointParamJolt);
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointFlagJolt);
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointParamJolt);
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointFlagJolt);
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisParamJolt);
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisFlagJolt);

@@ -1,4 +1,5 @@
 #include "joints/jolt_cone_twist_joint_3d.hpp"
+#include "joints/jolt_generic_6dof_joint.hpp"
 #include "joints/jolt_hinge_joint_3d.hpp"
 #include "joints/jolt_joint_gizmo_plugin_3d.hpp"
 #include "joints/jolt_pin_joint_3d.hpp"
@@ -46,6 +47,7 @@ void on_initialize(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<JoltHingeJoint3D>();
 			ClassDB::register_class<JoltSliderJoint3D>();
 			ClassDB::register_class<JoltConeTwistJoint3D>();
+			ClassDB::register_class<JoltGeneric6DOFJoint3D>();
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 #ifdef GDJ_CONFIG_EDITOR
