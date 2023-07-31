@@ -13,26 +13,37 @@ using ServerFlagJolt = JoltPhysicsServer3D::ConeTwistJointFlagJolt;
 void JoltConeTwistJoint3D::_bind_methods() {
 	BIND_METHOD(JoltConeTwistJoint3D, get_swing_limit_enabled);
 	BIND_METHOD(JoltConeTwistJoint3D, set_swing_limit_enabled);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_twist_limit_enabled);
 	BIND_METHOD(JoltConeTwistJoint3D, set_twist_limit_enabled);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_swing_limit_span);
 	BIND_METHOD(JoltConeTwistJoint3D, set_swing_limit_span);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_twist_limit_span);
 	BIND_METHOD(JoltConeTwistJoint3D, set_twist_limit_span);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_swing_motor_enabled);
 	BIND_METHOD(JoltConeTwistJoint3D, set_swing_motor_enabled);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_twist_motor_enabled);
 	BIND_METHOD(JoltConeTwistJoint3D, set_twist_motor_enabled);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_swing_motor_target_velocity_y);
 	BIND_METHOD(JoltConeTwistJoint3D, set_swing_motor_target_velocity_y);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_swing_motor_target_velocity_z);
 	BIND_METHOD(JoltConeTwistJoint3D, set_swing_motor_target_velocity_z);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_twist_motor_target_velocity);
 	BIND_METHOD(JoltConeTwistJoint3D, set_twist_motor_target_velocity);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_swing_motor_max_torque);
 	BIND_METHOD(JoltConeTwistJoint3D, set_swing_motor_max_torque);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_twist_motor_max_torque);
 	BIND_METHOD(JoltConeTwistJoint3D, set_twist_motor_max_torque);
+
 	BIND_METHOD(JoltConeTwistJoint3D, get_applied_force);
 	BIND_METHOD(JoltConeTwistJoint3D, get_applied_torque);
 
