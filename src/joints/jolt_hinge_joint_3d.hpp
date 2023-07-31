@@ -87,7 +87,7 @@ private:
 
 	double limit_spring_frequency = 2.0;
 
-	double limit_spring_damping = 1.0;
+	double limit_spring_damping = 0.0;
 
 	double motor_target_velocity = 0.0;
 
