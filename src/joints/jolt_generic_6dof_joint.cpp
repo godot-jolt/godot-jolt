@@ -370,13 +370,13 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 }
 
 JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D() {
-	std::fill_n(linear_limit_spring_frequency, AXIS_COUNT, 2.0);
+	std::fill_n(linear_limit_spring_frequency, AXIS_COUNT, 0.0);
 	std::fill_n(linear_limit_spring_damping, AXIS_COUNT, 0.0);
 	std::fill_n(linear_motor_max_force, AXIS_COUNT, INFINITY);
-	std::fill_n(linear_spring_frequency, AXIS_COUNT, 2.0);
+	std::fill_n(linear_spring_frequency, AXIS_COUNT, 0.0);
 	std::fill_n(linear_spring_damping, AXIS_COUNT, 0.0);
 	std::fill_n(angular_motor_max_torque, AXIS_COUNT, INFINITY);
-	std::fill_n(angular_spring_frequency, AXIS_COUNT, 2.0);
+	std::fill_n(angular_spring_frequency, AXIS_COUNT, 0.0);
 	std::fill_n(angular_spring_damping, AXIS_COUNT, 0.0);
 	std::fill_n(linear_limit_enabled, AXIS_COUNT, true);
 	std::fill_n(angular_limit_enabled, AXIS_COUNT, true);

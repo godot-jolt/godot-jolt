@@ -83,7 +83,7 @@ private:
 
 	double limit_lower = 0.0;
 
-	double limit_spring_frequency = 2.0;
+	double limit_spring_frequency = 0.0;
 
 	double limit_spring_damping = 0.0;
 

@@ -93,9 +93,9 @@ private:
 
 	void _flag_changed(Flag p_flag);
 
-	double swing_limit_span = Math::deg_to_rad(45.0f);
+	double swing_limit_span = 0.0f;
 
-	double twist_limit_span = Math::deg_to_rad(45.0f);
+	double twist_limit_span = 0.0f;
 
 	double swing_motor_target_velocity_y = 0.0;
 
@@ -107,7 +107,7 @@ private:
 
 	double twist_motor_max_torque = INFINITY;
 
-	bool swing_limit_enabled = true;
+	bool swing_limit_enabled = false;
 
 	bool twist_limit_enabled = false;
 
