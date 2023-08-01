@@ -61,9 +61,8 @@ JoltJoint3D::~JoltJoint3D() {
 }
 
 void JoltJoint3D::set_node_a(const NodePath& p_path) {
-	if (node_a == p_path) {
-		return;
-	}
+	// NOTE(mihe): We can't do a dirty check on the node path here, because when renaming nodes it
+	// ends up calling the setter twice, and the node path won't be valid the first time around.
 
 	_nodes_changing();
 	node_a = p_path;
@@ -71,9 +70,8 @@ void JoltJoint3D::set_node_a(const NodePath& p_path) {
 }
 
 void JoltJoint3D::set_node_b(const NodePath& p_path) {
-	if (node_b == p_path) {
-		return;
-	}
+	// NOTE(mihe): We can't do a dirty check on the node path here, because when renaming nodes it
+	// ends up calling the setter twice, and the node path won't be valid the first time around.
 
 	_nodes_changing();
 	node_b = p_path;
