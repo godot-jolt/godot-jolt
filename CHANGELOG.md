@@ -9,18 +9,29 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
-### Added
-
-- Added substitutes for `PinJoint3D` and `HingeJoint3D`, called `JoltPinJoint3D` and
-  `JoltHingeJoint3D` respectively. These mostly adhere to the same interface as the default joints
-  while adding Jolt-specific features, like the ability to enable/disable the joint, get the
-  force/torque that was last applied to it, and the ability to override solver velocity/position
-  iterations.
-
 ### Removed
 
 - ⚠️ Removed the ability to lock all axes of a `RigidBody3D`. Consider freezing the body as static
   instead.
+
+### Added
+
+- Added substitutes for all the joint nodes, to better align with the interface that Jolt offers,
+  which consist of `JoltPinJoint3D`, `JoltHingeJoint3D`, `JoltSliderJoint3D`, `JoltConeTwistJoint3D`
+  and `JoltGeneric6DOFJoint3D`. These differ in the following ways:
+  - You can enable/disable the limits on all joints.
+  - You can enable/disable the joint itself using its `enabled` property.
+  - You can fetch the magnitude of the force/torque that was last applied to keep the joint
+    together, using the `get_applied_force` and `get_applied_torque` methods. These coupled with the
+    `enabled` property allows for creating breakable joints.
+  - You can increase the joint's solver iterations, to improve stability, using its
+    `solver_velocity_iterations` and `solver_position_iterations` properties.
+  - All joints can be configured with a motor.
+  - Angular motor velocities are set in radians per second, but displayed in degrees per second.
+  - Springs use frequency and damping instead of stiffness and damping.
+  - Soft limits are achieved with limit springs.
+  - Any motion parameters like bias, damping and relaxation are omitted.
+  - Any angular motion parameters for the slider joint are omitted.
 
 ### Fixed
 
