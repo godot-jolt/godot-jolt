@@ -48,7 +48,7 @@ should not be relied upon if determinism is a hard requirement.
 
 - `Area3D` detecting static bodies is opt-in, with a potentially [heavy performance/memory
   cost][jst]
-- Springs are actually implemented in `Generic6DOFJoint3D`
+- Springs and motors are actually implemented in `Generic6DOFJoint3D`
 - Ray-casts using `hit_back_faces` will consider all shape types, not only concave polygons and
   height maps
 - Shape-casts should be more accurate, but their cost also scale with the cast distance
