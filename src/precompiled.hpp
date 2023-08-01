@@ -12,15 +12,8 @@
 
 #include <gdextension_interface.h>
 
-#include <godot_cpp/classes/camera3d.hpp>
-#include <godot_cpp/classes/control.hpp>
-#include <godot_cpp/classes/editor_interface.hpp>
-#include <godot_cpp/classes/editor_node3d_gizmo.hpp>
-#include <godot_cpp/classes/editor_node3d_gizmo_plugin.hpp>
-#include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/geometry_instance3d.hpp>
-#include <godot_cpp/classes/mesh.hpp>
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/physics_body3d.hpp>
@@ -34,12 +27,7 @@
 #include <godot_cpp/classes/physics_server3d_manager.hpp>
 #include <godot_cpp/classes/physics_server3d_rendering_server_handler.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
-#include <godot_cpp/classes/rendering_server.hpp>
-#include <godot_cpp/classes/standard_material3d.hpp>
-#include <godot_cpp/classes/theme.hpp>
-#include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/worker_thread_pool.hpp>
-#include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/core/error_macros.hpp>
@@ -51,6 +39,27 @@
 #include <godot_cpp/variant/builtin_types.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/variant.hpp>
+
+#ifdef GDJ_CONFIG_EDITOR
+
+#include <godot_cpp/classes/control.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/editor_node3d_gizmo.hpp>
+#include <godot_cpp/classes/editor_node3d_gizmo_plugin.hpp>
+#include <godot_cpp/classes/editor_plugin.hpp>
+#include <godot_cpp/classes/theme.hpp>
+
+#endif // GDJ_CONFIG_EDITOR
+
+#ifdef JPH_DEBUG_RENDERER
+
+#include <godot_cpp/classes/camera3d.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
+#include <godot_cpp/classes/standard_material3d.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/world3d.hpp>
+
+#endif // JPH_DEBUG_RENDERER
 
 #include <Jolt/Jolt.h>
 
@@ -97,7 +106,9 @@
 #include <Jolt/RegisterTypes.h>
 
 #ifdef JPH_DEBUG_RENDERER
+
 #include <Jolt/Renderer/DebugRenderer.h>
+
 #endif // JPH_DEBUG_RENDERER
 
 #include <mimalloc.h>
