@@ -94,7 +94,7 @@ private:
 
 	bool swing_limit_enabled = true;
 
-	bool twist_limit_enabled = false;
+	bool twist_limit_enabled = true;
 
 	bool swing_motor_enabled = false;
 
