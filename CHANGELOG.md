@@ -11,8 +11,8 @@ Breaking changes are denoted with ⚠️.
 
 ### Removed
 
-- ⚠️ Removed the ability to lock all axes of a `RigidBody3D`. Consider freezing the body as static
-  instead.
+- ⚠️ Removed the ability to lock all six axes of a `RigidBody3D`. Consider freezing the body as
+  static instead.
 
 ### Added
 
@@ -26,10 +26,10 @@ Breaking changes are denoted with ⚠️.
     `enabled` property allows for creating breakable joints.
   - You can increase the joint's solver iterations, to improve stability, using its
     `solver_velocity_iterations` and `solver_position_iterations` properties.
-  - All joints can be configured with a motor.
-  - Angular motor velocities are set in radians per second, but displayed in degrees per second.
   - Springs use frequency and damping instead of stiffness and damping.
   - Soft limits are achieved with limit springs.
+  - `JoltConeTwistJoint3D` can be configured with a motor.
+  - Angular motor velocities are set in radians per second, but displayed in degrees per second.
   - Any motion parameters like bias, damping and relaxation are omitted.
   - Any angular motion parameters for the slider joint are omitted.
 
