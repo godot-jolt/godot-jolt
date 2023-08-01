@@ -62,13 +62,13 @@ void JoltConeTwistJoint3D::_bind_methods() {
 	BIND_PROPERTY("swing_motor_enabled", Variant::BOOL);
 	BIND_PROPERTY("swing_motor_target_velocity_y", Variant::FLOAT, U"radians,suffix:°/s");
 	BIND_PROPERTY("swing_motor_target_velocity_z", Variant::FLOAT, U"radians,suffix:°/s");
-	BIND_PROPERTY("swing_motor_max_torque", Variant::FLOAT, "suffix:Nm");
+	BIND_PROPERTY("swing_motor_max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 
 	ADD_GROUP("Twist Motor", "twist_motor_");
 
 	BIND_PROPERTY("twist_motor_enabled", Variant::BOOL);
 	BIND_PROPERTY("twist_motor_target_velocity", Variant::FLOAT, U"radians,suffix:°/s");
-	BIND_PROPERTY("twist_motor_max_torque", Variant::FLOAT, "suffix:Nm");
+	BIND_PROPERTY("twist_motor_max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 }
 
 void JoltConeTwistJoint3D::set_swing_limit_enabled(bool p_enabled) {

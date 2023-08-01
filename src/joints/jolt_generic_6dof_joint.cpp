@@ -271,15 +271,15 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 
 	BIND_SUBPROPERTY("linear_motor_x", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("linear_motor_x", "target_velocity", Variant::FLOAT, "suffix:m/s");
-	BIND_SUBPROPERTY("linear_motor_x", "max_force", Variant::FLOAT, "suffix:N");
+	BIND_SUBPROPERTY("linear_motor_x", "max_force", Variant::FLOAT, U"suffix:kg⋅m/s² (N)");
 
 	BIND_SUBPROPERTY("linear_motor_y", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("linear_motor_y", "target_velocity", Variant::FLOAT, "suffix:m/s");
-	BIND_SUBPROPERTY("linear_motor_y", "max_force", Variant::FLOAT, "suffix:N");
+	BIND_SUBPROPERTY("linear_motor_y", "max_force", Variant::FLOAT, U"suffix:kg⋅m/s² (N)");
 
 	BIND_SUBPROPERTY("linear_motor_z", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("linear_motor_z", "target_velocity", Variant::FLOAT, "suffix:m/s");
-	BIND_SUBPROPERTY("linear_motor_z", "max_force", Variant::FLOAT, "suffix:N");
+	BIND_SUBPROPERTY("linear_motor_z", "max_force", Variant::FLOAT, U"suffix:kg⋅m/s² (N)");
 
 	ADD_GROUP("Linear Spring", "linear_spring_");
 
@@ -316,15 +316,15 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 
 	BIND_SUBPROPERTY("angular_motor_x", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("angular_motor_x", "target_velocity", Variant::FLOAT, U"radians,suffix:°/s");
-	BIND_SUBPROPERTY("angular_motor_x", "max_torque", Variant::FLOAT, "suffix:Nm");
+	BIND_SUBPROPERTY("angular_motor_x", "max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 
 	BIND_SUBPROPERTY("angular_motor_y", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("angular_motor_y", "target_velocity", Variant::FLOAT, U"radians,suffix:°/s");
-	BIND_SUBPROPERTY("angular_motor_y", "max_torque", Variant::FLOAT, "suffix:Nm");
+	BIND_SUBPROPERTY("angular_motor_y", "max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 
 	BIND_SUBPROPERTY("angular_motor_z", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("angular_motor_z", "target_velocity", Variant::FLOAT, U"radians,suffix:°/s");
-	BIND_SUBPROPERTY("angular_motor_z", "max_torque", Variant::FLOAT, "suffix:Nm");
+	BIND_SUBPROPERTY("angular_motor_z", "max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 
 	ADD_GROUP("Angular Spring", "angular_spring_");
 

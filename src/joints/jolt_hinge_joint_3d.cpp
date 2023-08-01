@@ -58,7 +58,7 @@ void JoltHingeJoint3D::_bind_methods() {
 
 	BIND_PROPERTY("motor_enabled", Variant::BOOL);
 	BIND_PROPERTY("motor_target_velocity", Variant::FLOAT, U"radians,suffix:°/s");
-	BIND_PROPERTY("motor_max_torque", Variant::FLOAT, "suffix:Nm");
+	BIND_PROPERTY("motor_max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 }
 
 void JoltHingeJoint3D::set_limit_enabled(bool p_enabled) {

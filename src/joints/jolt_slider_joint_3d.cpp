@@ -57,7 +57,7 @@ void JoltSliderJoint3D::_bind_methods() {
 
 	BIND_PROPERTY("motor_enabled", Variant::BOOL);
 	BIND_PROPERTY("motor_target_velocity", Variant::FLOAT, "suffix:m/s");
-	BIND_PROPERTY("motor_max_force", Variant::FLOAT, "suffix:N");
+	BIND_PROPERTY("motor_max_force", Variant::FLOAT, U"suffix:kg⋅m/s² (N)");
 }
 
 void JoltSliderJoint3D::set_limit_enabled(bool p_enabled) {
