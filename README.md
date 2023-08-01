@@ -26,8 +26,10 @@ would use normally, like `RigidBody3D` or `CharacterBody3D`.
 Better performance, mainly, but also just having different characteristics compared to Godot
 Physics.
 
-At the moment Godot Jolt is purely a drop-in replacement with no additional nodes or features. This
-allows you to quickly switch between physics engines with little risk or effort.
+There are also (completely optional) substitute nodes available (`JoltHingeJoint3D`, etc.) for all
+the joints, which line up better with the interface that Jolt offers than the default joints do.
+This allows for things like breakable joints, soft limits and the ability to override solver
+iterations per-joint.
 
 ## What about determinism?
 
@@ -37,7 +39,6 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What's not supported?
 
-- Joints do not support soft limits (yet)
 - `SoftBody3D` is not supported
 - `WorldBoundaryShape3D` is not supported
 - The physics server is not thread-safe (yet)
@@ -48,6 +49,7 @@ should not be relied upon if determinism is a hard requirement.
 
 - `Area3D` detecting static bodies is opt-in, with a potentially [heavy performance/memory
   cost][jst]
+- Joints only support soft limits through their substitutes (`JoltHingeJoint3D`, etc.)
 - Springs and motors are actually implemented in `Generic6DOFJoint3D`
 - Ray-casts using `hit_back_faces` will consider all shape types, not only concave polygons and
   height maps
@@ -93,7 +95,6 @@ compatible with the one found in Ubuntu 20.04 (Focal Fossa).
 
 In no particular order, here are some of the bigger items:
 
-- Adding substitutes for the joints, allowing for things soft limits and breakable joints
 - Adding new types of joints, like Jolt's `DistanceConstraint`
 - Adding support for double-precision, allowing for large worlds
 - Adding support for iOS and Android
