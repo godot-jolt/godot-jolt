@@ -38,8 +38,9 @@ void JoltJoint3D::_bind_methods() {
 	);
 
 	BIND_PROPERTY("enabled", Variant::BOOL);
-
 	BIND_PROPERTY("exclude_nodes_from_collision", Variant::BOOL);
+
+	ADD_GROUP("Solver Overrides", "solver_");
 
 	BIND_PROPERTY_RANGED("solver_velocity_iterations", Variant::INT, U"0,64,or_greater");
 	BIND_PROPERTY_RANGED("solver_position_iterations", Variant::INT, U"0,64,or_greater");

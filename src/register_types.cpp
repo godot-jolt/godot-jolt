@@ -42,7 +42,7 @@ void on_initialize(ModuleInitializationLevel p_level) {
 			JoltProjectSettings::register_settings();
 
 			ClassDB::register_class<JoltDebugGeometry3D>();
-			ClassDB::register_class<JoltJoint3D>();
+			ClassDB::register_class<JoltJoint3D>(true);
 			ClassDB::register_class<JoltPinJoint3D>();
 			ClassDB::register_class<JoltHingeJoint3D>();
 			ClassDB::register_class<JoltSliderJoint3D>();
