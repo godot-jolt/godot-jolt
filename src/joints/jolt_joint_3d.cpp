@@ -219,6 +219,10 @@ void JoltJoint3D::_disconnect_bodies() {
 }
 
 bool JoltJoint3D::_validate() {
+	if (!is_inside_tree()) {
+		return false;
+	}
+
 	PhysicsBody3D* body_a = get_body_a();
 	PhysicsBody3D* body_b = get_body_b();
 
