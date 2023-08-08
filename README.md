@@ -38,7 +38,7 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What's not supported?
 
-- `SoftBody3D` is not supported
+- `SoftBody3D` is not supported (yet)
 - `WorldBoundaryShape3D` is not supported
 - The physics server is not thread-safe (yet)
 - Double-precision builds of Godot are not supported (yet)
