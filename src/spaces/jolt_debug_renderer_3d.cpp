@@ -164,7 +164,8 @@ void JoltDebugRenderer3D::DrawTriangle(
 	JPH::Vec3 p_vertex1,
 	JPH::Vec3 p_vertex2,
 	JPH::Vec3 p_vertex3,
-	JPH::Color p_color
+	JPH::Color p_color,
+	[[maybe_unused]] ECastShadow p_cast_shadow
 ) {
 	_reserve_triangles(1);
 
