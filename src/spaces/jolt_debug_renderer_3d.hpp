@@ -47,7 +47,8 @@ private:
 		JPH::Vec3 p_vertex1,
 		JPH::Vec3 p_vertex2,
 		JPH::Vec3 p_vertex3,
-		JPH::Color p_color
+		JPH::Color p_color,
+		ECastShadow p_cast_shadow
 	) override;
 
 	JPH::DebugRenderer::Batch CreateTriangleBatch(
