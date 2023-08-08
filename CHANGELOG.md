@@ -12,6 +12,10 @@ Breaking changes are denoted with ⚠️.
 ### Changed
 
 - All the substitute joints (`JoltPinJoint3D`, etc.) have their own editor gizmo now.
+- `HeightMapShape3D` now allows for non-power-of-two dimensions.
+- `HeightMapShape3D` now allows for non-square dimensions.
+- `HeightMapShape3D` now allows for an empty list of heights.
+- `HeightMapShape3D` now allows for fewer than 16 heights.
 
 ### Fixed
 

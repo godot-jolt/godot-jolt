@@ -21,6 +21,10 @@ public:
 private:
 	JPH::ShapeRefC _build() const override;
 
+	JPH::ShapeRefC _build_height_field() const;
+
+	JPH::ShapeRefC _build_mesh() const;
+
 	PackedFloat32Array heights;
 
 	int32_t width = 0;

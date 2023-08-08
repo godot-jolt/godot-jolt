@@ -55,7 +55,6 @@ should not be relied upon if determinism is a hard requirement.
 - Shape margins are used, but are treated as an upper bound and scale with the shape's extents
 - Manipulating a body's shape(s) after it has entered a scene tree can be costly
 - Contact impulses are estimations and won't be accurate when colliding with multiple bodies
-- `HeightMapShape3D` only supports square height maps with dimensions that are power-of-two
 
 Also consider this note from Jolt's [documentation][jdc]:
 
