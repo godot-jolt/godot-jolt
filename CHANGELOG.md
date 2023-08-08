@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.5.0] - 2023-08-08
+
 ### Removed
 
 - ⚠️ Removed the ability to lock all six axes of a `RigidBody3D`. Consider freezing the body as
@@ -167,7 +169,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.4.1-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.5.0-stable...HEAD
+[0.5.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.4.1-stable...v0.5.0-stable
 [0.4.1]: https://github.com/godot-jolt/godot-jolt/compare/v0.4.0-stable...v0.4.1-stable
 [0.4.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.3.0-stable...v0.4.0-stable
 [0.3.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.2.3-stable...v0.3.0-stable
