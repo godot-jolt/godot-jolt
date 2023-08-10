@@ -47,7 +47,9 @@
 #include <godot_cpp/classes/editor_node3d_gizmo.hpp>
 #include <godot_cpp/classes/editor_node3d_gizmo_plugin.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
+#include <godot_cpp/classes/editor_settings.hpp>
 #include <godot_cpp/classes/theme.hpp>
+#include <godot_cpp/classes/timer.hpp>
 
 #endif // GDJ_CONFIG_EDITOR
 
