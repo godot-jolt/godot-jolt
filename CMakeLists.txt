@@ -168,7 +168,6 @@ if(MSVC)
 		PRIVATE /Zc:preprocessor # Enable standard-conforming preprocessor
 		PRIVATE /Zc:referenceBinding # Enforce reference binding rules
 		PRIVATE /volatile:iso # Enable standard-conforming interpretation of `volatile`
-		PRIVATE /fp:fast # Enable aggressive floating-point optimizations
 		PRIVATE $<${is_optimized_config}:/GS-> # Disable security checks
 		PRIVATE $<${target_avx}:/arch:AVX> # Enable AVX instructions
 		PRIVATE $<${target_avx2}:/arch:AVX2> # Enable AVX2 instructions
@@ -203,7 +202,6 @@ else()
 		PRIVATE -Wundef # Enable warnings about undefined identifiers in `#if` directives
 		PRIVATE -Wno-gnu-zero-variadic-macro-arguments # Disable zero variadic macro args warning
 		PRIVATE -pthread # Use POSIX threads
-		PRIVATE -ffast-math # Enable aggressive floating-point optimizations
 		PRIVATE -fno-exceptions # Disable support for exception-handling
 		PRIVATE $<${use_sse2}:-msse2> # Enable SSE2 instructions
 		PRIVATE $<${use_sse4_2}:-msse4.2> # Enable SSE4.2 instructions

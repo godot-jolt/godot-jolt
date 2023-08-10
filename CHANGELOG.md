@@ -9,6 +9,10 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue where collision normals would sometimes be flipped for no apparent reason.
+
 ## [0.5.0] - 2023-08-08
 
 ### Removed
