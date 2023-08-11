@@ -160,6 +160,10 @@ void JoltJointImpl3D::_shift_reference_frames(
 	const Basis& basis_a = local_ref_a.basis;
 	const Basis& basis_b = local_ref_b.basis;
 
+	// HACK(mihe): Ideally we would add the linear shift here, not subtract it, but this is how
+	// Godot Physics seems to behave, so we emulate that. This does have the annoying side-effect of
+	// effectively making the upper limit instead be the lower limit and vice versa.
+
 	const Basis shifted_basis_a = basis_a * Basis::from_euler(p_angular_shift);
 	const Vector3 shifted_origin_a = origin_a - basis_a.xform(p_linear_shift);
 
