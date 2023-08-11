@@ -9,6 +9,10 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- All the substitute joints (`JoltPinJoint3D`, etc.) have their own editor gizmo now.
+
 ### Fixed
 
 - Fixed issue where collision normals would sometimes be flipped for no apparent reason.

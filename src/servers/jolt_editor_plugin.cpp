@@ -24,7 +24,7 @@ void JoltEditorPlugin::_enter_tree() {
 
 	base_control->set_theme(theme);
 
-	joint_gizmo_plugin.instantiate();
+	joint_gizmo_plugin = Ref(memnew(JoltJointGizmoPlugin3D(editor_interface)));
 	add_node_3d_gizmo_plugin(joint_gizmo_plugin);
 }
 
