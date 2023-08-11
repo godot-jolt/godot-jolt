@@ -103,6 +103,15 @@ public:
 		[[maybe_unused]] const JPH::ShapeFilter& p_shape_filter = {}
 	) const override { }
 
+	void CollideSoftBodyVertices(
+		[[maybe_unused]] JPH::Mat44Arg p_center_of_mass_transform,
+		[[maybe_unused]] JPH::Vec3Arg p_scale,
+		[[maybe_unused]] JPH::Array<JPH::SoftBodyVertex>& p_vertices,
+		[[maybe_unused]] float p_delta_time,
+		[[maybe_unused]] JPH::Vec3Arg p_displacement_due_to_gravity,
+		[[maybe_unused]] int p_colliding_shape_index
+	) const override { }
+
 	void GetTrianglesStart(
 		[[maybe_unused]] GetTrianglesContext& p_context,
 		[[maybe_unused]] const JPH::AABox& p_box,
