@@ -323,10 +323,10 @@ JPH::Constraint* JoltHingeJointImpl3D::_build_hinge(
 
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
 	constraint_settings.mPoint1 = to_jolt(p_shifted_ref_a.origin);
-	constraint_settings.mHingeAxis1 = to_jolt(-p_shifted_ref_a.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mHingeAxis1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mNormalAxis1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPoint2 = to_jolt(p_shifted_ref_b.origin);
-	constraint_settings.mHingeAxis2 = to_jolt(-p_shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mHingeAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mNormalAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mLimitsMin = -p_limit;
 	constraint_settings.mLimitsMax = p_limit;
