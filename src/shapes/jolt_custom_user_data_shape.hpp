@@ -168,6 +168,24 @@ public:
 		mInnerShape->CollidePoint(p_point, p_sub_shape_id_creator, p_collector, p_shape_filter);
 	}
 
+	void CollideSoftBodyVertices(
+		JPH::Mat44Arg p_center_of_mass_transform,
+		JPH::Vec3Arg p_scale,
+		JPH::Array<JPH::SoftBodyVertex>& p_vertices,
+		float p_delta_time,
+		JPH::Vec3Arg p_displacement_due_to_gravity,
+		int p_colliding_shape_index
+	) const override {
+		mInnerShape->CollideSoftBodyVertices(
+			p_center_of_mass_transform,
+			p_scale,
+			p_vertices,
+			p_delta_time,
+			p_displacement_due_to_gravity,
+			p_colliding_shape_index
+		);
+	}
+
 	void CollectTransformedShapes(
 		const JPH::AABox& p_box,
 		JPH::Vec3Arg p_position_com,

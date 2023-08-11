@@ -170,7 +170,7 @@ bool JoltContactListener3D::_try_apply_surface_velocities(
 	const JPH::Vec3 angular_linear_velocity2 = rel_com2.Cross(angular_velocity2);
 	const JPH::Vec3 total_linear_velocity2 = linear_velocity2 + angular_linear_velocity2;
 
-	p_settings.mRelativeSurfaceVelocity = total_linear_velocity2 - linear_velocity1;
+	p_settings.mRelativeLinearSurfaceVelocity = total_linear_velocity2 - linear_velocity1;
 	p_settings.mRelativeAngularSurfaceVelocity = angular_velocity2 - angular_velocity1;
 
 	return true;
