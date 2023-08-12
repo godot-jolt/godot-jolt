@@ -27,7 +27,7 @@ set(dev_definitions
 
 gdj_add_external_library(jolt "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/jolt.git
-	GIT_COMMIT 153291b7c6e294d727c707fd0734c038cc2fdce0
+	GIT_COMMIT 0dbba692a8eee68f306433283f38028c67616d0b
 	LANGUAGE CXX
 	SOURCE_SUBDIR Build
 	OUTPUT_NAME Jolt
