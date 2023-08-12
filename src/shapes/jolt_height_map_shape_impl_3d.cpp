@@ -40,18 +40,7 @@ String JoltHeightMapShapeImpl3D::to_string() const {
 JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build() const {
 	const auto height_count = (int32_t)heights.size();
 
-	// NOTE(mihe): This somewhat arbitrary limit depends on what the block size is set to, which by
-	// default is 2. If it's set any higher then so would this limit need to be.
-	ERR_FAIL_COND_D_MSG(
-		height_count < 16,
-		vformat(
-			"Failed to build height map shape with %s. "
-			"Height count must be at least 16. "
-			"This shape belongs to %s.",
-			to_string(),
-			_owners_to_string()
-		)
-	);
+	QUIET_FAIL_COND_D(height_count == 0);
 
 	ERR_FAIL_COND_D_MSG(
 		height_count != width * depth,
@@ -65,41 +54,45 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build() const {
 	);
 
 	ERR_FAIL_COND_D_MSG(
-		width != depth,
+		width < 2 || depth < 2,
 		vformat(
 			"Failed to build height map shape with %s. "
-			"Width must be equal to depth. "
+			"The height map must be at least 2x2. "
 			"This shape belongs to %s.",
 			to_string(),
 			_owners_to_string()
 		)
 	);
 
-	ERR_FAIL_COND_D_MSG(
-		!is_power_of_2((uint32_t)width),
-		vformat(
-			"Failed to build height map shape with %s. "
-			"Width/depth must be a power-of-two. "
-			"This shape belongs to %s.",
-			to_string(),
-			_owners_to_string()
-		)
-	);
+	if (width != depth) {
+		return _build_mesh();
+	}
 
-	const int32_t segments_width = width - 1;
-	const int32_t segments_height = depth - 1;
+	const int32_t block_size = 2; // Default of JPH::HeightFieldShapeSettings::mBlockSize
+	const int32_t block_count = width / block_size;
 
-	const float segments_half_width = (float)segments_width / 2.0f;
-	const float segments_half_depth = (float)segments_height / 2.0f;
+	if (block_count < 2) {
+		return _build_mesh();
+	}
 
-	const JPH::HeightFieldShapeSettings shape_settings(
+	return _build_height_field();
+}
+
+JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
+	const int32_t quad_count_x = width - 1;
+	const int32_t quad_count_y = depth - 1;
+
+	const float offset_x = (float)-quad_count_x / 2.0f;
+	const float offset_y = (float)-quad_count_y / 2.0f;
+
+	JPH::HeightFieldShapeSettings shape_settings(
 		heights.ptr(),
-		JPH::Vec3(-segments_half_width, 0, -segments_half_depth),
+		JPH::Vec3(offset_x, 0, offset_y),
 		JPH::Vec3::sReplicate(1.0f),
 		(JPH::uint32)width
 	);
 
-	// TOOD(mihe): Calculate the necessary bits per sample using `CalculateBitsPerSampleForError`
+	shape_settings.mBitsPerSample = shape_settings.CalculateBitsPerSampleForError(0.0f);
 
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
@@ -107,6 +100,68 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build() const {
 		shape_result.HasError(),
 		vformat(
 			"Failed to build height map shape with %s. "
+			"It returned the following error: '%s'. "
+			"This shape belongs to %s.",
+			to_string(),
+			to_godot(shape_result.GetError()),
+			_owners_to_string()
+		)
+	);
+
+	return shape_result.Get();
+}
+
+JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_mesh() const {
+	const auto height_count = (int32_t)heights.size();
+
+	const int32_t quad_count_x = width - 1;
+	const int32_t quad_count_z = depth - 1;
+
+	const int32_t quad_count = quad_count_x * quad_count_z;
+	const int32_t triangle_count = quad_count * 2;
+
+	JPH::VertexList vertices;
+	vertices.reserve((size_t)height_count);
+
+	JPH::IndexedTriangleList indices;
+	indices.reserve((size_t)triangle_count);
+
+	const float offset_x = (float)-quad_count_x / 2.0f;
+	const float offset_z = (float)-quad_count_z / 2.0f;
+
+	for (int32_t z = 0; z < depth; ++z) {
+		for (int32_t x = 0; x < width; ++x) {
+			const float vertex_x = offset_x + (float)x;
+			const float vertex_y = heights[z * width + x];
+			const float vertex_z = offset_z + (float)z;
+
+			vertices.emplace_back(vertex_x, vertex_y, vertex_z);
+		}
+	}
+
+	auto to_index = [&](int32_t p_x, int32_t p_z) {
+		return (p_z * width) + p_x;
+	};
+
+	for (int32_t z = 0; z < quad_count_z; ++z) {
+		for (int32_t x = 0; x < quad_count_x; ++x) {
+			const int32_t lr = to_index(x + 0, z + 0);
+			const int32_t ll = to_index(x + 1, z + 0);
+			const int32_t ur = to_index(x + 0, z + 1);
+			const int32_t ul = to_index(x + 1, z + 1);
+
+			indices.emplace_back(lr, ur, ll);
+			indices.emplace_back(ll, ur, ul);
+		}
+	}
+
+	const JPH::MeshShapeSettings shape_settings(std::move(vertices), std::move(indices));
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to build height map shape (as polygon) with %s. "
 			"It returned the following error: '%s'. "
 			"This shape belongs to %s.",
 			to_string(),
