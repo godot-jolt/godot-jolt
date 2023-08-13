@@ -1,5 +1,11 @@
 #include "jolt_height_map_shape_impl_3d.hpp"
 
+namespace {
+
+const float ACTIVE_EDGE_THRESHOLD = Math::cos(Math::deg_to_rad(50.0f));
+
+} // namespace
+
 Variant JoltHeightMapShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["width"] = width;
@@ -93,6 +99,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
 	);
 
 	shape_settings.mBitsPerSample = shape_settings.CalculateBitsPerSampleForError(0.0f);
+	shape_settings.mActiveEdgeCosThresholdAngle = ACTIVE_EDGE_THRESHOLD;
 
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
@@ -155,7 +162,9 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_mesh() const {
 		}
 	}
 
-	const JPH::MeshShapeSettings shape_settings(std::move(vertices), std::move(indices));
+	JPH::MeshShapeSettings shape_settings(std::move(vertices), std::move(indices));
+	shape_settings.mActiveEdgeCosThresholdAngle = ACTIVE_EDGE_THRESHOLD;
+
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
