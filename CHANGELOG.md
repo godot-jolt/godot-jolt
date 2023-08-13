@@ -19,7 +19,7 @@ Breaking changes are denoted with ⚠️.
 
 ### Fixed
 
-- Fixed issue where collision normals would sometimes be flipped for no apparent reason.
+- Fixed issue where bodies would catch on internal edges of `ConcavePolygonShape3D`.
 
 ## [0.5.0] - 2023-08-08
 
