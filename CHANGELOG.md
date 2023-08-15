@@ -9,6 +9,17 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- ⚠️ Ray-casts will no longer hit the back-faces of `ConcavePolygonShape3D` if its `hit_back_faces`
+  parameter is set to `false`, regardless of what the `backface_collision` property of the
+  `ConcavePolygonShape3D` is set to.
+
+### Fixed
+
+- Fixed issue where ray-casting a `ConcavePolygonShape3D` that had `backface_collision` enabled, you
+  would sometimes end up with a flipped normal.
+
 ## [0.6.0] - 2023-08-17
 
 ### Changed

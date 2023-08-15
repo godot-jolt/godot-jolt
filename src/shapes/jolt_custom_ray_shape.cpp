@@ -98,9 +98,18 @@ void collide_ray_vs_shape(
 	const JPH::Vec3 hit_point_on_1 = ray_start + ray_vector;
 	const JPH::Vec3 hit_point_on_2 = transform2 * hit_point2;
 
-	const JPH::Vec3 hit_normal2 = shape1->slide_on_slope
-		? p_shape2->GetSurfaceNormal(hit.mSubShapeID2, hit_point2)
-		: -ray_direction2;
+	JPH::Vec3 hit_normal2 = JPH::Vec3::sZero();
+
+	if (shape1->slide_on_slope) {
+		hit_normal2 = p_shape2->GetSurfaceNormal(hit.mSubShapeID2, hit_point2);
+
+		// HACK(mihe): If we got a back-face normal we need to flip it
+		if (hit_normal2.Dot(ray_direction2) > 0) {
+			hit_normal2 = -hit_normal2;
+		}
+	} else {
+		hit_normal2 = -ray_direction2;
+	}
 
 	const JPH::Vec3 hit_normal = transform2.Multiply3x3(hit_normal2);
 

@@ -1,5 +1,6 @@
 #include "jolt_globals.hpp"
 
+#include "shapes/jolt_custom_double_sided_shape.hpp"
 #include "shapes/jolt_custom_empty_shape.hpp"
 #include "shapes/jolt_custom_ray_shape.hpp"
 #include "shapes/jolt_custom_user_data_shape.hpp"
@@ -64,6 +65,7 @@ void jolt_initialize() {
 	JoltCustomEmptyShape::register_type();
 	JoltCustomRayShape::register_type();
 	JoltCustomUserDataShape::register_type();
+	JoltCustomDoubleSidedShape::register_type();
 }
 
 void jolt_deinitialize() {

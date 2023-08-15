@@ -64,7 +64,13 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	ERR_FAIL_NULL_D(object);
 
 	const JPH::Vec3 position = ray.GetPointOnRay(hit.mFraction);
-	const JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(sub_shape_id, position);
+
+	JPH::Vec3 normal = body->GetWorldSpaceSurfaceNormal(sub_shape_id, position);
+
+	// HACK(mihe): If we got a back-face normal we need to flip it
+	if (normal.Dot(vector) > 0) {
+		normal = -normal;
+	}
 
 	const ObjectID object_id = object->get_instance_id();
 
