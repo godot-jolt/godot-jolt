@@ -1,5 +1,7 @@
 #include "jolt_concave_polygon_shape_impl_3d.hpp"
 
+#include "shapes/jolt_custom_double_sided_shape.hpp"
+
 namespace {
 
 const float ACTIVE_EDGE_THRESHOLD = Math::cos(Math::deg_to_rad(50.0f));
@@ -86,14 +88,6 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build() const {
 			JPH::Float3(v1->x, v1->y, v1->z),
 			JPH::Float3(v0->x, v0->y, v0->z)
 		);
-
-		if (backface_collision) {
-			jolt_faces.emplace_back(
-				JPH::Float3(v0->x, v0->y, v0->z),
-				JPH::Float3(v1->x, v1->y, v1->z),
-				JPH::Float3(v2->x, v2->y, v2->z)
-			);
-		}
 	}
 
 	JPH::MeshShapeSettings shape_settings(jolt_faces);
@@ -110,6 +104,30 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build() const {
 			to_string(),
 			to_godot(shape_result.GetError()),
 			_owners_to_string()
+		)
+	);
+
+	JPH::ShapeRefC shape = shape_result.Get();
+
+	if (backface_collision) {
+		return _build_double_sided(shape);
+	}
+
+	return shape;
+}
+
+JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build_double_sided(const JPH::Shape* p_shape) const {
+	ERR_FAIL_NULL_D(p_shape);
+
+	const JoltCustomDoubleSidedShapeSettings shape_settings(p_shape);
+	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to make shape double-sided. "
+			"It returned the following error: '%s'.",
+			to_godot(shape_result.GetError())
 		)
 	);
 

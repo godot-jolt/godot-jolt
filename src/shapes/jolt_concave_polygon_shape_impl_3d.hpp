@@ -21,6 +21,8 @@ public:
 private:
 	JPH::ShapeRefC _build() const override;
 
+	JPH::ShapeRefC _build_double_sided(const JPH::Shape* p_shape) const;
+
 	PackedVector3Array faces;
 
 	bool backface_collision = false;
