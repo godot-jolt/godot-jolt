@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.6.0] - 2023-08-17
+
 ### Changed
 
 - Changed the editor gizmo for `JoltPinJoint3D`.
@@ -187,7 +189,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.5.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.6.0-stable...HEAD
+[0.6.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.5.0-stable...v0.6.0-stable
 [0.5.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.4.1-stable...v0.5.0-stable
 [0.4.1]: https://github.com/godot-jolt/godot-jolt/compare/v0.4.0-stable...v0.4.1-stable
 [0.4.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.3.0-stable...v0.4.0-stable
