@@ -159,6 +159,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 	settings.mMaxSeparationDistance = (float)p_margin;
 
 	const JoltQueryFilter3D
@@ -234,6 +235,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 	settings.mMaxSeparationDistance = (float)p_margin;
 
 	const JoltQueryFilter3D
@@ -289,6 +291,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 	settings.mMaxSeparationDistance = (float)p_margin;
 
 	const Vector3& base_offset = transform_com.origin;
@@ -355,6 +358,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 	settings.mMaxSeparationDistance = (float)p_margin;
 
 	const Vector3& base_offset = transform_com.origin;
@@ -512,10 +516,8 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	Vector3 scale;
 	Transform3D transform = Math::decomposed(p_transform, scale);
 
-	const Vector3 direction = p_motion.normalized();
-
 	Vector3 recovery;
-	const bool recovered = _body_motion_recover(p_body, transform, direction, p_margin, recovery);
+	const bool recovered = _body_motion_recover(p_body, transform, p_margin, recovery);
 
 	transform.origin += recovery;
 
@@ -538,7 +540,6 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		collided = _body_motion_collide(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),
-			direction,
 			p_margin,
 			p_max_collisions,
 			p_result
@@ -709,7 +710,6 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_direction,
 	float p_margin,
 	Vector3& p_recovery
 ) const {
@@ -722,8 +722,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 	Transform3D transform_com = p_transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
-	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
-	settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 	settings.mMaxSeparationDistance = p_margin;
 
 	const Vector3& base_offset = transform_com.origin;
@@ -826,7 +825,8 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 ) const {
 	const Transform3D body_transform = p_transform.scaled_local(p_scale);
 
-	const JPH::CollideShapeSettings settings;
+	JPH::CollideShapeSettings settings;
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 
 	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
 
@@ -882,7 +882,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_direction,
 	float p_margin,
 	int32_t p_max_collisions,
 	PhysicsServer3DExtensionMotionResult* p_result
@@ -893,8 +892,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const Transform3D transform_com = p_transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
-	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
-	settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
+	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 	settings.mMaxSeparationDistance = p_margin;
 
 	const Vector3& base_offset = transform_com.origin;
