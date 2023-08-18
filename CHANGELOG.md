@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Removed
+
+- ⚠️ Disabled the `JoltDebugGeometry3D` node for all distributed builds. If you still need it, build
+  from source using the `*-development` or `*-debug` configurations.
+
 ### Changed
 
 - ⚠️ Ray-casts will no longer hit the back-faces of `ConcavePolygonShape3D` if its `hit_back_faces`

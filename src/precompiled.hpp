@@ -1,5 +1,9 @@
 #pragma once
 
+// NOLINTBEGIN(readability-duplicate-include): We need to be able to include certain headers
+// multiple times when they're conditionally included through multiple preprocessor definitions that
+// might not be perfectly mutually exclusive.
+
 #ifdef _MSC_VER
 // HACK(mihe): CMake's Visual Studio generator doesn't support system include paths
 #pragma warning(push, 0)
@@ -48,6 +52,7 @@
 #include <godot_cpp/classes/editor_node3d_gizmo_plugin.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/editor_settings.hpp>
+#include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/classes/timer.hpp>
 
@@ -149,3 +154,5 @@ using namespace godot;
 #include "misc/scope_guard.hpp"
 #include "misc/type_conversions.hpp"
 #include "misc/utility_functions.hpp"
+
+// NOLINTEND(readability-duplicate-include)
