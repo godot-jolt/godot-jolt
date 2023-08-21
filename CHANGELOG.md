@@ -24,6 +24,8 @@ Breaking changes are denoted with ⚠️.
 
 - Fixed issue where ray-casting a `ConcavePolygonShape3D` that had `backface_collision` enabled, you
   would sometimes end up with a flipped normal.
+- Fixed issue where a `CharacterBody3D` using `move_and_slide` could sometimes get stuck when
+  sliding along a wall.
 
 ## [0.6.0] - 2023-08-17
 

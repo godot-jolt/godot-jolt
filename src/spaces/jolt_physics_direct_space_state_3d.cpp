@@ -512,7 +512,14 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	Vector3 scale;
 	Transform3D transform = Math::decomposed(p_transform, scale);
 
-	const Vector3 direction = p_motion.normalized();
+	const float distance_sq = p_motion.length_squared();
+	float distance = 0.0f;
+	Vector3 direction = {};
+
+	if (distance_sq > 0.0f) {
+		distance = Math::sqrt(distance_sq);
+		direction = p_motion / distance;
+	}
 
 	Vector3 recovery;
 	const bool recovered = _body_motion_recover(p_body, transform, direction, p_margin, recovery);
@@ -539,6 +546,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),
 			direction,
+			distance,
 			p_margin,
 			p_max_collisions,
 			p_result
@@ -883,6 +891,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_direction,
+	float p_distance,
 	float p_margin,
 	int32_t p_max_collisions,
 	PhysicsServer3DExtensionMotionResult* p_result
@@ -922,10 +931,24 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		return collided;
 	}
 
-	p_result->collision_count = collector.get_hit_count();
+	// HACK(mihe): Without this contact depth threshold we can sometimes end up with very shallow
+	// contacts that seem to affect the outcome of things like `floor_block_on_wall`, where after
+	// one of the recovery iterations (in Godot, not here) we can still find ourselves penetrating a
+	// wall ever so slightly, which `move_and_slide` will interpret as being trapped in a corner and
+	// stop the character altogether. We still need to movements smaller than this to actually emit
+	// contacts though, so we clamp it by the distance moved.
+	const float min_contact_depth = min(p_margin * 0.05f, p_distance);
 
-	for (int32_t i = 0; i < p_result->collision_count; ++i) {
+	int32_t count = 0;
+
+	for (int32_t i = 0; i < collector.get_hit_count(); ++i) {
 		const JPH::CollideShapeResult& hit = collector.get_hit(i);
+
+		const float penetration_depth = hit.mPenetrationDepth + p_margin - min_contact_depth;
+
+		if (penetration_depth <= 0.0f) {
+			continue;
+		}
 
 		const JoltReadableBody3D collider_jolt_body = space->read_body(hit.mBodyID2);
 		const JoltObjectImpl3D* collider = collider_jolt_body.as_object();
@@ -939,18 +962,20 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		const int32_t collider_shape = collider->find_shape_index(hit.mSubShapeID2);
 		ERR_FAIL_COND_D(collider_shape == -1);
 
-		PhysicsServer3DExtensionMotionCollision& collision = p_result->collisions[i];
+		PhysicsServer3DExtensionMotionCollision& collision = p_result->collisions[count++];
 
 		collision.position = position;
 		collision.normal = to_godot(-hit.mPenetrationAxis.Normalized());
 		collision.collider_velocity = collider->get_velocity_at_position(position, false);
 		collision.collider_angular_velocity = collider->get_angular_velocity(false);
-		collision.depth = hit.mPenetrationDepth + p_margin;
+		collision.depth = penetration_depth;
 		collision.local_shape = local_shape;
 		collision.collider_id = collider->get_instance_id();
 		collision.collider = collider->get_rid();
 		collision.collider_shape = collider_shape;
 	}
 
-	return true;
+	p_result->collision_count = count;
+
+	return count > 0;
 }
