@@ -117,7 +117,7 @@ void JoltProjectSettings::register_settings() {
 	register_setting_hinted(SLEEP_VELOCITY_THRESHOLD, 0.03f, U"suffix:m/s");
 	register_setting_ranged(SLEEP_TIME_THRESHOLD, 0.5f, U"0,5,0.01,or_greater,suffix:s");
 
-	register_setting_plain(USE_SHAPE_MARGINS, true, true);
+	register_setting_plain(USE_SHAPE_MARGINS, true);
 	register_setting_plain(AREAS_DETECT_STATIC, false);
 
 	register_setting_ranged(CCD_MOVEMENT_THRESHOLD, 75.0f, U"0,100,0.1,suffix:%");
