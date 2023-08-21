@@ -14,6 +14,7 @@ constexpr char CCD_MAX_PENETRATION[] = "physics/jolt_3d/continuous_cd/max_penetr
 
 constexpr char RECOVERY_ITERATIONS[] = "physics/jolt_3d/kinematics/recovery_iterations";
 constexpr char RECOVERY_AMOUNT[] = "physics/jolt_3d/kinematics/recovery_amount";
+constexpr char IGNORE_INTERNAL_EDGES[] = "physics/jolt_3d/kinematics/ignore_internal_edges";
 
 constexpr char POSITION_ITERATIONS[] = "physics/jolt_3d/solver/position_iterations";
 constexpr char VELOCITY_ITERATIONS[] = "physics/jolt_3d/solver/velocity_iterations";
@@ -125,6 +126,7 @@ void JoltProjectSettings::register_settings() {
 
 	register_setting_ranged(RECOVERY_ITERATIONS, 4, U"1,8,or_greater");
 	register_setting_ranged(RECOVERY_AMOUNT, 40.0f, U"0,100,0.1,suffix:%");
+	register_setting_plain(IGNORE_INTERNAL_EDGES, true);
 
 	register_setting_ranged(VELOCITY_ITERATIONS, 10, U"2,16,or_greater");
 	register_setting_ranged(POSITION_ITERATIONS, 2, U"1,16,or_greater");
@@ -183,6 +185,11 @@ int32_t JoltProjectSettings::get_kinematic_recovery_iterations() {
 
 float JoltProjectSettings::get_kinematic_recovery_amount() {
 	static const auto value = get_setting<float>(RECOVERY_AMOUNT) / 100.0f;
+	return value;
+}
+
+bool JoltProjectSettings::kinematics_ignore_internal_edges() {
+	static const auto value = get_setting<bool>(IGNORE_INTERNAL_EDGES);
 	return value;
 }
 

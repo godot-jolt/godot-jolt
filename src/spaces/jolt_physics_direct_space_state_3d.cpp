@@ -730,8 +730,14 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 	Transform3D transform_com = p_transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
-	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
-	settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
+
+	if (JoltProjectSettings::kinematics_ignore_internal_edges()) {
+		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
+		settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
+	} else {
+		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
+	}
+
 	settings.mMaxSeparationDistance = p_margin;
 
 	const Vector3& base_offset = transform_com.origin;
@@ -902,9 +908,14 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const Transform3D transform_com = p_transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
-	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
-	settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
 	settings.mMaxSeparationDistance = p_margin;
+
+	if (JoltProjectSettings::kinematics_ignore_internal_edges()) {
+		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
+		settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
+	} else {
+		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
+	}
 
 	const Vector3& base_offset = transform_com.origin;
 
