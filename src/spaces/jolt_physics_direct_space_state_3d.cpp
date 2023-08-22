@@ -601,7 +601,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 
 	const float motion_length = p_motion.length();
 
-	if (motion_length == 0.0f) {
+	if (p_ignore_overlaps && motion_length == 0.0f) {
 		return false;
 	}
 
