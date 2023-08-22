@@ -22,6 +22,8 @@ Breaking changes are denoted with ⚠️.
 
 ### Fixed
 
+- ⚠️ Fixed regression where a motored `HingeJoint3D` (or `JoltHingeJoint3D`) would rotate
+  counter-clockwise instead of clockwise.
 - Fixed issue where ray-casting a `ConcavePolygonShape3D` that had `backface_collision` enabled, you
   would sometimes end up with a flipped normal.
 - Fixed issue where a `CharacterBody3D` using `move_and_slide` could sometimes get stuck when

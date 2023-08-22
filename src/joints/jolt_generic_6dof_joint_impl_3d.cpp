@@ -599,9 +599,7 @@ void JoltGeneric6DOFJointImpl3D::_update_motor_velocity(int32_t p_axis) {
 			 (float)motor_speed[AXIS_LINEAR_Z]}
 		);
 	} else {
-		// HACK(mihe): We're forced to flip the direction of these to match Godot Physics. This
-		// means that the velocity direction is inconsistent with the velocity direction for
-		// things like hinge joints.
+		// HACK(mihe): We're forced to flip the direction of these to match Godot Physics.
 		constraint->SetTargetAngularVelocityCS(
 			{(float)-motor_speed[AXIS_ANGULAR_X],
 			 (float)-motor_speed[AXIS_ANGULAR_Y],
