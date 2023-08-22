@@ -931,13 +931,13 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		return collided;
 	}
 
-	// HACK(mihe): Without this contact depth threshold we can sometimes end up with very shallow
-	// contacts that seem to affect the outcome of things like `floor_block_on_wall`, where after
+	// HACK(mihe): Without this minimum contact depth we can sometimes end up with very shallow
+	// contacts that end up affecting the outcome of things like `floor_block_on_wall`, where after
 	// one of the recovery iterations (in Godot, not here) we can still find ourselves penetrating a
 	// wall ever so slightly, which `move_and_slide` will interpret as being trapped in a corner and
-	// stop the character altogether. We still need to movements smaller than this to actually emit
-	// contacts though, so we clamp it by the distance moved.
-	const float min_contact_depth = min(p_margin * 0.05f, p_distance);
+	// stop the character altogether. We still need distances smaller than this (like none at all)
+	// to actually emit contacts though, so we clamp it by the distance moved.
+	const float min_contact_depth = min(0.0001f, p_distance);
 
 	int32_t count = 0;
 
