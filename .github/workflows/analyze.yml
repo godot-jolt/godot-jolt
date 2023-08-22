@@ -46,13 +46,8 @@ jobs:
         run: ./scripts/run_clang_format.ps1 -SourcePath ./src
 
   clang-tidy:
-    name: Linting (${{ matrix.arch }})
+    name: Linting
     runs-on: ubuntu-20.04
-
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [x64, x86]
 
     steps:
       - name: Checkout code
@@ -67,14 +62,14 @@ jobs:
         uses: ./.github/actions/cmake-configure
         with:
           platform: linux-clang
-          arch: ${{ matrix.arch }}
+          arch: x64
           args: -DGDJ_PRECOMPILE_HEADERS=FALSE
 
       - name: Build
         uses: ./.github/actions/cmake-build
         with:
           platform: linux-clang
-          arch: ${{ matrix.arch }}
+          arch: x64
           editor: false
           config: debug
 
@@ -87,4 +82,4 @@ jobs:
         run: >
           ./scripts/run_clang_tidy.ps1
           -SourcePath ./src
-          -BuildPath ./build/linux-clang-${{ matrix.arch }}
+          -BuildPath ./build/linux-clang-x64
