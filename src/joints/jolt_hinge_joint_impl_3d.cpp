@@ -381,7 +381,8 @@ void JoltHingeJointImpl3D::_update_motor_velocity() {
 	QUIET_FAIL_COND(_is_fixed());
 
 	if (auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr())) {
-		constraint->SetTargetAngularVelocity((float)motor_target_speed);
+		// HACK(mihe): We're forced to flip the direction of these to match Godot Physics.
+		constraint->SetTargetAngularVelocity((float)-motor_target_speed);
 	}
 }
 
