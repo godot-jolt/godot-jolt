@@ -91,8 +91,27 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
 	const float offset_x = (float)-quad_count_x / 2.0f;
 	const float offset_y = (float)-quad_count_y / 2.0f;
 
+	// HACK(mihe): Jolt triangulates the height map differently from how Godot Physics does it, so
+	// we mirror the shape along the Z-axis to get the desired triangulation and reverse the rows to
+	// undo the mirroring.
+
+	LocalVector<float> heights_rev;
+	heights_rev.resize((int32_t)heights.size());
+
+	const float* heights_ptr = heights.ptr();
+	float* heights_rev_ptr = heights_rev.ptr();
+
+	for (int32_t z = 0; z < depth; ++z) {
+		const int32_t z_rev = (depth - 1) - z;
+
+		const float* row = heights_ptr + ptrdiff_t(z * width);
+		float* row_rev = heights_rev_ptr + ptrdiff_t(z_rev * width);
+
+		std::copy_n(row, width, row_rev);
+	}
+
 	JPH::HeightFieldShapeSettings shape_settings(
-		heights.ptr(),
+		heights_rev.ptr(),
 		JPH::Vec3(offset_x, 0, offset_y),
 		JPH::Vec3::sReplicate(1.0f),
 		(JPH::uint32)width
@@ -115,7 +134,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
 		)
 	);
 
-	return shape_result.Get();
+	return with_scale(shape_result.Get(), Vector3(1, 1, -1));
 }
 
 JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_mesh() const {

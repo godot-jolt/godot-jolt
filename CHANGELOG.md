@@ -19,6 +19,7 @@ Breaking changes are denoted with ⚠️.
 - ⚠️ Ray-casts will no longer hit the back-faces of `ConcavePolygonShape3D` if its `hit_back_faces`
   parameter is set to `false`, regardless of what the `backface_collision` property of the
   `ConcavePolygonShape3D` is set to.
+- ⚠️ Changed the triangulation of `HeightMapShape3D` to match Godot Physics.
 
 ### Fixed
 
