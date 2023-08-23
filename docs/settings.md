@@ -251,6 +251,19 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       <td>-</td>
     </tr>
     <tr>
+      <td>Kinematics</td>
+      <td>Ignore Internal Edges</td>
+      <td>
+        Whether or not to "ignore" collisions with internal triangle edges.
+      </td>
+      <td>
+        When enabled, this will (for things like <code>move_and_slide</code>) result in contacts
+        with internal triangle edges of a <code>ConcavePolygonShape3D</code> or
+        <code>HeightMapShape3D</code> to have their normals overridden with the triangle normal,
+        allowing bodies to slide across the edge smoothly, effectively ignoring them.
+      </td>
+    </tr>
+    <tr>
       <td>Solver</td>
       <td>Velocity Iterations</td>
       <td>The number of solver velocity iterations to run during a physics tick.</td>
