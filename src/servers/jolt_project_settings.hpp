@@ -22,8 +22,6 @@ public:
 
 	static float get_kinematic_recovery_amount();
 
-	static bool kinematics_ignore_internal_edges();
-
 	static int32_t get_velocity_iterations();
 
 	static int32_t get_position_iterations();

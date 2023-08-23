@@ -20,13 +20,6 @@ Breaking changes are denoted with ⚠️.
   parameter is set to `false`, regardless of what the `backface_collision` property of the
   `ConcavePolygonShape3D` is set to.
 
-### Added
-
-- Added project setting "Ignore Internal Edges" to the "Kinematics" category, which when disabled
-  will make the normals reported by kinematic collisions like `move_and_collide`, `move_and_slide`
-  and `test_move` behave more like they do in Godot Physics when colliding with internal edges of a
-  `ConcavePolygonShape3D` or `HeightMapShape3D`.
-
 ### Fixed
 
 - ⚠️ Fixed regression where a motored `HingeJoint3D` (or `JoltHingeJoint3D`) would rotate
