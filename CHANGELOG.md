@@ -29,6 +29,8 @@ Breaking changes are denoted with ⚠️.
   would sometimes end up with a flipped normal.
 - Fixed issue where a `CharacterBody3D` using `move_and_slide` could sometimes get stuck when
   sliding along a wall.
+- Fixed issue where attaching a `RigidBody3D` with locked axes to a joint could result in NaN
+  velocities/position and subsequently a lot of random errors being emitted from within Godot.
 
 ## [0.6.0] - 2023-08-17
 
