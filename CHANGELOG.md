@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.7.0] - 2023-08-29
+
 ### Removed
 
 - ⚠️ Disabled the `JoltDebugGeometry3D` node for all distributed builds. If you still need it, build
@@ -212,7 +214,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.6.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.7.0-stable...HEAD
+[0.7.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.6.0-stable...v0.7.0-stable
 [0.6.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.5.0-stable...v0.6.0-stable
 [0.5.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.4.1-stable...v0.5.0-stable
 [0.4.1]: https://github.com/godot-jolt/godot-jolt/compare/v0.4.0-stable...v0.4.1-stable
