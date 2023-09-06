@@ -49,7 +49,7 @@ should not be relied upon if determinism is a hard requirement.
 - `Area3D` detecting static bodies is opt-in, with a potentially [heavy performance/memory
   cost][jst]
 - Joints only support soft limits through their substitutes (`JoltHingeJoint3D`, etc.)
-- Springs and motors are actually implemented in `Generic6DOFJoint3D`
+- Springs and linear motors are actually implemented in `Generic6DOFJoint3D`
 - Ray-casts using `hit_back_faces` will hit the back/inside of all shapes, not only concave ones
 - Ray-casts are not affected by the `backface_collision` property of `ConcavePolygonShape3D`
 - Shape-casts should be more accurate, but their cost also scale with the cast distance
