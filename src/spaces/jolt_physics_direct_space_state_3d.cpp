@@ -512,17 +512,8 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	Vector3 scale;
 	Transform3D transform = Math::decomposed(p_transform, scale);
 
-	const float distance_sq = p_motion.length_squared();
-	float distance = 0.0f;
-	Vector3 direction = {};
-
-	if (distance_sq > 0.0f) {
-		distance = Math::sqrt(distance_sq);
-		direction = p_motion / distance;
-	}
-
 	Vector3 recovery;
-	const bool recovered = _body_motion_recover(p_body, transform, direction, p_margin, recovery);
+	const bool recovered = _body_motion_recover(p_body, transform, p_margin, recovery);
 
 	transform.origin += recovery;
 
@@ -545,8 +536,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		collided = _body_motion_collide(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),
-			direction,
-			distance,
+			p_motion.length(),
 			p_margin,
 			p_max_collisions,
 			p_result
@@ -717,7 +707,6 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_direction,
 	float p_margin,
 	Vector3& p_recovery
 ) const {
@@ -731,7 +720,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 
 	JPH::CollideShapeSettings settings;
 	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
-	settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
 	settings.mMaxSeparationDistance = p_margin;
 
 	const Vector3& base_offset = transform_com.origin;
@@ -890,7 +878,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
-	const Vector3& p_direction,
 	float p_distance,
 	float p_margin,
 	int32_t p_max_collisions,
@@ -903,7 +890,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 
 	JPH::CollideShapeSettings settings;
 	settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideOnlyWithActive;
-	settings.mActiveEdgeMovementDirection = to_jolt(p_direction);
 	settings.mMaxSeparationDistance = p_margin;
 
 	const Vector3& base_offset = transform_com.origin;
