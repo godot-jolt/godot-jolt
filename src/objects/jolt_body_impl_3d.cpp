@@ -672,16 +672,28 @@ void JoltBodyImpl3D::remove_joint(JoltJointImpl3D* p_joint, bool p_lock) {
 
 void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
 	if (is_rigid() && custom_integration_callback.is_valid()) {
-		static thread_local Array arguments = []() {
-			Array array;
-			array.resize(2);
-			return array;
-		}();
+		if (custom_integration_userdata.get_type() != Variant::NIL) {
+			static thread_local Array arguments = []() {
+				Array array;
+				array.resize(2);
+				return array;
+			}();
 
-		arguments[0] = get_direct_state();
-		arguments[1] = custom_integration_userdata;
+			arguments[0] = get_direct_state();
+			arguments[1] = custom_integration_userdata;
 
-		custom_integration_callback.callv(arguments);
+			custom_integration_callback.callv(arguments);
+		} else {
+			static thread_local Array arguments = []() {
+				Array array;
+				array.resize(1);
+				return array;
+			}();
+
+			arguments[0] = get_direct_state();
+
+			custom_integration_callback.callv(arguments);
+		}
 	}
 
 	if (sync_state && body_state_callback.is_valid()) {
