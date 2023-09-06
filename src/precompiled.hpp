@@ -52,9 +52,12 @@
 #include <godot_cpp/classes/editor_node3d_gizmo_plugin.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/editor_settings.hpp>
+#include <godot_cpp/classes/engine_debugger.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/classes/theme.hpp>
+#include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/classes/timer.hpp>
+#include <godot_cpp/templates/spin_lock.hpp>
 
 #endif // GDJ_CONFIG_EDITOR
 

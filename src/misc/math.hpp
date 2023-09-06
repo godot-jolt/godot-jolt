@@ -13,6 +13,8 @@
 
 // NOLINTEND(readability-identifier-naming)
 
+#define USEC_TO_SEC(m_usec) (double(m_usec) / 1000000.0)
+
 namespace godot::Math {
 
 _FORCE_INLINE_ void decompose(Basis& p_basis, Vector3& p_scale) {

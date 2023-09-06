@@ -1799,6 +1799,10 @@ void JoltPhysicsServer3D::_flush_queries() {
 	}
 
 	flushing_queries = false;
+
+#ifdef GDJ_CONFIG_EDITOR
+	job_system->flush_timings();
+#endif // GDJ_CONFIG_EDITOR
 }
 
 void JoltPhysicsServer3D::_finish() {
