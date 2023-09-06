@@ -9,6 +9,10 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Added
+
+- Added timings of Jolt's various jobs to the "Physics 3D" profiler category.
+
 ### Fixed
 
 - Fixed issue where under certain conditions `move_and_slide` could get stuck on internal edges of a

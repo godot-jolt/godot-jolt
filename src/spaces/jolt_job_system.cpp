@@ -5,8 +5,6 @@
 JoltJobSystem::JoltJobSystem()
 	: JPH::JobSystemWithBarrier(JPH::cMaxPhysicsBarriers)
 	, jobs(JPH::cMaxPhysicsJobs) {
-	singleton = this;
-
 	const int32_t max_threads = JoltProjectSettings::get_max_threads();
 
 	if (max_threads != -1) {
@@ -26,6 +24,33 @@ void JoltJobSystem::post_step() {
 	}
 }
 
+#ifdef GDJ_CONFIG_EDITOR
+
+void JoltJobSystem::flush_timings() {
+	static const StringName profiler_name("servers");
+
+	EngineDebugger* engine_debugger = EngineDebugger::get_singleton();
+
+	if (engine_debugger->is_profiling(profiler_name)) {
+		Array timings;
+
+		for (auto&& [name, usec] : timings_by_job) {
+			timings.push_back(static_cast<const char*>(name));
+			timings.push_back(USEC_TO_SEC(usec));
+		}
+
+		timings.push_front("physics_3d");
+
+		engine_debugger->profiler_add_frame_data(profiler_name, timings);
+	}
+
+	for (auto&& [name, usec] : timings_by_job) {
+		usec = 0;
+	}
+}
+
+#endif // GDJ_CONFIG_EDITOR
+
 JoltJobSystem::Job::Job(
 	const char* p_name,
 	JPH::ColorArg p_color,
@@ -33,7 +58,12 @@ JoltJobSystem::Job::Job(
 	const JPH::JobSystem::JobFunction& p_job_function,
 	JPH::uint32 p_dependency_count
 )
-	: JPH::JobSystem::Job(p_name, p_color, p_job_system, p_job_function, p_dependency_count) { }
+	: JPH::JobSystem::Job(p_name, p_color, p_job_system, p_job_function, p_dependency_count)
+#ifdef GDJ_CONFIG_EDITOR
+	, name(p_name)
+#endif // GDJ_CONFIG_EDITOR
+{
+}
 
 JoltJobSystem::Job::~Job() {
 	if (task_id != -1) {
@@ -70,15 +100,29 @@ void JoltJobSystem::Job::queue() {
 	// HACK(mihe): Ideally we would use Jolt's actual job name here, but I'd rather not incur the
 	// overhead of a memory allocation or thread-safe lookup every time we create/queue a task. So
 	// instead we use the same cached description for all of them.
-	static const String name("JoltPhysics");
+	static const String task_name("JoltPhysics");
 
-	task_id = WorkerThreadPool::get_singleton()->add_native_task(&_execute, this, true, name);
+	task_id = WorkerThreadPool::get_singleton()->add_native_task(&_execute, this, true, task_name);
 }
 
 void JoltJobSystem::Job::_execute(void* p_user_data) {
 	auto* job = static_cast<Job*>(p_user_data);
 
+#ifdef GDJ_CONFIG_EDITOR
+	const uint64_t time_start = Time::get_singleton()->get_ticks_usec();
+#endif // GDJ_CONFIG_EDITOR
+
 	job->Execute();
+
+#ifdef GDJ_CONFIG_EDITOR
+	const uint64_t time_end = Time::get_singleton()->get_ticks_usec();
+	const uint64_t time_elapsed = time_end - time_start;
+
+	timings_lock.lock();
+	timings_by_job[job->name] += time_elapsed;
+	timings_lock.unlock();
+#endif // GDJ_CONFIG_EDITOR
+
 	job->Release();
 }
 
