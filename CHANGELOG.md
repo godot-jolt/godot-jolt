@@ -9,6 +9,12 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue where under certain conditions `move_and_slide` could get stuck on internal edges of a
+  `ConcavePolygonShape3D` if the floor was within 5-ish degrees of `floor_max_angle`.
+- Fixed issue where collision with `ConvexPolygonShape3D` could yield a flipped contact normal.
+
 ## [0.7.0] - 2023-08-29
 
 ### Removed
