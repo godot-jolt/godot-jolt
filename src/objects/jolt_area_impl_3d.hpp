@@ -64,15 +64,11 @@ public:
 
 	void set_area_monitor_callback(const Callable& p_callback);
 
-	bool is_monitoring() const {
-		return has_body_monitor_callback() || has_area_monitor_callback();
-	}
-
 	bool is_monitorable() const { return monitorable; }
 
 	void set_monitorable(bool p_monitorable, bool p_lock = true);
 
-	bool generates_contacts() const override { return is_monitoring(); }
+	bool generates_contacts() const override { return true; }
 
 	bool is_point_gravity() const { return point_gravity; }
 
