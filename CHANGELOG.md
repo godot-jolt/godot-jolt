@@ -26,6 +26,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue with `move_and_slide`, where under certain conditions, while using a `BoxShape3D` or
   `CylinderShape3D` shape, you could get stuck on internal edges of a `ConcavePolygonShape3D`.
 - Fixed issue where collision with `ConvexPolygonShape3D` could yield a flipped contact normal.
+- Fixed issue where an `Area3D` with `monitoring` disabled wouldn't emit any entered events for
+  already overlapping bodies once `monitoring` was enabled.
 
 ## [0.7.0] - 2023-08-29
 
