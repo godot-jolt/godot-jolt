@@ -76,7 +76,13 @@ public:
 
 	void set_material_depth_test(bool p_enabled);
 
+	bool get_snapshot_create() const;
+
+	void set_snapshot_create(bool p_enabled);
+
 private:
+	static JPH::RefConst<JPH::Shape> remove_custom_shapes(const JPH::Shape* p_shape);
+
 #ifdef JPH_DEBUG_RENDERER
 	JoltDebugRenderer3D::DrawSettings draw_settings;
 
@@ -86,6 +92,8 @@ private:
 
 	Ref<StandardMaterial3D> default_material;
 #endif // JPH_DEBUG_RENDERER
+
+	bool snapshot_create = false;
 };
 
 VARIANT_ENUM_CAST(JoltDebugGeometry3D::ColorScheme);
