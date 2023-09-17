@@ -26,6 +26,9 @@ void JoltDebugGeometry3D::_bind_methods() {
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_velocities);
 	BIND_METHOD(JoltDebugGeometry3D, set_draw_velocities, "enabled");
 
+	BIND_METHOD(JoltDebugGeometry3D, get_draw_triangle_outlines);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_triangle_outlines, "enabled");
+
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_constraint_reference_frames);
 	BIND_METHOD(JoltDebugGeometry3D, set_draw_constraint_reference_frames, "enabled");
 
@@ -34,9 +37,6 @@ void JoltDebugGeometry3D::_bind_methods() {
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_as_wireframe);
 	BIND_METHOD(JoltDebugGeometry3D, set_draw_as_wireframe, "enabled");
-
-	BIND_METHOD(JoltDebugGeometry3D, get_draw_triangle_outlines);
-	BIND_METHOD(JoltDebugGeometry3D, set_draw_triangle_outlines, "enabled");
 
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_with_color_scheme);
 	BIND_METHOD(JoltDebugGeometry3D, set_draw_with_color_scheme, "color_scheme");
@@ -60,13 +60,13 @@ void JoltDebugGeometry3D::_bind_methods() {
 
 	BIND_PROPERTY("draw_velocities", Variant::BOOL);
 
+	BIND_PROPERTY("draw_triangle_outlines", Variant::BOOL);
+
 	BIND_PROPERTY("draw_constraint_reference_frames", Variant::BOOL);
 
 	BIND_PROPERTY("draw_constraint_limits", Variant::BOOL);
 
 	BIND_PROPERTY("draw_as_wireframe", Variant::BOOL);
-
-	BIND_PROPERTY("draw_triangle_outlines", Variant::BOOL);
 
 	BIND_PROPERTY_ENUM(
 		"draw_with_color_scheme",
@@ -250,6 +250,21 @@ void JoltDebugGeometry3D::set_draw_velocities([[maybe_unused]] bool p_enabled) {
 #endif // JPH_DEBUG_RENDERER
 }
 
+bool JoltDebugGeometry3D::get_draw_triangle_outlines() const {
+#ifdef JPH_DEBUG_RENDERER
+	return JPH::MeshShape::sDrawTriangleOutlines;
+#else // JPH_DEBUG_RENDERER
+	return false;
+#endif // JPH_DEBUG_RENDERER
+}
+
+void JoltDebugGeometry3D::set_draw_triangle_outlines([[maybe_unused]] bool p_enabled) {
+#ifdef JPH_DEBUG_RENDERER
+	JPH::MeshShape::sDrawTriangleOutlines = p_enabled;
+	JPH::HeightFieldShape::sDrawTriangleOutlines = p_enabled;
+#endif // JPH_DEBUG_RENDERER
+}
+
 bool JoltDebugGeometry3D::get_draw_constraint_reference_frames() const {
 #ifdef JPH_DEBUG_RENDERER
 	return draw_settings.draw_constraint_reference_frames;
@@ -289,21 +304,6 @@ bool JoltDebugGeometry3D::get_draw_as_wireframe() const {
 void JoltDebugGeometry3D::set_draw_as_wireframe([[maybe_unused]] bool p_enabled) {
 #ifdef JPH_DEBUG_RENDERER
 	draw_settings.draw_as_wireframe = p_enabled;
-#endif // JPH_DEBUG_RENDERER
-}
-
-bool JoltDebugGeometry3D::get_draw_triangle_outlines() const {
-#ifdef JPH_DEBUG_RENDERER
-	return JPH::MeshShape::sDrawTriangleOutlines;
-#else // JPH_DEBUG_RENDERER
-	return false;
-#endif // JPH_DEBUG_RENDERER
-}
-
-void JoltDebugGeometry3D::set_draw_triangle_outlines([[maybe_unused]] bool p_enabled) {
-#ifdef JPH_DEBUG_RENDERER
-	JPH::MeshShape::sDrawTriangleOutlines = p_enabled;
-	JPH::HeightFieldShape::sDrawTriangleOutlines = p_enabled;
 #endif // JPH_DEBUG_RENDERER
 }
 
