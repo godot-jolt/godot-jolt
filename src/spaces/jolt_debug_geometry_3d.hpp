@@ -64,9 +64,9 @@ public:
 
 	void set_draw_as_wireframe(bool p_enabled);
 
-	bool get_draw_concave_polygon_shape_triangle_outlines() const;
+	bool get_draw_triangle_outlines() const;
 
-	void set_draw_concave_polygon_shape_triangle_outlines(bool p_enabled);
+	void set_draw_triangle_outlines(bool p_enabled);
 
 	ColorScheme get_draw_with_color_scheme() const;
 
