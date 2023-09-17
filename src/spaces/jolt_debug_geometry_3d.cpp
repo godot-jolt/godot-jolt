@@ -303,6 +303,7 @@ bool JoltDebugGeometry3D::get_draw_triangle_outlines() const {
 void JoltDebugGeometry3D::set_draw_triangle_outlines([[maybe_unused]] bool p_enabled) {
 #ifdef JPH_DEBUG_RENDERER
 	JPH::MeshShape::sDrawTriangleOutlines = p_enabled;
+	JPH::HeightFieldShape::sDrawTriangleOutlines = p_enabled;
 #endif // JPH_DEBUG_RENDERER
 }
 
