@@ -18,6 +18,9 @@ Breaking changes are denoted with ⚠️.
 ### Added
 
 - Added timings of Jolt's various jobs to the "Physics 3D" profiler category.
+- Added registering of `JoltPhysicsServer3D` as an actual singleton, which makes Jolt-specific
+  server methods (like `pin_joint_get_applied_force`) easier to deal with from dynamic scripting
+  languages like GDScript.
 
 ### Fixed
 
