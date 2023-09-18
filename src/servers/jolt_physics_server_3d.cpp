@@ -116,6 +116,22 @@ void JoltPhysicsServer3D::_bind_methods() {
 	BIND_ENUM_CONSTANT(G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING_FREQUENCY);
 }
 
+JoltPhysicsServer3D::JoltPhysicsServer3D() {
+	const StringName server_name = NAMEOF(JoltPhysicsServer3D);
+
+	Engine* engine = Engine::get_singleton();
+
+	if (engine->has_singleton(server_name)) {
+		engine->unregister_singleton(server_name);
+	}
+
+	engine->register_singleton(server_name, this);
+}
+
+JoltPhysicsServer3D::~JoltPhysicsServer3D() {
+	Engine::get_singleton()->unregister_singleton(NAMEOF(JoltPhysicsServer3D));
+}
+
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
 	JoltShapeImpl3D* shape = memnew(JoltWorldBoundaryShapeImpl3D);
 	RID rid = shape_owner.make_rid(shape);
