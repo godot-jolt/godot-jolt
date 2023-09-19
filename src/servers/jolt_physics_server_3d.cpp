@@ -23,6 +23,10 @@
 #include "spaces/jolt_space_3d.hpp"
 
 void JoltPhysicsServer3D::_bind_methods() {
+	BIND_METHOD(JoltPhysicsServer3D, save_snapshots, "dir");
+
+	BIND_METHOD(JoltPhysicsServer3D, space_save_snapshot, "space", "dir");
+
 	BIND_METHOD(JoltPhysicsServer3D, joint_get_enabled, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, joint_set_enabled, "joint", "enabled");
 
@@ -1871,6 +1875,19 @@ void JoltPhysicsServer3D::free_joint(JoltJointImpl3D* p_joint) {
 
 	joint_owner.free(p_joint->get_rid());
 	memdelete_safely(p_joint);
+}
+
+void JoltPhysicsServer3D::save_snapshots(const String& p_dir) {
+	for (JoltSpace3D* space : active_spaces) {
+		space->save_snapshot(p_dir);
+	}
+}
+
+void JoltPhysicsServer3D::space_save_snapshot(const RID& p_space, const String& p_dir) {
+	JoltSpace3D* space = space_owner.get_or_null(p_space);
+	ERR_FAIL_NULL(space);
+
+	space->save_snapshot(p_dir);
 }
 
 bool JoltPhysicsServer3D::joint_get_enabled(const RID& p_joint) const {
