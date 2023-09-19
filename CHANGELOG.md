@@ -11,6 +11,9 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
+- ⚠️ Changed collision layers and masks for `Area3D` to behave as they do in Godot Physics, allowing
+  for asymmetrical setups, where overlaps are only reported if the mask of an `Area3D` contains the
+  layer of the overlapping object.
 - ⚠️ Changed the `body_set_force_integration_callback` method of `PhysicsServer3D` to behave like it
   does with Godot Physics, where omitting the binding of `userdata` requires that the callback also
   doesn't take any `userdata`.
