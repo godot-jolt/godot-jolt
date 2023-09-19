@@ -53,6 +53,7 @@
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/editor_settings.hpp>
 #include <godot_cpp/classes/engine_debugger.hpp>
+#include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/classes/time.hpp>
@@ -154,6 +155,7 @@ using namespace godot;
 #include "misc/bind_macros.hpp"
 #include "misc/error_macros.hpp"
 #include "misc/gdclass_macros.hpp"
+#include "misc/jolt_stream_wrappers.hpp"
 #include "misc/math.hpp"
 #include "misc/scope_guard.hpp"
 #include "misc/type_conversions.hpp"
