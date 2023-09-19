@@ -57,7 +57,6 @@
 #include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/classes/timer.hpp>
-#include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/templates/spin_lock.hpp>
 
 #endif // GDJ_CONFIG_EDITOR
@@ -68,6 +67,7 @@
 #include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/world3d.hpp>
 
 #endif // JPH_DEBUG_RENDERER
 
@@ -77,7 +77,6 @@
 #include <Jolt/Core/FixedSizeFreeList.h>
 #include <Jolt/Core/IssueReporting.h>
 #include <Jolt/Core/JobSystemWithBarrier.h>
-#include <Jolt/Core/StreamWrapper.h>
 #include <Jolt/Core/TempAllocator.h>
 #include <Jolt/Geometry/ConvexSupport.h>
 #include <Jolt/Geometry/GJKClosestPoint.h>
@@ -131,7 +130,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <mutex>
 #include <thread>
 #include <type_traits>

@@ -1,7 +1,6 @@
 #include "jolt_debug_geometry_3d.hpp"
 
 #include "servers/jolt_physics_server_3d.hpp"
-#include "shapes/jolt_custom_shape_type.hpp"
 #include "spaces/jolt_debug_renderer_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
@@ -45,9 +44,6 @@ void JoltDebugGeometry3D::_bind_methods() {
 	BIND_METHOD(JoltDebugGeometry3D, get_material_depth_test);
 	BIND_METHOD(JoltDebugGeometry3D, set_material_depth_test, "enabled");
 
-	BIND_METHOD(JoltDebugGeometry3D, get_snapshot_create);
-	BIND_METHOD(JoltDebugGeometry3D, set_snapshot_create, "enabled");
-
 	ADD_GROUP("Draw", "draw_");
 
 	BIND_PROPERTY("draw_bodies", Variant::BOOL);
@@ -86,10 +82,6 @@ void JoltDebugGeometry3D::_bind_methods() {
 	BIND_ENUM_CONSTANT(COLOR_SCHEME_MOTION_TYPE);
 	BIND_ENUM_CONSTANT(COLOR_SCHEME_SLEEP_STATE);
 	BIND_ENUM_CONSTANT(COLOR_SCHEME_ISLAND);
-
-	ADD_GROUP("Snapshot For Bug Reporting", "snapshot_");
-
-	BIND_PROPERTY("snapshot_create", Variant::BOOL);
 }
 
 #ifdef JPH_DEBUG_RENDERER
@@ -123,44 +115,8 @@ JoltDebugGeometry3D::~JoltDebugGeometry3D() = default;
 
 #endif // JPH_DEBUG_RENDERER
 
-JPH::RefConst<JPH::Shape> JoltDebugGeometry3D::remove_custom_shapes(const JPH::Shape* p_shape) {
-	switch (p_shape->GetSubType()) {
-		case JoltCustomShapeSubType::EMPTY:
-		case JoltCustomShapeSubType::RAY:
-		case JoltCustomShapeSubType::MOTION: {
-			// Replace unsupported shapes with a small sphere
-			return new JPH::SphereShape(0.1f);
-		}
-
-		case JoltCustomShapeSubType::OVERRIDE_USER_DATA:
-		case JoltCustomShapeSubType::DOUBLE_SIDED: {
-			// Replace unsupported decorator shapes with the inner shape
-			return static_cast<const JPH::DecoratedShape*>(p_shape)->GetInnerShape();
-		}
-
-		case JPH::EShapeSubType::Scaled: {
-			const JPH::ScaledShape* scaled_shape = static_cast<const JPH::ScaledShape*>(p_shape);
-			JPH::RefConst<JPH::Shape> new_shape = remove_custom_shapes(scaled_shape->GetInnerShape());
-			if (scaled_shape->GetInnerShape() != new_shape) {
-				return new JPH::ScaledShape(new_shape, scaled_shape->GetScale());
-			}
-			return p_shape;
-		}
-
-		case JPH::EShapeSubType::StaticCompound:
-		case JPH::EShapeSubType::MutableCompound:
-		case JPH::EShapeSubType::RotatedTranslated:
-		case JPH::EShapeSubType::OffsetCenterOfMass: {
-			ERR_PRINT("Unsupported shape type, snapshot may not be readable in Jolt!");
-			return p_shape;
-		}
-
-		default:
-			return p_shape;
-	}
-}
-
 void JoltDebugGeometry3D::_process([[maybe_unused]] double p_delta) {
+#ifdef JPH_DEBUG_RENDERER
 	auto* physics_server = dynamic_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
 	if (physics_server == nullptr) {
@@ -173,12 +129,11 @@ void JoltDebugGeometry3D::_process([[maybe_unused]] double p_delta) {
 		return;
 	}
 
-	const JoltSpace3D* space = physics_server->get_space(get_world_3d()->get_space());
-	ERR_FAIL_NULL(space);
-
-#ifdef JPH_DEBUG_RENDERER
 	RenderingServer* rendering_server = RenderingServer::get_singleton();
 	ERR_FAIL_NULL(rendering_server);
+
+	const JoltSpace3D* space = physics_server->get_space(get_world_3d()->get_space());
+	ERR_FAIL_NULL(space);
 
 	const Viewport* viewport = get_viewport();
 	ERR_FAIL_NULL(viewport);
@@ -195,29 +150,6 @@ void JoltDebugGeometry3D::_process([[maybe_unused]] double p_delta) {
 		rendering_server->mesh_surface_set_material(mesh, i, material_rid);
 	}
 #endif // JPH_DEBUG_RENDERER
-
-	if (snapshot_create) {
-		snapshot_create = false;
-
-		JPH::PhysicsSystem& physics_system = space->get_physics_system();
-				
-		JPH::PhysicsScene scene;
-		scene.FromPhysicsSystem(&physics_system);
-
-		for (JPH::BodyCreationSettings &settings : scene.GetBodies()) {
-			settings.SetShape(remove_custom_shapes(settings.GetShape()));
-		}
-
-		std::ofstream file_stream("snapshot.bin", std::ios::binary);
-		if (!file_stream.is_open()) {
-			ERR_PRINT("Failed to open snapshot.bin for writing.");
-		} else {
-			JPH::StreamOutWrapper stream_out(file_stream);
-			scene.SaveBinaryState(stream_out, true, true);
-
-			WARN_PRINT("Jolt Physics snapshot saved to snapshot.bin.");
-		}
-	}
 }
 
 bool JoltDebugGeometry3D::get_draw_bodies() const {
@@ -403,14 +335,6 @@ void JoltDebugGeometry3D::set_material_depth_test([[maybe_unused]] bool p_enable
 	ERR_FAIL_NULL(default_material);
 	default_material->set_flag(StandardMaterial3D::FLAG_DISABLE_DEPTH_TEST, !p_enabled);
 #endif // JPH_DEBUG_RENDERER
-}
-
-bool JoltDebugGeometry3D::get_snapshot_create() const {
-	return snapshot_create;
-}
-
-void JoltDebugGeometry3D::set_snapshot_create(bool p_enabled) {
-	snapshot_create = p_enabled;
 }
 
 static_assert(
