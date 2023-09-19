@@ -31,6 +31,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where collision with `ConvexPolygonShape3D` could yield a flipped contact normal.
 - Fixed issue where an `Area3D` with `monitoring` disabled wouldn't emit any entered events for
   already overlapping bodies once `monitoring` was enabled.
+- Fixed issue where changing the center-of-mass of a `RigidBody3D` attached to a joint would shift
+  its transform relative to the joint.
 
 ## [0.7.0] - 2023-08-29
 
