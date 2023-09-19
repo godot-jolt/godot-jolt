@@ -160,5 +160,6 @@ using namespace godot;
 #include "misc/scope_guard.hpp"
 #include "misc/type_conversions.hpp"
 #include "misc/utility_functions.hpp"
+#include "misc/utility_macros.hpp"
 
 // NOLINTEND(readability-duplicate-include)

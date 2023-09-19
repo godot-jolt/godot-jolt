@@ -80,6 +80,10 @@ private:
 	static void _bind_methods();
 
 public:
+	JoltPhysicsServer3D();
+
+	~JoltPhysicsServer3D() override;
+
 	RID _world_boundary_shape_create() override;
 
 	RID _separation_ray_shape_create() override;

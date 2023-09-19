@@ -11,6 +11,9 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
+- ⚠️ Changed collision layers and masks for `Area3D` to behave as they do in Godot Physics, allowing
+  for asymmetrical setups, where overlaps are only reported if the mask of an `Area3D` contains the
+  layer of the overlapping object.
 - ⚠️ Changed the `body_set_force_integration_callback` method of `PhysicsServer3D` to behave like it
   does with Godot Physics, where omitting the binding of `userdata` requires that the callback also
   doesn't take any `userdata`.
@@ -18,6 +21,9 @@ Breaking changes are denoted with ⚠️.
 ### Added
 
 - Added timings of Jolt's various jobs to the "Physics 3D" profiler category.
+- Added registering of `JoltPhysicsServer3D` as an actual singleton, which makes Jolt-specific
+  server methods (like `pin_joint_get_applied_force`) easier to deal with from dynamic scripting
+  languages like GDScript.
 
 ### Fixed
 
@@ -28,6 +34,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where collision with `ConvexPolygonShape3D` could yield a flipped contact normal.
 - Fixed issue where an `Area3D` with `monitoring` disabled wouldn't emit any entered events for
   already overlapping bodies once `monitoring` was enabled.
+- Fixed issue where changing the center-of-mass of a `RigidBody3D` attached to a joint would shift
+  its transform relative to the joint.
 
 ## [0.7.0] - 2023-08-29
 
