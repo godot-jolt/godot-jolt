@@ -47,6 +47,7 @@
 #ifdef GDJ_CONFIG_EDITOR
 
 #include <godot_cpp/classes/control.hpp>
+#include <godot_cpp/classes/editor_file_dialog.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/editor_node3d_gizmo.hpp>
 #include <godot_cpp/classes/editor_node3d_gizmo_plugin.hpp>
@@ -54,6 +55,7 @@
 #include <godot_cpp/classes/editor_settings.hpp>
 #include <godot_cpp/classes/engine_debugger.hpp>
 #include <godot_cpp/classes/file_access.hpp>
+#include <godot_cpp/classes/popup_menu.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/classes/time.hpp>

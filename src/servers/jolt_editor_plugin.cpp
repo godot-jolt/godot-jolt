@@ -2,6 +2,13 @@
 
 #ifdef GDJ_CONFIG_EDITOR
 
+#include "servers/jolt_physics_server_3d.hpp"
+
+void JoltEditorPlugin::_bind_methods() {
+	BIND_METHOD(JoltEditorPlugin, _tool_menu_pressed);
+	BIND_METHOD(JoltEditorPlugin, _snapshots_dir_selected);
+}
+
 void JoltEditorPlugin::_enter_tree() {
 	EditorInterface* editor_interface = get_editor_interface();
 	Control* base_control = editor_interface->get_base_control();
@@ -26,11 +33,49 @@ void JoltEditorPlugin::_enter_tree() {
 
 	joint_gizmo_plugin = Ref(memnew(JoltJointGizmoPlugin3D(editor_interface)));
 	add_node_3d_gizmo_plugin(joint_gizmo_plugin);
+
+	PopupMenu* tool_menu = memnew(PopupMenu);
+	tool_menu->connect("id_pressed", Callable(this, "_tool_menu_pressed"));
+	tool_menu->add_item("Save Snapshots", MENU_OPTION_SAVE_SNAPSHOTS);
+
+	add_tool_submenu_item("Jolt Physics", tool_menu);
 }
 
 void JoltEditorPlugin::_exit_tree() {
 	remove_node_3d_gizmo_plugin(joint_gizmo_plugin);
 	joint_gizmo_plugin.unref();
+
+	if (snapshots_dialog != nullptr) {
+		snapshots_dialog->queue_free();
+		snapshots_dialog = nullptr;
+	}
+}
+
+void JoltEditorPlugin::_tool_menu_pressed(int32_t p_index) {
+	switch (p_index) {
+		case MENU_OPTION_SAVE_SNAPSHOTS: {
+			_save_snapshots();
+		} break;
+	}
+}
+
+void JoltEditorPlugin::_snapshots_dir_selected(const String& p_dir) {
+	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+	physics_server->save_snapshots(p_dir);
+}
+
+void JoltEditorPlugin::_save_snapshots() {
+	if (snapshots_dialog == nullptr) {
+		snapshots_dialog = memnew(EditorFileDialog);
+		snapshots_dialog->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_DIR);
+		snapshots_dialog->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
+		snapshots_dialog->set_current_dir("res://");
+		snapshots_dialog->connect("dir_selected", Callable(this, "_snapshots_dir_selected"));
+
+		get_editor_interface()->get_base_control()->add_child(snapshots_dialog);
+	}
+
+	snapshots_dialog->popup_centered_ratio(0.5);
 }
 
 #endif // GDJ_CONFIG_EDITOR
