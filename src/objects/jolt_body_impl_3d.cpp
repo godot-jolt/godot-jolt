@@ -1371,6 +1371,7 @@ void JoltBodyImpl3D::_mode_changed(bool p_lock) {
 
 void JoltBodyImpl3D::_shapes_built(bool p_lock) {
 	_update_mass_properties(p_lock);
+	_update_joint_constraints(p_lock);
 	wake_up(p_lock);
 }
 
