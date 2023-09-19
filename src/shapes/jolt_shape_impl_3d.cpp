@@ -178,6 +178,70 @@ JPH::ShapeRefC JoltShapeImpl3D::with_user_data(const JPH::Shape* p_shape, uint64
 	return shape_result.Get();
 }
 
+JPH::ShapeRefC JoltShapeImpl3D::without_custom_shapes(const JPH::Shape* p_shape) {
+	switch (p_shape->GetSubType()) {
+		case JoltCustomShapeSubType::EMPTY:
+		case JoltCustomShapeSubType::RAY:
+		case JoltCustomShapeSubType::MOTION: {
+			// Replace unsupported shapes with a small sphere
+			return new JPH::SphereShape(0.1f);
+		}
+
+		case JoltCustomShapeSubType::OVERRIDE_USER_DATA:
+		case JoltCustomShapeSubType::DOUBLE_SIDED: {
+			// Replace unsupported decorator shapes with the inner shape
+			return static_cast<const JPH::DecoratedShape*>(p_shape)->GetInnerShape();
+		}
+
+		case JPH::EShapeSubType::RotatedTranslated: {
+			const auto* shape = static_cast<const JPH::RotatedTranslatedShape*>(p_shape);
+
+			const JPH::Shape* inner_shape = shape->GetInnerShape();
+			const JPH::ShapeRefC new_inner_shape = without_custom_shapes(inner_shape);
+
+			if (inner_shape == new_inner_shape) {
+				return p_shape;
+			}
+
+			return new JPH::RotatedTranslatedShape(
+				shape->GetPosition(),
+				shape->GetRotation(),
+				new_inner_shape
+			);
+		}
+
+		case JPH::EShapeSubType::Scaled: {
+			const auto* shape = static_cast<const JPH::ScaledShape*>(p_shape);
+
+			const JPH::Shape* inner_shape = shape->GetInnerShape();
+			const JPH::ShapeRefC new_inner_shape = without_custom_shapes(inner_shape);
+
+			if (inner_shape == new_inner_shape) {
+				return p_shape;
+			}
+
+			return new JPH::ScaledShape(new_inner_shape, shape->GetScale());
+		}
+
+		case JPH::EShapeSubType::OffsetCenterOfMass: {
+			const auto* shape = static_cast<const JPH::OffsetCenterOfMassShape*>(p_shape);
+
+			const JPH::Shape* inner_shape = shape->GetInnerShape();
+			const JPH::ShapeRefC new_inner_shape = without_custom_shapes(inner_shape);
+
+			if (inner_shape == new_inner_shape) {
+				return p_shape;
+			}
+
+			return new JPH::OffsetCenterOfMassShape(new_inner_shape, shape->GetOffset());
+		}
+
+		default: {
+			return p_shape;
+		}
+	}
+}
+
 void JoltShapeImpl3D::_invalidated(bool p_lock) {
 	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
 		owner->_shapes_changed(p_lock);
