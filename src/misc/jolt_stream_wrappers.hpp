@@ -4,7 +4,7 @@
 
 class JoltStreamOutWrapper final : public JPH::StreamOut {
 public:
-	JoltStreamOutWrapper(Ref<FileAccess> p_file_access)
+	explicit JoltStreamOutWrapper(const Ref<FileAccess>& p_file_access)
 		: file_access(p_file_access) { }
 
 	void WriteBytes(const void* p_data, size_t p_bytes) override {
@@ -22,7 +22,7 @@ private:
 
 class JoltStreamInWrapper final : public JPH::StreamIn {
 public:
-	JoltStreamInWrapper(Ref<FileAccess> p_file_access)
+	explicit JoltStreamInWrapper(const Ref<FileAccess>& p_file_access)
 		: file_access(p_file_access) { }
 
 	void ReadBytes(void* p_data, size_t p_bytes) override {
