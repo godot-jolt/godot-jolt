@@ -35,7 +35,7 @@ void JoltEditorPlugin::_enter_tree() {
 	add_node_3d_gizmo_plugin(joint_gizmo_plugin);
 
 	PopupMenu* tool_menu = memnew(PopupMenu);
-	tool_menu->connect("id_pressed", Callable(this, "_tool_menu_pressed"));
+	tool_menu->connect("id_pressed", Callable(this, NAMEOF(_tool_menu_pressed)));
 	tool_menu->add_item("Save Snapshots", MENU_OPTION_SAVE_SNAPSHOTS);
 
 	add_tool_submenu_item("Jolt Physics", tool_menu);
@@ -70,7 +70,7 @@ void JoltEditorPlugin::_save_snapshots() {
 		snapshots_dialog->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_DIR);
 		snapshots_dialog->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
 		snapshots_dialog->set_current_dir("res://");
-		snapshots_dialog->connect("dir_selected", Callable(this, "_snapshots_dir_selected"));
+		snapshots_dialog->connect("dir_selected", Callable(this, NAMEOF(_snapshots_dir_selected)));
 
 		get_editor_interface()->get_base_control()->add_child(snapshots_dialog);
 	}
