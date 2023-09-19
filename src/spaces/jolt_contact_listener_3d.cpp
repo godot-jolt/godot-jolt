@@ -412,21 +412,40 @@ void JoltContactListener3D::_flush_area_enters() {
 			continue;
 		}
 
+		const JoltObjectImpl3D* object1 = jolt_body1.as_object();
+		const JoltObjectImpl3D* object2 = jolt_body2.as_object();
+
+		const uint32_t collision_layer1 = object1->get_collision_layer();
+		const uint32_t collision_layer2 = object2->get_collision_layer();
+
+		const uint32_t collision_mask1 = object1->get_collision_mask();
+		const uint32_t collision_mask2 = object2->get_collision_mask();
+
+		const bool first_scans_second = (collision_mask1 & collision_layer2) != 0;
+		const bool second_scans_first = (collision_mask2 & collision_layer1) != 0;
+
 		JoltAreaImpl3D* area1 = jolt_body1.as_area();
 		JoltAreaImpl3D* area2 = jolt_body2.as_area();
 
+		const JoltBodyImpl3D* body1 = jolt_body1.as_body();
+		const JoltBodyImpl3D* body2 = jolt_body2.as_body();
+
 		if (area1 != nullptr && area2 != nullptr) {
-			if (area2->is_monitorable()) {
+			if (first_scans_second && area2->is_monitorable()) {
 				area1->area_shape_entered(body_id2, sub_shape_id2, sub_shape_id1);
 			}
 
-			if (area1->is_monitorable()) {
+			if (second_scans_first && area1->is_monitorable()) {
 				area2->area_shape_entered(body_id1, sub_shape_id1, sub_shape_id2);
 			}
-		} else if (area1 != nullptr && area2 == nullptr) {
-			area1->body_shape_entered(body_id2, sub_shape_id2, sub_shape_id1);
-		} else if (area1 == nullptr && area2 != nullptr) {
-			area2->body_shape_entered(body_id1, sub_shape_id1, sub_shape_id2);
+		} else if (area1 != nullptr && body2 != nullptr) {
+			if (first_scans_second) {
+				area1->body_shape_entered(body_id2, sub_shape_id2, sub_shape_id1);
+			}
+		} else if (body1 != nullptr && area2 != nullptr) {
+			if (second_scans_first) {
+				area2->body_shape_entered(body_id1, sub_shape_id1, sub_shape_id2);
+			}
 		}
 	}
 
