@@ -202,7 +202,8 @@ JPH::ShapeRefC JoltShapeImpl3D::without_custom_shapes(const JPH::Shape* p_shape)
 
 			for (const JPH::CompoundShape::SubShape& sub_shape : shape->GetSubShapes()) {
 				settings.AddShape(
-					sub_shape.GetPositionCOM(),
+					shape->GetCenterOfMass() + sub_shape.GetPositionCOM() -
+						sub_shape.GetRotation() * sub_shape.mShape->GetCenterOfMass(),
 					sub_shape.GetRotation(),
 					without_custom_shapes(sub_shape.mShape)
 				);
@@ -229,7 +230,8 @@ JPH::ShapeRefC JoltShapeImpl3D::without_custom_shapes(const JPH::Shape* p_shape)
 
 			for (const JPH::MutableCompoundShape::SubShape& sub_shape : shape->GetSubShapes()) {
 				settings.AddShape(
-					sub_shape.GetPositionCOM(),
+					shape->GetCenterOfMass() + sub_shape.GetPositionCOM() -
+						sub_shape.GetRotation() * sub_shape.mShape->GetCenterOfMass(),
 					sub_shape.GetRotation(),
 					without_custom_shapes(sub_shape.mShape)
 				);
