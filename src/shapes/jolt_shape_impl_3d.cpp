@@ -189,12 +189,10 @@ JPH::ShapeRefC JoltShapeImpl3D::without_custom_shapes(const JPH::Shape* p_shape)
 
 		case JoltCustomShapeSubType::OVERRIDE_USER_DATA:
 		case JoltCustomShapeSubType::DOUBLE_SIDED: {
-			// Replace unsupported decorator shapes with the inner shape
-
 			const auto* shape = static_cast<const JPH::DecoratedShape*>(p_shape);
-			const auto* inner_shape = shape->GetInnerShape();
 
-			return without_custom_shapes(inner_shape);
+			// Replace unsupported decorator shapes with the inner shape
+			return without_custom_shapes(shape->GetInnerShape());
 		}
 
 		case JPH::EShapeSubType::StaticCompound: {
