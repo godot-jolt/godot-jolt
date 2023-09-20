@@ -190,7 +190,65 @@ JPH::ShapeRefC JoltShapeImpl3D::without_custom_shapes(const JPH::Shape* p_shape)
 		case JoltCustomShapeSubType::OVERRIDE_USER_DATA:
 		case JoltCustomShapeSubType::DOUBLE_SIDED: {
 			// Replace unsupported decorator shapes with the inner shape
-			return static_cast<const JPH::DecoratedShape*>(p_shape)->GetInnerShape();
+
+			const auto* shape = static_cast<const JPH::DecoratedShape*>(p_shape);
+			const auto* inner_shape = shape->GetInnerShape();
+
+			return without_custom_shapes(inner_shape);
+		}
+
+		case JPH::EShapeSubType::StaticCompound: {
+			const auto* shape = static_cast<const JPH::StaticCompoundShape*>(p_shape);
+
+			JPH::StaticCompoundShapeSettings settings;
+
+			for (const auto& sub_shape : shape->GetSubShapes()) {
+				settings.AddShape(
+					sub_shape.GetPositionCOM(),
+					sub_shape.GetRotation(),
+					without_custom_shapes(sub_shape.mShape)
+				);
+			}
+
+			const JPH::ShapeSettings::ShapeResult shape_result = settings.Create();
+
+			ERR_FAIL_COND_D_MSG(
+				shape_result.HasError(),
+				vformat(
+					"Failed to recreate static compound shape during filtering of custom shapes. "
+					"It returned the following error: '%s'.",
+					to_godot(shape_result.GetError())
+				)
+			);
+
+			return shape_result.Get();
+		}
+
+		case JPH::EShapeSubType::MutableCompound: {
+			const auto* shape = static_cast<const JPH::MutableCompoundShape*>(p_shape);
+
+			JPH::MutableCompoundShapeSettings settings;
+
+			for (const auto& sub_shape : shape->GetSubShapes()) {
+				settings.AddShape(
+					sub_shape.GetPositionCOM(),
+					sub_shape.GetRotation(),
+					without_custom_shapes(sub_shape.mShape)
+				);
+			}
+
+			const JPH::ShapeSettings::ShapeResult shape_result = settings.Create();
+
+			ERR_FAIL_COND_D_MSG(
+				shape_result.HasError(),
+				vformat(
+					"Failed to recreate mutable compound shape during filtering of custom shapes. "
+					"It returned the following error: '%s'.",
+					to_godot(shape_result.GetError())
+				)
+			);
+
+			return shape_result.Get();
 		}
 
 		case JPH::EShapeSubType::RotatedTranslated: {
