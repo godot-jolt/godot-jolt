@@ -52,6 +52,7 @@ void JoltEditorPlugin::_exit_tree() {
 }
 
 void JoltEditorPlugin::_tool_menu_pressed(int32_t p_index) {
+	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
 	switch (p_index) {
 		case MENU_OPTION_SAVE_SNAPSHOTS: {
 			_save_snapshots();
