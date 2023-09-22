@@ -40,38 +40,38 @@ void JoltPhysicsServer3D::_bind_methods() {
 
 	BIND_METHOD(JoltPhysicsServer3D, pin_joint_get_applied_force, "joint");
 
-	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_jolt_param, "joint");
-	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_set_jolt_param, "joint", "value");
+	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_jolt_param, "joint", "param");
+	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_set_jolt_param, "joint", "param", "value");
 
-	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_jolt_flag, "joint");
-	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_set_jolt_flag, "joint", "value");
+	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_jolt_flag, "joint", "flag");
+	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_set_jolt_flag, "joint", "flag", "value");
 
 	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_applied_force, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, hinge_joint_get_applied_torque, "joint");
 
-	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_jolt_param, "joint");
-	BIND_METHOD(JoltPhysicsServer3D, slider_joint_set_jolt_param, "joint", "value");
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_jolt_param, "joint", "param");
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_set_jolt_param, "joint", "param", "value");
 
-	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_jolt_flag, "joint");
-	BIND_METHOD(JoltPhysicsServer3D, slider_joint_set_jolt_flag, "joint", "value");
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_jolt_flag, "joint", "flag");
+	BIND_METHOD(JoltPhysicsServer3D, slider_joint_set_jolt_flag, "joint", "flag", "value");
 
 	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_applied_force, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, slider_joint_get_applied_torque, "joint");
 
-	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_jolt_param, "joint");
-	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_set_jolt_param, "joint", "value");
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_jolt_param, "joint", "param");
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_set_jolt_param, "joint", "param", "value");
 
-	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_jolt_flag, "joint");
-	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_set_jolt_flag, "joint", "value");
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_jolt_flag, "joint", "flag");
+	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_set_jolt_flag, "joint", "flag", "value");
 
 	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_applied_force, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, cone_twist_joint_get_applied_torque, "joint");
 
-	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_get_jolt_param, "joint");
-	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_set_jolt_param, "joint", "value");
+	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_get_jolt_param, "joint", "param");
+	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_set_jolt_param, "joint", "param", "value");
 
-	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_get_jolt_flag, "joint");
-	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_set_jolt_flag, "joint", "value");
+	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_get_jolt_flag, "joint", "flag");
+	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_set_jolt_flag, "joint", "flag", "value");
 
 	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_get_applied_force, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_get_applied_torque, "joint");
