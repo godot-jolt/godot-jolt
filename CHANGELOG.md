@@ -16,7 +16,7 @@ Breaking changes are denoted with ⚠️.
   layer of the overlapping object.
 - ⚠️ Changed the `body_set_force_integration_callback` method of `PhysicsServer3D` to behave like it
   does with Godot Physics, where omitting the binding of `userdata` requires that the callback also
-  doesn't take any `userdata`.
+  doesn't take any `userdata`. It also will no longer be called when the body is sleeping.
 
 ### Added
 
