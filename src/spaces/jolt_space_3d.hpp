@@ -89,7 +89,7 @@ public:
 	void remove_joint(JoltJointImpl3D* p_joint);
 
 #ifdef GDJ_CONFIG_EDITOR
-	void save_snapshot(const String& p_dir);
+	void dump_snapshot(const String& p_dir);
 
 	const PackedVector3Array& get_debug_contacts() const;
 

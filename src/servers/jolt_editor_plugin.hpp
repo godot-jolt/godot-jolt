@@ -17,14 +17,14 @@ public:
 
 private:
 	enum MenuOption {
-		MENU_OPTION_SAVE_SNAPSHOTS
+		MENU_OPTION_DUMP_SNAPSHOTS
 	};
 
 	void _tool_menu_pressed(int32_t p_index);
 
 	void _snapshots_dir_selected(const String& p_dir);
 
-	void _save_snapshots();
+	void _dump_snapshots();
 
 	Ref<JoltJointGizmoPlugin3D> joint_gizmo_plugin;
 

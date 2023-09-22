@@ -380,7 +380,7 @@ void JoltSpace3D::remove_joint(JoltJointImpl3D* p_joint) {
 
 #ifdef GDJ_CONFIG_EDITOR
 
-void JoltSpace3D::save_snapshot(const String& p_dir) {
+void JoltSpace3D::dump_snapshot(const String& p_dir) {
 	const Dictionary datetime = Time::get_singleton()->get_datetime_dict_from_system();
 
 	const String datetime_str = vformat(

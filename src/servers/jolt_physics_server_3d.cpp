@@ -24,9 +24,9 @@
 
 void JoltPhysicsServer3D::_bind_methods() {
 #ifdef GDJ_CONFIG_EDITOR
-	BIND_METHOD(JoltPhysicsServer3D, save_snapshots, "dir");
+	BIND_METHOD(JoltPhysicsServer3D, dump_snapshots, "dir");
 
-	BIND_METHOD(JoltPhysicsServer3D, space_save_snapshot, "space", "dir");
+	BIND_METHOD(JoltPhysicsServer3D, space_dump_snapshot, "space", "dir");
 #endif // GDJ_CONFIG_EDITOR
 
 	BIND_METHOD(JoltPhysicsServer3D, joint_get_enabled, "joint");
@@ -1881,17 +1881,17 @@ void JoltPhysicsServer3D::free_joint(JoltJointImpl3D* p_joint) {
 
 #ifdef GDJ_CONFIG_EDITOR
 
-void JoltPhysicsServer3D::save_snapshots(const String& p_dir) {
+void JoltPhysicsServer3D::dump_snapshots(const String& p_dir) {
 	for (JoltSpace3D* space : active_spaces) {
-		space->save_snapshot(p_dir);
+		space->dump_snapshot(p_dir);
 	}
 }
 
-void JoltPhysicsServer3D::space_save_snapshot(const RID& p_space, const String& p_dir) {
+void JoltPhysicsServer3D::space_dump_snapshot(const RID& p_space, const String& p_dir) {
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL(space);
 
-	space->save_snapshot(p_dir);
+	space->dump_snapshot(p_dir);
 }
 
 #endif // GDJ_CONFIG_EDITOR

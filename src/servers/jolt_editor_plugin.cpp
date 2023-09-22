@@ -36,7 +36,7 @@ void JoltEditorPlugin::_enter_tree() {
 
 	PopupMenu* tool_menu = memnew(PopupMenu);
 	tool_menu->connect("id_pressed", Callable(this, NAMEOF(_tool_menu_pressed)));
-	tool_menu->add_item("Save Snapshots", MENU_OPTION_SAVE_SNAPSHOTS);
+	tool_menu->add_item("Dump Snapshots", MENU_OPTION_DUMP_SNAPSHOTS);
 
 	add_tool_submenu_item("Jolt Physics", tool_menu);
 }
@@ -54,18 +54,18 @@ void JoltEditorPlugin::_exit_tree() {
 void JoltEditorPlugin::_tool_menu_pressed(int32_t p_index) {
 	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
 	switch (p_index) {
-		case MENU_OPTION_SAVE_SNAPSHOTS: {
-			_save_snapshots();
+		case MENU_OPTION_DUMP_SNAPSHOTS: {
+			_dump_snapshots();
 		} break;
 	}
 }
 
 void JoltEditorPlugin::_snapshots_dir_selected(const String& p_dir) {
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-	physics_server->save_snapshots(p_dir);
+	physics_server->dump_snapshots(p_dir);
 }
 
-void JoltEditorPlugin::_save_snapshots() {
+void JoltEditorPlugin::_dump_snapshots() {
 	if (snapshots_dialog == nullptr) {
 		snapshots_dialog = memnew(EditorFileDialog);
 		snapshots_dialog->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_DIR);
