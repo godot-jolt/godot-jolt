@@ -4,6 +4,8 @@
 #include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_body_impl_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
+#include "shapes/jolt_custom_shape_type.hpp"
+#include "shapes/jolt_shape_impl_3d.hpp"
 #include "spaces/jolt_contact_listener_3d.hpp"
 #include "spaces/jolt_layer_mapper.hpp"
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
@@ -377,6 +379,57 @@ void JoltSpace3D::remove_joint(JoltJointImpl3D* p_joint) {
 }
 
 #ifdef GDJ_CONFIG_EDITOR
+
+void JoltSpace3D::dump_snapshot(const String& p_dir) {
+	const Dictionary datetime = Time::get_singleton()->get_datetime_dict_from_system();
+
+	const String datetime_str = vformat(
+		"%04d-%02d-%02d_%02d-%02d-%02d",
+		datetime["year"],
+		datetime["month"],
+		datetime["day"],
+		datetime["hour"],
+		datetime["minute"],
+		datetime["second"]
+	);
+
+	const String path = p_dir + vformat("/jolt_snapshot_%s_%d.bin", datetime_str, rid.get_id());
+
+	Ref<FileAccess> file_access = FileAccess::open(path, FileAccess::ModeFlags::WRITE);
+
+	ERR_FAIL_NULL_MSG(
+		file_access,
+		vformat(
+			"Failed to open '%s' for writing when saving snapshot of physics space with RID '%d'.",
+			path,
+			rid.get_id()
+		)
+	);
+
+	JPH::PhysicsScene physics_scene;
+	physics_scene.FromPhysicsSystem(physics_system);
+
+	for (JPH::BodyCreationSettings& body : physics_scene.GetBodies()) {
+		body.SetShape(JoltShapeImpl3D::without_custom_shapes(body.GetShape()));
+	}
+
+	JoltStreamOutWrapper output_stream(file_access);
+	physics_scene.SaveBinaryState(output_stream, true, false);
+
+	ERR_FAIL_COND_MSG(
+		file_access->get_error() != OK,
+		vformat(
+			"Writing snapshot of physics space with RID '%d' to '%s' failed with error '%s'.",
+			rid.get_id(),
+			path,
+			UtilityFunctions::error_string(file_access->get_error())
+		)
+	);
+
+	UtilityFunctions::print(
+		vformat("Snapshot of physics space with RID '%d' saved to '%s'.", rid.get_id(), path)
+	);
+}
 
 const PackedVector3Array& JoltSpace3D::get_debug_contacts() const {
 	return contact_listener->get_debug_contacts();
