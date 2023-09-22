@@ -414,7 +414,7 @@ void JoltSpace3D::save_snapshot(const String& p_dir) {
 	}
 
 	JoltStreamOutWrapper output_stream(file_access);
-	physics_scene.SaveBinaryState(output_stream, true, true);
+	physics_scene.SaveBinaryState(output_stream, true, false);
 
 	ERR_FAIL_COND_MSG(
 		file_access->get_error() != OK,
