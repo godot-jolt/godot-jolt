@@ -17,18 +17,18 @@ public:
 
 private:
 	enum MenuOption {
-		MENU_OPTION_DUMP_SNAPSHOTS
+		MENU_OPTION_DUMP_DEBUG_SNAPSHOTS
 	};
 
 	void _tool_menu_pressed(int32_t p_index);
 
 	void _snapshots_dir_selected(const String& p_dir);
 
-	void _dump_snapshots();
+	void _dump_debug_snapshots();
 
 	Ref<JoltJointGizmoPlugin3D> joint_gizmo_plugin;
 
-	EditorFileDialog* snapshots_dialog = nullptr;
+	EditorFileDialog* debug_snapshots_dialog = nullptr;
 };
 
 #endif // GDJ_CONFIG_EDITOR
