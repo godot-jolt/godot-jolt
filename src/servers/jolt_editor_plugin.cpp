@@ -36,7 +36,7 @@ void JoltEditorPlugin::_enter_tree() {
 
 	PopupMenu* tool_menu = memnew(PopupMenu);
 	tool_menu->connect("id_pressed", Callable(this, NAMEOF(_tool_menu_pressed)));
-	tool_menu->add_item("Dump Snapshots", MENU_OPTION_DUMP_SNAPSHOTS);
+	tool_menu->add_item("Dump Debug Snapshots", MENU_OPTION_DUMP_DEBUG_SNAPSHOTS);
 
 	add_tool_submenu_item("Jolt Physics", tool_menu);
 }
@@ -45,38 +45,41 @@ void JoltEditorPlugin::_exit_tree() {
 	remove_node_3d_gizmo_plugin(joint_gizmo_plugin);
 	joint_gizmo_plugin.unref();
 
-	if (snapshots_dialog != nullptr) {
-		snapshots_dialog->queue_free();
-		snapshots_dialog = nullptr;
+	if (debug_snapshots_dialog != nullptr) {
+		debug_snapshots_dialog->queue_free();
+		debug_snapshots_dialog = nullptr;
 	}
 }
 
 void JoltEditorPlugin::_tool_menu_pressed(int32_t p_index) {
 	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
 	switch (p_index) {
-		case MENU_OPTION_DUMP_SNAPSHOTS: {
-			_dump_snapshots();
+		case MENU_OPTION_DUMP_DEBUG_SNAPSHOTS: {
+			_dump_debug_snapshots();
 		} break;
 	}
 }
 
 void JoltEditorPlugin::_snapshots_dir_selected(const String& p_dir) {
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-	physics_server->dump_snapshots(p_dir);
+	physics_server->dump_debug_snapshots(p_dir);
 }
 
-void JoltEditorPlugin::_dump_snapshots() {
-	if (snapshots_dialog == nullptr) {
-		snapshots_dialog = memnew(EditorFileDialog);
-		snapshots_dialog->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_DIR);
-		snapshots_dialog->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
-		snapshots_dialog->set_current_dir("res://");
-		snapshots_dialog->connect("dir_selected", Callable(this, NAMEOF(_snapshots_dir_selected)));
+void JoltEditorPlugin::_dump_debug_snapshots() {
+	if (debug_snapshots_dialog == nullptr) {
+		debug_snapshots_dialog = memnew(EditorFileDialog);
+		debug_snapshots_dialog->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_DIR);
+		debug_snapshots_dialog->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
+		debug_snapshots_dialog->set_current_dir("res://");
+		debug_snapshots_dialog->connect(
+			"dir_selected",
+			Callable(this, NAMEOF(_snapshots_dir_selected))
+		);
 
-		get_editor_interface()->get_base_control()->add_child(snapshots_dialog);
+		get_editor_interface()->get_base_control()->add_child(debug_snapshots_dialog);
 	}
 
-	snapshots_dialog->popup_centered_ratio(0.5);
+	debug_snapshots_dialog->popup_centered_ratio(0.5);
 }
 
 #endif // GDJ_CONFIG_EDITOR

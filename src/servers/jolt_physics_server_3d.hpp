@@ -638,9 +638,9 @@ public:
 	JoltJointImpl3D* get_joint(const RID& p_rid) const { return joint_owner.get_or_null(p_rid); }
 
 #ifdef GDJ_CONFIG_EDITOR
-	void dump_snapshots(const String& p_dir);
+	void dump_debug_snapshots(const String& p_dir);
 
-	void space_dump_snapshot(const RID& p_space, const String& p_dir);
+	void space_dump_debug_snapshot(const RID& p_space, const String& p_dir);
 #endif // GDJ_CONFIG_EDITOR
 
 	bool joint_get_enabled(const RID& p_joint) const;
