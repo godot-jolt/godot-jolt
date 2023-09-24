@@ -72,7 +72,7 @@ public:
 
 	void set_monitorable(bool p_monitorable, bool p_lock = true);
 
-	bool generates_contacts() const override { return true; }
+	bool generates_contacts() const override { return false; }
 
 	bool is_point_gravity() const { return point_gravity; }
 

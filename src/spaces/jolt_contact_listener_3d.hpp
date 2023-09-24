@@ -94,8 +94,8 @@ private:
 	bool _is_listening_for(const JPH::Body& p_body) const;
 
 	bool _try_override_collision_response(
-		const JPH::Body& p_body1,
-		const JPH::Body& p_body2,
+		const JPH::Body& p_jolt_body1,
+		const JPH::Body& p_jolt_body2,
 		JPH::ContactSettings& p_settings
 	);
 
