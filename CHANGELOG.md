@@ -11,9 +11,9 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
-- ⚠️ Changed collision layers and masks for `Area3D` to behave as they do in Godot Physics, allowing
-  for asymmetrical setups, where overlaps are only reported if the mask of an `Area3D` contains the
-  layer of the overlapping object.
+- ⚠️ Changed collision layers and masks for `Area3D` to behave like they do in Godot Physics,
+  allowing for asymmetrical setups, where overlaps are only reported if the mask of an `Area3D`
+  contains the layer of the overlapping object.
 - ⚠️ Changed the `body_set_force_integration_callback` method of `PhysicsServer3D` to behave like it
   does with Godot Physics, where omitting the binding of `userdata` requires that the callback also
   doesn't take any `userdata`. It also will no longer be called when the body is sleeping.
@@ -36,6 +36,8 @@ Breaking changes are denoted with ⚠️.
   already overlapping bodies once `monitoring` was enabled.
 - Fixed issue where changing the center-of-mass of a `RigidBody3D` attached to a joint would shift
   its transform relative to the joint.
+- Fixed issue where the `total_gravity` property on `PhysicsDirectBodyState3D` would always return a
+  zero vector for kinematic bodies.
 
 ## [0.7.0] - 2023-08-29
 
