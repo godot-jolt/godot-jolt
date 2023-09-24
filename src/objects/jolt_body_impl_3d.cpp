@@ -1014,31 +1014,11 @@ void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 		return;
 	}
 
-	gravity = Vector3();
-
-	const Vector3 position = to_godot(p_jolt_body.GetPosition());
-
-	bool gravity_done = false;
-
-	for (const JoltAreaImpl3D* area : areas) {
-		gravity_done = integrate(gravity, area->get_gravity_mode(), [&]() {
-			return area->compute_gravity(position);
-		});
-
-		if (gravity_done) {
-			break;
-		}
-	}
-
-	if (!gravity_done) {
-		gravity += space->get_default_area()->compute_gravity(position);
-	}
-
-	JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
-
-	gravity *= motion_properties.GetGravityFactor();
+	_update_gravity(p_jolt_body);
 
 	if (!custom_integrator) {
+		JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
+
 		motion_properties.SetLinearVelocityClamped(
 			motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
 		);
@@ -1062,6 +1042,8 @@ void JoltBodyImpl3D::_pre_step_rigid(float p_step, JPH::Body& p_jolt_body) {
 }
 
 void JoltBodyImpl3D::_pre_step_kinematic(float p_step, JPH::Body& p_jolt_body) {
+	_update_gravity(p_jolt_body);
+
 	move_kinematic(p_step, p_jolt_body);
 
 	if (generates_contacts()) {
@@ -1237,6 +1219,30 @@ void JoltBodyImpl3D::_update_mass_properties(bool p_lock) {
 
 		_stop_locked_axes(*body);
 	}
+}
+
+void JoltBodyImpl3D::_update_gravity(JPH::Body& p_jolt_body) {
+	gravity = Vector3();
+
+	const Vector3 position = to_godot(p_jolt_body.GetPosition());
+
+	bool gravity_done = false;
+
+	for (const JoltAreaImpl3D* area : areas) {
+		gravity_done = integrate(gravity, area->get_gravity_mode(), [&]() {
+			return area->compute_gravity(position);
+		});
+
+		if (gravity_done) {
+			break;
+		}
+	}
+
+	if (!gravity_done) {
+		gravity += space->get_default_area()->compute_gravity(position);
+	}
+
+	gravity *= p_jolt_body.GetMotionPropertiesUnchecked()->GetGravityFactor();
 }
 
 void JoltBodyImpl3D::_update_damp(bool p_lock) {

@@ -269,6 +269,8 @@ private:
 
 	void _update_mass_properties(bool p_lock = true);
 
+	void _update_gravity(JPH::Body& p_jolt_body);
+
 	void _update_damp(bool p_lock = true);
 
 	void _update_kinematic_transform(bool p_lock = true);
