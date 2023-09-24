@@ -78,39 +78,26 @@ bool JoltContactListener3D::_is_listening_for(const JPH::Body& p_body) const {
 }
 
 bool JoltContactListener3D::_try_override_collision_response(
-	const JPH::Body& p_body1,
-	const JPH::Body& p_body2,
+	const JPH::Body& p_jolt_body1,
+	const JPH::Body& p_jolt_body2,
 	JPH::ContactSettings& p_settings
 ) {
-	if (p_body1.IsSensor() || p_body2.IsSensor()) {
+	if (p_jolt_body1.IsSensor() || p_jolt_body2.IsSensor()) {
 		return false;
 	}
 
-	if (!p_body1.IsDynamic() && !p_body2.IsDynamic()) {
+	if (!p_jolt_body1.IsDynamic() && !p_jolt_body2.IsDynamic()) {
 		return false;
 	}
 
-	JPH::BroadPhaseLayer broad_phase_layer1 = {};
-	uint32_t collision_layer1 = 0;
-	uint32_t collision_mask1 = 0;
+	const auto* body1 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body1.GetUserData());
+	const auto* body2 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body2.GetUserData());
 
-	space->map_from_object_layer(
-		p_body1.GetObjectLayer(),
-		broad_phase_layer1,
-		collision_layer1,
-		collision_mask1
-	);
+	const uint32_t collision_layer1 = body1->get_collision_layer();
+	const uint32_t collision_layer2 = body2->get_collision_layer();
 
-	JPH::BroadPhaseLayer broad_phase_layer2 = {};
-	uint32_t collision_layer2 = 0;
-	uint32_t collision_mask2 = 0;
-
-	space->map_from_object_layer(
-		p_body2.GetObjectLayer(),
-		broad_phase_layer2,
-		collision_layer2,
-		collision_mask2
-	);
+	const uint32_t collision_mask1 = body1->get_collision_mask();
+	const uint32_t collision_mask2 = body2->get_collision_mask();
 
 	const bool first_scans_second = (collision_mask1 & collision_layer2) != 0;
 	const bool second_scans_first = (collision_mask2 & collision_layer1) != 0;
@@ -260,10 +247,6 @@ bool JoltContactListener3D::_try_add_area_overlap(
 	const JPH::ContactManifold& p_manifold
 ) {
 	if (!p_body1.IsSensor() && !p_body2.IsSensor()) {
-		return false;
-	}
-
-	if (!_is_listening_for(p_body1) && !_is_listening_for(p_body2)) {
 		return false;
 	}
 
