@@ -1,5 +1,6 @@
 #include "jolt_object_impl_3d.hpp"
 
+#include "objects/jolt_group_filter.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "shapes/jolt_custom_empty_shape.hpp"
 #include "shapes/jolt_shape_impl_3d.hpp"
@@ -465,7 +466,12 @@ void JoltObjectImpl3D::_create_begin() {
 		jolt_shape = new JoltCustomEmptyShape();
 	}
 
+	JPH::CollisionGroup::GroupID group_id = 0;
+	JPH::CollisionGroup::SubGroupID sub_group_id = 0;
+	JoltGroupFilter::encode_object(this, group_id, sub_group_id);
+
 	jolt_settings->mObjectLayer = _get_object_layer();
+	jolt_settings->mCollisionGroup = JPH::CollisionGroup(nullptr, group_id, sub_group_id);
 	jolt_settings->mMotionType = _get_motion_type();
 	jolt_settings->SetShape(jolt_shape);
 }

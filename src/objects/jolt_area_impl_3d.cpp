@@ -1,6 +1,7 @@
 #include "jolt_area_impl_3d.hpp"
 
 #include "objects/jolt_body_impl_3d.hpp"
+#include "objects/jolt_group_filter.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
@@ -436,6 +437,17 @@ void JoltAreaImpl3D::_force_areas_exited(bool p_remove, [[maybe_unused]] bool p_
 	}
 }
 
+void JoltAreaImpl3D::_update_group_filter(bool p_lock) {
+	if (space == nullptr) {
+		return;
+	}
+
+	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	ERR_FAIL_COND(body.is_invalid());
+
+	body->GetCollisionGroup().SetGroupFilter(JoltGroupFilter::instance);
+}
+
 void JoltAreaImpl3D::_space_changing(bool p_lock) {
 	if (space != nullptr) {
 		// HACK(mihe): Ideally we would rely on our contact listener to report all the exits when we
@@ -445,6 +457,10 @@ void JoltAreaImpl3D::_space_changing(bool p_lock) {
 		_force_bodies_exited(true, p_lock);
 		_force_areas_exited(true, p_lock);
 	}
+}
+
+void JoltAreaImpl3D::_space_changed(bool p_lock) {
+	_update_group_filter(p_lock);
 }
 
 void JoltAreaImpl3D::_body_monitoring_changed() {

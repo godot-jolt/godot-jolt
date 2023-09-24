@@ -11,6 +11,10 @@ public:
 
 	virtual ~JoltObjectImpl3D() = 0;
 
+	virtual bool is_body() const = 0;
+
+	virtual bool is_area() const = 0;
+
 	RID get_rid() const { return rid; }
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }

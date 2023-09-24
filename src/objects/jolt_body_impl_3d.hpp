@@ -1,11 +1,9 @@
 #pragma once
 
-#include "objects/jolt_group_filter_rid.hpp"
 #include "objects/jolt_object_impl_3d.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 
 class JoltAreaImpl3D;
-class JoltGroupFilterRID;
 class JoltJointImpl3D;
 
 class JoltBodyImpl3D final : public JoltObjectImpl3D {
@@ -37,6 +35,10 @@ public:
 	};
 
 	~JoltBodyImpl3D() override;
+
+	bool is_body() const override { return true; }
+
+	bool is_area() const override { return false; }
 
 	Variant get_state(PhysicsServer3D::BodyState p_state);
 
@@ -297,6 +299,8 @@ private:
 
 	void _axis_lock_changed(bool p_lock = true);
 
+	LocalVector<RID> exceptions;
+
 	LocalVector<Contact> contacts;
 
 	LocalVector<JoltAreaImpl3D*> areas;
@@ -326,8 +330,6 @@ private:
 	Callable custom_integration_callback;
 
 	JoltPhysicsDirectBodyState3D* direct_state = nullptr;
-
-	JPH::Ref<JoltGroupFilterRID> group_filter;
 
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
 

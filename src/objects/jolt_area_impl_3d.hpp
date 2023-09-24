@@ -52,6 +52,10 @@ class JoltAreaImpl3D final : public JoltObjectImpl3D {
 public:
 	using OverrideMode = PhysicsServer3D::AreaSpaceOverrideMode;
 
+	bool is_body() const override { return false; }
+
+	bool is_area() const override { return true; }
+
 	Variant get_param(PhysicsServer3D::AreaParameter p_param) const;
 
 	void set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value);
@@ -191,7 +195,11 @@ private:
 
 	void _force_areas_exited(bool p_remove, bool p_lock = true);
 
+	void _update_group_filter(bool p_lock = true);
+
 	void _space_changing(bool p_lock = true) override;
+
+	void _space_changed(bool p_lock = true) override;
 
 	void _body_monitoring_changed();
 
