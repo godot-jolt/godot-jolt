@@ -2,6 +2,7 @@
 
 #include "joints/jolt_joint_impl_3d.hpp"
 #include "objects/jolt_area_impl_3d.hpp"
+#include "objects/jolt_group_filter.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
@@ -600,45 +601,27 @@ void JoltBodyImpl3D::set_constant_torque(const Vector3& p_torque, bool p_lock) {
 }
 
 void JoltBodyImpl3D::add_collision_exception(const RID& p_excepted_body, bool p_lock) {
-	if (group_filter == nullptr) {
-		group_filter = new JoltGroupFilterRID();
-	}
-
-	group_filter->add_exception(p_excepted_body);
+	exceptions.push_back(p_excepted_body);
 
 	_exceptions_changed(p_lock);
 }
 
 void JoltBodyImpl3D::remove_collision_exception(const RID& p_excepted_body, bool p_lock) {
-	if (group_filter == nullptr) {
-		return;
-	}
-
-	group_filter->remove_exception(p_excepted_body);
-
-	if (group_filter->get_exception_count() == 0) {
-		group_filter = nullptr;
-	}
+	exceptions.erase(p_excepted_body);
 
 	_exceptions_changed(p_lock);
 }
 
 bool JoltBodyImpl3D::has_collision_exception(const RID& p_excepted_body) const {
-	return group_filter != nullptr && group_filter->has_exception(p_excepted_body);
+	return exceptions.find(p_excepted_body) >= 0;
 }
 
 TypedArray<RID> JoltBodyImpl3D::get_collision_exceptions() const {
-	if (group_filter == nullptr) {
-		return {};
-	}
-
-	const RID* exceptions = group_filter->get_exceptions();
-	const int32_t exception_count = group_filter->get_exception_count();
-
 	TypedArray<RID> result;
+	result.resize(exceptions.size());
 
-	for (auto i = 0; i < exception_count; ++i) {
-		result.push_back(exceptions[i]);
+	for (int32_t i = 0; i < exceptions.size(); ++i) {
+		result[i] = exceptions[i];
 	}
 
 	return result;
@@ -1023,18 +1006,7 @@ void JoltBodyImpl3D::_create_in_space() {
 	jolt_settings->mMassPropertiesOverride.mMass = 1.0f;
 	jolt_settings->mMassPropertiesOverride.mInertia = JPH::Mat44::sIdentity();
 
-	JPH::Body* body = _create_end();
-	ERR_FAIL_NULL(body);
-
-	// HACK(mihe): Since group filters don't grant us access to user data we are instead forced
-	// abuse the collision group to carry the upper and lower bits of our RID, which we can then
-	// access and rebuild in our group filter for bodies that make use of collision exceptions.
-
-	JPH::CollisionGroup::GroupID group_id = 0;
-	JPH::CollisionGroup::SubGroupID sub_group_id = 0;
-	JoltGroupFilterRID::encode_rid(rid, group_id, sub_group_id);
-
-	body->SetCollisionGroup(JPH::CollisionGroup(nullptr, group_id, sub_group_id));
+	_create_end();
 }
 
 void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {
@@ -1363,7 +1335,9 @@ void JoltBodyImpl3D::_update_group_filter(bool p_lock) {
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->GetCollisionGroup().SetGroupFilter(group_filter);
+	body->GetCollisionGroup().SetGroupFilter(
+		!exceptions.is_empty() ? JoltGroupFilter::instance : nullptr
+	);
 }
 
 void JoltBodyImpl3D::_mode_changed(bool p_lock) {
