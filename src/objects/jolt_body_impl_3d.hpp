@@ -242,6 +242,10 @@ public:
 
 	bool are_axes_locked() const { return locked_axes != 0; }
 
+	bool can_collide_with(const JoltBodyImpl3D& p_other) const;
+
+	bool can_interact_with(const JoltBodyImpl3D& p_other) const;
+
 private:
 	JPH::BroadPhaseLayer _get_broad_phase_layer() const override;
 

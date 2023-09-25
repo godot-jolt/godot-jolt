@@ -2,6 +2,8 @@
 
 #include "objects/jolt_object_impl_3d.hpp"
 
+class JoltBodyImpl3D;
+
 class JoltAreaImpl3D final : public JoltObjectImpl3D {
 	struct BodyIDHasher {
 		static uint32_t hash(const JPH::BodyID& p_id) {
@@ -71,6 +73,14 @@ public:
 	bool is_monitorable() const { return monitorable; }
 
 	void set_monitorable(bool p_monitorable, bool p_lock = true);
+
+	bool can_monitor(const JoltBodyImpl3D& p_other) const;
+
+	bool can_monitor(const JoltAreaImpl3D& p_other) const;
+
+	bool can_interact_with(const JoltBodyImpl3D& p_other) const;
+
+	bool can_interact_with(const JoltAreaImpl3D& p_other) const;
 
 	bool generates_contacts() const override { return false; }
 

@@ -958,6 +958,15 @@ void JoltBodyImpl3D::set_axis_lock(
 	}
 }
 
+bool JoltBodyImpl3D::can_collide_with(const JoltBodyImpl3D& p_other) const {
+	return (collision_mask & p_other.get_collision_layer()) != 0;
+}
+
+bool JoltBodyImpl3D::can_interact_with(const JoltBodyImpl3D& p_other) const {
+	return (can_collide_with(p_other) || p_other.can_collide_with(*this)) &&
+		!has_collision_exception(p_other.get_rid()) && !p_other.has_collision_exception(rid);
+}
+
 JPH::BroadPhaseLayer JoltBodyImpl3D::_get_broad_phase_layer() const {
 	switch (mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {

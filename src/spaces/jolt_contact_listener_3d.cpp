@@ -93,19 +93,13 @@ bool JoltContactListener3D::_try_override_collision_response(
 	const auto* body1 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body1.GetUserData());
 	const auto* body2 = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_body2.GetUserData());
 
-	const uint32_t collision_layer1 = body1->get_collision_layer();
-	const uint32_t collision_layer2 = body2->get_collision_layer();
+	const bool can_collide1 = body1->can_collide_with(*body2);
+	const bool can_collide2 = body2->can_collide_with(*body1);
 
-	const uint32_t collision_mask1 = body1->get_collision_mask();
-	const uint32_t collision_mask2 = body2->get_collision_mask();
-
-	const bool first_scans_second = (collision_mask1 & collision_layer2) != 0;
-	const bool second_scans_first = (collision_mask2 & collision_layer1) != 0;
-
-	if (first_scans_second && !second_scans_first) {
+	if (can_collide1 && !can_collide2) {
 		p_settings.mInvMassScale2 = 0.0f;
 		p_settings.mInvInertiaScale2 = 0.0f;
-	} else if (second_scans_first && !first_scans_second) {
+	} else if (can_collide2 && !can_collide1) {
 		p_settings.mInvMassScale1 = 0.0f;
 		p_settings.mInvInertiaScale1 = 0.0f;
 	}
@@ -399,11 +393,11 @@ void JoltContactListener3D::_flush_area_enters() {
 		JoltAreaImpl3D* area2 = jolt_body2.as_area();
 
 		if (area1 != nullptr && area2 != nullptr) {
-			if (area2->is_monitorable()) {
+			if (area1->can_monitor(*area2)) {
 				area1->area_shape_entered(body_id2, sub_shape_id2, sub_shape_id1);
 			}
 
-			if (area1->is_monitorable()) {
+			if (area2->can_monitor(*area1)) {
 				area2->area_shape_entered(body_id1, sub_shape_id1, sub_shape_id2);
 			}
 		} else if (area1 != nullptr && area2 == nullptr) {

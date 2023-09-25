@@ -174,6 +174,22 @@ void JoltAreaImpl3D::set_monitorable(bool p_monitorable, bool p_lock) {
 	_monitorable_changed(p_lock);
 }
 
+bool JoltAreaImpl3D::can_monitor(const JoltBodyImpl3D& p_other) const {
+	return (collision_mask & p_other.get_collision_layer()) != 0;
+}
+
+bool JoltAreaImpl3D::can_monitor(const JoltAreaImpl3D& p_other) const {
+	return p_other.is_monitorable() && (collision_mask & p_other.get_collision_layer()) != 0;
+}
+
+bool JoltAreaImpl3D::can_interact_with(const JoltBodyImpl3D& p_other) const {
+	return can_monitor(p_other);
+}
+
+bool JoltAreaImpl3D::can_interact_with(const JoltAreaImpl3D& p_other) const {
+	return can_monitor(p_other) || p_other.can_monitor(*this);
+}
+
 Vector3 JoltAreaImpl3D::compute_gravity(const Vector3& p_position, bool p_lock) const {
 	if (!point_gravity) {
 		return gravity_vector * gravity;

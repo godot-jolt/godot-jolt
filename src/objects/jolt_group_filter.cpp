@@ -59,25 +59,15 @@ bool JoltGroupFilter::CanCollide(
 		: nullptr;
 
 	if (body1 != nullptr && body2 != nullptr) {
-		return !body1->has_collision_exception(body2->get_rid()) &&
-			!body2->has_collision_exception(body1->get_rid());
+		return body1->can_interact_with(*body2);
 	}
 
-	const uint32_t collision_layer1 = object1->get_collision_layer();
-	const uint32_t collision_layer2 = object2->get_collision_layer();
-
-	const uint32_t collision_mask1 = object1->get_collision_mask();
-	const uint32_t collision_mask2 = object2->get_collision_mask();
-
-	const bool first_scans_second = (collision_mask1 & collision_layer2) != 0;
-	const bool second_scans_first = (collision_mask2 & collision_layer1) != 0;
-
 	if (area1 != nullptr && area2 != nullptr) {
-		return first_scans_second || second_scans_first;
+		return area1->can_interact_with(*area2);
 	} else if (area1 != nullptr && body2 != nullptr) {
-		return first_scans_second;
-	} else if (body1 != nullptr && area2 != nullptr) {
-		return second_scans_first;
+		return area1->can_interact_with(*body2);
+	} else if (area2 != nullptr && body1 != nullptr) {
+		return area2->can_interact_with(*body1);
 	} else {
 		return false;
 	}
