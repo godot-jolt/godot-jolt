@@ -2,18 +2,42 @@
 
 #include "shapes/jolt_shape_instance_3d.hpp"
 
+class JoltAreaImpl3D;
+class JoltBodyImpl3D;
 class JoltShapeImpl3D;
 class JoltSpace3D;
 
 class JoltObjectImpl3D {
 public:
-	JoltObjectImpl3D();
+	enum ObjectType : int8_t {
+		OBJECT_TYPE_INVALID,
+		OBJECT_TYPE_BODY,
+		OBJECT_TYPE_AREA
+	};
+
+	JoltObjectImpl3D(ObjectType p_object_type);
 
 	virtual ~JoltObjectImpl3D() = 0;
 
-	virtual bool is_body() const = 0;
+	bool is_body() const { return object_type == OBJECT_TYPE_BODY; };
 
-	virtual bool is_area() const = 0;
+	bool is_area() const { return object_type == OBJECT_TYPE_AREA; };
+
+	JoltBodyImpl3D* as_body() {
+		return is_body() ? reinterpret_cast<JoltBodyImpl3D*>(this) : nullptr;
+	}
+
+	const JoltBodyImpl3D* as_body() const {
+		return is_body() ? reinterpret_cast<const JoltBodyImpl3D*>(this) : nullptr;
+	}
+
+	JoltAreaImpl3D* as_area() {
+		return is_area() ? reinterpret_cast<JoltAreaImpl3D*>(this) : nullptr;
+	}
+
+	const JoltAreaImpl3D* as_area() const {
+		return is_area() ? reinterpret_cast<const JoltAreaImpl3D*>(this) : nullptr;
+	}
 
 	RID get_rid() const { return rid; }
 
@@ -188,6 +212,8 @@ protected:
 	uint32_t collision_layer = 1;
 
 	uint32_t collision_mask = 1;
+
+	ObjectType object_type = OBJECT_TYPE_INVALID;
 
 	bool pickable = false;
 };

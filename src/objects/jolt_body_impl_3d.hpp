@@ -34,11 +34,9 @@ public:
 		Vector3 impulse;
 	};
 
+	JoltBodyImpl3D();
+
 	~JoltBodyImpl3D() override;
-
-	bool is_body() const override { return true; }
-
-	bool is_area() const override { return false; }
 
 	Variant get_state(PhysicsServer3D::BodyState p_state);
 
