@@ -15,7 +15,7 @@ public:
 		OBJECT_TYPE_AREA
 	};
 
-	JoltObjectImpl3D(ObjectType p_object_type);
+	explicit JoltObjectImpl3D(ObjectType p_object_type);
 
 	virtual ~JoltObjectImpl3D() = 0;
 
