@@ -24,6 +24,12 @@ Breaking changes are denoted with ⚠️.
 - Added registering of `JoltPhysicsServer3D` as an actual singleton, which makes Jolt-specific
   server methods (e.g. `pin_joint_get_applied_force`) easier to deal with from dynamic scripting
   languages like GDScript.
+- Added `space_dump_debug_snapshot` to `JoltPhysicsServer3D`, for dumping a binary debug snapshot of
+  a particular physics space.
+- Added `dump_debug_snapshots` to `JoltPhysicsServer3D`, for dumping binary debug snapshots of all
+  currently active physics spaces.
+- Added a "Dump Debug Snapshots" menu option to "Project / Tools / Jolt Physics", for dumping binary
+  debug snapshots of all the editor's physics spaces.
 
 ### Fixed
 
