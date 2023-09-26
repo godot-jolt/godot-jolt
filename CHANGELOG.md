@@ -38,6 +38,7 @@ Breaking changes are denoted with ⚠️.
   its transform relative to the joint.
 - Fixed issue where the `total_gravity` property on `PhysicsDirectBodyState3D` would always return a
   zero vector for kinematic bodies.
+- Fixed issue with `Area3D` detecting overlaps slightly outside of its collision shapes.
 
 ## [0.7.0] - 2023-08-29
 
