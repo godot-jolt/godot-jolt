@@ -40,6 +40,9 @@ bool integrate(TValue& p_value, PhysicsServer3D::AreaSpaceOverrideMode p_mode, T
 
 } // namespace
 
+JoltBodyImpl3D::JoltBodyImpl3D()
+	: JoltObjectImpl3D(JoltObjectImpl3D::OBJECT_TYPE_BODY) { }
+
 JoltBodyImpl3D::~JoltBodyImpl3D() {
 	memdelete_safely(direct_state);
 }

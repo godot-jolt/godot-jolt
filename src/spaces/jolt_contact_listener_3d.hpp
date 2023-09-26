@@ -112,7 +112,7 @@ private:
 		JPH::ContactSettings& p_settings
 	);
 
-	bool _try_add_area_overlap(
+	bool _try_evaluate_area_overlap(
 		const JPH::Body& p_body1,
 		const JPH::Body& p_body2,
 		const JPH::ContactManifold& p_manifold

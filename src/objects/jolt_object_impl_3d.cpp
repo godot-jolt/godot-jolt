@@ -7,7 +7,8 @@
 #include "spaces/jolt_layer_mapper.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
-JoltObjectImpl3D::JoltObjectImpl3D() {
+JoltObjectImpl3D::JoltObjectImpl3D(ObjectType p_object_type)
+	: object_type(p_object_type) {
 	jolt_settings->mAllowSleeping = true;
 	jolt_settings->mFriction = 1.0f;
 	jolt_settings->mRestitution = 0.0f;

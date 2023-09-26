@@ -16,6 +16,9 @@ const Vector3 DEFAULT_WIND_DIRECTION = {};
 
 } // namespace
 
+JoltAreaImpl3D::JoltAreaImpl3D()
+	: JoltObjectImpl3D(JoltObjectImpl3D::OBJECT_TYPE_AREA) { }
+
 Variant JoltAreaImpl3D::get_param(PhysicsServer3D::AreaParameter p_param) const {
 	switch (p_param) {
 		case PhysicsServer3D::AREA_PARAM_GRAVITY_OVERRIDE_MODE: {
