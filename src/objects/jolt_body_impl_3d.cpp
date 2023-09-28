@@ -444,7 +444,7 @@ void JoltBodyImpl3D::apply_force(const Vector3& p_force, const Vector3& p_positi
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->AddForce(to_jolt(p_force), body->GetCenterOfMassPosition() + to_jolt(p_position));
+	body->AddForce(to_jolt(p_force), body->GetPosition() + to_jolt(p_position));
 
 	_motion_changed(false);
 }
@@ -480,7 +480,7 @@ void JoltBodyImpl3D::apply_impulse(
 	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->AddImpulse(to_jolt(p_impulse), body->GetCenterOfMassPosition() + to_jolt(p_position));
+	body->AddImpulse(to_jolt(p_impulse), body->GetPosition() + to_jolt(p_position));
 
 	_motion_changed(false);
 }

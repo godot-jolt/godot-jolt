@@ -11,6 +11,8 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
+- ⚠️ Changed `apply_force` and `apply_impulse` to be applied at an offset relative to the body's
+  origin rather than at an offset relative to the body's center-of-mass, to match Godot Physics.
 - ⚠️ Changed collision layers and masks for `Area3D` to behave like they do in Godot Physics,
   allowing for asymmetrical setups, where overlaps are only reported if the mask of an `Area3D`
   contains the layer of the overlapping object.
