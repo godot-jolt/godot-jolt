@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.8.0] - 2023-09-28
+
 ### Changed
 
 - ⚠️ Changed `apply_force` and `apply_impulse` to be applied at an offset relative to the body's
@@ -253,7 +255,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.7.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.8.0-stable...HEAD
+[0.8.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.7.0-stable...v0.8.0-stable
 [0.7.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.6.0-stable...v0.7.0-stable
 [0.6.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.5.0-stable...v0.6.0-stable
 [0.5.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.4.1-stable...v0.5.0-stable
