@@ -89,37 +89,40 @@ void JoltSpace3D::step(float p_step) {
 
 	_pre_step(p_step);
 
-	switch (physics_system->Update(p_step, 1, temp_allocator, job_system)) {
-		case JPH::EPhysicsUpdateError::None: {
-			// All good!
-		} break;
+	const JPH::EPhysicsUpdateError
+		update_error = physics_system->Update(p_step, 1, temp_allocator, job_system);
 
-		case JPH::EPhysicsUpdateError::ManifoldCacheFull: {
-			WARN_PRINT_ONCE(vformat(
-				"Jolt's manifold cache exceeded capacity and contacts were ignored. "
-				"Consider increasing maximum number of contact constraints in project settings. "
-				"Maximum number of contact constraints is currently set to %d.",
-				JoltProjectSettings::get_max_contact_constraints()
-			));
-		} break;
+	if ((update_error & JPH::EPhysicsUpdateError::ManifoldCacheFull) !=
+		JPH::EPhysicsUpdateError::None)
+	{
+		WARN_PRINT_ONCE(vformat(
+			"Jolt's manifold cache exceeded capacity and contacts were ignored. "
+			"Consider increasing maximum number of contact constraints in project settings. "
+			"Maximum number of contact constraints is currently set to %d.",
+			JoltProjectSettings::get_max_contact_constraints()
+		));
+	}
 
-		case JPH::EPhysicsUpdateError::BodyPairCacheFull: {
-			WARN_PRINT_ONCE(vformat(
-				"Jolt's body pair cache exceeded capacity and contacts were ignored. "
-				"Consider increasing maximum number of body pairs in project settings. "
-				"Maximum number of body pairs is currently set to %d.",
-				JoltProjectSettings::get_max_body_pairs()
-			));
-		} break;
+	if ((update_error & JPH::EPhysicsUpdateError::BodyPairCacheFull) !=
+		JPH::EPhysicsUpdateError::None)
+	{
+		WARN_PRINT_ONCE(vformat(
+			"Jolt's body pair cache exceeded capacity and contacts were ignored. "
+			"Consider increasing maximum number of body pairs in project settings. "
+			"Maximum number of body pairs is currently set to %d.",
+			JoltProjectSettings::get_max_body_pairs()
+		));
+	}
 
-		case JPH::EPhysicsUpdateError::ContactConstraintsFull: {
-			WARN_PRINT_ONCE(vformat(
-				"Jolt's contact constraint buffer exceeded capacity and contacts were ignored. "
-				"Consider increasing maximum number of contact constraints in project settings. "
-				"Maximum number of contact constraints is currently set to %d.",
-				JoltProjectSettings::get_max_contact_constraints()
-			));
-		} break;
+	if ((update_error & JPH::EPhysicsUpdateError::ContactConstraintsFull) !=
+		JPH::EPhysicsUpdateError::None)
+	{
+		WARN_PRINT_ONCE(vformat(
+			"Jolt's contact constraint buffer exceeded capacity and contacts were ignored. "
+			"Consider increasing maximum number of contact constraints in project settings. "
+			"Maximum number of contact constraints is currently set to %d.",
+			JoltProjectSettings::get_max_contact_constraints()
+		));
 	}
 
 	_post_step(p_step);
