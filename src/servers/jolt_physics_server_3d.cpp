@@ -8,7 +8,6 @@
 #include "joints/jolt_slider_joint_impl_3d.hpp"
 #include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_body_impl_3d.hpp"
-#include "servers/jolt_project_settings.hpp"
 #include "shapes/jolt_box_shape_impl_3d.hpp"
 #include "shapes/jolt_capsule_shape_impl_3d.hpp"
 #include "shapes/jolt_concave_polygon_shape_impl_3d.hpp"
@@ -1785,13 +1784,6 @@ void JoltPhysicsServer3D::_set_active(bool p_active) {
 }
 
 void JoltPhysicsServer3D::_init() {
-	if (JoltProjectSettings::should_run_on_separate_thread()) {
-		WARN_PRINT_ONCE(
-			"Running on a separate thread is not currently supported by Godot Jolt. "
-			"Any such value will be ignored."
-		);
-	}
-
 	job_system = new JoltJobSystem();
 }
 
