@@ -74,6 +74,18 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 			return clamp(p_body1.GetRestitution() + p_body2.GetRestitution(), 0.0f, 1.0f);
 		}
 	);
+
+#ifdef GDJ_CONFIG_EDITOR
+	// HACK(mihe): The `EditorLog` class gets initialized fairly late in the application flow, so if
+	// we do this any earlier the warning is only ever going to be emitted to stdout and not the
+	// editor log, hence why this is here.
+	if (JoltProjectSettings::should_run_on_separate_thread()) {
+		WARN_PRINT_ONCE(
+			"Running on a separate thread is not currently supported by Godot Jolt. "
+			"Any such setting will be ignored."
+		);
+	}
+#endif // GDJ_CONFIG_EDITOR
 }
 
 JoltSpace3D::~JoltSpace3D() {
