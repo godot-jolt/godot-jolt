@@ -61,7 +61,7 @@ JPH::ShapeRefC JoltCylinderShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build cylinder shape with %s. "
+			"Godot Jolt failed to build cylinder shape with %s. "
 			"It returned the following error: '%s'. "
 			"This shape belongs to %s.",
 			to_string(),

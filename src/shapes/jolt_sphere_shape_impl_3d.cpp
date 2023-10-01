@@ -24,7 +24,7 @@ JPH::ShapeRefC JoltSphereShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		radius <= 0.0f,
 		vformat(
-			"Failed to build sphere shape with %s. "
+			"Godot Jolt failed to build sphere shape with %s. "
 			"Its radius must be greater than 0. "
 			"This shape belongs to %s.",
 			to_string(),
@@ -38,7 +38,7 @@ JPH::ShapeRefC JoltSphereShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build sphere shape with %s. "
+			"Godot Jolt failed to build sphere shape with %s. "
 			"It returned the following error: '%s'. "
 			"This shape belongs to %s.",
 			to_string(),

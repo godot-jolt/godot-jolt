@@ -38,7 +38,7 @@ JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		vertex_count < 3,
 		vformat(
-			"Failed to build convex polygon shape with %s. "
+			"Godot Jolt failed to build convex polygon shape with %s. "
 			"It must have a vertex count of at least 3. "
 			"This shape belongs to %s.",
 			to_string(),
@@ -64,7 +64,7 @@ JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build convex polygon shape with %s. "
+			"Godot Jolt failed to build convex polygon shape with %s. "
 			"It returned the following error: '%s'. "
 			"This shape belongs to %s.",
 			to_string(),

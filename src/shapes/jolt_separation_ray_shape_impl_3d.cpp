@@ -38,7 +38,7 @@ JPH::ShapeRefC JoltSeparationRayShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		length <= 0.0f,
 		vformat(
-			"Failed to build separation ray shape with %s. "
+			"Godot Jolt failed to build separation ray shape with %s. "
 			"Its length must be greater than 0. "
 			"This shape belongs to %s.",
 			to_string(),
@@ -52,7 +52,7 @@ JPH::ShapeRefC JoltSeparationRayShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build separation ray shape with %s. "
+			"Godot Jolt failed to build separation ray shape with %s. "
 			"It returned the following error: '%s'. "
 			"This shape belongs to %s.",
 			to_string(),

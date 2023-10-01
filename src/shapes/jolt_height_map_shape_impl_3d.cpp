@@ -51,7 +51,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		height_count != width * depth,
 		vformat(
-			"Failed to build height map shape with %s. "
+			"Godot Jolt failed to build height map shape with %s. "
 			"Height count must be the product of width and depth. "
 			"This shape belongs to %s.",
 			to_string(),
@@ -62,7 +62,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		width < 2 || depth < 2,
 		vformat(
-			"Failed to build height map shape with %s. "
+			"Godot Jolt failed to build height map shape with %s. "
 			"The height map must be at least 2x2. "
 			"This shape belongs to %s.",
 			to_string(),
@@ -125,7 +125,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build height map shape with %s. "
+			"Godot Jolt failed to build height map shape with %s. "
 			"It returned the following error: '%s'. "
 			"This shape belongs to %s.",
 			to_string(),
@@ -189,7 +189,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_mesh() const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build height map shape (as polygon) with %s. "
+			"Godot Jolt failed to build height map shape (as polygon) with %s. "
 			"It returned the following error: '%s'. "
 			"This shape belongs to %s.",
 			to_string(),

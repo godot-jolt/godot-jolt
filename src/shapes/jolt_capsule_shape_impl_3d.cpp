@@ -36,7 +36,7 @@ JPH::ShapeRefC JoltCapsuleShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		radius <= 0.0f,
 		vformat(
-			"Failed to build capsule shape with %s. "
+			"Godot Jolt failed to build capsule shape with %s. "
 			"Its radius must be greater than 0. "
 			"This shape belongs to %s.",
 			to_string(),
@@ -47,7 +47,7 @@ JPH::ShapeRefC JoltCapsuleShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		height <= 0.0f,
 		vformat(
-			"Failed to build capsule shape with %s. "
+			"Godot Jolt failed to build capsule shape with %s. "
 			"Its height must be greater than 0. "
 			"This shape belongs to %s.",
 			to_string(),
@@ -58,7 +58,7 @@ JPH::ShapeRefC JoltCapsuleShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		height < radius * 2.0f,
 		vformat(
-			"Failed to build capsule shape with %s. "
+			"Godot Jolt failed to build capsule shape with %s. "
 			"Its height must be at least double that of its radius. "
 			"This shape belongs to %s.",
 			to_string(),
@@ -75,7 +75,7 @@ JPH::ShapeRefC JoltCapsuleShapeImpl3D::_build() const {
 	ERR_FAIL_COND_D_MSG(
 		shape_result.HasError(),
 		vformat(
-			"Failed to build capsule shape with %s. "
+			"Godot Jolt failed to build capsule shape with %s. "
 			"It returned the following error: '%s'. "
 			"This shape belongs to %s.",
 			to_string(),
