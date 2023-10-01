@@ -35,6 +35,8 @@ String JoltConvexPolygonShapeImpl3D::to_string() const {
 JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::_build() const {
 	const auto vertex_count = (int32_t)vertices.size();
 
+	QUIET_FAIL_COND_D(vertex_count == 0);
+
 	ERR_FAIL_COND_D_MSG(
 		vertex_count < 3,
 		vformat(
