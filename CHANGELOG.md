@@ -14,6 +14,10 @@ Breaking changes are denoted with ⚠️.
 - Changed `ConvexPolygonShape3D` to no longer emit errors about failing to build the shape when
   adding one to the scene tree with 0 points.
 
+### Fixed
+
+- Greatly reduced creation/modification/loading times for `ConcavePolygonShape3D`.
+
 ## [0.8.0] - 2023-09-28
 
 ### Changed
