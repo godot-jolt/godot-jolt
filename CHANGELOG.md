@@ -16,6 +16,8 @@ Breaking changes are denoted with ⚠️.
 
 ### Fixed
 
+- ⚠️ Fixed issue where `Generic6DOFJoint` and `JoltGeneric6DOFJoint` would lock up any axis that
+  used a spring stiffness/frequency of 0.
 - Greatly reduced creation/modification/loading times for `ConcavePolygonShape3D`.
 
 ## [0.8.0] - 2023-09-28
