@@ -28,6 +28,8 @@ public:
 
 	static float get_position_correction();
 
+	static float get_active_edge_threshold();
+
 	static float get_bounce_velocity_threshold();
 
 	static float get_contact_distance();
