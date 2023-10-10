@@ -1,12 +1,7 @@
 #include "jolt_concave_polygon_shape_impl_3d.hpp"
 
+#include "servers/jolt_project_settings.hpp"
 #include "shapes/jolt_custom_double_sided_shape.hpp"
-
-namespace {
-
-const float ACTIVE_EDGE_THRESHOLD = Math::cos(Math::deg_to_rad(50.0f));
-
-} // namespace
 
 Variant JoltConcavePolygonShapeImpl3D::get_data() const {
 	Dictionary data;
@@ -88,7 +83,7 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build() const {
 	}
 
 	JPH::MeshShapeSettings shape_settings(jolt_faces);
-	shape_settings.mActiveEdgeCosThresholdAngle = ACTIVE_EDGE_THRESHOLD;
+	shape_settings.mActiveEdgeCosThresholdAngle = JoltProjectSettings::get_active_edge_threshold();
 
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 

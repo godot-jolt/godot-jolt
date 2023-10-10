@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Added
+
+- Added new project setting, "Active Edge Threshold", for tuning the cut-off angle for Jolt's active
+  edge detection, which can help balance trade-offs related to triangle edge collisions.
+
 ### Changed
 
 - Changed `ConvexPolygonShape3D` to no longer emit errors about failing to build the shape when

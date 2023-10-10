@@ -272,6 +272,23 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Solver</td>
+      <td>Active Edge Threshold</td>
+      <td>
+        The cut-off angle for the active edge detection.
+      </td>
+      <td>
+        This angle determines whether or not an edge between two triangles in either a
+        <code>ConcavePolygonShape3D</code> or <code>HeightMapShape3D</code> will be considered
+        "active" or "inactive", where contact with an inactive edge will have its normal overridden
+        to instead be the surface normal of the triangle.
+        <br><br>Setting this too low can result in ghost collisions. Setting this too high can
+        result in things like <code>RigidBody3D</code> sinking into triangle edges or
+        <code>move_and_slide</code> behaving in weird ways when going over or pressing up against
+        triangle edges.
+      </td>
+    </tr>
+    <tr>
+      <td>Solver</td>
       <td>Bounce Velocity Threshold</td>
       <td>
         The minimum velocity needed before a collision can be elastic.
