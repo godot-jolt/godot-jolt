@@ -1,4 +1,5 @@
 #include "jolt_physics_server_3d.hpp"
+#include <Jolt/Physics/StateRecorderImpl.h>
 
 #include "joints/jolt_cone_twist_joint_impl_3d.hpp"
 #include "joints/jolt_generic_6dof_joint_impl_3d.hpp"
@@ -21,12 +22,29 @@
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
+/**
+ * Binds all the methods of the JoltPhysicsServer3D class to their corresponding names.
+ * This includes methods for dumping debug snapshots, setting the active state, stepping the simulation, saving and restoring the state, and getting and setting properties of various joint types.
+ * Also binds various constants related to joint properties.
+ * 
+ * @note This method is called automatically by Godot when the JoltPhysicsServer3D class is registered.
+ */
 void JoltPhysicsServer3D::_bind_methods() {
 #ifdef GDJ_CONFIG_EDITOR
 	BIND_METHOD(JoltPhysicsServer3D, dump_debug_snapshots, "dir");
 
 	BIND_METHOD(JoltPhysicsServer3D, space_dump_debug_snapshot, "space", "dir");
 #endif // GDJ_CONFIG_EDITOR
+
+	// Binding set_active() to be able to start/stop the simulation.
+	BIND_METHOD(JoltPhysicsServer3D, set_active, "active");
+
+	// Binding step() to be able to step the simulation by a specified delta.
+	BIND_METHOD(JoltPhysicsServer3D, step, "delta");
+
+	// Binding save_state() and restore_state() to be able to save and restore the state of the simulation in a godot::PackedByteArray.
+	BIND_METHOD(JoltPhysicsServer3D, save_state);
+	BIND_METHOD(JoltPhysicsServer3D, restore_state, "state_recorder_string");
 
 	BIND_METHOD(JoltPhysicsServer3D, joint_get_enabled, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, joint_set_enabled, "joint", "enabled");
@@ -1779,12 +1797,75 @@ void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
 	}
 }
 
+/**
+ * @brief Activates or deactivates the physics server.
+ *
+ * @param active The new active state of the physics server.
+ */
+void JoltPhysicsServer3D::set_active(bool active) {
+	_set_active(active);
+}
+
 void JoltPhysicsServer3D::_set_active(bool p_active) {
 	active = p_active;
 }
 
 void JoltPhysicsServer3D::_init() {
 	job_system = new JoltJobSystem();
+}
+
+/**
+ * @brief Saves the state of the physics server to a packed byte array.
+ *
+ * @return A packed byte array containing the saved state.
+ */
+godot::PackedByteArray JoltPhysicsServer3D::save_state() {
+	// Save the state of all active spaces
+	JPH::StateRecorderImpl state;
+	for (JoltSpace3D* active_space : active_spaces) {
+		active_space->get_physics_system().SaveState(state);
+	}
+
+	// Get the state as a std::string and get the size (in bytes) of the string
+	std::string state_std_string = state.GetData();
+	size_t state_std_string_size = state_std_string.size();
+
+	// Create a packed byte array and set the size to the size (in bytes) of the state string
+	godot::PackedByteArray packed_byte_array;
+	packed_byte_array.resize(state_std_string.size());
+
+	// Copy the state string bytes into the packed byte array
+	for (int i = 0; i < state_std_string_size; i++) {
+		packed_byte_array.set(i, state_std_string[i]);
+	}
+
+	// Return the packed byte array
+	return packed_byte_array;
+}
+
+/**
+ * @brief Restores the state of the physics server from a packed byte array.
+ *
+ * @param state_packed_byte_array The packed byte array containing the state to restore.
+ */
+void JoltPhysicsServer3D::restore_state(godot::PackedByteArray state_packed_byte_array) {
+	// Create a state recorder and write the bytes from the packed byte array into it
+	JPH::StateRecorderImpl state;
+	state.WriteBytes(state_packed_byte_array.ptr(), state_packed_byte_array.size());
+
+	// Restore the state of all active spaces
+	for (JoltSpace3D* active_space : active_spaces) {
+		active_space->get_physics_system().RestoreState(state);
+	}
+}
+
+/**
+ * @brief Steps the physics simulation by the given delta time.
+ *
+ * @param delta The time step to use for the simulation.
+ */
+void JoltPhysicsServer3D::step(double delta) {
+	_step(delta);
 }
 
 void JoltPhysicsServer3D::_step(double p_step) {

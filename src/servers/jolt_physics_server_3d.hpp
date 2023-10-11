@@ -599,9 +599,17 @@ public:
 
 	void _free_rid(const RID& p_rid) override;
 
+	void set_active(bool active);
+
 	void _set_active(bool p_active) override;
 
 	void _init() override;
+
+	godot::PackedByteArray save_state();
+
+	void restore_state(godot::PackedByteArray state_recorder_string);
+
+	void step(double delta);
 
 	void _step(double p_step) override;
 
