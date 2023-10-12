@@ -760,11 +760,11 @@ private:
 	bool flushing_queries = false;
 };
 
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointParamJolt);
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointFlagJolt);
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointParamJolt);
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointFlagJolt);
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointParamJolt);
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointFlagJolt);
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisParamJolt);
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisFlagJolt);
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointParamJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointFlagJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointParamJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointFlagJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointParamJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointFlagJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisParamJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisFlagJolt)
