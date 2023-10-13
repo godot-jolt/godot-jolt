@@ -88,4 +88,4 @@ private:
 #endif // JPH_DEBUG_RENDERER
 };
 
-VARIANT_ENUM_CAST(JoltDebugGeometry3D::ColorScheme);
+VARIANT_ENUM_CAST(JoltDebugGeometry3D::ColorScheme)

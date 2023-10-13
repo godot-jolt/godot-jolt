@@ -456,5 +456,5 @@ private:
 	bool angular_spring_enabled[AXIS_COUNT] = {};
 };
 
-VARIANT_ENUM_CAST(JoltGeneric6DOFJoint3D::Param);
-VARIANT_ENUM_CAST(JoltGeneric6DOFJoint3D::Flag);
+VARIANT_ENUM_CAST(JoltGeneric6DOFJoint3D::Param)
+VARIANT_ENUM_CAST(JoltGeneric6DOFJoint3D::Flag)
