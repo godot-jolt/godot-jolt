@@ -1111,7 +1111,11 @@ bool JoltPhysicsServer3D::_body_test_motion(
 
 PhysicsDirectBodyState3D* JoltPhysicsServer3D::_body_get_direct_state(const RID& p_body) {
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
-	ERR_FAIL_NULL_D(body);
+
+	// Unlike most other server methods this one is meant to quietly return null if the body has
+	// since been freed, which is used in places like `move_and_slide` to determine whether a
+	// previously used platform has been freed or not.
+	QUIET_FAIL_NULL_D(body);
 
 	return body->get_direct_state();
 }
