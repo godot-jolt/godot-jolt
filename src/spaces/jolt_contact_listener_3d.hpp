@@ -123,7 +123,11 @@ private:
 	bool _try_remove_area_overlap(const JPH::SubShapeIDPair& p_shape_pair);
 
 #ifdef GDJ_CONFIG_EDITOR
-	bool _try_add_debug_contacts(const JPH::ContactManifold& p_manifold);
+	bool _try_add_debug_contacts(
+		const JPH::Body& p_body1,
+		const JPH::Body& p_body2,
+		const JPH::ContactManifold& p_manifold
+	);
 #endif // GDJ_CONFIG_EDITOR
 
 	void _flush_contacts();

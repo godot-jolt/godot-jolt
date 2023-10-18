@@ -36,7 +36,7 @@ void JoltContactListener3D::OnContactAdded(
 	_try_evaluate_area_overlap(p_body1, p_body2, p_manifold);
 
 #ifdef GDJ_CONFIG_EDITOR
-	_try_add_debug_contacts(p_manifold);
+	_try_add_debug_contacts(p_body1, p_body2, p_manifold);
 #endif // GDJ_CONFIG_EDITOR
 }
 
@@ -52,7 +52,7 @@ void JoltContactListener3D::OnContactPersisted(
 	_try_evaluate_area_overlap(p_body1, p_body2, p_manifold);
 
 #ifdef GDJ_CONFIG_EDITOR
-	_try_add_debug_contacts(p_manifold);
+	_try_add_debug_contacts(p_body1, p_body2, p_manifold);
 #endif // GDJ_CONFIG_EDITOR
 }
 
@@ -323,7 +323,15 @@ bool JoltContactListener3D::_try_remove_area_overlap(const JPH::SubShapeIDPair& 
 
 #ifdef GDJ_CONFIG_EDITOR
 
-bool JoltContactListener3D::_try_add_debug_contacts(const JPH::ContactManifold& p_manifold) {
+bool JoltContactListener3D::_try_add_debug_contacts(
+	const JPH::Body& p_body1,
+	const JPH::Body& p_body2,
+	const JPH::ContactManifold& p_manifold
+) {
+	if (p_body1.IsSensor() || p_body2.IsSensor()) {
+		return false;
+	}
+
 	const int64_t max_count = debug_contacts.size();
 
 	if (max_count == 0) {
