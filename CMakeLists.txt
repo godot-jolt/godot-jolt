@@ -9,7 +9,7 @@ list(APPEND CMAKE_MODULE_PATH ${cmake_dir})
 
 include(GodotJoltPrelude)
 
-project(godot-jolt VERSION 0.9.1 LANGUAGES CXX)
+project(godot-jolt VERSION 0.10.0 LANGUAGES CXX)
 
 include(GodotJoltSetup)
 include(GodotJoltExternalGodotCpp)
