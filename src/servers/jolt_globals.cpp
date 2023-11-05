@@ -6,12 +6,16 @@
 #include "shapes/jolt_custom_ray_shape.hpp"
 #include "shapes/jolt_custom_user_data_shape.hpp"
 
+#ifdef GDJ_USE_MIMALLOC
+
+#include <mimalloc-new-delete.h>
+
 void* jolt_alloc(size_t p_size) {
 	return mi_malloc(p_size);
 }
 
 void jolt_free(void* p_mem) {
-	mi_free(p_mem);
+	return mi_free(p_mem);
 }
 
 void* jolt_aligned_alloc(size_t p_size, size_t p_alignment) {
@@ -19,8 +23,10 @@ void* jolt_aligned_alloc(size_t p_size, size_t p_alignment) {
 }
 
 void jolt_aligned_free(void* p_mem) {
-	mi_free(p_mem);
+	return mi_free(p_mem);
 }
+
+#endif // GDJ_USE_MIMALLOC
 
 #ifdef JPH_ENABLE_ASSERTS
 
@@ -49,10 +55,14 @@ bool jolt_assert(const char* p_expr, const char* p_msg, const char* p_file, uint
 #endif // JPH_ENABLE_ASSERTS
 
 void jolt_initialize() {
+#ifdef GDJ_USE_MIMALLOC
 	JPH::Allocate = &jolt_alloc;
 	JPH::Free = &jolt_free;
 	JPH::AlignedAllocate = &jolt_aligned_alloc;
 	JPH::AlignedFree = &jolt_aligned_free;
+#else // GDJ_USE_MIMALLOC
+	JPH::RegisterDefaultAllocator();
+#endif // GDJ_USE_MIMALLOC
 
 #ifdef JPH_ENABLE_ASSERTS
 	JPH::Trace = &jolt_trace;

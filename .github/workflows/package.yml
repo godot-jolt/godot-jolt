@@ -188,9 +188,61 @@ jobs:
           path: ./dist/**
           retention-days: 1
 
+  android:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64, arm32, x64, x86]
+
+    name: Build (android-${{ matrix.arch }})
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: List dynamic dependencies
+        run: ldd --version
+
+      - name: Configure
+        uses: ./.github/actions/cmake-configure
+        with:
+          platform: linux-android
+          arch: ${{ matrix.arch }}
+          args: >
+            -DCMAKE_INSTALL_PREFIX=dist
+            -DGDJ_INSTALL_DEBUG_SYMBOLS=TRUE
+        env:
+          CFLAGS: -fmacro-prefix-map=${{ github.workspace }}=.
+          CXXFLAGS: -fmacro-prefix-map=${{ github.workspace }}=.
+
+      - name: Build (non-editor)
+        uses: ./.github/actions/cmake-build
+        with:
+          platform: linux-android
+          arch: ${{ matrix.arch }}
+          editor: false
+          config: distribution
+
+      - name: Build (editor)
+        uses: ./.github/actions/cmake-build
+        with:
+          platform: linux-android
+          arch: ${{ matrix.arch }}
+          editor: true
+          config: distribution
+
+      - name: Upload builds
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-${{ matrix.arch }}
+          path: ./dist/**
+          retention-days: 1
+
   upload:
     runs-on: ubuntu-20.04
-    needs: [windows, linux, macos]
+    needs: [windows, linux, macos, android]
 
     name: Upload
 
@@ -225,6 +277,30 @@ jobs:
           name: macos
           path: ./dist
 
+      - name: Download builds (android-arm64)
+        uses: actions/download-artifact@v3
+        with:
+          name: android-arm64
+          path: ./dist
+
+      - name: Download builds (android-arm32)
+        uses: actions/download-artifact@v3
+        with:
+          name: android-arm32
+          path: ./dist
+
+      - name: Download builds (android-x64)
+        uses: actions/download-artifact@v3
+        with:
+          name: android-x64
+          path: ./dist
+
+      - name: Download builds (android-x86)
+        uses: actions/download-artifact@v3
+        with:
+          name: android-x86
+          path: ./dist
+
       - name: Delete temporary artifacts
         uses: geekyeggo/delete-artifact@v2
         with:
@@ -234,6 +310,10 @@ jobs:
             linux-x64
             linux-x86
             macos
+            android-arm64
+            android-arm32
+            android-x64
+            android-x86
 
       - name: Separate debug symbols
         run: >

@@ -46,15 +46,21 @@ add_library(godot-jolt::godot-jolt ALIAS godot-jolt)
 target_link_libraries(godot-jolt
 	godot-jolt::godot-cpp
 	godot-jolt::jolt
-	godot-jolt::mimalloc
 )
+
+if(GDJ_USE_MIMALLOC)
+	target_link_libraries(godot-jolt godot-jolt::mimalloc)
+endif()
 
 set(is_windows $<STREQUAL:${CMAKE_SYSTEM_NAME},Windows>)
 set(is_linux $<STREQUAL:${CMAKE_SYSTEM_NAME},Linux>)
 set(is_macos $<STREQUAL:${CMAKE_SYSTEM_NAME},Darwin>)
+set(is_android $<STREQUAL:${CMAKE_SYSTEM_NAME},Android>)
 
 set(is_x86 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},x86>)
 set(is_x64 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},x64>)
+set(is_arm64 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},arm64>)
+set(is_arm32 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},arm32>)
 
 set(is_editor_config $<CONFIG:EditorDebug,EditorDevelopment,EditorDistribution>)
 set(is_debug_config $<CONFIG:Debug,EditorDebug>)
@@ -62,15 +68,22 @@ set(is_development_config $<CONFIG:Development,EditorDevelopment>)
 set(is_distribution_config $<CONFIG:Distribution,EditorDistribution>)
 set(is_optimized_config $<OR:${is_development_config},${is_distribution_config}>)
 
+set(use_mimalloc $<BOOL:${GDJ_USE_MIMALLOC}>)
+
+set(prefix $<${is_android}:lib>)
+
 string(CONCAT suffix_platform
 	$<${is_windows}:_windows>
 	$<${is_linux}:_linux>
 	$<${is_macos}:_macos>
+	$<${is_android}:_android>
 )
 
 string(CONCAT suffix_arch
 	$<${is_x86}:-x86>
 	$<${is_x64}:-x64>
+	$<${is_arm64}:-arm64>
+	$<${is_arm32}:-arm32>
 )
 
 set(suffix_editor $<${is_editor_config}:_editor>)
@@ -93,7 +106,7 @@ set(is_gcc $<CXX_COMPILER_ID:GNU>)
 set(is_clang_cl $<AND:${is_msvc_like},${is_llvm_clang}>)
 
 set_target_properties(godot-jolt PROPERTIES
-	OUTPUT_NAME godot-jolt${suffix}
+	OUTPUT_NAME ${prefix}godot-jolt${suffix}
 	PREFIX ""
 	VERSION ${PROJECT_VERSION}
 	INCLUDE_DIRECTORIES ${source_dir}
@@ -125,10 +138,12 @@ target_compile_definitions(godot-jolt
 	PRIVATE $<${is_windows}:GDJ_PLATFORM_WINDOWS>
 	PRIVATE $<${is_linux}:GDJ_PLATFORM_LINUX>
 	PRIVATE $<${is_macos}:GDJ_PLATFORM_MACOS>
+	PRIVATE $<${is_android}:GDJ_PLATFORM_ANDROID>
 	PRIVATE $<${is_debug_config}:GDJ_CONFIG_DEBUG>
 	PRIVATE $<${is_development_config}:GDJ_CONFIG_DEVELOPMENT>
 	PRIVATE $<${is_distribution_config}:GDJ_CONFIG_DISTRIBUTION>
 	PRIVATE $<${is_editor_config}:GDJ_CONFIG_EDITOR>
+	PRIVATE $<${use_mimalloc}:GDJ_USE_MIMALLOC>
 	PRIVATE $<IF:${is_debug_config},_DEBUG,NDEBUG>
 	PRIVATE $<${is_windows}:WIN32_LEAN_AND_MEAN>
 	PRIVATE $<${is_windows}:VC_EXTRALEAN>
@@ -226,6 +241,7 @@ else()
 
 	target_link_options(godot-jolt
 		PRIVATE $<${is_linux}:-Wl,--version-script,${exports_file}>
+		PRIVATE $<${is_android}:-Wl,--version-script,${exports_file}>
 		PRIVATE $<${is_macos}:-Wl,-exported_symbols_list,${exports_file}>
 		PRIVATE $<${use_static_crt}:-static-libgcc> # Link libgcc statically
 		PRIVATE $<${use_static_crt}:-static-libstdc++> # Link libstdc++ statically
@@ -244,11 +260,19 @@ elseif(APPLE)
 		target_link_options(godot-jolt PRIVATE -Wl,-object_path_lto,${lto_path})
 	endif()
 
-	find_program(DSYMUTIL_EXECUTABLE dsymutil REQUIRED)
-	mark_as_advanced(DSYMUTIL_EXECUTABLE)
+	if(DEFINED CMAKE_DSYMUTIL)
+		set(DSYMUTIL_EXECUTABLE ${CMAKE_DSYMUTIL})
+	else()
+		find_program(DSYMUTIL_EXECUTABLE dsymutil REQUIRED)
+		mark_as_advanced(DSYMUTIL_EXECUTABLE)
+	endif()
 
-	find_program(STRIP_EXECUTABLE strip REQUIRED)
-	mark_as_advanced(STRIP_EXECUTABLE)
+	if(DEFINED CMAKE_STRIP)
+		set(STRIP_EXECUTABLE ${CMAKE_STRIP})
+	else()
+		find_program(STRIP_EXECUTABLE strip REQUIRED)
+		mark_as_advanced(STRIP_EXECUTABLE)
+	endif()
 
 	set(dylib_file $<TARGET_FILE:godot-jolt>)
 	set(framework_dir $<TARGET_BUNDLE_DIR:godot-jolt>)
@@ -266,9 +290,13 @@ elseif(APPLE)
 	)
 
 	set(debug_symbols ${dsym_dir})
-else()
-	find_program(OBJCOPY_EXECUTABLE objcopy REQUIRED)
-	mark_as_advanced(OBJCOPY_EXECUTABLE)
+else() # ANDROID/UNIX
+	if(DEFINED CMAKE_OBJCOPY)
+		set(OBJCOPY_EXECUTABLE ${CMAKE_OBJCOPY})
+	else()
+		find_program(OBJCOPY_EXECUTABLE objcopy REQUIRED)
+		mark_as_advanced(OBJCOPY_EXECUTABLE)
+	endif()
 
 	set(so_file $<TARGET_FILE:godot-jolt>)
 	set(debug_file ${so_file}.debug)
@@ -296,6 +324,7 @@ string(CONCAT addon_platform_dir
 		$<${is_windows}:windows>
 		$<${is_linux}:linux>
 		$<${is_macos}:macos>
+		$<${is_android}:android>
 )
 
 install(

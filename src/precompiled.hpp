@@ -126,8 +126,6 @@
 
 #endif // JPH_DEBUG_RENDERER
 
-#include <mimalloc.h>
-
 #include <algorithm>
 #include <atomic>
 #include <cstdarg>
