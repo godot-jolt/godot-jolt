@@ -78,7 +78,7 @@ may be incompatible and is therefore not supported.
 - Windows (x86-64, x86)
 - Linux (x86-64, x86)
 - macOS (x86-64 + Apple Silicon)
-- iOS (ARM64)
+- iOS
 - Android (ARM64, ARM32, x86-64, x86)
 
 Note that Linux support is limited by the version of glibc present on the system, which must be
