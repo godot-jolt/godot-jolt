@@ -19,3 +19,18 @@ linux.debug.x86_32 = "linux/godot-jolt_linux-x86_editor.so"
 
 macos.release = "macos/godot-jolt_macos.framework"
 macos.debug = "macos/godot-jolt_macos_editor.framework"
+
+ios.release = "ios/godot-jolt_ios.framework"
+ios.debug = "ios/godot-jolt_ios_editor.framework"
+
+android.release.arm64 = "android/libgodot-jolt_android-arm64.so"
+android.debug.arm64 = "android/libgodot-jolt_android-arm64_editor.so"
+
+android.release.arm32 = "android/libgodot-jolt_android-arm32.so"
+android.debug.arm32 = "android/libgodot-jolt_android-arm32_editor.so"
+
+android.release.x86_64 = "android/libgodot-jolt_android-x64.so"
+android.debug.x86_64 = "android/libgodot-jolt_android-x64_editor.so"
+
+android.release.x86_32 = "android/libgodot-jolt_android-x86.so"
+android.debug.x86_32 = "android/libgodot-jolt_android-x86_editor.so"

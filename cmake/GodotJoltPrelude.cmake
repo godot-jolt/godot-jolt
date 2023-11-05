@@ -28,16 +28,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	mark_as_advanced(CMAKE_ERROR_DEPRECATED)
 endif()
 
-if(CMAKE_HOST_SYSTEM_NAME STREQUAL Darwin)
-	set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING
-		"Semicolon-separated list of target architectures."
-	)
-
-	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING
-		"Minimum version of target platform. Set to empty string for default value."
-	)
-endif()
-
 if(NOT DEFINED MSVC)
 	set(MSVC FALSE)
 endif()

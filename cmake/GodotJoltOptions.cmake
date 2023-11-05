@@ -1,12 +1,21 @@
 include_guard()
 
-if(NOT APPLE)
+if(NOT APPLE AND NOT ANDROID)
 	set(GDJ_STATIC_RUNTIME_LIBRARY TRUE
 		CACHE BOOL
 		"Use static C++ runtime library."
 	)
 else()
 	set(GDJ_STATIC_RUNTIME_LIBRARY FALSE)
+endif()
+
+if(NOT IOS AND NOT ANDROID)
+	set(GDJ_USE_MIMALLOC TRUE
+		CACHE BOOL
+		"Use mimalloc as the general-purpose memory allocator."
+	)
+else()
+	set(GDJ_USE_MIMALLOC FALSE)
 endif()
 
 set(GDJ_INTERPROCEDURAL_OPTIMIZATION TRUE
@@ -19,7 +28,7 @@ set(GDJ_PRECOMPILE_HEADERS TRUE
 	"Precompile header files that don't change often, like external ones."
 )
 
-if(NOT APPLE)
+if(NOT APPLE AND NOT ANDROID)
 	set(GDJ_X86_INSTRUCTION_SET SSE2
 		CACHE STRING
 		"Minimum required CPU instruction set when compiling for x86."

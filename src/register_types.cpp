@@ -13,8 +13,6 @@
 #include "spaces/jolt_debug_geometry_3d.hpp"
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
 
-#include <mimalloc-new-delete.h>
-
 namespace {
 
 JoltPhysicsServerFactory3D* server_factory = nullptr;

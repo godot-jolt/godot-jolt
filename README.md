@@ -78,6 +78,8 @@ may be incompatible and is therefore not supported.
 - Windows (x86-64, x86)
 - Linux (x86-64, x86)
 - macOS (x86-64 + Apple Silicon)
+- iOS (ARM64)
+- Android (ARM64, ARM32, x86-64, x86)
 
 Note that Linux support is limited by the version of glibc present on the system, which must be
 compatible with the one found in Ubuntu 20.04 (Focal Fossa).
@@ -99,7 +101,6 @@ In no particular order, here are some of the bigger items:
 
 - Adding new types of joints, like Jolt's `DistanceConstraint`
 - Adding support for double-precision, allowing for large worlds
-- Adding support for iOS and Android
 - Making the physics server thread-safe
 
 See the [`v1.0.0`][prj] project board for a more up-to-date overview.
