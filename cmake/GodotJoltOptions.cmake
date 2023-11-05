@@ -9,7 +9,7 @@ else()
 	set(GDJ_STATIC_RUNTIME_LIBRARY FALSE)
 endif()
 
-if(NOT ANDROID)
+if(NOT IOS AND NOT ANDROID)
 	set(GDJ_USE_MIMALLOC TRUE
 		CACHE BOOL
 		"Use mimalloc as the general-purpose memory allocator."

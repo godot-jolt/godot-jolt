@@ -73,14 +73,14 @@
       }
     },
     {
+      "name": "ios-base",
+      "inherits": ["platform-base"],
+      "hidden": true
+    },
+    {
       "name": "android-base",
       "inherits": ["platform-base"],
-      "hidden": true,
-      "cacheVariables": {
-        "CMAKE_SYSTEM_NAME": "Android",
-        "CMAKE_SYSTEM_VERSION": "21",
-        "CMAKE_ANDROID_STL_TYPE": "c++_static"
-      }
+      "hidden": true
     },
     {
       "name": "msvc-base",
@@ -196,6 +196,28 @@
       }
     },
     {
+      "name": "macos-universal-base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES": "x86_64;arm64",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.12"
+      }
+    },
+    {
+      "name": "ios-device-base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/ios/Device.cmake"
+      }
+    },
+    {
+      "name": "ios-simulator-base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/ios/Simulator.cmake"
+      }
+    },
+    {
       "name": "android-arm64-base",
       "inherits": ["arm64-base"],
       "hidden": true,
@@ -270,7 +292,17 @@
     {
       "name": "macos-clang",
       "displayName": "Clang",
-      "inherits": ["macos-base", "clang-base"]
+      "inherits": ["macos-base", "macos-universal-base", "clang-base"]
+    },
+    {
+      "name": "macos-ios",
+      "displayName": "iOS",
+      "inherits": ["macos-base", "ios-base", "ios-device-base"]
+    },
+    {
+      "name": "macos-ios-simulator",
+      "displayName": "iOS",
+      "inherits": ["macos-base", "ios-base", "ios-simulator-base"]
     },
     {
       "name": "windows-android-arm64",
@@ -741,6 +773,90 @@
       "name": "macos-clang-editor-distribution",
       "inherits": ["macos-base", "install-base"],
       "configurePreset": "macos-clang",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution"
+    },
+    {
+      "name": "macos-ios-debug",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios",
+      "configuration": "Debug",
+      "displayName": "Debug"
+    },
+    {
+      "name": "macos-ios-development",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios",
+      "configuration": "Development",
+      "displayName": "Development"
+    },
+    {
+      "name": "macos-ios-distribution",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios",
+      "configuration": "Distribution",
+      "displayName": "Distribution"
+    },
+    {
+      "name": "macos-ios-editor-debug",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug"
+    },
+    {
+      "name": "macos-ios-editor-development",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment"
+    },
+    {
+      "name": "macos-ios-editor-distribution",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution"
+    },
+    {
+      "name": "macos-ios-simulator-debug",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios-simulator",
+      "configuration": "Debug",
+      "displayName": "Debug"
+    },
+    {
+      "name": "macos-ios-simulator-development",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios-simulator",
+      "configuration": "Development",
+      "displayName": "Development"
+    },
+    {
+      "name": "macos-ios-simulator-distribution",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios-simulator",
+      "configuration": "Distribution",
+      "displayName": "Distribution"
+    },
+    {
+      "name": "macos-ios-simulator-editor-debug",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios-simulator",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug"
+    },
+    {
+      "name": "macos-ios-simulator-editor-development",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios-simulator",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment"
+    },
+    {
+      "name": "macos-ios-simulator-editor-distribution",
+      "inherits": ["macos-base", "install-base"],
+      "configurePreset": "macos-ios-simulator",
       "configuration": "EditorDistribution",
       "displayName": "EditorDistribution"
     },

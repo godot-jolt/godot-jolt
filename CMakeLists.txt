@@ -55,12 +55,8 @@ endif()
 set(is_windows $<STREQUAL:${CMAKE_SYSTEM_NAME},Windows>)
 set(is_linux $<STREQUAL:${CMAKE_SYSTEM_NAME},Linux>)
 set(is_macos $<STREQUAL:${CMAKE_SYSTEM_NAME},Darwin>)
+set(is_ios $<STREQUAL:${CMAKE_SYSTEM_NAME},iOS>)
 set(is_android $<STREQUAL:${CMAKE_SYSTEM_NAME},Android>)
-
-set(is_x86 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},x86>)
-set(is_x64 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},x64>)
-set(is_arm64 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},arm64>)
-set(is_arm32 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},arm32>)
 
 set(is_editor_config $<CONFIG:EditorDebug,EditorDevelopment,EditorDistribution>)
 set(is_debug_config $<CONFIG:Debug,EditorDebug>)
@@ -72,19 +68,33 @@ set(use_mimalloc $<BOOL:${GDJ_USE_MIMALLOC}>)
 
 set(prefix $<${is_android}:lib>)
 
-string(CONCAT suffix_platform
-	$<${is_windows}:_windows>
-	$<${is_linux}:_linux>
-	$<${is_macos}:_macos>
-	$<${is_android}:_android>
-)
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+	set(suffix_platform _windows)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
+	set(suffix_platform _linux)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+	set(suffix_platform _macos)
+elseif(CMAKE_SYSTEM_NAME STREQUAL iOS)
+	set(suffix_platform _ios)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Android)
+	set(suffix_platform _android)
+else()
+	message(FATAL_ERROR "Unhandled system name: '${CMAKE_SYSTEM_NAME}'.")
+endif()
 
-string(CONCAT suffix_arch
-	$<${is_x86}:-x86>
-	$<${is_x64}:-x64>
-	$<${is_arm64}:-arm64>
-	$<${is_arm32}:-arm32>
-)
+if(APPLE)
+	set(suffix_arch "")
+elseif(GDJ_TARGET_ARCHITECTURES STREQUAL x86)
+	set(suffix_arch -x86)
+elseif(GDJ_TARGET_ARCHITECTURES STREQUAL x64)
+	set(suffix_arch -x64)
+elseif(GDJ_TARGET_ARCHITECTURES STREQUAL arm64)
+	set(suffix_arch -arm64)
+elseif(GDJ_TARGET_ARCHITECTURES STREQUAL arm32)
+	set(suffix_arch -arm32)
+else()
+	message(FATAL_ERROR "Unhandled architecture: '${GDJ_TARGET_ARCHITECTURES}'.")
+endif()
 
 set(suffix_editor $<${is_editor_config}:_editor>)
 set(suffix ${suffix_platform}${suffix_arch}${suffix_editor})
@@ -124,8 +134,10 @@ set_target_properties(godot-jolt PROPERTIES
 	NO_SONAME TRUE
 	CXX_VISIBILITY_PRESET hidden
 
-	# Properties relevant only to macOS/Xcode
+	# Properties relevant only to macOS/iOS/Xcode
 	FRAMEWORK TRUE
+	MACOSX_RPATH FALSE
+	INSTALL_NAME_DIR @rpath
 	MACOSX_FRAMEWORK_INFO_PLIST ${templates_dir}/info.plist.in
 	XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER ${PROJECT_BUNDLE_IDENTIFIER}
 )
@@ -138,6 +150,7 @@ target_compile_definitions(godot-jolt
 	PRIVATE $<${is_windows}:GDJ_PLATFORM_WINDOWS>
 	PRIVATE $<${is_linux}:GDJ_PLATFORM_LINUX>
 	PRIVATE $<${is_macos}:GDJ_PLATFORM_MACOS>
+	PRIVATE $<${is_ios}:GDJ_PLATFORM_IOS>
 	PRIVATE $<${is_android}:GDJ_PLATFORM_ANDROID>
 	PRIVATE $<${is_debug_config}:GDJ_CONFIG_DEBUG>
 	PRIVATE $<${is_development_config}:GDJ_CONFIG_DEVELOPMENT>
@@ -242,6 +255,7 @@ else()
 	target_link_options(godot-jolt
 		PRIVATE $<${is_linux}:-Wl,--version-script,${exports_file}>
 		PRIVATE $<${is_android}:-Wl,--version-script,${exports_file}>
+		PRIVATE $<${is_ios}:-Wl,-exported_symbols_list,${exports_file}>
 		PRIVATE $<${is_macos}:-Wl,-exported_symbols_list,${exports_file}>
 		PRIVATE $<${use_static_crt}:-static-libgcc> # Link libgcc statically
 		PRIVATE $<${use_static_crt}:-static-libstdc++> # Link libstdc++ statically
@@ -325,6 +339,7 @@ string(CONCAT addon_platform_dir
 		$<${is_linux}:linux>
 		$<${is_macos}:macos>
 		$<${is_android}:android>
+		$<${is_ios}:ios>
 )
 
 install(

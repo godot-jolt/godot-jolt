@@ -62,7 +62,7 @@ defaults by passing `-DGDJ_SOME_VARIABLE=VALUE` to CMake.
   - Default is `TRUE`.
 - `GDJ_USE_MIMALLOC`
   - Whether to use mimalloc as the default general-purpose memory allocator.
-  - ⚠️ This flag is not available on Android platforms.
+  - ⚠️ This flag is not available for iOS or Android.
   - Default is `TRUE`.
 - `GDJ_INSTALL_DEBUG_SYMBOLS`
   - Whether to install debug symbols along with the binaries
