@@ -6,11 +6,13 @@ This document contains instructions for how to build Godot Jolt from source.
 
 ## Table of Contents
 
-- [Building on Windows](#building-on-windows)
-- [Building on Linux](#building-on-linux)
-- [Building on macOS](#building-on-macos)
+- [Building for Windows](#building-for-windows)
+- [Building for Linux](#building-for-linux)
+- [Building for macOS](#building-for-macos)
+- [Building for iOS](#building-for-ios)
+- [Building for Android](#building-for-android)
 
-## Building on Windows
+## Building for Windows
 
 Prerequisites:
 
@@ -71,7 +73,7 @@ cmake --install build/windows-clangcl-x64 --config Distribution --prefix C:/Path
 cmake --install build/windows-clangcl-x64 --config EditorDistribution --prefix C:/Path/To/Project
 ```
 
-## Building on Linux
+## Building for Linux
 
 Prerequisites:
 
@@ -123,7 +125,7 @@ cmake --install build/linux-clang-x64 --config Distribution --prefix /path/to/pr
 cmake --install build/linux-clang-x64 --config EditorDistribution --prefix /path/to/project
 ```
 
-## Building on macOS
+## Building for macOS
 
 Prerequisites:
 
@@ -147,6 +149,79 @@ cmake --install build/macos-clang --config Distribution --prefix /path/to/projec
 
 # Install editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/macos-clang --config EditorDistribution --prefix /path/to/project
+```
+
+## Building for iOS
+
+Prerequisites:
+
+- Git 2.25 or newer
+- CMake 3.22 or newer
+- Python 3.8 or newer
+- Xcode 14.3 or equivalent Xcode Command Line Tools
+
+```sh
+# Generate the build directory
+cmake --preset macos-ios
+
+# Build non-editor binaries and install them into the examples project
+cmake --build --preset macos-ios-distribution
+
+# Build editor binaries and install them into the examples project
+cmake --build --preset macos-ios-editor-distribution
+
+# Install non-editor binaries into your project, under `addons/godot-jolt`
+cmake --install build/macos-ios --config Distribution --prefix /path/to/project
+
+# Install editor binaries into your project, under `addons/godot-jolt`
+cmake --install build/macos-ios --config EditorDistribution --prefix /path/to/project
+```
+
+## Building for Android
+
+Prerequisites:
+
+- Git 2.25 or newer
+- CMake 3.22 or newer
+- Python 3.8 or newer
+- Android NDK 25.2.9519653 or newer
+
+⚠️ These commands assume that there's an environment variable called `ANDROID_NDK_ROOT` that points
+to the Android NDK root directory.
+
+⚠️ These commands assume that the host platform is Windows. To build on other host platforms simply
+replace `windows-` with either `linux-` or `macos-`.
+
+```sh
+# Generate the build directories
+cmake --preset windows-android-arm64
+cmake --preset windows-android-arm32
+cmake --preset windows-android-x64
+cmake --preset windows-android-x86
+
+# Build non-editor binaries and install them into the examples project
+cmake --build --preset windows-android-arm64-distribution
+cmake --build --preset windows-android-arm32-distribution
+cmake --build --preset windows-android-x64-distribution
+cmake --build --preset windows-android-x86-distribution
+
+# Build editor binaries and install them into the examples project
+cmake --build --preset windows-android-arm64-editor-distribution
+cmake --build --preset windows-android-arm32-editor-distribution
+cmake --build --preset windows-android-x64-editor-distribution
+cmake --build --preset windows-android-x86-editor-distribution
+
+# Install non-editor binaries into your project, under `addons/godot-jolt`
+cmake --install build/windows-android-arm64 --config Distribution --prefix /path/to/project
+cmake --install build/windows-android-arm32 --config Distribution --prefix /path/to/project
+cmake --install build/windows-android-x64 --config Distribution --prefix /path/to/project
+cmake --install build/windows-android-x86 --config Distribution --prefix /path/to/project
+
+# Install editor binaries into your project, under `addons/godot-jolt`
+cmake --install build/windows-android-arm64 --config EditorDistribution --prefix /path/to/project
+cmake --install build/windows-android-arm32 --config EditorDistribution --prefix /path/to/project
+cmake --install build/windows-android-x64 --config EditorDistribution --prefix /path/to/project
+cmake --install build/windows-android-x86 --config EditorDistribution --prefix /path/to/project
 ```
 
 [hck]: hacking.md
