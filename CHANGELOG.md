@@ -18,8 +18,8 @@ Breaking changes are denoted with ⚠️.
 
 ### Added
 
-- Added support for Android (ARM64, ARM32, x86-64 and x86)
-- Added support for iOS
+- Added support for Android (ARM64, ARM32, x86-64 and x86).
+- Added support for iOS.
 
 ### Fixed
 
