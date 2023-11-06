@@ -13,6 +13,9 @@ param (
 	[ValidateScript({ Test-Path $_ -PathType Container })]
 	[string[]]
 	$Frameworks
+
+	[Parameter(HelpMessage = "Submit frameworks to Apple for notarization")]
+	[switch]$Notarize = $false
 )
 
 begin {
@@ -68,8 +71,6 @@ begin {
 
 process {
 	foreach ($Framework in $Frameworks) {
-		$Archive = [IO.Path]::ChangeExtension((New-TemporaryFile), "zip")
-
 		Write-Output "Signing '$Framework'..."
 
 		& $CodesignPath --sign "Developer ID" "$Framework"
@@ -78,16 +79,20 @@ process {
 
 		& $CodesignPath --verify "$Framework"
 
-		Write-Output "Archiving framework to '$Archive'..."
+		if ($Notarize) {
+			$Archive = [IO.Path]::ChangeExtension((New-TemporaryFile), "zip")
 
-		ditto -ck "$Framework" "$Archive"
+			Write-Output "Archiving framework to '$Archive'..."
 
-		Write-Output "Submitting archive for notarization..."
+			ditto -ck "$Framework" "$Archive"
 
-		xcrun notarytool submit "$Archive" `
-			--apple-id $DevId `
-			--team-id $DevTeamId `
-			--password $DevPassword `
-			--wait
+			Write-Output "Submitting archive for notarization..."
+
+			xcrun notarytool submit "$Archive" `
+				--apple-id $DevId `
+				--team-id $DevTeamId `
+				--password $DevPassword `
+				--wait
+		}
 	}
 }
