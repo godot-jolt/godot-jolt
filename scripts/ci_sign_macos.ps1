@@ -12,7 +12,10 @@ param (
 	)]
 	[ValidateScript({ Test-Path $_ -PathType Container })]
 	[string[]]
-	$Frameworks
+	$Frameworks,
+
+	[Parameter(HelpMessage = "Submit frameworks to Apple for notarization")]
+	[switch]$Notarize = $false
 )
 
 begin {
@@ -28,15 +31,8 @@ begin {
 	$Keychain = "ephemeral.keychain"
 	$KeychainPassword = (New-Guid).ToString().Replace("-", "")
 
-	$DevId = $env:APPLE_DEV_ID
-	$DevTeamId = $env:APPLE_DEV_TEAM_ID
-	$DevPassword = $env:APPLE_DEV_PASSWORD
-
 	if (!$CertificateBase64) { throw "No certificate provided" }
 	if (!$CertificatePassword) { throw "No certificate password provided" }
-	if (!$DevId) { throw "No Apple Developer ID provided" }
-	if (!$DevTeamId) { throw "No Apple Team ID provided" }
-	if (!$DevPassword) { throw "No Apple Developer password provided" }
 
 	Write-Output "Decoding certificate..."
 
@@ -68,8 +64,6 @@ begin {
 
 process {
 	foreach ($Framework in $Frameworks) {
-		$Archive = [IO.Path]::ChangeExtension((New-TemporaryFile), "zip")
-
 		Write-Output "Signing '$Framework'..."
 
 		& $CodesignPath --sign "Developer ID" "$Framework"
@@ -78,16 +72,28 @@ process {
 
 		& $CodesignPath --verify "$Framework"
 
-		Write-Output "Archiving framework to '$Archive'..."
+		if ($Notarize) {
+			$DevId = $env:APPLE_DEV_ID
+			$DevTeamId = $env:APPLE_DEV_TEAM_ID
+			$DevPassword = $env:APPLE_DEV_PASSWORD
 
-		ditto -ck "$Framework" "$Archive"
+			if (!$DevId) { throw "No Apple Developer ID provided" }
+			if (!$DevTeamId) { throw "No Apple Team ID provided" }
+			if (!$DevPassword) { throw "No Apple Developer password provided" }
 
-		Write-Output "Submitting archive for notarization..."
+			$Archive = [IO.Path]::ChangeExtension((New-TemporaryFile), "zip")
 
-		xcrun notarytool submit "$Archive" `
-			--apple-id $DevId `
-			--team-id $DevTeamId `
-			--password $DevPassword `
-			--wait
+			Write-Output "Archiving framework to '$Archive'..."
+
+			ditto -ck "$Framework" "$Archive"
+
+			Write-Output "Submitting archive for notarization..."
+
+			xcrun notarytool submit "$Archive" `
+				--apple-id $DevId `
+				--team-id $DevTeamId `
+				--password $DevPassword `
+				--wait
+		}
 	}
 }
