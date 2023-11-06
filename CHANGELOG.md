@@ -21,6 +21,11 @@ Breaking changes are denoted with ⚠️.
 - Added support for Android (ARM64, ARM32, x86-64 and x86)
 - Added support for iOS
 
+### Fixed
+
+- Fixed issue where an error saying `Parameter "body" is null` would be emitted after freeing
+  certain bodies while they were in contact with a `CharacterBody3D`.
+
 ## [0.9.0] - 2023-10-12
 
 ### Changed
