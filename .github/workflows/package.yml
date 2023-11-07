@@ -179,7 +179,7 @@ jobs:
           APPLE_DEV_ID: ${{ secrets.APPLE_DEV_ID }}
           APPLE_DEV_TEAM_ID: ${{ secrets.APPLE_DEV_TEAM_ID }}
           APPLE_DEV_PASSWORD: ${{ secrets.APPLE_DEV_PASSWORD }}
-        run: gci -R ./dist/*.framework | ./scripts/ci_sign_macos.ps1 -Notarize
+        run: gci -R ./dist/*.framework | ./scripts/ci_sign_macos.ps1
 
       - name: Upload builds
         uses: actions/upload-artifact@v3
@@ -224,13 +224,6 @@ jobs:
           platform: macos-ios
           editor: true
           config: distribution
-
-      - name: Sign frameworks
-        shell: pwsh
-        env:
-          APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
-          APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
-        run: gci -R ./dist/*.framework | ./scripts/ci_sign_macos.ps1
 
       - name: Upload builds
         uses: actions/upload-artifact@v3
