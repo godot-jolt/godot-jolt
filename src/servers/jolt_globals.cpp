@@ -15,7 +15,7 @@ void* jolt_alloc(size_t p_size) {
 }
 
 void jolt_free(void* p_mem) {
-	return mi_free(p_mem);
+	mi_free(p_mem);
 }
 
 void* jolt_aligned_alloc(size_t p_size, size_t p_alignment) {
@@ -23,7 +23,7 @@ void* jolt_aligned_alloc(size_t p_size, size_t p_alignment) {
 }
 
 void jolt_aligned_free(void* p_mem) {
-	return mi_free(p_mem);
+	mi_free(p_mem);
 }
 
 #endif // GDJ_USE_MIMALLOC
