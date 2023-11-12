@@ -27,6 +27,8 @@ Breaking changes are denoted with ⚠️.
 
 - Fixed issue where an error saying `Parameter "body" is null` would be emitted after freeing
   certain bodies while they were in contact with a `CharacterBody3D`.
+- Fixed issue where a `RigidBody3D` could sometimes still be moved by another `RigidBody3D` despite
+  the first body not having the second body in its collision mask.
 
 ## [0.9.0] - 2023-10-12
 
