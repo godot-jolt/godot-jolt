@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.10.0] - 2023-11-12
+
 ### Changed
 
 - ⚠️ Changed `gravity_point_unit_distance` for `Area3D` to result in a constant gravity when set to
@@ -294,7 +296,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.9.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.10.0-stable...HEAD
+[0.10.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.9.0-stable...v0.10.0-stable
 [0.9.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.8.0-stable...v0.9.0-stable
 [0.8.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.7.0-stable...v0.8.0-stable
 [0.7.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.6.0-stable...v0.7.0-stable
