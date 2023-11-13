@@ -696,9 +696,9 @@ void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
 		arguments[0] = get_direct_state();
 
 		body_state_callback.callv(arguments);
-
-		sync_state = false;
 	}
+
+	sync_state = false;
 }
 
 void JoltBodyImpl3D::pre_step(float p_step, JPH::Body& p_jolt_body) {
