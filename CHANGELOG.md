@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue where the callback passed to `body_set_force_integration_callback` could be called
+  even when the body is sleeping.
+
 ## [0.10.0] - 2023-11-12
 
 ### Changed
