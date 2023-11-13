@@ -30,7 +30,7 @@ if(NOT DEFINED GDJ_TARGET_ARCHITECTURES)
 	endif()
 endif()
 
-if(DEFINED ENV{VSCMD_ARG_TGT_ARCH})
+if(MSVC AND DEFINED ENV{VSCMD_ARG_TGT_ARCH})
 	if(NOT $ENV{VSCMD_ARG_TGT_ARCH} STREQUAL ${GDJ_TARGET_ARCHITECTURES})
 		message(FATAL_ERROR
 			"Mismatched target architectures. The current Visual Studio environment is set up for "
