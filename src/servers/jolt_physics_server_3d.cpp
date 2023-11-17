@@ -1796,13 +1796,13 @@ void JoltPhysicsServer3D::_step(double p_step) {
 		return;
 	}
 
-	job_system->pre_step();
-
 	for (JoltSpace3D* active_space : active_spaces) {
-		active_space->step((float)p_step);
-	}
+		job_system->pre_step();
 
-	job_system->post_step();
+		active_space->step((float)p_step);
+
+		job_system->post_step();
+	}
 }
 
 void JoltPhysicsServer3D::_flush_queries() {
