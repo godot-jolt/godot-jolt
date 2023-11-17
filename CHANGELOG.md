@@ -11,6 +11,7 @@ Breaking changes are denoted with ⚠️.
 
 ### Fixed
 
+- Fixed issue with project eventually freezing up when having many active physics spaces.
 - Fixed issue where the callback passed to `body_set_force_integration_callback` could be called
   even when the body is sleeping.
 

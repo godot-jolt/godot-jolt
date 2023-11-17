@@ -66,6 +66,8 @@ private:
 
 	void FreeJob(JPH::JobSystem::Job* p_job) override;
 
+	void _reclaim_jobs();
+
 #ifdef GDJ_CONFIG_EDITOR
 	// HACK(mihe): We use `const void*` here to avoid the cost of hashing the actual string, since
 	// the job names are always literals and as such will point to the same address every time.
