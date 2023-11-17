@@ -143,7 +143,15 @@ Vector3 JoltObjectImpl3D::get_position(bool p_lock) const {
 }
 
 Vector3 JoltObjectImpl3D::get_center_of_mass(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	ERR_FAIL_NULL_D_MSG(
+		space,
+		vformat(
+			"Failed to retrieve center-of-mass of '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
 
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());
@@ -152,7 +160,15 @@ Vector3 JoltObjectImpl3D::get_center_of_mass(bool p_lock) const {
 }
 
 Vector3 JoltObjectImpl3D::get_center_of_mass_local(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	ERR_FAIL_NULL_D_MSG(
+		space,
+		vformat(
+			"Failed to retrieve local center-of-mass of '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
 
 	return get_transform_scaled(p_lock).xform_inv(get_center_of_mass(p_lock));
 }
@@ -180,7 +196,15 @@ Vector3 JoltObjectImpl3D::get_angular_velocity(bool p_lock) const {
 }
 
 Vector3 JoltObjectImpl3D::get_velocity_at_position(const Vector3& p_position, bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	ERR_FAIL_NULL_D_MSG(
+		space,
+		vformat(
+			"Failed to retrieve point velocity for '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
 
 	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
 	ERR_FAIL_COND_D(body.is_invalid());

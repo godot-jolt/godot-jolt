@@ -250,7 +250,15 @@ void JoltBodyImpl3D::set_can_sleep(bool p_enabled, bool p_lock) {
 }
 
 Basis JoltBodyImpl3D::get_principal_inertia_axes(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	ERR_FAIL_NULL_D_MSG(
+		space,
+		vformat(
+			"Failed to retrieve principal inertia axes of '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
 
 	if (is_static() || is_kinematic()) {
 		return {};
@@ -269,7 +277,15 @@ Basis JoltBodyImpl3D::get_principal_inertia_axes(bool p_lock) const {
 }
 
 Vector3 JoltBodyImpl3D::get_inverse_inertia(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	ERR_FAIL_NULL_D_MSG(
+		space,
+		vformat(
+			"Failed to retrieve inverse inertia of '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
 
 	if (is_static() || is_kinematic()) {
 		return {};
@@ -282,7 +298,15 @@ Vector3 JoltBodyImpl3D::get_inverse_inertia(bool p_lock) const {
 }
 
 Basis JoltBodyImpl3D::get_inverse_inertia_tensor(bool p_lock) const {
-	ERR_FAIL_NULL_D(space);
+	ERR_FAIL_NULL_D_MSG(
+		space,
+		vformat(
+			"Failed to retrieve inverse inertia tensor of '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
 
 	if (is_static() || is_kinematic()) {
 		return {};
@@ -434,7 +458,16 @@ void JoltBodyImpl3D::reset_mass_properties(bool p_lock) {
 }
 
 void JoltBodyImpl3D::apply_force(const Vector3& p_force, const Vector3& p_position, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	ERR_FAIL_NULL_MSG(
+		space,
+		vformat(
+			"Failed to apply force to '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
+
 	QUIET_FAIL_COND(!is_rigid());
 
 	if (custom_integrator || p_force == Vector3()) {
@@ -450,7 +483,16 @@ void JoltBodyImpl3D::apply_force(const Vector3& p_force, const Vector3& p_positi
 }
 
 void JoltBodyImpl3D::apply_central_force(const Vector3& p_force, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	ERR_FAIL_NULL_MSG(
+		space,
+		vformat(
+			"Failed to apply central force to '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
+
 	QUIET_FAIL_COND(!is_rigid());
 
 	if (custom_integrator || p_force == Vector3()) {
@@ -470,7 +512,16 @@ void JoltBodyImpl3D::apply_impulse(
 	const Vector3& p_position,
 	bool p_lock
 ) {
-	ERR_FAIL_NULL(space);
+	ERR_FAIL_NULL_MSG(
+		space,
+		vformat(
+			"Failed to apply impulse to '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
+
 	QUIET_FAIL_COND(!is_rigid());
 
 	if (p_impulse == Vector3()) {
@@ -486,7 +537,16 @@ void JoltBodyImpl3D::apply_impulse(
 }
 
 void JoltBodyImpl3D::apply_central_impulse(const Vector3& p_impulse, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	ERR_FAIL_NULL_MSG(
+		space,
+		vformat(
+			"Failed to apply central impulse to '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
+
 	QUIET_FAIL_COND(!is_rigid());
 
 	if (p_impulse == Vector3()) {
@@ -502,7 +562,16 @@ void JoltBodyImpl3D::apply_central_impulse(const Vector3& p_impulse, bool p_lock
 }
 
 void JoltBodyImpl3D::apply_torque(const Vector3& p_torque, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	ERR_FAIL_NULL_MSG(
+		space,
+		vformat(
+			"Failed to apply torque to '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
+
 	QUIET_FAIL_COND(!is_rigid());
 
 	if (custom_integrator || p_torque == Vector3()) {
@@ -518,7 +587,16 @@ void JoltBodyImpl3D::apply_torque(const Vector3& p_torque, bool p_lock) {
 }
 
 void JoltBodyImpl3D::apply_torque_impulse(const Vector3& p_impulse, bool p_lock) {
-	ERR_FAIL_NULL(space);
+	ERR_FAIL_NULL_MSG(
+		space,
+		vformat(
+			"Failed to apply torque impulse to '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
+
 	QUIET_FAIL_COND(!is_rigid());
 
 	if (p_impulse == Vector3()) {
