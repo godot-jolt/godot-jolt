@@ -9,6 +9,10 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- ⚠️ Changed `HeightMapShape3D` to always use back-face collision, to match Godot Physics.
+
 ### Fixed
 
 - Fixed issue with project eventually freezing up when having many active physics spaces.
