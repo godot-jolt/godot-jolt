@@ -12,15 +12,59 @@ var mouse_sensitivity := 1.0
 @export_range(1.0, 2.0, 0.01, "or_greater", "exp")
 var speed_step_factor = 1.2
 
+@export_range(0.1, 1000.0, 0.1, "or_greater")
+var pick_reach = 1000.0
+
+@export_range(0.1, 100.0, 0.1, "or_greater", "exp")
+var pick_frequency = 5.0
+
+@export_range(1.0, 100.0, 0.1, "or_greater", "exp")
+var pick_damping = 1.0
+
+@export_range(2, 64, 1)
+var pick_iterations = 64
+
 var speed := initial_speed
 
-var target_position := position
+var picking := false
+var pick_depth := 0.0
+
+var pick_anchor: StaticBody3D
+var pick_joint: JoltGeneric6DOFJoint3D
+
+@onready var target_position := position
+
+func _ready():
+	pick_anchor = StaticBody3D.new()
+	pick_anchor.collision_layer = 0
+	pick_anchor.collision_mask = 0
+
+	pick_joint = JoltGeneric6DOFJoint3D.new()
+	pick_joint["solver_velocity_iterations"] = pick_iterations
+	pick_joint["solver_position_iterations"] = pick_iterations
+	pick_joint["linear_limit_spring_x/enabled"] = true
+	pick_joint["linear_limit_spring_y/enabled"] = true
+	pick_joint["linear_limit_spring_z/enabled"] = true
+	pick_joint["linear_limit_spring_x/frequency"] = pick_frequency
+	pick_joint["linear_limit_spring_y/frequency"] = pick_frequency
+	pick_joint["linear_limit_spring_z/frequency"] = pick_frequency
+	pick_joint["linear_limit_spring_x/damping"] = pick_damping
+	pick_joint["linear_limit_spring_y/damping"] = pick_damping
+	pick_joint["linear_limit_spring_z/damping"] = pick_damping
+
+	add_child(pick_anchor)
+	add_child(pick_joint)
 
 func _input(event: InputEvent):
 	if not current:
 		return
 
 	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				_start_picking(event.position)
+			else:
+				_stop_picking()
 		if event.button_index == MOUSE_BUTTON_RIGHT:
 			if event.pressed:
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -35,6 +79,8 @@ func _input(event: InputEvent):
 	elif event is InputEventMouseMotion:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			_rotate_from_mouse(event.relative)
+		elif picking:
+			_move_pick(event.position)
 
 func _process(delta: float):
 	if not current:
@@ -57,6 +103,34 @@ func _process(delta: float):
 		target_position += basis.x * step
 
 	position = position.lerp(target_position, interpolation_speed * delta)
+
+func _start_picking(screen_pos: Vector2):
+	if picking:
+		return
+
+	var ray_from := global_position
+	var ray_to := project_position(screen_pos, pick_reach)
+	var ray_params := PhysicsRayQueryParameters3D.create(ray_from, ray_to)
+	var ray_hit := get_world_3d().direct_space_state.intersect_ray(ray_params)
+
+	if ray_hit and ray_hit.collider is RigidBody3D:
+		pick_anchor.global_position = ray_hit.position
+		pick_joint.global_position = ray_hit.position
+		pick_depth = global_position.distance_to(ray_hit.position)
+		pick_joint.node_a = pick_anchor.get_path()
+		pick_joint.node_b = ray_hit.collider.get_path()
+		picking = true
+
+func _move_pick(screen_pos: Vector2):
+	pick_anchor.global_position = project_position(screen_pos, pick_depth)
+
+func _stop_picking():
+	if not picking:
+		return
+
+	pick_joint.node_a = NodePath()
+	pick_joint.node_b = NodePath()
+	picking = false
 
 func _step_speed_up(factor: float = 1.0):
 	_scale_speed(1.0 + (speed_step_factor - 1.0) * factor)
