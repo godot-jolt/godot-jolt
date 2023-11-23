@@ -40,8 +40,9 @@ func _ready():
 	pick_anchor.collision_mask = 0
 
 	pick_joint = JoltGeneric6DOFJoint3D.new()
-	pick_joint["solver_velocity_iterations"] = pick_iterations
-	pick_joint["solver_position_iterations"] = pick_iterations
+	pick_joint["angular_limit_x/enabled"] = false
+	pick_joint["angular_limit_y/enabled"] = false
+	pick_joint["angular_limit_z/enabled"] = false
 	pick_joint["linear_limit_spring_x/enabled"] = true
 	pick_joint["linear_limit_spring_y/enabled"] = true
 	pick_joint["linear_limit_spring_z/enabled"] = true
@@ -51,6 +52,8 @@ func _ready():
 	pick_joint["linear_limit_spring_x/damping"] = pick_damping
 	pick_joint["linear_limit_spring_y/damping"] = pick_damping
 	pick_joint["linear_limit_spring_z/damping"] = pick_damping
+	pick_joint["solver_velocity_iterations"] = pick_iterations
+	pick_joint["solver_position_iterations"] = pick_iterations
 
 	add_child(pick_anchor)
 	add_child(pick_joint)
@@ -79,7 +82,7 @@ func _input(event: InputEvent):
 	elif event is InputEventMouseMotion:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			_rotate_from_mouse(event.relative)
-		elif picking:
+		else:
 			_move_pick(event.position)
 
 func _process(delta: float):
@@ -122,6 +125,9 @@ func _start_picking(screen_pos: Vector2):
 		picking = true
 
 func _move_pick(screen_pos: Vector2):
+	if not picking:
+		return
+
 	pick_anchor.global_position = project_position(screen_pos, pick_depth)
 
 func _stop_picking():
