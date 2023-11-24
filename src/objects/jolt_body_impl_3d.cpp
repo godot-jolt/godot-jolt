@@ -1458,6 +1458,8 @@ void JoltBodyImpl3D::_space_changed(bool p_lock) {
 	_update_group_filter(p_lock);
 	_update_joint_constraints(p_lock);
 	_areas_changed(p_lock);
+
+	sync_state = false;
 }
 
 void JoltBodyImpl3D::_areas_changed(bool p_lock) {
