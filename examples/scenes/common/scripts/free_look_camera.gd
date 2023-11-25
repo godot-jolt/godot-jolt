@@ -34,7 +34,7 @@ var pick_joint: JoltGeneric6DOFJoint3D
 
 @onready var target_position := position
 
-func _ready():
+func _enter_tree():
 	pick_anchor = AnimatableBody3D.new()
 	pick_anchor.collision_layer = 0
 	pick_anchor.collision_mask = 0
@@ -54,6 +54,10 @@ func _ready():
 	pick_joint["linear_limit_spring_z/damping"] = pick_damping
 	pick_joint["solver_velocity_iterations"] = pick_iterations
 	pick_joint["solver_position_iterations"] = pick_iterations
+
+func _exit_tree():
+	pick_joint.queue_free()
+	pick_anchor.queue_free()
 
 func _input(event: InputEvent):
 	if not current:
