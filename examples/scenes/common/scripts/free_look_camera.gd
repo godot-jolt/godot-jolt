@@ -34,7 +34,7 @@ var pick_joint: JoltGeneric6DOFJoint3D
 
 @onready var target_position := position
 
-func _enter_tree():
+func _enter_tree() -> void:
 	pick_anchor = AnimatableBody3D.new()
 	pick_anchor.collision_layer = 0
 	pick_anchor.collision_mask = 0
@@ -55,11 +55,11 @@ func _enter_tree():
 	pick_joint["solver_velocity_iterations"] = pick_iterations
 	pick_joint["solver_position_iterations"] = pick_iterations
 
-func _exit_tree():
+func _exit_tree() -> void:
 	pick_joint.queue_free()
 	pick_anchor.queue_free()
 
-func _input(event: InputEvent):
+func _input(event: InputEvent) -> void:
 	if not current:
 		return
 
@@ -84,7 +84,7 @@ func _input(event: InputEvent):
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			_rotate_from_mouse(event.relative)
 
-func _process(delta: float):
+func _process(delta: float) -> void:
 	if not current:
 		return
 
@@ -106,10 +106,10 @@ func _process(delta: float):
 
 	position = position.lerp(target_position, interpolation_speed * delta)
 
-func _physics_process(_delta: float):
+func _physics_process(_delta: float) -> void:
 	_move_pick(get_viewport().get_mouse_position())
 
-func _start_picking(mouse_position: Vector2):
+func _start_picking(mouse_position: Vector2) -> void:
 	if picking:
 		return
 
@@ -134,7 +134,7 @@ func _start_picking(mouse_position: Vector2):
 
 		picking = true
 
-func _move_pick(mouse_position: Vector2):
+func _move_pick(mouse_position: Vector2) -> void:
 	if not picking:
 		return
 
@@ -143,7 +143,7 @@ func _move_pick(mouse_position: Vector2):
 
 	pick_anchor.global_position = ray_from + ray_dir * pick_depth
 
-func _stop_picking():
+func _stop_picking() -> void:
 	if not picking:
 		return
 
@@ -155,13 +155,13 @@ func _stop_picking():
 
 	picking = false
 
-func _step_speed_up(factor: float = 1.0):
+func _step_speed_up(factor: float = 1.0) -> void:
 	_scale_speed(1.0 + (speed_step_factor - 1.0) * factor)
 
-func _step_speed_down(factor: float = 1.0):
+func _step_speed_down(factor: float = 1.0) -> void:
 	_scale_speed(1.0 / (1.0 + (speed_step_factor - 1.0) * factor))
 
-func _scale_speed(factor: float):
+func _scale_speed(factor: float) -> void:
 	var min_speed := near * 4
 	var max_speed := far / 4
 
@@ -170,7 +170,7 @@ func _scale_speed(factor: float):
 	else:
 		speed = (min_speed + max_speed) / 2.0;
 
-func _rotate_from_mouse(relative: Vector2):
+func _rotate_from_mouse(relative: Vector2) -> void:
 	var delta := -relative * 0.0015 * mouse_sensitivity
 
 	rotation = Vector3(
