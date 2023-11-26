@@ -81,8 +81,8 @@ may be incompatible and is therefore not supported.
 - iOS
 - Android (ARM64, ARM32, x86-64, x86)
 
-Note that Linux support is limited by the version of glibc present on the system, which must be
-compatible with the one found in Ubuntu 20.04 (Focal Fossa).
+Note that Linux support is limited to glibc 2.31 or newer, which for Ubuntu means 20.04 (Focal
+Fossa) or newer.
 
 ## How do I get started?
 
