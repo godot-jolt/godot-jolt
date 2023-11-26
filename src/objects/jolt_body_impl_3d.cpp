@@ -1454,6 +1454,7 @@ void JoltBodyImpl3D::_space_changing([[maybe_unused]] bool p_lock) {
 }
 
 void JoltBodyImpl3D::_space_changed(bool p_lock) {
+	_update_kinematic_transform(p_lock);
 	_update_mass_properties(p_lock);
 	_update_group_filter(p_lock);
 	_update_joint_constraints(p_lock);
