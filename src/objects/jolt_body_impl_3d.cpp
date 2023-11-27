@@ -383,6 +383,33 @@ void JoltBodyImpl3D::set_axis_velocity(const Vector3& p_axis_velocity, bool p_lo
 	}
 }
 
+Vector3 JoltBodyImpl3D::get_velocity_at_position(const Vector3& p_position, bool p_lock) const {
+	ERR_FAIL_NULL_D_MSG(
+		space,
+		vformat(
+			"Failed to retrieve point velocity for '%s'. "
+			"Doing so without a physics space is not supported by Godot Jolt. "
+			"If this relates to a node, try adding the node to a scene tree first.",
+			to_string()
+		)
+	);
+
+	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	const JPH::MotionProperties& motion_properties = *body->GetMotionPropertiesUnchecked();
+
+	const Vector3 total_linear_velocity = to_godot(motion_properties.GetLinearVelocity()) +
+		linear_surface_velocity;
+
+	const Vector3 total_angular_velocity = to_godot(motion_properties.GetAngularVelocity()) +
+		angular_surface_velocity;
+
+	const Vector3 com_to_pos = p_position - to_godot(body->GetCenterOfMassPosition());
+
+	return total_linear_velocity + total_angular_velocity.cross(com_to_pos);
+}
+
 void JoltBodyImpl3D::set_center_of_mass_custom(const Vector3& p_center_of_mass, bool p_lock) {
 	if (custom_center_of_mass && p_center_of_mass == center_of_mass_custom) {
 		return;

@@ -193,6 +193,13 @@ bool JoltAreaImpl3D::can_interact_with(const JoltAreaImpl3D& p_other) const {
 	return can_monitor(p_other) || p_other.can_monitor(*this);
 }
 
+Vector3 JoltAreaImpl3D::get_velocity_at_position(
+	[[maybe_unused]] const Vector3& p_position,
+	[[maybe_unused]] bool p_lock
+) const {
+	return {0.0f, 0.0f, 0.0f};
+}
+
 Vector3 JoltAreaImpl3D::compute_gravity(const Vector3& p_position, bool p_lock) const {
 	if (!point_gravity) {
 		return gravity_vector * gravity;
