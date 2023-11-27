@@ -16,6 +16,9 @@ Breaking changes are denoted with ⚠️.
 ### Fixed
 
 - Fixed issue with project eventually freezing up when having many active physics spaces.
+- Fixed issue with static and kinematic bodies not correctly incorporating surface velocities, also
+  known as "constant velocities", as part of their reported velocities. This also makes it so
+  `move_and_slide` will respect such velocities.
 - Fixed issue with global transform not being preserved when reparenting a `RigidBody3D`.
 - Fixed issue where the callback passed to `body_set_force_integration_callback` could be called
   even when the body is sleeping.

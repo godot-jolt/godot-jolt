@@ -195,23 +195,6 @@ Vector3 JoltObjectImpl3D::get_angular_velocity(bool p_lock) const {
 	return to_godot(body->GetAngularVelocity());
 }
 
-Vector3 JoltObjectImpl3D::get_velocity_at_position(const Vector3& p_position, bool p_lock) const {
-	ERR_FAIL_NULL_D_MSG(
-		space,
-		vformat(
-			"Failed to retrieve point velocity for '%s'. "
-			"Doing so without a physics space is not supported by Godot Jolt. "
-			"If this relates to a node, try adding the node to a scene tree first.",
-			to_string()
-		)
-	);
-
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return to_godot(body->GetPointVelocity(to_jolt(p_position)));
-}
-
 JPH::ShapeRefC JoltObjectImpl3D::try_build_shape() {
 	int32_t built_shape_count = 0;
 	const JoltShapeInstance3D* last_built_shape = nullptr;

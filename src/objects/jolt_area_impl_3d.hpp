@@ -80,6 +80,8 @@ public:
 
 	bool can_interact_with(const JoltAreaImpl3D& p_other) const;
 
+	Vector3 get_velocity_at_position(const Vector3& p_position, bool p_lock = true) const override;
+
 	bool generates_contacts() const override { return false; }
 
 	bool is_point_gravity() const { return point_gravity; }
