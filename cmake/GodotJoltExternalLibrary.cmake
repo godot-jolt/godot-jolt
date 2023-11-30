@@ -269,12 +269,21 @@ function(gdj_add_external_library library_name library_configs)
 		set(verbose_arg "")
 	endif()
 
-	# HACK(mihe): The `update` step target for external projects ends up running on every single
-	# build. This is slow and unnecessary, since we're referencing a specific commit anyway. To get
-	# around this we use `UPDATE_DISCONNECTED` to disconnect the `update` step target from the
-	# external project.
+	# HACK(mihe): The `update` step for external projects ends up running on every single build.
+	# This is slow and unnecessary, since we're referencing a specific commit anyway. To get around
+	# this we use `UPDATE_DISCONNECTED` to disconnect the `update` step from the external project,
+	# and then we reconnect it later with a `DEPENDS` file.
+	#
+	# CMake 3.27 changed the behavior of `UPDATE_DISCONNECTED` to also include its own tracking of
+	# the `GIT_TAG`, which ends up interfering with our own by throwing an error whenever the
+	# `GIT_TAG` isn't known in the local clone. To get around this we run the `update` step just
+	# before this new `update_disconnected` step, ensuring that the local clone is always
+	# up-to-date.
+	#
+	# To keep things simple we don't use this trick on any of the older CMake versions, and Xcode
+	# doesn't like recursive builds, so we can't use this trick there at all.
 
-	if(${CMAKE_VERSION} VERSION_LESS 3.27)
+	if(CMAKE_VERSION VERSION_LESS 3.27 OR CMAKE_GENERATOR STREQUAL Xcode)
 		set(disconnect_update FALSE)
 	else()
 		set(disconnect_update TRUE)
@@ -298,18 +307,42 @@ function(gdj_add_external_library library_name library_configs)
 		BUILD_BYPRODUCTS ${output_dir_current}/${output_name_current}
 		EXCLUDE_FROM_ALL TRUE # These will always be dependencies anyway
 		UPDATE_DISCONNECTED ${disconnect_update} # See extra steps below
+		STEP_TARGETS update # See extra steps below
 	)
 
 	# Ensure that the external project runs its `configure` step if the cache file created above
 	# ever changes, by adding an empty custom step that depends on that file and which is hooked up
 	# so that the `configure` step is dependent upon it.
 
-	ExternalProject_Add_Step(${library_name} configure-if-changed
+	ExternalProject_Add_Step(${library_name} configure_changed
+		INDEPENDENT TRUE
+		EXCLUDE_FROM_MAIN TRUE
 		COMMAND ""
 		DEPENDS ${cache_file}
 		DEPENDERS configure
-		EXCLUDE_FROM_MAIN TRUE
 	)
+
+	if(disconnect_update)
+		# Ensure that the external project runs its `update_disconnected` step if the Git commit
+		# ever changes, by writing it to a file at configure-time and adding that file as a
+		# dependency to a custom step that explicitly invokes the `update` step and which is hooked
+		# up so that the `update_disconnected` step is dependent upon it.
+
+		set(commit_file ${stamp_dir}/${library_name}-gitcommit.txt)
+		set(commit_file_content ${arg_GIT_COMMIT})
+		file(CONFIGURE OUTPUT ${commit_file} CONTENT ${commit_file_content})
+
+		ExternalProject_Add_Step(${library_name} update_changed
+			INDEPENDENT TRUE
+			EXCLUDE_FROM_MAIN TRUE
+			COMMAND ${CMAKE_COMMAND}
+				--build ${CMAKE_CURRENT_BINARY_DIR}
+				--config $<CONFIG>
+				--target ${library_name}-update
+			DEPENDS ${commit_file}
+			DEPENDERS update_disconnected
+		)
+	endif()
 
 	# Declare the shim library that we will consume in the end
 
