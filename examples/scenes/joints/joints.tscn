@@ -1,14 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://b1m1383q2eri4"]
+[gd_scene load_steps=11 format=3 uid="uid://b5m5i0j4kfjaw"]
 
 [ext_resource type="Environment" uid="uid://cgl5t5rlv6o6v" path="res://scenes/common/environments/default.tres" id="1_aom0t"]
 [ext_resource type="Script" path="res://scenes/common/scripts/free_look_camera.gd" id="2_bxs0h"]
 [ext_resource type="Material" uid="uid://3dvxsth5fn3n" path="res://scenes/common/materials/brown.tres" id="3_v06p4"]
-[ext_resource type="PackedScene" uid="uid://dwgngeeggbw4j" path="res://scenes/joints/entities/paddle/paddle.tscn" id="4_ln31s"]
-[ext_resource type="PackedScene" uid="uid://cg8cqjh5agv4d" path="res://scenes/joints/entities/slider/slider.tscn" id="5_02ote"]
-[ext_resource type="PackedScene" uid="uid://b2o4r86oqfc6q" path="res://scenes/joints/entities/six_dof/six_dof.tscn" id="6_rodbc"]
-[ext_resource type="PackedScene" uid="uid://cs66uv4hw1afo" path="res://scenes/joints/entities/pin/pin.tscn" id="7_mihtv"]
-[ext_resource type="PackedScene" uid="uid://bhu7se0pk7ehq" path="res://scenes/joints/entities/cone_twist/cone_twist.tscn" id="8_iy535"]
-[ext_resource type="PackedScene" uid="uid://dsccepf6tfu5" path="res://scenes/joints/entities/hinge/hinge.tscn" id="9_ro1qy"]
+[ext_resource type="PackedScene" uid="uid://d3p7n0bmr7xga" path="res://scenes/joints/entities/paddle/paddle.tscn" id="4_ln31s"]
+[ext_resource type="PackedScene" uid="uid://coe74njl0yehx" path="res://scenes/joints/entities/slider/slider.tscn" id="5_02ote"]
+[ext_resource type="PackedScene" uid="uid://hmestqg1dcbm" path="res://scenes/joints/entities/six_dof/six_dof.tscn" id="6_rodbc"]
+[ext_resource type="PackedScene" uid="uid://1qr0mfmdd78x" path="res://scenes/joints/entities/pin/pin.tscn" id="7_mihtv"]
+[ext_resource type="PackedScene" uid="uid://clbjmwhkbcqil" path="res://scenes/joints/entities/cone_twist/cone_twist.tscn" id="8_iy535"]
+[ext_resource type="PackedScene" uid="uid://byhekkfhi30nh" path="res://scenes/joints/entities/hinge/hinge.tscn" id="9_ro1qy"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7618w"]
 size = Vector3(5, 1, 5)

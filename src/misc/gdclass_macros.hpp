@@ -6,7 +6,7 @@
 // C4100: unreferenced formal parameter
 #define GDCLASS_DISABLE_WARNINGS  \
 	GDCLASS_PRAGMA(warning(push)) \
-	GDCLASS_PRAGMA(warning(disable : 4100))
+	GDCLASS_PRAGMA(warning(disable : 4100 4800))
 
 #define GDCLASS_RESTORE_WARNINGS GDCLASS_PRAGMA(warning(pop))
 #endif // _MSC_VER
