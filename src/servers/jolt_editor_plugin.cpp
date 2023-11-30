@@ -11,29 +11,24 @@ void JoltEditorPlugin::_bind_methods() {
 
 void JoltEditorPlugin::_enter_tree() {
 	EditorInterface* editor_interface = get_editor_interface();
-	Control* base_control = editor_interface->get_base_control();
 
-	Ref<Theme> old_theme = base_control->get_theme();
+	Ref<Theme> editor_theme = editor_interface->get_editor_theme();
 
-	if (old_theme.is_valid()) {
-		// HACK(mihe): For whatever reason the editor startup time takes a significant hit with
-		// every icon added unless we duplicate the theme first and manipulate that instead.
-		Ref<Theme> new_theme = old_theme->duplicate();
+	Ref<Texture2D> icon_pin = editor_theme->get_icon("PinJoint3D", "EditorIcons");
+	Ref<Texture2D> icon_hinge = editor_theme->get_icon("HingeJoint3D", "EditorIcons");
+	Ref<Texture2D> icon_slider = editor_theme->get_icon("SliderJoint3D", "EditorIcons");
+	Ref<Texture2D> icon_cone_twist = editor_theme->get_icon("ConeTwistJoint3D", "EditorIcons");
+	Ref<Texture2D> icon_6dof = editor_theme->get_icon("Generic6DOFJoint3D", "EditorIcons");
 
-		Ref<Texture2D> icon_pin = new_theme->get_icon("PinJoint3D", "EditorIcons");
-		Ref<Texture2D> icon_hinge = new_theme->get_icon("HingeJoint3D", "EditorIcons");
-		Ref<Texture2D> icon_slider = new_theme->get_icon("SliderJoint3D", "EditorIcons");
-		Ref<Texture2D> icon_cone_twist = new_theme->get_icon("ConeTwistJoint3D", "EditorIcons");
-		Ref<Texture2D> icon_6dof = new_theme->get_icon("Generic6DOFJoint3D", "EditorIcons");
+	Ref<Theme> temp_theme = Ref(memnew(Theme));
 
-		new_theme->set_icon("JoltPinJoint3D", "EditorIcons", icon_pin);
-		new_theme->set_icon("JoltHingeJoint3D", "EditorIcons", icon_hinge);
-		new_theme->set_icon("JoltSliderJoint3D", "EditorIcons", icon_slider);
-		new_theme->set_icon("JoltConeTwistJoint3D", "EditorIcons", icon_cone_twist);
-		new_theme->set_icon("JoltGeneric6DOFJoint3D", "EditorIcons", icon_6dof);
+	temp_theme->set_icon("JoltPinJoint3D", "EditorIcons", icon_pin);
+	temp_theme->set_icon("JoltHingeJoint3D", "EditorIcons", icon_hinge);
+	temp_theme->set_icon("JoltSliderJoint3D", "EditorIcons", icon_slider);
+	temp_theme->set_icon("JoltConeTwistJoint3D", "EditorIcons", icon_cone_twist);
+	temp_theme->set_icon("JoltGeneric6DOFJoint3D", "EditorIcons", icon_6dof);
 
-		base_control->set_theme(new_theme);
-	}
+	editor_theme->merge_with(temp_theme);
 
 	joint_gizmo_plugin = Ref(memnew(JoltJointGizmoPlugin3D(editor_interface)));
 	add_node_3d_gizmo_plugin(joint_gizmo_plugin);

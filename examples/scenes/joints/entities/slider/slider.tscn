@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cg8cqjh5agv4d"]
+[gd_scene load_steps=4 format=3 uid="uid://coe74njl0yehx"]
 
 [ext_resource type="Material" uid="uid://ctm5wb05otmn4" path="res://scenes/common/materials/green.tres" id="1_uisoj"]
-[ext_resource type="PackedScene" uid="uid://wbibwda2jl66" path="res://scenes/joints/entities/rail/rail.tscn" id="2_g088v"]
+[ext_resource type="PackedScene" uid="uid://22dn1k6ow04" path="res://scenes/joints/entities/rail/rail.tscn" id="2_g088v"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7528f"]
 

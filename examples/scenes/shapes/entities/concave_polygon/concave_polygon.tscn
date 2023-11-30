@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://bmdy4wkvvlcws"]
+[gd_scene load_steps=4 format=3 uid="uid://dosgsvakfplrm"]
 
 [ext_resource type="ArrayMesh" uid="uid://dkdpdynr0sndd" path="res://scenes/shapes/entities/concave_polygon/concave_polygon.obj" id="1_dpqaf"]
 [ext_resource type="Material" uid="uid://3dvxsth5fn3n" path="res://scenes/common/materials/brown.tres" id="2_sie7k"]

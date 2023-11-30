@@ -100,9 +100,10 @@ int32_t JoltDebugRenderer3D::submit(const RID& p_mesh) {
 
 	rendering_server->mesh_clear(p_mesh);
 
-	uint32_t vertex_format = 0;
-	vertex_format |= (uint32_t)RenderingServer::ARRAY_FORMAT_VERTEX;
-	vertex_format |= (uint32_t)RenderingServer::ARRAY_FORMAT_COLOR;
+	uint64_t vertex_format = 0;
+	vertex_format |= (uint64_t)RenderingServer::ARRAY_FLAG_FORMAT_VERSION_2;
+	vertex_format |= (uint64_t)RenderingServer::ARRAY_FORMAT_VERTEX;
+	vertex_format |= (uint64_t)RenderingServer::ARRAY_FORMAT_COLOR;
 
 	int32_t surface_count = 0;
 

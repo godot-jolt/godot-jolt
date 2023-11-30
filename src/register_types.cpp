@@ -54,6 +54,8 @@ void on_initialize(ModuleInitializationLevel p_level) {
 			EditorPlugins::add_by_type<JoltEditorPlugin>();
 #endif // GDJ_CONFIG_EDITOR
 		} break;
+		case MODULE_INITIALIZATION_LEVEL_MAX: {
+		} break;
 	}
 }
 
@@ -69,6 +71,8 @@ void on_terminate(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
+		} break;
+		case MODULE_INITIALIZATION_LEVEL_MAX: {
 		} break;
 	}
 }
