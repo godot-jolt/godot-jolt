@@ -15,7 +15,7 @@ Breaking changes are denoted with ⚠️.
 
 ### Fixed
 
-- Fixed issue with project eventually freezing up when having many active physics spaces.
+- Fixed issue with project randomly freezing up when having many active physics spaces.
 - Fixed issue with static and kinematic bodies not correctly incorporating surface velocities, also
   known as "constant velocities", as part of their reported velocities. This also makes it so
   `move_and_slide` will respect such velocities.
