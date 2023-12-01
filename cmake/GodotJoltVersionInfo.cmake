@@ -1,3 +1,5 @@
+include_guard()
+
 set(GDJ_PROJECT_TITLE "Godot Jolt")
 set(GDJ_PROJECT_DESCRIPTION "Godot extension that integrates the Jolt physics engine.")
 set(GDJ_PROJECT_COPYRIGHT "Copyright (c) Mikael Hermansson and Godot Jolt contributors.")
