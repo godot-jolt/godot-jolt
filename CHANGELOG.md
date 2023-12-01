@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.11.0] - 2023-12-01
+
 ### Changed
 
 - ⚠️ Changed `HeightMapShape3D` to always use back-face collision, to match Godot Physics.
@@ -310,7 +312,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.10.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.11.0-stable...HEAD
+[0.11.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.10.0-stable...v0.11.0-stable
 [0.10.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.9.0-stable...v0.10.0-stable
 [0.9.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.8.0-stable...v0.9.0-stable
 [0.8.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.7.0-stable...v0.8.0-stable
