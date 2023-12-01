@@ -31,5 +31,3 @@ endif()
 if(NOT DEFINED MSVC)
 	set(MSVC FALSE)
 endif()
-
-include(${CMAKE_CURRENT_SOURCE_DIR}/Version.cmake)

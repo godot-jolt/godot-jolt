@@ -8,6 +8,7 @@ set(templates_dir ${cmake_dir}/templates)
 list(APPEND CMAKE_MODULE_PATH ${cmake_dir})
 
 include(GodotJoltPrelude)
+include(GodotJoltVersionInfo)
 
 project(godot-jolt VERSION ${GDJ_VERSION} LANGUAGES CXX)
 
