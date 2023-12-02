@@ -47,6 +47,7 @@ should not be relied upon if determinism is a hard requirement.
 - The physics server is not thread-safe (yet)
 - Double-precision builds of Godot are not supported (yet)
 - Memory usage is not reflected in Godot's performance monitors (yet)
+- Ray-casts do not support `face_index`
 
 ## What else is different?
 
@@ -56,7 +57,6 @@ should not be relied upon if determinism is a hard requirement.
 - Springs and linear motors are actually implemented in `Generic6DOFJoint3D`
 - Ray-casts using `hit_back_faces` will hit the back/inside of all shapes, not only concave ones
 - Ray-casts are not affected by the `backface_collision` property of `ConcavePolygonShape3D`
-- Ray-casts do not support `face_index`
 - Shape-casts should be more accurate, but their cost also scale with the cast distance
 - Shape margins are used, but are treated as an upper bound and scale with the shape's extents
 - Manipulating a body's shape(s) after it has entered a scene tree can be costly
