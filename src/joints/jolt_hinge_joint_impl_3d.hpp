@@ -18,8 +18,7 @@ public:
 		JoltBodyImpl3D* p_body_a,
 		JoltBodyImpl3D* p_body_b,
 		const Transform3D& p_local_ref_a,
-		const Transform3D& p_local_ref_b,
-		bool p_lock = true
+		const Transform3D& p_local_ref_b
 	);
 
 	PhysicsServer3D::JointType get_type() const override {
@@ -28,25 +27,25 @@ public:
 
 	double get_param(Parameter p_param) const;
 
-	void set_param(Parameter p_param, double p_value, bool p_lock = true);
+	void set_param(Parameter p_param, double p_value);
 
 	double get_jolt_param(JoltParameter p_param) const;
 
-	void set_jolt_param(JoltParameter p_param, double p_value, bool p_lock = true);
+	void set_jolt_param(JoltParameter p_param, double p_value);
 
 	bool get_flag(Flag p_flag) const;
 
-	void set_flag(Flag p_flag, bool p_enabled, bool p_lock = true);
+	void set_flag(Flag p_flag, bool p_enabled);
 
 	bool get_jolt_flag(JoltFlag p_flag) const;
 
-	void set_jolt_flag(JoltFlag p_flag, bool p_enabled, bool p_lock = true);
+	void set_jolt_flag(JoltFlag p_flag, bool p_enabled);
 
 	float get_applied_force() const;
 
 	float get_applied_torque() const;
 
-	void rebuild(bool p_lock = true) override;
+	void rebuild() override;
 
 private:
 	JPH::Constraint* _build_hinge(
@@ -74,9 +73,9 @@ private:
 
 	void _update_motor_limit();
 
-	void _limits_changed(bool p_lock = true);
+	void _limits_changed();
 
-	void _limit_spring_changed(bool p_lock = true);
+	void _limit_spring_changed();
 
 	void _motor_state_changed();
 

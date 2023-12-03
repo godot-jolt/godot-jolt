@@ -21,13 +21,13 @@ void JoltShapeImpl3D::remove_owner(JoltObjectImpl3D* p_owner) {
 	}
 }
 
-void JoltShapeImpl3D::remove_self(bool p_lock) {
+void JoltShapeImpl3D::remove_self() {
 	// `remove_owner` will be called when we `remove_shape`, so we need to copy the map since the
 	// iterator would be invalidated from underneath us
 	const auto ref_counts_by_owner_copy = ref_counts_by_owner;
 
 	for (const auto& [owner, ref_count] : ref_counts_by_owner_copy) {
-		owner->remove_shape(this, p_lock);
+		owner->remove_shape(this);
 	}
 }
 
@@ -300,9 +300,9 @@ JPH::ShapeRefC JoltShapeImpl3D::without_custom_shapes(const JPH::Shape* p_shape)
 	}
 }
 
-void JoltShapeImpl3D::_invalidated(bool p_lock) {
+void JoltShapeImpl3D::_invalidated() {
 	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
-		owner->_shapes_changed(p_lock);
+		owner->_shapes_changed();
 	}
 }
 

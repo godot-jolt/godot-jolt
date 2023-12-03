@@ -16,11 +16,10 @@ JoltConeTwistJointImpl3D::JoltConeTwistJointImpl3D(
 	JoltBodyImpl3D* p_body_a,
 	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
-	const Transform3D& p_local_ref_b,
-	bool p_lock
+	const Transform3D& p_local_ref_b
 )
 	: JoltJointImpl3D(p_old_joint, p_body_a, p_body_b, p_local_ref_a, p_local_ref_b) {
-	rebuild(p_lock);
+	rebuild();
 }
 
 double JoltConeTwistJointImpl3D::get_param(PhysicsServer3D::ConeTwistJointParam p_param) const {
@@ -48,17 +47,16 @@ double JoltConeTwistJointImpl3D::get_param(PhysicsServer3D::ConeTwistJointParam 
 
 void JoltConeTwistJointImpl3D::set_param(
 	PhysicsServer3D::ConeTwistJointParam p_param,
-	double p_value,
-	bool p_lock
+	double p_value
 ) {
 	switch (p_param) {
 		case PhysicsServer3D::CONE_TWIST_JOINT_SWING_SPAN: {
 			swing_limit_span = p_value;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_TWIST_SPAN: {
 			twist_limit_span = p_value;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case PhysicsServer3D::CONE_TWIST_JOINT_BIAS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_BIAS)) {
@@ -119,11 +117,7 @@ double JoltConeTwistJointImpl3D::get_jolt_param(JoltParameter p_param) const {
 	}
 }
 
-void JoltConeTwistJointImpl3D::set_jolt_param(
-	JoltParameter p_param,
-	double p_value,
-	[[maybe_unused]] bool p_lock
-) {
+void JoltConeTwistJointImpl3D::set_jolt_param(JoltParameter p_param, double p_value) {
 	switch (p_param) {
 		case JoltPhysicsServer3D::CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Y: {
 			swing_motor_target_speed_y = p_value;
@@ -171,15 +165,15 @@ bool JoltConeTwistJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
 	}
 }
 
-void JoltConeTwistJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled, bool p_lock) {
+void JoltConeTwistJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled) {
 	switch (p_flag) {
 		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_USE_SWING_LIMIT: {
 			swing_limit_enabled = p_enabled;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_USE_TWIST_LIMIT: {
 			twist_limit_enabled = p_enabled;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_ENABLE_SWING_MOTOR: {
 			swing_motor_enabled = p_enabled;
@@ -227,7 +221,7 @@ float JoltConeTwistJointImpl3D::get_applied_torque() const {
 	return rotation_lambda.length() / last_step;
 }
 
-void JoltConeTwistJointImpl3D::rebuild(bool p_lock) {
+void JoltConeTwistJointImpl3D::rebuild() {
 	destroy();
 
 	JoltSpace3D* space = get_space();
@@ -244,7 +238,7 @@ void JoltConeTwistJointImpl3D::rebuild(bool p_lock) {
 		body_count = 2;
 	}
 
-	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count, p_lock);
+	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count);
 
 	auto* jolt_body_a = static_cast<JPH::Body*>(jolt_bodies[0]);
 	ERR_FAIL_COND(jolt_body_a == nullptr);
@@ -372,8 +366,8 @@ void JoltConeTwistJointImpl3D::_update_twist_motor_limit() {
 	}
 }
 
-void JoltConeTwistJointImpl3D::_limits_changed(bool p_lock) {
-	rebuild(p_lock);
+void JoltConeTwistJointImpl3D::_limits_changed() {
+	rebuild();
 }
 
 void JoltConeTwistJointImpl3D::_swing_motor_state_changed() {

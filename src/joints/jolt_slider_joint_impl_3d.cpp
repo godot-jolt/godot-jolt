@@ -38,11 +38,10 @@ JoltSliderJointImpl3D::JoltSliderJointImpl3D(
 	JoltBodyImpl3D* p_body_a,
 	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
-	const Transform3D& p_local_ref_b,
-	bool p_lock
+	const Transform3D& p_local_ref_b
 )
 	: JoltJointImpl3D(p_old_joint, p_body_a, p_body_b, p_local_ref_a, p_local_ref_b) {
-	rebuild(p_lock);
+	rebuild();
 }
 
 double JoltSliderJointImpl3D::get_param(PhysicsServer3D::SliderJointParam p_param) const {
@@ -119,19 +118,15 @@ double JoltSliderJointImpl3D::get_param(PhysicsServer3D::SliderJointParam p_para
 	}
 }
 
-void JoltSliderJointImpl3D::set_param(
-	PhysicsServer3D::SliderJointParam p_param,
-	double p_value,
-	bool p_lock
-) {
+void JoltSliderJointImpl3D::set_param(PhysicsServer3D::SliderJointParam p_param, double p_value) {
 	switch (p_param) {
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_UPPER: {
 			limit_upper = p_value;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_LOWER: {
 			limit_lower = p_value;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case PhysicsServer3D::SLIDER_JOINT_LINEAR_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_LIMIT_SOFTNESS)) {
@@ -361,15 +356,15 @@ double JoltSliderJointImpl3D::get_jolt_param(JoltParameter p_param) const {
 	}
 }
 
-void JoltSliderJointImpl3D::set_jolt_param(JoltParameter p_param, double p_value, bool p_lock) {
+void JoltSliderJointImpl3D::set_jolt_param(JoltParameter p_param, double p_value) {
 	switch (p_param) {
 		case JoltPhysicsServer3D::SLIDER_JOINT_LIMIT_SPRING_FREQUENCY: {
 			limit_spring_frequency = p_value;
-			_limit_spring_changed(p_lock);
+			_limit_spring_changed();
 		} break;
 		case JoltPhysicsServer3D::SLIDER_JOINT_LIMIT_SPRING_DAMPING: {
 			limit_spring_damping = p_value;
-			_limit_spring_changed(p_lock);
+			_limit_spring_changed();
 		} break;
 		case JoltPhysicsServer3D::SLIDER_JOINT_MOTOR_TARGET_VELOCITY: {
 			motor_target_speed = p_value;
@@ -402,15 +397,15 @@ bool JoltSliderJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
 	}
 }
 
-void JoltSliderJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled, bool p_lock) {
+void JoltSliderJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled) {
 	switch (p_flag) {
 		case JoltPhysicsServer3D::SLIDER_JOINT_FLAG_USE_LIMIT: {
 			limits_enabled = p_enabled;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case JoltPhysicsServer3D::SLIDER_JOINT_FLAG_USE_LIMIT_SPRING: {
 			limit_spring_enabled = p_enabled;
-			_limit_spring_changed(p_lock);
+			_limit_spring_changed();
 		} break;
 		case JoltPhysicsServer3D::SLIDER_JOINT_FLAG_ENABLE_MOTOR: {
 			motor_enabled = p_enabled;
@@ -458,7 +453,7 @@ float JoltSliderJointImpl3D::get_applied_torque() const {
 	}
 }
 
-void JoltSliderJointImpl3D::rebuild(bool p_lock) {
+void JoltSliderJointImpl3D::rebuild() {
 	destroy();
 
 	JoltSpace3D* space = get_space();
@@ -475,7 +470,7 @@ void JoltSliderJointImpl3D::rebuild(bool p_lock) {
 		body_count = 2;
 	}
 
-	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count, p_lock);
+	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count);
 
 	auto* jolt_body_a = static_cast<JPH::Body*>(jolt_bodies[0]);
 	ERR_FAIL_COND(jolt_body_a == nullptr);
@@ -602,12 +597,12 @@ void JoltSliderJointImpl3D::_update_motor_limit() {
 	}
 }
 
-void JoltSliderJointImpl3D::_limits_changed(bool p_lock) {
-	rebuild(p_lock);
+void JoltSliderJointImpl3D::_limits_changed() {
+	rebuild();
 }
 
-void JoltSliderJointImpl3D::_limit_spring_changed(bool p_lock) {
-	rebuild(p_lock);
+void JoltSliderJointImpl3D::_limit_spring_changed() {
+	rebuild();
 }
 
 void JoltSliderJointImpl3D::_motor_state_changed() {

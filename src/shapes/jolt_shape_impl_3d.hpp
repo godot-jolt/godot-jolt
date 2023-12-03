@@ -16,7 +16,7 @@ public:
 
 	void remove_owner(JoltObjectImpl3D* p_owner);
 
-	void remove_self(bool p_lock = true);
+	void remove_self();
 
 	virtual ShapeType get_type() const = 0;
 
@@ -74,7 +74,7 @@ public:
 protected:
 	virtual JPH::ShapeRefC _build() const = 0;
 
-	virtual void _invalidated(bool p_lock = true);
+	virtual void _invalidated();
 
 	String _owners_to_string() const;
 

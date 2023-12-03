@@ -39,21 +39,21 @@ Object* JoltObjectImpl3D::get_instance_wrapped() const {
 	return ObjectDB::get_instance(instance_id);
 }
 
-void JoltObjectImpl3D::set_space(JoltSpace3D* p_space, bool p_lock) {
+void JoltObjectImpl3D::set_space(JoltSpace3D* p_space) {
 	if (space == p_space) {
 		return;
 	}
 
-	_space_changing(p_lock);
+	_space_changing();
 
 	if (space != nullptr) {
-		const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+		const JoltWritableBody3D body = space->write_body(jolt_id);
 		ERR_FAIL_COND(body.is_invalid());
 
 		jolt_settings = new JPH::BodyCreationSettings(body->GetBodyCreationSettings());
 
-		_remove_from_space(false);
-		_destroy_in_space(false);
+		_remove_from_space();
+		_destroy_in_space();
 	}
 
 	space = p_space;
@@ -63,45 +63,45 @@ void JoltObjectImpl3D::set_space(JoltSpace3D* p_space, bool p_lock) {
 		_add_to_space();
 	}
 
-	_space_changed(p_lock);
+	_space_changed();
 }
 
-void JoltObjectImpl3D::set_collision_layer(uint32_t p_layer, bool p_lock) {
+void JoltObjectImpl3D::set_collision_layer(uint32_t p_layer) {
 	if (p_layer == collision_layer) {
 		return;
 	}
 
 	collision_layer = p_layer;
 
-	_collision_layer_changed(p_lock);
+	_collision_layer_changed();
 }
 
-void JoltObjectImpl3D::set_collision_mask(uint32_t p_mask, bool p_lock) {
+void JoltObjectImpl3D::set_collision_mask(uint32_t p_mask) {
 	if (p_mask == collision_mask) {
 		return;
 	}
 
 	collision_mask = p_mask;
 
-	_collision_mask_changed(p_lock);
+	_collision_mask_changed();
 }
 
-Transform3D JoltObjectImpl3D::get_transform_unscaled(bool p_lock) const {
+Transform3D JoltObjectImpl3D::get_transform_unscaled() const {
 	if (space == nullptr) {
 		return {to_godot(jolt_settings->mRotation), to_godot(jolt_settings->mPosition)};
 	}
 
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	return {to_godot(body->GetRotation()), to_godot(body->GetPosition())};
 }
 
-Transform3D JoltObjectImpl3D::get_transform_scaled(bool p_lock) const {
-	return get_transform_unscaled(p_lock).scaled_local(scale);
+Transform3D JoltObjectImpl3D::get_transform_scaled() const {
+	return get_transform_unscaled().scaled_local(scale);
 }
 
-void JoltObjectImpl3D::set_transform(Transform3D p_transform, bool p_lock) {
+void JoltObjectImpl3D::set_transform(Transform3D p_transform) {
 	Vector3 new_scale;
 	Math::decompose(p_transform, new_scale);
 
@@ -112,37 +112,37 @@ void JoltObjectImpl3D::set_transform(Transform3D p_transform, bool p_lock) {
 	// large discrepancy between the transform reported and the one actually used by Jolt.
 	if (!scale.is_equal_approx(new_scale)) {
 		scale = new_scale;
-		_shapes_changed(p_lock);
+		_shapes_changed();
 	}
 
 	_apply_transform(p_transform);
 
-	_transform_changed(p_lock);
+	_transform_changed();
 }
 
-Basis JoltObjectImpl3D::get_basis(bool p_lock) const {
+Basis JoltObjectImpl3D::get_basis() const {
 	if (space == nullptr) {
 		return to_godot(jolt_settings->mRotation);
 	}
 
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	return to_godot(body->GetRotation());
 }
 
-Vector3 JoltObjectImpl3D::get_position(bool p_lock) const {
+Vector3 JoltObjectImpl3D::get_position() const {
 	if (space == nullptr) {
 		return to_godot(jolt_settings->mPosition);
 	}
 
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	return to_godot(body->GetPosition());
 }
 
-Vector3 JoltObjectImpl3D::get_center_of_mass(bool p_lock) const {
+Vector3 JoltObjectImpl3D::get_center_of_mass() const {
 	ERR_FAIL_NULL_D_MSG(
 		space,
 		vformat(
@@ -153,13 +153,13 @@ Vector3 JoltObjectImpl3D::get_center_of_mass(bool p_lock) const {
 		)
 	);
 
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	return to_godot(body->GetCenterOfMassPosition());
 }
 
-Vector3 JoltObjectImpl3D::get_center_of_mass_local(bool p_lock) const {
+Vector3 JoltObjectImpl3D::get_center_of_mass_local() const {
 	ERR_FAIL_NULL_D_MSG(
 		space,
 		vformat(
@@ -170,26 +170,26 @@ Vector3 JoltObjectImpl3D::get_center_of_mass_local(bool p_lock) const {
 		)
 	);
 
-	return get_transform_scaled(p_lock).xform_inv(get_center_of_mass(p_lock));
+	return get_transform_scaled().xform_inv(get_center_of_mass());
 }
 
-Vector3 JoltObjectImpl3D::get_linear_velocity(bool p_lock) const {
+Vector3 JoltObjectImpl3D::get_linear_velocity() const {
 	if (space == nullptr) {
 		return to_godot(jolt_settings->mLinearVelocity);
 	}
 
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	return to_godot(body->GetLinearVelocity());
 }
 
-Vector3 JoltObjectImpl3D::get_angular_velocity(bool p_lock) const {
+Vector3 JoltObjectImpl3D::get_angular_velocity() const {
 	if (space == nullptr) {
 		return to_godot(jolt_settings->mAngularVelocity);
 	}
 
-	const JoltReadableBody3D body = space->read_body(jolt_id, p_lock);
+	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
 	return to_godot(body->GetAngularVelocity());
@@ -251,13 +251,13 @@ JPH::ShapeRefC JoltObjectImpl3D::try_build_shape() {
 	return result;
 }
 
-void JoltObjectImpl3D::build_shape(bool p_lock) {
+void JoltObjectImpl3D::build_shape() {
 	if (space == nullptr) {
-		_shapes_built(p_lock);
+		_shapes_built();
 		return;
 	}
 
-	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	const JoltWritableBody3D body = space->write_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
 	previous_jolt_shape = jolt_shape;
@@ -272,40 +272,38 @@ void JoltObjectImpl3D::build_shape(bool p_lock) {
 		return;
 	}
 
-	space->get_body_iface(false)
-		.SetShape(jolt_id, jolt_shape, false, JPH::EActivation::DontActivate);
+	space->get_body_iface().SetShape(jolt_id, jolt_shape, false, JPH::EActivation::DontActivate);
 
-	_shapes_built(false);
+	_shapes_built();
 }
 
 void JoltObjectImpl3D::add_shape(
 	JoltShapeImpl3D* p_shape,
 	Transform3D p_transform,
-	bool p_disabled,
-	bool p_lock
+	bool p_disabled
 ) {
 	Vector3 shape_scale;
 	Math::decompose(p_transform, shape_scale);
 
 	shapes.emplace_back(this, p_shape, p_transform, shape_scale, p_disabled);
 
-	_shapes_changed(p_lock);
+	_shapes_changed();
 }
 
-void JoltObjectImpl3D::remove_shape(const JoltShapeImpl3D* p_shape, bool p_lock) {
+void JoltObjectImpl3D::remove_shape(const JoltShapeImpl3D* p_shape) {
 	shapes.erase_if([&](const JoltShapeInstance3D& p_instance) {
 		return p_instance.get_shape() == p_shape;
 	});
 
-	_shapes_changed(p_lock);
+	_shapes_changed();
 }
 
-void JoltObjectImpl3D::remove_shape(int32_t p_index, bool p_lock) {
+void JoltObjectImpl3D::remove_shape(int32_t p_index) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	shapes.remove_at(p_index);
 
-	_shapes_changed(p_lock);
+	_shapes_changed();
 }
 
 JoltShapeImpl3D* JoltObjectImpl3D::get_shape(int32_t p_index) const {
@@ -314,18 +312,18 @@ JoltShapeImpl3D* JoltObjectImpl3D::get_shape(int32_t p_index) const {
 	return shapes[p_index].get_shape();
 }
 
-void JoltObjectImpl3D::set_shape(int32_t p_index, JoltShapeImpl3D* p_shape, bool p_lock) {
+void JoltObjectImpl3D::set_shape(int32_t p_index, JoltShapeImpl3D* p_shape) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	shapes[p_index] = JoltShapeInstance3D(this, p_shape);
 
-	_shapes_changed(p_lock);
+	_shapes_changed();
 }
 
-void JoltObjectImpl3D::clear_shapes(bool p_lock) {
+void JoltObjectImpl3D::clear_shapes() {
 	shapes.clear();
 
-	_shapes_changed(p_lock);
+	_shapes_changed();
 }
 
 int32_t JoltObjectImpl3D::find_shape_index(uint32_t p_shape_instance_id) const {
@@ -368,7 +366,7 @@ Vector3 JoltObjectImpl3D::get_shape_scale(int32_t p_index) const {
 	return shapes[p_index].get_scale();
 }
 
-void JoltObjectImpl3D::set_shape_transform(int32_t p_index, Transform3D p_transform, bool p_lock) {
+void JoltObjectImpl3D::set_shape_transform(int32_t p_index, Transform3D p_transform) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	Vector3 new_scale;
@@ -383,7 +381,7 @@ void JoltObjectImpl3D::set_shape_transform(int32_t p_index, Transform3D p_transf
 	shape.set_transform(p_transform);
 	shape.set_scale(new_scale);
 
-	_shapes_changed(p_lock);
+	_shapes_changed();
 }
 
 bool JoltObjectImpl3D::is_shape_disabled(int32_t p_index) const {
@@ -392,7 +390,7 @@ bool JoltObjectImpl3D::is_shape_disabled(int32_t p_index) const {
 	return shapes[p_index].is_disabled();
 }
 
-void JoltObjectImpl3D::set_shape_disabled(int32_t p_index, bool p_disabled, bool p_lock) {
+void JoltObjectImpl3D::set_shape_disabled(int32_t p_index, bool p_disabled) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
 	JoltShapeInstance3D& shape = shapes[p_index];
@@ -407,34 +405,34 @@ void JoltObjectImpl3D::set_shape_disabled(int32_t p_index, bool p_disabled, bool
 		shape.enable();
 	}
 
-	_shapes_changed(p_lock);
+	_shapes_changed();
 }
 
-void JoltObjectImpl3D::_add_to_space(bool p_lock) {
+void JoltObjectImpl3D::_add_to_space() {
 	// HACK(mihe): Since `BODY_STATE_TRANSFORM` will be set right after creation it's more or less
 	// impossible to have a body be sleeping when created, so we default to always starting out as
 	// active.
-	space->get_body_iface(p_lock).AddBody(jolt_id, JPH::EActivation::Activate);
+	space->get_body_iface().AddBody(jolt_id, JPH::EActivation::Activate);
 }
 
-void JoltObjectImpl3D::_remove_from_space(bool p_lock) {
-	space->get_body_iface(p_lock).RemoveBody(jolt_id);
+void JoltObjectImpl3D::_remove_from_space() {
+	space->get_body_iface().RemoveBody(jolt_id);
 }
 
-void JoltObjectImpl3D::_destroy_in_space(bool p_lock) {
-	space->get_body_iface(p_lock).DestroyBody(jolt_id);
+void JoltObjectImpl3D::_destroy_in_space() {
+	space->get_body_iface().DestroyBody(jolt_id);
 
 	jolt_id = {};
 }
 
-void JoltObjectImpl3D::_apply_transform(const Transform3D& p_transform, bool p_lock) {
+void JoltObjectImpl3D::_apply_transform(const Transform3D& p_transform) {
 	if (space == nullptr) {
 		jolt_settings->mPosition = to_jolt(p_transform.origin);
 		jolt_settings->mRotation = to_jolt(p_transform.basis);
 		return;
 	}
 
-	space->get_body_iface(p_lock).SetPositionAndRotation(
+	space->get_body_iface().SetPositionAndRotation(
 		jolt_id,
 		to_jolt(p_transform.origin),
 		to_jolt(p_transform.basis),
@@ -489,7 +487,7 @@ JPH::Body* JoltObjectImpl3D::_create_end() {
 		delete_safely(jolt_settings);
 	};
 
-	JPH::Body* body = space->get_body_iface(false).CreateBody(*jolt_settings);
+	JPH::Body* body = space->get_body_iface().CreateBody(*jolt_settings);
 
 	ERR_FAIL_NULL_D_MSG(
 		body,
@@ -509,22 +507,22 @@ JPH::Body* JoltObjectImpl3D::_create_end() {
 	return body;
 }
 
-void JoltObjectImpl3D::_update_object_layer(bool p_lock) {
+void JoltObjectImpl3D::_update_object_layer() {
 	if (space == nullptr) {
 		return;
 	}
 
-	space->get_body_iface(p_lock).SetObjectLayer(jolt_id, _get_object_layer());
+	space->get_body_iface().SetObjectLayer(jolt_id, _get_object_layer());
 }
 
-void JoltObjectImpl3D::_collision_layer_changed(bool p_lock) {
-	_update_object_layer(p_lock);
+void JoltObjectImpl3D::_collision_layer_changed() {
+	_update_object_layer();
 }
 
-void JoltObjectImpl3D::_collision_mask_changed(bool p_lock) {
-	_update_object_layer(p_lock);
+void JoltObjectImpl3D::_collision_mask_changed() {
+	_update_object_layer();
 }
 
-void JoltObjectImpl3D::_shapes_changed(bool p_lock) {
-	build_shape(p_lock);
+void JoltObjectImpl3D::_shapes_changed() {
+	build_shape();
 }

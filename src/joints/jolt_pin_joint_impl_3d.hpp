@@ -12,19 +12,18 @@ public:
 		JoltBodyImpl3D* p_body_a,
 		JoltBodyImpl3D* p_body_b,
 		const Vector3& p_local_a,
-		const Vector3& p_local_b,
-		bool p_lock = true
+		const Vector3& p_local_b
 	);
 
 	PhysicsServer3D::JointType get_type() const override { return PhysicsServer3D::JOINT_TYPE_PIN; }
 
 	Vector3 get_local_a() const { return local_ref_a.origin; }
 
-	void set_local_a(const Vector3& p_local_a, bool p_lock = true);
+	void set_local_a(const Vector3& p_local_a);
 
 	Vector3 get_local_b() const { return local_ref_b.origin; }
 
-	void set_local_b(const Vector3& p_local_b, bool p_lock = true);
+	void set_local_b(const Vector3& p_local_b);
 
 	double get_param(PhysicsServer3D::PinJointParam p_param) const;
 
@@ -32,7 +31,7 @@ public:
 
 	float get_applied_force() const;
 
-	void rebuild(bool p_lock = true) override;
+	void rebuild() override;
 
 private:
 	static JPH::Constraint* _build_pin(
@@ -42,5 +41,5 @@ private:
 		const Transform3D& p_shifted_ref_b
 	);
 
-	void _points_changed(bool p_lock = true);
+	void _points_changed();
 };

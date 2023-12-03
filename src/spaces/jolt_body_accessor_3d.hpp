@@ -21,13 +21,13 @@ public:
 
 	virtual ~JoltBodyAccessor3D() = 0;
 
-	void acquire(const JPH::BodyID* p_ids, int32_t p_id_count, bool p_lock = true);
+	void acquire(const JPH::BodyID* p_ids, int32_t p_id_count);
 
-	void acquire(const JPH::BodyID& p_id, bool p_lock = true);
+	void acquire(const JPH::BodyID& p_id);
 
-	void acquire_active(bool p_lock = true);
+	void acquire_active();
 
-	void acquire_all(bool p_lock = true);
+	void acquire_all();
 
 	void release();
 
@@ -97,20 +97,15 @@ public:
 	JoltScopedBodyAccessor3D(
 		const JoltSpace3D& p_space,
 		const JPH::BodyID* p_ids,
-		int32_t p_id_count,
-		bool p_lock = true
+		int32_t p_id_count
 	)
 		: inner(&p_space) {
-		inner.acquire(p_ids, p_id_count, p_lock);
+		inner.acquire(p_ids, p_id_count);
 	}
 
-	JoltScopedBodyAccessor3D(
-		const JoltSpace3D& p_space,
-		const JPH::BodyID& p_id,
-		bool p_lock = true
-	)
+	JoltScopedBodyAccessor3D(const JoltSpace3D& p_space, const JPH::BodyID& p_id)
 		: inner(&p_space) {
-		inner.acquire(p_id, p_lock);
+		inner.acquire(p_id);
 	}
 
 	JoltScopedBodyAccessor3D(const JoltScopedBodyAccessor3D& p_other) = delete;
@@ -142,8 +137,8 @@ private:
 template<typename TAccessor, typename TBody>
 class JoltAccessibleBody3D {
 public:
-	JoltAccessibleBody3D(const JoltSpace3D& p_space, const JPH::BodyID& p_id, bool p_lock = true)
-		: accessor(p_space, p_id, p_lock)
+	JoltAccessibleBody3D(const JoltSpace3D& p_space, const JPH::BodyID& p_id)
+		: accessor(p_space, p_id)
 		, body(accessor.try_get()) { }
 
 	bool is_valid() const { return body != nullptr; }
@@ -189,20 +184,15 @@ private:
 template<typename TAccessor, typename TBody>
 class JoltAccessibleBodies3D {
 public:
-	JoltAccessibleBodies3D(
-		const JoltSpace3D& p_space,
-		const JPH::BodyID* p_ids,
-		int32_t p_id_count,
-		bool p_lock = true
-	)
-		: accessor(p_space, p_ids, p_id_count, p_lock) { }
+	JoltAccessibleBodies3D(const JoltSpace3D& p_space, const JPH::BodyID* p_ids, int32_t p_id_count)
+		: accessor(p_space, p_ids, p_id_count) { }
 
 	JoltAccessibleBody3D<TAccessor, TBody> operator[](int32_t p_index) const {
 		const JPH::BodyID& body_id = p_index < accessor.get_count()
 			? accessor.get_at(p_index)
 			: JPH::BodyID();
 
-		return {accessor.get_space(), body_id, false};
+		return {accessor.get_space(), body_id};
 	}
 
 private:

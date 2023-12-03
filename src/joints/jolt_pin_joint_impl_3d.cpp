@@ -16,8 +16,7 @@ JoltPinJointImpl3D::JoltPinJointImpl3D(
 	JoltBodyImpl3D* p_body_a,
 	JoltBodyImpl3D* p_body_b,
 	const Vector3& p_local_a,
-	const Vector3& p_local_b,
-	bool p_lock
+	const Vector3& p_local_b
 )
 	: JoltJointImpl3D(
 		  p_old_joint,
@@ -26,17 +25,17 @@ JoltPinJointImpl3D::JoltPinJointImpl3D(
 		  Transform3D({}, p_local_a),
 		  Transform3D({}, p_local_b)
 	  ) {
-	rebuild(p_lock);
+	rebuild();
 }
 
-void JoltPinJointImpl3D::set_local_a(const Vector3& p_local_a, bool p_lock) {
+void JoltPinJointImpl3D::set_local_a(const Vector3& p_local_a) {
 	local_ref_a = Transform3D({}, p_local_a);
-	_points_changed(p_lock);
+	_points_changed();
 }
 
-void JoltPinJointImpl3D::set_local_b(const Vector3& p_local_b, bool p_lock) {
+void JoltPinJointImpl3D::set_local_b(const Vector3& p_local_b) {
 	local_ref_b = Transform3D({}, p_local_b);
-	_points_changed(p_lock);
+	_points_changed();
 }
 
 double JoltPinJointImpl3D::get_param(PhysicsServer3D::PinJointParam p_param) const {
@@ -107,7 +106,7 @@ float JoltPinJointImpl3D::get_applied_force() const {
 	return constraint->GetTotalLambdaPosition().Length() / last_step;
 }
 
-void JoltPinJointImpl3D::rebuild(bool p_lock) {
+void JoltPinJointImpl3D::rebuild() {
 	destroy();
 
 	JoltSpace3D* space = get_space();
@@ -124,7 +123,7 @@ void JoltPinJointImpl3D::rebuild(bool p_lock) {
 		body_count = 2;
 	}
 
-	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count, p_lock);
+	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count);
 
 	auto* jolt_body_a = static_cast<JPH::Body*>(jolt_bodies[0]);
 	ERR_FAIL_COND(jolt_body_a == nullptr);
@@ -163,6 +162,6 @@ JPH::Constraint* JoltPinJointImpl3D::_build_pin(
 	}
 }
 
-void JoltPinJointImpl3D::_points_changed(bool p_lock) {
-	rebuild(p_lock);
+void JoltPinJointImpl3D::_points_changed() {
+	rebuild();
 }

@@ -59,39 +59,39 @@ public:
 
 	bool has_custom_integrator() const { return custom_integrator; }
 
-	void set_custom_integrator(bool p_enabled, bool p_lock = true);
+	void set_custom_integrator(bool p_enabled);
 
-	bool is_sleeping(bool p_lock = true) const;
+	bool is_sleeping() const;
 
-	void set_is_sleeping(bool p_enabled, bool p_lock = true);
+	void set_is_sleeping(bool p_enabled);
 
-	void put_to_sleep(bool p_lock = true) { set_is_sleeping(true, p_lock); }
+	void put_to_sleep() { set_is_sleeping(true); }
 
-	void wake_up(bool p_lock = true) { set_is_sleeping(false, p_lock); }
+	void wake_up() { set_is_sleeping(false); }
 
-	bool can_sleep(bool p_lock = true) const;
+	bool can_sleep() const;
 
-	void set_can_sleep(bool p_enabled, bool p_lock = true);
+	void set_can_sleep(bool p_enabled);
 
-	Basis get_principal_inertia_axes(bool p_lock = true) const;
+	Basis get_principal_inertia_axes() const;
 
-	Vector3 get_inverse_inertia(bool p_lock = true) const;
+	Vector3 get_inverse_inertia() const;
 
-	Basis get_inverse_inertia_tensor(bool p_lock = true) const;
+	Basis get_inverse_inertia_tensor() const;
 
-	void set_linear_velocity(const Vector3& p_velocity, bool p_lock = true);
+	void set_linear_velocity(const Vector3& p_velocity);
 
-	void set_angular_velocity(const Vector3& p_velocity, bool p_lock = true);
+	void set_angular_velocity(const Vector3& p_velocity);
 
-	void set_axis_velocity(const Vector3& p_axis_velocity, bool p_lock = true);
+	void set_axis_velocity(const Vector3& p_axis_velocity);
 
-	Vector3 get_velocity_at_position(const Vector3& p_position, bool p_lock = true) const override;
+	Vector3 get_velocity_at_position(const Vector3& p_position) const override;
 
 	bool has_custom_center_of_mass() const override { return custom_center_of_mass; }
 
 	Vector3 get_center_of_mass_custom() const override { return center_of_mass_custom; }
 
-	void set_center_of_mass_custom(const Vector3& p_center_of_mass, bool p_lock = true);
+	void set_center_of_mass_custom(const Vector3& p_center_of_mass);
 
 	int32_t get_max_contacts_reported() const { return contacts.size(); }
 
@@ -116,53 +116,53 @@ public:
 		const Vector3& p_impulse
 	);
 
-	void reset_mass_properties(bool p_lock = true);
+	void reset_mass_properties();
 
-	void apply_force(const Vector3& p_force, const Vector3& p_position, bool p_lock = true);
+	void apply_force(const Vector3& p_force, const Vector3& p_position);
 
-	void apply_central_force(const Vector3& p_force, bool p_lock = true);
+	void apply_central_force(const Vector3& p_force);
 
-	void apply_impulse(const Vector3& p_impulse, const Vector3& p_position, bool p_lock = true);
+	void apply_impulse(const Vector3& p_impulse, const Vector3& p_position);
 
-	void apply_central_impulse(const Vector3& p_impulse, bool p_lock = true);
+	void apply_central_impulse(const Vector3& p_impulse);
 
-	void apply_torque(const Vector3& p_torque, bool p_lock = true);
+	void apply_torque(const Vector3& p_torque);
 
-	void apply_torque_impulse(const Vector3& p_impulse, bool p_lock = true);
+	void apply_torque_impulse(const Vector3& p_impulse);
 
-	void add_constant_central_force(const Vector3& p_force, bool p_lock = true);
+	void add_constant_central_force(const Vector3& p_force);
 
-	void add_constant_force(const Vector3& p_force, const Vector3& p_position, bool p_lock = true);
+	void add_constant_force(const Vector3& p_force, const Vector3& p_position);
 
-	void add_constant_torque(const Vector3& p_torque, bool p_lock = true);
+	void add_constant_torque(const Vector3& p_torque);
 
 	Vector3 get_constant_force() const;
 
-	void set_constant_force(const Vector3& p_force, bool p_lock = true);
+	void set_constant_force(const Vector3& p_force);
 
 	Vector3 get_constant_torque() const;
 
-	void set_constant_torque(const Vector3& p_torque, bool p_lock = true);
+	void set_constant_torque(const Vector3& p_torque);
 
 	Vector3 get_linear_surface_velocity() const { return linear_surface_velocity; }
 
 	Vector3 get_angular_surface_velocity() const { return angular_surface_velocity; }
 
-	void add_collision_exception(const RID& p_excepted_body, bool p_lock = true);
+	void add_collision_exception(const RID& p_excepted_body);
 
-	void remove_collision_exception(const RID& p_excepted_body, bool p_lock = true);
+	void remove_collision_exception(const RID& p_excepted_body);
 
 	bool has_collision_exception(const RID& p_excepted_body) const;
 
 	TypedArray<RID> get_collision_exceptions() const;
 
-	void add_area(JoltAreaImpl3D* p_area, bool p_lock = true);
+	void add_area(JoltAreaImpl3D* p_area);
 
-	void remove_area(JoltAreaImpl3D* p_area, bool p_lock = true);
+	void remove_area(JoltAreaImpl3D* p_area);
 
-	void add_joint(JoltJointImpl3D* p_joint, bool p_lock = true);
+	void add_joint(JoltJointImpl3D* p_joint);
 
-	void remove_joint(JoltJointImpl3D* p_joint, bool p_lock = true);
+	void remove_joint(JoltJointImpl3D* p_joint);
 
 	void call_queries(JPH::Body& p_jolt_body);
 
@@ -174,7 +174,7 @@ public:
 
 	PhysicsServer3D::BodyMode get_mode() const { return mode; }
 
-	void set_mode(PhysicsServer3D::BodyMode p_mode, bool p_lock = true);
+	void set_mode(PhysicsServer3D::BodyMode p_mode);
 
 	bool is_static() const { return mode == PhysicsServer3D::BODY_MODE_STATIC; }
 
@@ -186,39 +186,39 @@ public:
 
 	bool is_rigid() const { return is_rigid_free() || is_rigid_linear(); }
 
-	bool is_ccd_enabled(bool p_lock = true) const;
+	bool is_ccd_enabled() const;
 
-	void set_ccd_enabled(bool p_enabled, bool p_lock = true);
+	void set_ccd_enabled(bool p_enabled);
 
 	float get_mass() const { return mass; }
 
-	void set_mass(float p_mass, bool p_lock = true);
+	void set_mass(float p_mass);
 
 	Vector3 get_inertia() const { return inertia; }
 
-	void set_inertia(const Vector3& p_inertia, bool p_lock = true);
+	void set_inertia(const Vector3& p_inertia);
 
-	float get_bounce(bool p_lock = true) const;
+	float get_bounce() const;
 
-	void set_bounce(float p_bounce, bool p_lock = true);
+	void set_bounce(float p_bounce);
 
-	float get_friction(bool p_lock = true) const;
+	float get_friction() const;
 
-	void set_friction(float p_friction, bool p_lock = true);
+	void set_friction(float p_friction);
 
-	float get_gravity_scale(bool p_lock = true) const;
+	float get_gravity_scale() const;
 
-	void set_gravity_scale(float p_scale, bool p_lock = true);
+	void set_gravity_scale(float p_scale);
 
 	Vector3 get_gravity() const { return gravity; }
 
 	float get_linear_damp() const { return linear_damp; }
 
-	void set_linear_damp(float p_damp, bool p_lock = true);
+	void set_linear_damp(float p_damp);
 
 	float get_angular_damp() const { return angular_damp; }
 
-	void set_angular_damp(float p_damp, bool p_lock = true);
+	void set_angular_damp(float p_damp);
 
 	float get_total_linear_damp() const { return total_linear_damp; }
 
@@ -238,7 +238,7 @@ public:
 
 	bool is_axis_locked(PhysicsServer3D::BodyAxis p_axis) const;
 
-	void set_axis_lock(PhysicsServer3D::BodyAxis p_axis, bool p_lock_axis, bool p_lock = true);
+	void set_axis_lock(PhysicsServer3D::BodyAxis p_axis, bool p_enabled);
 
 	bool are_axes_locked() const { return locked_axes != 0; }
 
@@ -261,7 +261,7 @@ private:
 
 	void _pre_step_kinematic(float p_step, JPH::Body& p_jolt_body);
 
-	void _apply_transform(const Transform3D& p_transform, bool p_lock = true) override;
+	void _apply_transform(const Transform3D& p_transform) override;
 
 	JPH::EAllowedDOFs _calculate_allowed_dofs() const;
 
@@ -271,39 +271,39 @@ private:
 
 	void _stop_locked_axes(JPH::Body& p_jolt_body) const;
 
-	void _update_mass_properties(bool p_lock = true);
+	void _update_mass_properties();
 
 	void _update_gravity(JPH::Body& p_jolt_body);
 
-	void _update_damp(bool p_lock = true);
+	void _update_damp();
 
-	void _update_kinematic_transform(bool p_lock = true);
+	void _update_kinematic_transform();
 
-	void _update_group_filter(bool p_lock = true);
+	void _update_group_filter();
 
-	void _update_joint_constraints(bool p_lock = true);
+	void _update_joint_constraints();
 
 	void _destroy_joint_constraints();
 
-	void _mode_changed(bool p_lock = true);
+	void _mode_changed();
 
-	void _shapes_built(bool p_lock) override;
+	void _shapes_built() override;
 
-	void _space_changing(bool p_lock = true) override;
+	void _space_changing() override;
 
-	void _space_changed(bool p_lock = true) override;
+	void _space_changed() override;
 
-	void _areas_changed(bool p_lock = true);
+	void _areas_changed();
 
-	void _joints_changed(bool p_lock = true);
+	void _joints_changed();
 
-	void _transform_changed(bool p_lock = true) override;
+	void _transform_changed() override;
 
-	void _motion_changed(bool p_lock = true);
+	void _motion_changed();
 
-	void _exceptions_changed(bool p_lock = true);
+	void _exceptions_changed();
 
-	void _axis_lock_changed(bool p_lock = true);
+	void _axis_lock_changed();
 
 	LocalVector<RID> exceptions;
 
