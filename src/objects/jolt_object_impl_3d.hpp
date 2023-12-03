@@ -97,7 +97,7 @@ public:
 
 	void set_pickable(bool p_enabled) { pickable = p_enabled; }
 
-	virtual bool generates_contacts() const = 0;
+	virtual bool reports_contacts() const = 0;
 
 	JPH::ShapeRefC try_build_shape();
 

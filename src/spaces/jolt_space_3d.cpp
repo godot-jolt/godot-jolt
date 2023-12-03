@@ -446,7 +446,7 @@ void JoltSpace3D::_pre_step(float p_step) {
 
 			object->pre_step(p_step, *jolt_body);
 
-			if (object->generates_contacts()) {
+			if (object->reports_contacts()) {
 				contact_listener->listen_for(object);
 			}
 		}
