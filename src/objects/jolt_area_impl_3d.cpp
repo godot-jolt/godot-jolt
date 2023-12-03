@@ -167,14 +167,14 @@ void JoltAreaImpl3D::set_area_monitor_callback(const Callable& p_callback) {
 	_area_monitoring_changed();
 }
 
-void JoltAreaImpl3D::set_monitorable(bool p_monitorable, bool p_lock) {
+void JoltAreaImpl3D::set_monitorable(bool p_monitorable) {
 	if (p_monitorable == monitorable) {
 		return;
 	}
 
 	monitorable = p_monitorable;
 
-	_monitorable_changed(p_lock);
+	_monitorable_changed();
 }
 
 bool JoltAreaImpl3D::can_monitor(const JoltBodyImpl3D& p_other) const {
@@ -193,19 +193,16 @@ bool JoltAreaImpl3D::can_interact_with(const JoltAreaImpl3D& p_other) const {
 	return can_monitor(p_other) || p_other.can_monitor(*this);
 }
 
-Vector3 JoltAreaImpl3D::get_velocity_at_position(
-	[[maybe_unused]] const Vector3& p_position,
-	[[maybe_unused]] bool p_lock
-) const {
+Vector3 JoltAreaImpl3D::get_velocity_at_position([[maybe_unused]] const Vector3& p_position) const {
 	return {0.0f, 0.0f, 0.0f};
 }
 
-Vector3 JoltAreaImpl3D::compute_gravity(const Vector3& p_position, bool p_lock) const {
+Vector3 JoltAreaImpl3D::compute_gravity(const Vector3& p_position) const {
 	if (!point_gravity) {
 		return gravity_vector * gravity;
 	}
 
-	const Vector3 point = get_transform_scaled(p_lock).xform(gravity_vector);
+	const Vector3 point = get_transform_scaled().xform(gravity_vector);
 	const Vector3 to_point = point - p_position;
 	const float to_point_dist_sq = max(to_point.length_squared(), CMP_EPSILON);
 	const Vector3 to_point_dir = to_point / Math::sqrt(to_point_dist_sq);
@@ -227,7 +224,7 @@ void JoltAreaImpl3D::body_shape_entered(
 	Overlap& overlap = bodies_by_id[p_body_id];
 
 	if (overlap.shape_pairs.is_empty()) {
-		_notify_body_entered(p_body_id, false);
+		_notify_body_entered(p_body_id);
 	}
 
 	_add_shape_pair(overlap, p_body_id, p_other_shape_id, p_self_shape_id);
@@ -249,7 +246,7 @@ bool JoltAreaImpl3D::body_shape_exited(
 	}
 
 	if (overlap->shape_pairs.is_empty()) {
-		_notify_body_exited(p_body_id, false);
+		_notify_body_exited(p_body_id);
 	}
 
 	return true;
@@ -316,7 +313,7 @@ void JoltAreaImpl3D::_add_shape_pair(
 	const JPH::SubShapeID& p_other_shape_id,
 	const JPH::SubShapeID& p_self_shape_id
 ) {
-	const JoltReadableBody3D other_jolt_body = space->read_body(p_body_id, false);
+	const JoltReadableBody3D other_jolt_body = space->read_body(p_body_id);
 	const JoltObjectImpl3D* other_object = other_jolt_body.as_object();
 	ERR_FAIL_NULL(other_object);
 
@@ -408,22 +405,22 @@ void JoltAreaImpl3D::_report_event(
 	p_callback.callv(arguments);
 }
 
-void JoltAreaImpl3D::_notify_body_entered(const JPH::BodyID& p_body_id, bool p_lock) {
-	const JoltReadableBody3D jolt_body = space->read_body(p_body_id, p_lock);
+void JoltAreaImpl3D::_notify_body_entered(const JPH::BodyID& p_body_id) {
+	const JoltReadableBody3D jolt_body = space->read_body(p_body_id);
 
 	JoltBodyImpl3D* body = jolt_body.as_body();
 	QUIET_FAIL_NULL(body);
 
-	body->add_area(this, false);
+	body->add_area(this);
 }
 
-void JoltAreaImpl3D::_notify_body_exited(const JPH::BodyID& p_body_id, bool p_lock) {
-	const JoltReadableBody3D jolt_body = space->read_body(p_body_id, p_lock);
+void JoltAreaImpl3D::_notify_body_exited(const JPH::BodyID& p_body_id) {
+	const JoltReadableBody3D jolt_body = space->read_body(p_body_id);
 
 	JoltBodyImpl3D* body = jolt_body.as_body();
 	QUIET_FAIL_NULL(body);
 
-	body->remove_area(this, false);
+	body->remove_area(this);
 }
 
 void JoltAreaImpl3D::_force_bodies_entered() {
@@ -434,7 +431,7 @@ void JoltAreaImpl3D::_force_bodies_entered() {
 	}
 }
 
-void JoltAreaImpl3D::_force_bodies_exited(bool p_remove, bool p_lock) {
+void JoltAreaImpl3D::_force_bodies_exited(bool p_remove) {
 	for (auto& [id, body] : bodies_by_id) {
 		for (const auto& [id_pair, index_pair] : body.shape_pairs) {
 			body.pending_removed.push_back(index_pair);
@@ -442,7 +439,7 @@ void JoltAreaImpl3D::_force_bodies_exited(bool p_remove, bool p_lock) {
 
 		if (p_remove) {
 			body.shape_pairs.clear();
-			_notify_body_exited(id, p_lock);
+			_notify_body_exited(id);
 		}
 	}
 }
@@ -455,7 +452,7 @@ void JoltAreaImpl3D::_force_areas_entered() {
 	}
 }
 
-void JoltAreaImpl3D::_force_areas_exited(bool p_remove, [[maybe_unused]] bool p_lock) {
+void JoltAreaImpl3D::_force_areas_exited(bool p_remove) {
 	for (auto& [id, area] : areas_by_id) {
 		for (const auto& [id_pair, index_pair] : area.shape_pairs) {
 			area.pending_removed.push_back(index_pair);
@@ -467,30 +464,30 @@ void JoltAreaImpl3D::_force_areas_exited(bool p_remove, [[maybe_unused]] bool p_
 	}
 }
 
-void JoltAreaImpl3D::_update_group_filter(bool p_lock) {
+void JoltAreaImpl3D::_update_group_filter() {
 	if (space == nullptr) {
 		return;
 	}
 
-	const JoltWritableBody3D body = space->write_body(jolt_id, p_lock);
+	const JoltWritableBody3D body = space->write_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
 	body->GetCollisionGroup().SetGroupFilter(JoltGroupFilter::instance);
 }
 
-void JoltAreaImpl3D::_space_changing(bool p_lock) {
+void JoltAreaImpl3D::_space_changing() {
 	if (space != nullptr) {
 		// HACK(mihe): Ideally we would rely on our contact listener to report all the exits when we
 		// move between (or out of) spaces, but because our Jolt body is going to be destroyed when
 		// we leave this space the contact listener won't be able to retrieve the corresponding area
 		// and as such cannot report any exits, so we're forced to do it manually instead.
-		_force_bodies_exited(true, p_lock);
-		_force_areas_exited(true, p_lock);
+		_force_bodies_exited(true);
+		_force_areas_exited(true);
 	}
 }
 
-void JoltAreaImpl3D::_space_changed(bool p_lock) {
-	_update_group_filter(p_lock);
+void JoltAreaImpl3D::_space_changed() {
+	_update_group_filter();
 }
 
 void JoltAreaImpl3D::_body_monitoring_changed() {
@@ -509,6 +506,6 @@ void JoltAreaImpl3D::_area_monitoring_changed() {
 	}
 }
 
-void JoltAreaImpl3D::_monitorable_changed(bool p_lock) {
-	_update_object_layer(p_lock);
+void JoltAreaImpl3D::_monitorable_changed() {
+	_update_object_layer();
 }

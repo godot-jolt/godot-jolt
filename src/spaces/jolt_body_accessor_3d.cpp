@@ -19,43 +19,35 @@ JoltBodyAccessor3D::JoltBodyAccessor3D(const JoltSpace3D* p_space)
 
 JoltBodyAccessor3D::~JoltBodyAccessor3D() = default;
 
-void JoltBodyAccessor3D::acquire(const JPH::BodyID* p_ids, int32_t p_id_count, bool p_lock) {
+void JoltBodyAccessor3D::acquire(const JPH::BodyID* p_ids, int32_t p_id_count) {
 	ERR_FAIL_NULL(space);
 
-	lock_iface = &space->get_lock_iface(p_lock);
+	lock_iface = &space->get_lock_iface();
 	ids = BodyIDSpan(p_ids, p_id_count);
 	_acquire_internal(p_ids, p_id_count);
 }
 
-void JoltBodyAccessor3D::acquire(const JPH::BodyID& p_id, bool p_lock) {
+void JoltBodyAccessor3D::acquire(const JPH::BodyID& p_id) {
 	ERR_FAIL_NULL(space);
 
-	lock_iface = &space->get_lock_iface(p_lock);
+	lock_iface = &space->get_lock_iface();
 	ids = p_id;
 	_acquire_internal(&p_id, 1);
 }
 
-void JoltBodyAccessor3D::acquire_active(bool p_lock) {
-	ERR_FAIL_NULL(space);
+void JoltBodyAccessor3D::acquire_active() {
+	const JPH::PhysicsSystem& physics_system = space->get_physics_system();
 
-	lock_iface = &space->get_lock_iface(p_lock);
-
-	auto* vector = std::get_if<JPH::BodyIDVector>(&ids);
-
-	if (vector == nullptr) {
-		ids = JPH::BodyIDVector();
-		vector = std::get_if<JPH::BodyIDVector>(&ids);
-	}
-
-	space->get_physics_system().GetActiveBodies(JPH::EBodyType::RigidBody, *vector);
-
-	_acquire_internal(vector->data(), (int32_t)vector->size());
+	acquire(
+		physics_system.GetActiveBodiesUnsafe(JPH::EBodyType::RigidBody),
+		(int32_t)physics_system.GetNumActiveBodies(JPH::EBodyType::RigidBody)
+	);
 }
 
-void JoltBodyAccessor3D::acquire_all(bool p_lock) {
+void JoltBodyAccessor3D::acquire_all() {
 	ERR_FAIL_NULL(space);
 
-	lock_iface = &space->get_lock_iface(p_lock);
+	lock_iface = &space->get_lock_iface();
 
 	auto* vector = std::get_if<JPH::BodyIDVector>(&ids);
 

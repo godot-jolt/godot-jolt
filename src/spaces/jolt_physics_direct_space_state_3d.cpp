@@ -400,7 +400,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	p_info->rid = object->get_rid();
 	p_info->collider_id = object->get_instance_id();
 	p_info->shape = shape_index;
-	p_info->linear_velocity = object->get_velocity_at_position(hit_point, false);
+	p_info->linear_velocity = object->get_velocity_at_position(hit_point);
 
 	return true;
 }
@@ -956,8 +956,8 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 
 		collision.position = position;
 		collision.normal = to_godot(-hit.mPenetrationAxis.Normalized());
-		collision.collider_velocity = collider->get_velocity_at_position(position, false);
-		collision.collider_angular_velocity = collider->get_angular_velocity(false);
+		collision.collider_velocity = collider->get_velocity_at_position(position);
+		collision.collider_angular_velocity = collider->get_angular_velocity();
 		collision.depth = penetration_depth;
 		collision.local_shape = local_shape;
 		collision.collider_id = collider->get_instance_id();

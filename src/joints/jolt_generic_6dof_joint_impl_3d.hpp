@@ -34,8 +34,7 @@ public:
 		JoltBodyImpl3D* p_body_a,
 		JoltBodyImpl3D* p_body_b,
 		const Transform3D& p_local_ref_a,
-		const Transform3D& p_local_ref_b,
-		bool p_lock = true
+		const Transform3D& p_local_ref_b
 	);
 
 	PhysicsServer3D::JointType get_type() const override {
@@ -44,25 +43,25 @@ public:
 
 	double get_param(Axis p_axis, Param p_param) const;
 
-	void set_param(Axis p_axis, Param p_param, double p_value, bool p_lock = true);
+	void set_param(Axis p_axis, Param p_param, double p_value);
 
 	bool get_flag(Axis p_axis, Flag p_flag) const;
 
-	void set_flag(Axis p_axis, Flag p_flag, bool p_enabled, bool p_lock = true);
+	void set_flag(Axis p_axis, Flag p_flag, bool p_enabled);
 
 	double get_jolt_param(Axis p_axis, JoltParam p_param) const;
 
-	void set_jolt_param(Axis p_axis, JoltParam p_param, double p_value, bool p_lock = true);
+	void set_jolt_param(Axis p_axis, JoltParam p_param, double p_value);
 
 	bool get_jolt_flag(Axis p_axis, JoltFlag p_flag) const;
 
-	void set_jolt_flag(Axis p_axis, JoltFlag p_flag, bool p_enabled, bool p_lock = true);
+	void set_jolt_flag(Axis p_axis, JoltFlag p_flag, bool p_enabled);
 
 	float get_applied_force() const;
 
 	float get_applied_torque() const;
 
-	void rebuild(bool p_lock = true) override;
+	void rebuild() override;
 
 private:
 	void _update_limit_spring_parameters(int32_t p_axis);
@@ -77,7 +76,7 @@ private:
 
 	void _update_spring_equilibrium(int32_t p_axis);
 
-	void _limits_changed(bool p_lock = true);
+	void _limits_changed();
 
 	void _limit_spring_parameters_changed(int32_t p_axis);
 

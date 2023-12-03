@@ -373,11 +373,7 @@ void JoltContactListener3D::_flush_contacts() {
 	for (auto&& [shape_pair, manifold] : manifolds_by_shape_pair) {
 		const JPH::BodyID body_ids[] = {shape_pair.GetBody1ID(), shape_pair.GetBody2ID()};
 
-		const JoltReadableBodies3D jolt_bodies = space->read_bodies(
-			body_ids,
-			count_of(body_ids),
-			false
-		);
+		const JoltReadableBodies3D jolt_bodies = space->read_bodies(body_ids, count_of(body_ids));
 
 		JoltBodyImpl3D* body1 = jolt_bodies[0].as_body();
 		ERR_FAIL_NULL(body1);
@@ -433,11 +429,7 @@ void JoltContactListener3D::_flush_area_enters() {
 
 		const JPH::BodyID body_ids[] = {body_id1, body_id2};
 
-		const JoltReadableBodies3D jolt_bodies = space->read_bodies(
-			body_ids,
-			count_of(body_ids),
-			false
-		);
+		const JoltReadableBodies3D jolt_bodies = space->read_bodies(body_ids, count_of(body_ids));
 
 		const JoltReadableBody3D jolt_body1 = jolt_bodies[0];
 		const JoltReadableBody3D jolt_body2 = jolt_bodies[1];
@@ -464,7 +456,7 @@ void JoltContactListener3D::_flush_area_enters() {
 void JoltContactListener3D::_flush_area_shifts() {
 	for (const JPH::SubShapeIDPair& shape_pair : area_overlaps) {
 		auto is_shifted = [&](const JPH::BodyID& p_body_id, const JPH::SubShapeID& p_sub_shape_id) {
-			const JoltReadableBody3D jolt_body = space->read_body(p_body_id, false);
+			const JoltReadableBody3D jolt_body = space->read_body(p_body_id);
 			const JoltObjectImpl3D* object = jolt_body.as_object();
 			ERR_FAIL_NULL_V(object, false);
 
@@ -500,11 +492,7 @@ void JoltContactListener3D::_flush_area_exits() {
 
 		const JPH::BodyID body_ids[] = {body_id1, body_id2};
 
-		const JoltReadableBodies3D jolt_bodies = space->read_bodies(
-			body_ids,
-			count_of(body_ids),
-			false
-		);
+		const JoltReadableBodies3D jolt_bodies = space->read_bodies(body_ids, count_of(body_ids));
 
 		const JoltReadableBody3D jolt_body1 = jolt_bodies[0];
 		const JoltReadableBody3D jolt_body2 = jolt_bodies[1];

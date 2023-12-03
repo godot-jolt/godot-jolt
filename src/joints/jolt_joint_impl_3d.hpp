@@ -49,7 +49,7 @@ public:
 
 	void destroy();
 
-	virtual void rebuild([[maybe_unused]] bool p_lock = true) { }
+	virtual void rebuild() { }
 
 protected:
 	void _shift_reference_frames(

@@ -22,11 +22,10 @@ JoltGeneric6DOFJointImpl3D::JoltGeneric6DOFJointImpl3D(
 	JoltBodyImpl3D* p_body_a,
 	JoltBodyImpl3D* p_body_b,
 	const Transform3D& p_local_ref_a,
-	const Transform3D& p_local_ref_b,
-	bool p_lock
+	const Transform3D& p_local_ref_b
 )
 	: JoltJointImpl3D(p_old_joint, p_body_a, p_body_b, p_local_ref_a, p_local_ref_b) {
-	rebuild(p_lock);
+	rebuild();
 }
 
 double JoltGeneric6DOFJointImpl3D::get_param(Axis p_axis, Param p_param) const {
@@ -106,23 +105,18 @@ double JoltGeneric6DOFJointImpl3D::get_param(Axis p_axis, Param p_param) const {
 	}
 }
 
-void JoltGeneric6DOFJointImpl3D::set_param(
-	Axis p_axis,
-	Param p_param,
-	double p_value,
-	bool p_lock
-) {
+void JoltGeneric6DOFJointImpl3D::set_param(Axis p_axis, Param p_param, double p_value) {
 	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_param) {
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LOWER_LIMIT: {
 			limit_lower[axis_lin] = p_value;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_UPPER_LIMIT: {
 			limit_upper[axis_lin] = p_value;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_LINEAR_LIMIT_SOFTNESS)) {
@@ -176,11 +170,11 @@ void JoltGeneric6DOFJointImpl3D::set_param(
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LOWER_LIMIT: {
 			limit_lower[axis_ang] = p_value;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_UPPER_LIMIT: {
 			limit_upper[axis_ang] = p_value;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LIMIT_SOFTNESS: {
 			if (!Math::is_equal_approx(p_value, DEFAULT_ANGULAR_LIMIT_SOFTNESS)) {
@@ -287,18 +281,18 @@ bool JoltGeneric6DOFJointImpl3D::get_flag(Axis p_axis, Flag p_flag) const {
 	}
 }
 
-void JoltGeneric6DOFJointImpl3D::set_flag(Axis p_axis, Flag p_flag, bool p_enabled, bool p_lock) {
+void JoltGeneric6DOFJointImpl3D::set_flag(Axis p_axis, Flag p_flag, bool p_enabled) {
 	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_flag) {
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT: {
 			limit_enabled[axis_lin] = p_enabled;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_LIMIT: {
 			limit_enabled[axis_ang] = p_enabled;
-			_limits_changed(p_lock);
+			_limits_changed();
 		} break;
 		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING: {
 			spring_enabled[axis_ang] = p_enabled;
@@ -345,12 +339,7 @@ double JoltGeneric6DOFJointImpl3D::get_jolt_param(Axis p_axis, JoltParam p_param
 	}
 }
 
-void JoltGeneric6DOFJointImpl3D::set_jolt_param(
-	Axis p_axis,
-	JoltParam p_param,
-	double p_value,
-	[[maybe_unused]] bool p_lock
-) {
+void JoltGeneric6DOFJointImpl3D::set_jolt_param(Axis p_axis, JoltParam p_param, double p_value) {
 	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
@@ -397,12 +386,7 @@ bool JoltGeneric6DOFJointImpl3D::get_jolt_flag(Axis p_axis, JoltFlag p_flag) con
 	}
 }
 
-void JoltGeneric6DOFJointImpl3D::set_jolt_flag(
-	Axis p_axis,
-	JoltFlag p_flag,
-	bool p_enabled,
-	[[maybe_unused]] bool p_lock
-) {
+void JoltGeneric6DOFJointImpl3D::set_jolt_flag(Axis p_axis, JoltFlag p_flag, bool p_enabled) {
 	const int32_t axis_lin = AXES_LINEAR + (int32_t)p_axis;
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
@@ -451,7 +435,7 @@ float JoltGeneric6DOFJointImpl3D::get_applied_torque() const {
 	return constraint->GetTotalLambdaRotation().Length() / last_step;
 }
 
-void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
+void JoltGeneric6DOFJointImpl3D::rebuild() {
 	destroy();
 
 	JoltSpace3D* space = get_space();
@@ -468,7 +452,7 @@ void JoltGeneric6DOFJointImpl3D::rebuild(bool p_lock) {
 		body_count = 2;
 	}
 
-	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, body_count, p_lock);
+	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, body_count);
 
 	JPH::SixDOFConstraintSettings constraint_settings;
 
@@ -669,8 +653,8 @@ void JoltGeneric6DOFJointImpl3D::_update_spring_equilibrium(int32_t p_axis) {
 	}
 }
 
-void JoltGeneric6DOFJointImpl3D::_limits_changed(bool p_lock) {
-	rebuild(p_lock);
+void JoltGeneric6DOFJointImpl3D::_limits_changed() {
+	rebuild();
 }
 
 void JoltGeneric6DOFJointImpl3D::_limit_spring_parameters_changed(int32_t p_axis) {

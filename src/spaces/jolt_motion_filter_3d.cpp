@@ -61,11 +61,7 @@ bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_jolt_body) const
 		return false;
 	}
 
-	// TODO(mihe): This should ideally be locked, but we've already locked the body that we're
-	// checking against, so we could deadlock if we try. Since we're not actually using the locks
-	// for anything crucial we can get away with not locking here, but a more robust solution should
-	// be implemented down the line.
-	const JoltReadableBody3D jolt_body_self = space.read_body(body_self, false);
+	const JoltReadableBody3D jolt_body_self = space.read_body(body_self);
 
 	return jolt_body_self->GetCollisionGroup().CanCollide(p_jolt_body.GetCollisionGroup());
 }

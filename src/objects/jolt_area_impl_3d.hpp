@@ -70,7 +70,7 @@ public:
 
 	bool is_monitorable() const { return monitorable; }
 
-	void set_monitorable(bool p_monitorable, bool p_lock = true);
+	void set_monitorable(bool p_monitorable);
 
 	bool can_monitor(const JoltBodyImpl3D& p_other) const;
 
@@ -80,7 +80,7 @@ public:
 
 	bool can_interact_with(const JoltAreaImpl3D& p_other) const;
 
-	Vector3 get_velocity_at_position(const Vector3& p_position, bool p_lock = true) const override;
+	Vector3 get_velocity_at_position(const Vector3& p_position) const override;
 
 	bool generates_contacts() const override { return false; }
 
@@ -124,7 +124,7 @@ public:
 
 	void set_gravity_vector(const Vector3& p_vector) { gravity_vector = p_vector; }
 
-	Vector3 compute_gravity(const Vector3& p_position, bool p_lock = true) const;
+	Vector3 compute_gravity(const Vector3& p_position) const;
 
 	void body_shape_entered(
 		const JPH::BodyID& p_body_id,
@@ -193,29 +193,29 @@ private:
 		int32_t p_self_shape_index
 	) const;
 
-	void _notify_body_entered(const JPH::BodyID& p_body_id, bool p_lock = true);
+	void _notify_body_entered(const JPH::BodyID& p_body_id);
 
-	void _notify_body_exited(const JPH::BodyID& p_body_id, bool p_lock = true);
+	void _notify_body_exited(const JPH::BodyID& p_body_id);
 
 	void _force_bodies_entered();
 
-	void _force_bodies_exited(bool p_remove, bool p_lock = true);
+	void _force_bodies_exited(bool p_remove);
 
 	void _force_areas_entered();
 
-	void _force_areas_exited(bool p_remove, bool p_lock = true);
+	void _force_areas_exited(bool p_remove);
 
-	void _update_group_filter(bool p_lock = true);
+	void _update_group_filter();
 
-	void _space_changing(bool p_lock = true) override;
+	void _space_changing() override;
 
-	void _space_changed(bool p_lock = true) override;
+	void _space_changed() override;
 
 	void _body_monitoring_changed();
 
 	void _area_monitoring_changed();
 
-	void _monitorable_changed(bool p_lock = true);
+	void _monitorable_changed();
 
 	OverlapsById bodies_by_id;
 

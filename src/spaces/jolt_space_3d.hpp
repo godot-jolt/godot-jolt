@@ -29,15 +29,15 @@ public:
 
 	JPH::PhysicsSystem& get_physics_system() const { return *physics_system; }
 
-	JPH::BodyInterface& get_body_iface(bool p_locked = true);
+	JPH::BodyInterface& get_body_iface();
 
-	const JPH::BodyInterface& get_body_iface(bool p_locked = true) const;
+	const JPH::BodyInterface& get_body_iface() const;
 
-	const JPH::BodyLockInterface& get_lock_iface(bool p_locked = true) const;
+	const JPH::BodyLockInterface& get_lock_iface() const;
 
 	const JPH::BroadPhaseQuery& get_broad_phase_query() const;
 
-	const JPH::NarrowPhaseQuery& get_narrow_phase_query(bool p_locked = true) const;
+	const JPH::NarrowPhaseQuery& get_narrow_phase_query() const;
 
 	JPH::ObjectLayer map_to_object_layer(
 		JPH::BroadPhaseLayer p_broad_phase_layer,
@@ -52,25 +52,17 @@ public:
 		uint32_t& p_collision_mask
 	) const;
 
-	JoltReadableBody3D read_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
+	JoltReadableBody3D read_body(const JPH::BodyID& p_body_id) const;
 
-	JoltReadableBody3D read_body(const JoltObjectImpl3D& p_object, bool p_lock = true) const;
+	JoltReadableBody3D read_body(const JoltObjectImpl3D& p_object) const;
 
-	JoltWritableBody3D write_body(const JPH::BodyID& p_body_id, bool p_lock = true) const;
+	JoltWritableBody3D write_body(const JPH::BodyID& p_body_id) const;
 
-	JoltWritableBody3D write_body(const JoltObjectImpl3D& p_object, bool p_lock = true) const;
+	JoltWritableBody3D write_body(const JoltObjectImpl3D& p_object) const;
 
-	JoltReadableBodies3D read_bodies(
-		const JPH::BodyID* p_body_ids,
-		int32_t p_body_count,
-		bool p_lock = true
-	) const;
+	JoltReadableBodies3D read_bodies(const JPH::BodyID* p_body_ids, int32_t p_body_count) const;
 
-	JoltWritableBodies3D write_bodies(
-		const JPH::BodyID* p_body_ids,
-		int32_t p_body_count,
-		bool p_lock = true
-	) const;
+	JoltWritableBodies3D write_bodies(const JPH::BodyID* p_body_ids, int32_t p_body_count) const;
 
 	JoltPhysicsDirectSpaceState3D* get_direct_state();
 
