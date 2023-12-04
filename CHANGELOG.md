@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue where contact shape indices would sometimes always be the same index.
+- Fixed runtime crash when setting the `max_contacts_reported` property to a lower value.
+
 ## [0.11.0] - 2023-12-01
 
 ### Changed

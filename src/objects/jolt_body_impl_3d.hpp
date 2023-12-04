@@ -95,13 +95,13 @@ public:
 
 	int32_t get_max_contacts_reported() const { return contacts.size(); }
 
-	void set_max_contacts_reported(int32_t p_count) { contacts.resize(p_count); }
+	void set_max_contacts_reported(int32_t p_count);
 
 	int32_t get_contact_count() const { return contact_count; }
 
 	const Contact& get_contact(int32_t p_index) { return contacts[p_index]; }
 
-	bool generates_contacts() const override { return !contacts.is_empty(); }
+	bool reports_contacts() const override { return !contacts.is_empty(); }
 
 	void add_contact(
 		const JoltBodyImpl3D* p_collider,
@@ -304,6 +304,8 @@ private:
 	void _exceptions_changed();
 
 	void _axis_lock_changed();
+
+	void _contact_reporting_changed();
 
 	LocalVector<RID> exceptions;
 

@@ -426,6 +426,31 @@ void JoltBodyImpl3D::set_center_of_mass_custom(const Vector3& p_center_of_mass) 
 	_shapes_changed();
 }
 
+void JoltBodyImpl3D::set_max_contacts_reported(int32_t p_count) {
+	if (contacts.size() == p_count) {
+		return;
+	}
+
+	ON_SCOPE_EXIT {
+		_contact_reporting_changed();
+	};
+
+	contacts.resize(p_count);
+	contact_count = min(contact_count, p_count);
+
+	const bool use_manifold_reduction = !reports_contacts();
+
+	if (space == nullptr) {
+		jolt_settings->mUseManifoldReduction = use_manifold_reduction;
+		return;
+	}
+
+	const JoltWritableBody3D body = space->write_body(jolt_id);
+	ERR_FAIL_COND(body.is_invalid());
+
+	body->SetUseManifoldReduction(use_manifold_reduction);
+}
+
 void JoltBodyImpl3D::add_contact(
 	const JoltBodyImpl3D* p_collider,
 	float p_depth,
@@ -1107,6 +1132,7 @@ void JoltBodyImpl3D::_create_in_space() {
 	_create_begin();
 
 	jolt_settings->mAllowDynamicOrKinematic = true;
+	jolt_settings->mUseManifoldReduction = !reports_contacts();
 	jolt_settings->mMaxLinearVelocity = JoltProjectSettings::get_max_linear_velocity();
 	jolt_settings->mMaxAngularVelocity = JoltProjectSettings::get_max_angular_velocity();
 
@@ -1157,7 +1183,7 @@ void JoltBodyImpl3D::_pre_step_kinematic(float p_step, JPH::Body& p_jolt_body) {
 
 	move_kinematic(p_step, p_jolt_body);
 
-	if (generates_contacts()) {
+	if (reports_contacts()) {
 		// HACK(mihe): This seems to emulate the behavior of Godot Physics, where kinematic bodies
 		// are set as active (and thereby have their state synchronized on every step) only if its
 		// max reported contacts is non-zero.
@@ -1507,5 +1533,9 @@ void JoltBodyImpl3D::_exceptions_changed() {
 
 void JoltBodyImpl3D::_axis_lock_changed() {
 	_update_mass_properties();
+	wake_up();
+}
+
+void JoltBodyImpl3D::_contact_reporting_changed() {
 	wake_up();
 }
