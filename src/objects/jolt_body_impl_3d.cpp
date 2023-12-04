@@ -445,10 +445,9 @@ void JoltBodyImpl3D::set_max_contacts_reported(int32_t p_count) {
 		return;
 	}
 
-	const JoltWritableBody3D body = space->write_body(jolt_id);
-	ERR_FAIL_COND(body.is_invalid());
+	JPH::BodyInterface& body_iface = space->get_body_iface();
 
-	body->SetUseManifoldReduction(use_manifold_reduction);
+	body_iface.SetUseManifoldReduction(jolt_id, use_manifold_reduction);
 }
 
 void JoltBodyImpl3D::add_contact(
