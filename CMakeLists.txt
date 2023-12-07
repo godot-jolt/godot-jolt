@@ -100,6 +100,12 @@ endif()
 set(suffix_editor $<${is_editor_config}:_editor>)
 set(suffix ${suffix_platform}${suffix_arch}${suffix_editor})
 
+if(IOS)
+	set(info_plist ${templates_dir}/info_ios.plist.in)
+else()
+	set(info_plist ${templates_dir}/info_macos.plist.in)
+endif()
+
 set(use_static_crt $<BOOL:${GDJ_STATIC_RUNTIME_LIBRARY}>)
 set(msvcrt_debug $<$<CONFIG:Debug,EditorDebug>:Debug>)
 set(msvcrt_dll $<$<NOT:${use_static_crt}>:DLL>)
@@ -139,7 +145,7 @@ set_target_properties(godot-jolt PROPERTIES
 	FRAMEWORK TRUE
 	MACOSX_RPATH FALSE
 	INSTALL_NAME_DIR @rpath
-	MACOSX_FRAMEWORK_INFO_PLIST ${templates_dir}/info.plist.in
+	MACOSX_FRAMEWORK_INFO_PLIST ${info_plist}
 	XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER ${PROJECT_BUNDLE_IDENTIFIER}
 )
 

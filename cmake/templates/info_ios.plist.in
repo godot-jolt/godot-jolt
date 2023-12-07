@@ -24,5 +24,9 @@
 	<string>FMWK</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
+	<key>DTPlatformName</key>
+	<string>iphoneos</string>
+	<key>MinimumOSVersion</key>
+	<string>${CMAKE_OSX_DEPLOYMENT_TARGET}</string>
 </dict>
 </plist>
