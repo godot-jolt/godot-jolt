@@ -24,5 +24,7 @@
 	<string>FMWK</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
+	<key>MinimumOSVersion</key>
+	<string>15.0</string>
 </dict>
 </plist>
