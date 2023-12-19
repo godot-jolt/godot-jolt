@@ -179,8 +179,8 @@ void JoltJointImpl3D::_update_enabled() {
 
 void JoltJointImpl3D::_update_iterations() {
 	if (jolt_ref != nullptr) {
-		jolt_ref->SetNumVelocityStepsOverride(velocity_iterations);
-		jolt_ref->SetNumPositionStepsOverride(position_iterations);
+		jolt_ref->SetNumVelocityStepsOverride((JPH::uint)velocity_iterations);
+		jolt_ref->SetNumPositionStepsOverride((JPH::uint)position_iterations);
 	}
 }
 

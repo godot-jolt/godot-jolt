@@ -46,8 +46,8 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	settings.mPenetrationSlop = JoltProjectSettings::get_contact_penetration();
 	settings.mLinearCastThreshold = JoltProjectSettings::get_ccd_movement_threshold();
 	settings.mLinearCastMaxPenetration = JoltProjectSettings::get_ccd_max_penetration();
-	settings.mNumVelocitySteps = JoltProjectSettings::get_velocity_iterations();
-	settings.mNumPositionSteps = JoltProjectSettings::get_position_iterations();
+	settings.mNumVelocitySteps = (JPH::uint)JoltProjectSettings::get_velocity_iterations();
+	settings.mNumPositionSteps = (JPH::uint)JoltProjectSettings::get_position_iterations();
 	settings.mMinVelocityForRestitution = JoltProjectSettings::get_bounce_velocity_threshold();
 	settings.mTimeBeforeSleep = JoltProjectSettings::get_sleep_time_threshold();
 	settings.mPointVelocitySleepThreshold = JoltProjectSettings::get_sleep_velocity_threshold();
