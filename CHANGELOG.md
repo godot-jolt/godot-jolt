@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- ⚠️ Changed `Generic6DOFJoint3D` and `ConeTwistJointImpl3D`, as well as their substitute joints, to
+  use pyramid-shaped angular limits instead of cone-shaped limits, to better match Godot Physics.
+
 ### Fixed
 
 - Fixed issue where contact shape indices would sometimes always be the same index.

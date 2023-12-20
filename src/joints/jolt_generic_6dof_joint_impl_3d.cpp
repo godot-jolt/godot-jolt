@@ -507,6 +507,7 @@ void JoltGeneric6DOFJointImpl3D::rebuild() {
 	constraint_settings.mPosition2 = to_jolt(shifted_ref_b.origin);
 	constraint_settings.mAxisX2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mAxisY2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
+	constraint_settings.mSwingType = JPH::ESwingType::Pyramid;
 
 	if (body_b != nullptr) {
 		const JoltWritableBody3D jolt_body_a = bodies[0];
