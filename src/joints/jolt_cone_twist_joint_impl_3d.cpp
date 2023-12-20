@@ -314,6 +314,7 @@ JPH::Constraint* JoltConeTwistJointImpl3D::_build_swing_twist(
 	constraint_settings.mPosition2 = to_jolt(p_shifted_ref_b.origin);
 	constraint_settings.mTwistAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPlaneAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
+	constraint_settings.mSwingType = JPH::ESwingType::Pyramid;
 
 	if (p_jolt_body_b != nullptr) {
 		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
