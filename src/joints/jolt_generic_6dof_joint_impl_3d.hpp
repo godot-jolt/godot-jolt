@@ -64,6 +64,13 @@ public:
 	void rebuild() override;
 
 private:
+	JPH::Constraint* _build_6dof(
+		JPH::Body* p_jolt_body_a,
+		JPH::Body* p_jolt_body_b,
+		const Transform3D& p_shifted_ref_a,
+		const Transform3D& p_shifted_ref_b
+	) const;
+
 	void _update_limit_spring_parameters(int32_t p_axis);
 
 	void _update_motor_state(int32_t p_axis);

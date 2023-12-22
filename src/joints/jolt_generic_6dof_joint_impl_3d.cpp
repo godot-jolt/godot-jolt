@@ -444,16 +444,48 @@ void JoltGeneric6DOFJointImpl3D::rebuild() {
 		return;
 	}
 
-	JPH::BodyID body_ids[2] = {body_a->get_jolt_id()};
-	int32_t body_count = 1;
+	const JPH::BodyID body_ids[2] = {
+		body_a != nullptr ? body_a->get_jolt_id() : JPH::BodyID(),
+		body_b != nullptr ? body_b->get_jolt_id() : JPH::BodyID()};
 
-	if (body_b != nullptr) {
-		body_ids[1] = body_b->get_jolt_id();
-		body_count = 2;
+	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, count_of(body_ids));
+
+	auto* jolt_body_a = static_cast<JPH::Body*>(jolt_bodies[0]);
+	auto* jolt_body_b = static_cast<JPH::Body*>(jolt_bodies[1]);
+
+	ERR_FAIL_COND(jolt_body_a == nullptr && jolt_body_b == nullptr);
+
+	Transform3D shifted_ref_a;
+	Transform3D shifted_ref_b;
+
+	_shift_reference_frames(Vector3(), Vector3(), shifted_ref_a, shifted_ref_b);
+
+	jolt_ref = _build_6dof(jolt_body_a, jolt_body_b, shifted_ref_a, shifted_ref_b);
+
+	space->add_joint(this);
+
+	_update_enabled();
+	_update_iterations();
+
+	_update_limit_spring_parameters(AXIS_LINEAR_X);
+	_update_limit_spring_parameters(AXIS_LINEAR_Y);
+	_update_limit_spring_parameters(AXIS_LINEAR_Z);
+
+	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
+		_update_motor_state(axis);
+		_update_motor_velocity(axis);
+		_update_motor_limit(axis);
+		_update_spring_parameters(axis);
+		_update_spring_equilibrium(axis);
 	}
+}
 
-	const JoltWritableBodies3D bodies = space->write_bodies(body_ids, body_count);
-
+JPH::Constraint* JoltGeneric6DOFJointImpl3D::_build_6dof(
+	JPH::Body* p_jolt_body_a,
+	JPH::Body* p_jolt_body_b,
+	const Transform3D& p_shifted_ref_a,
+	const Transform3D& p_shifted_ref_b
+) const {
 	JPH::SixDOFConstraintSettings constraint_settings;
 
 	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
@@ -473,50 +505,21 @@ void JoltGeneric6DOFJointImpl3D::rebuild() {
 		}
 	}
 
-	Transform3D shifted_ref_a;
-	Transform3D shifted_ref_b;
-
-	_shift_reference_frames(Vector3(), Vector3(), shifted_ref_a, shifted_ref_b);
-
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPosition1 = to_jolt(shifted_ref_a.origin);
-	constraint_settings.mAxisX1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mAxisY1 = to_jolt(shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
-	constraint_settings.mPosition2 = to_jolt(shifted_ref_b.origin);
-	constraint_settings.mAxisX2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_X));
-	constraint_settings.mAxisY2 = to_jolt(shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
+	constraint_settings.mPosition1 = to_jolt(p_shifted_ref_a.origin);
+	constraint_settings.mAxisX1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
+	constraint_settings.mPosition2 = to_jolt(p_shifted_ref_b.origin);
+	constraint_settings.mAxisX2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
+	constraint_settings.mAxisY2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
 	constraint_settings.mSwingType = JPH::ESwingType::Pyramid;
 
-	if (body_b != nullptr) {
-		const JoltWritableBody3D jolt_body_a = bodies[0];
-		ERR_FAIL_COND(jolt_body_a.is_invalid());
-
-		const JoltWritableBody3D jolt_body_b = bodies[1];
-		ERR_FAIL_COND(jolt_body_b.is_invalid());
-
-		jolt_ref = constraint_settings.Create(*jolt_body_a, *jolt_body_b);
+	if (p_jolt_body_a == nullptr) {
+		return constraint_settings.Create(JPH::Body::sFixedToWorld, *p_jolt_body_b);
+	} else if (p_jolt_body_b == nullptr) {
+		return constraint_settings.Create(*p_jolt_body_a, JPH::Body::sFixedToWorld);
 	} else {
-		const JoltWritableBody3D jolt_body_a = bodies[0];
-		ERR_FAIL_COND(jolt_body_a.is_invalid());
-
-		jolt_ref = constraint_settings.Create(*jolt_body_a, JPH::Body::sFixedToWorld);
-	}
-
-	space->add_joint(this);
-
-	_update_enabled();
-	_update_iterations();
-
-	_update_limit_spring_parameters(AXIS_LINEAR_X);
-	_update_limit_spring_parameters(AXIS_LINEAR_Y);
-	_update_limit_spring_parameters(AXIS_LINEAR_Z);
-
-	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
-		_update_motor_state(axis);
-		_update_motor_velocity(axis);
-		_update_motor_limit(axis);
-		_update_spring_parameters(axis);
-		_update_spring_equilibrium(axis);
+		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
 	}
 }
 

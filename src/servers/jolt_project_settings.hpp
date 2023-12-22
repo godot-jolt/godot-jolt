@@ -14,6 +14,8 @@ public:
 
 	static bool areas_detect_static_bodies();
 
+	static bool use_joint_world_node_a();
+
 	static float get_ccd_movement_threshold();
 
 	static float get_ccd_max_penetration();

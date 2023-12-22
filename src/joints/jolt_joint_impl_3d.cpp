@@ -1,6 +1,7 @@
 #include "jolt_joint_impl_3d.hpp"
 
 #include "objects/jolt_body_impl_3d.hpp"
+#include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
 namespace {
@@ -23,10 +24,22 @@ JoltJointImpl3D::JoltJointImpl3D(
 	, rid(p_old_joint.rid)
 	, local_ref_a(p_local_ref_a)
 	, local_ref_b(p_local_ref_b) {
-	body_a->add_joint(this);
+	if (body_a != nullptr) {
+		body_a->add_joint(this);
+	}
 
 	if (body_b != nullptr) {
 		body_b->add_joint(this);
+	}
+
+	if (body_b == nullptr && JoltProjectSettings::use_joint_world_node_a()) {
+		// HACK(mihe): The joint scene nodes will, when omitting one of the two body nodes, always
+		// pass in a null `body_b` to indicate it being the "world node", regardless of which body
+		// node you leave blank. So we need to correct for that if we wish to use the arguably more
+		// intuitive alternative where `body_a` is the "world node" instead.
+
+		std::swap(body_a, body_b);
+		std::swap(local_ref_a, local_ref_b);
 	}
 }
 
@@ -43,22 +56,26 @@ JoltJointImpl3D::~JoltJointImpl3D() {
 }
 
 JoltSpace3D* JoltJointImpl3D::get_space() const {
-	JoltSpace3D* space_a = body_a->get_space();
+	JoltSpace3D* space_a = body_a != nullptr ? body_a->get_space() : nullptr;
+	JoltSpace3D* space_b = body_b != nullptr ? body_b->get_space() : nullptr;
 
-	if (body_b != nullptr) {
-		JoltSpace3D* space_b = body_b->get_space();
-		QUIET_FAIL_NULL_D(space_b);
-
-		ERR_FAIL_COND_D_MSG(
-			space_a != space_b,
-			vformat(
-				"Joint was found to connect bodies in different physics spaces. "
-				"This joint will effectively be disabled. "
-				"This joint connects %s.",
-				_bodies_to_string()
-			)
-		);
+	if (space_b == nullptr) {
+		return space_a;
 	}
+
+	if (space_a == nullptr) {
+		return space_b;
+	}
+
+	ERR_FAIL_COND_D_MSG(
+		space_a != space_b,
+		vformat(
+			"Joint was found to connect bodies in different physics spaces. "
+			"This joint will effectively be disabled. "
+			"This joint connects %s.",
+			_bodies_to_string()
+		)
+	);
 
 	return space_a;
 }
@@ -111,7 +128,7 @@ void JoltJointImpl3D::set_solver_position_iterations(int32_t p_iterations) {
 void JoltJointImpl3D::set_collision_disabled(bool p_disabled) {
 	collision_disabled = p_disabled;
 
-	if (body_b == nullptr) {
+	if (body_a == nullptr || body_b == nullptr) {
 		return;
 	}
 
@@ -149,8 +166,10 @@ void JoltJointImpl3D::_shift_reference_frames(
 	Vector3 origin_a = local_ref_a.origin;
 	Vector3 origin_b = local_ref_b.origin;
 
-	origin_a *= body_a->get_scale();
-	origin_a -= to_godot(body_a->get_jolt_shape()->GetCenterOfMass());
+	if (body_a != nullptr) {
+		origin_a *= body_a->get_scale();
+		origin_a -= to_godot(body_a->get_jolt_shape()->GetCenterOfMass());
+	}
 
 	if (body_b != nullptr) {
 		origin_b *= body_b->get_scale();
