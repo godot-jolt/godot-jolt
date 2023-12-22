@@ -57,13 +57,9 @@ void draw_linear_limits(
 	};
 
 	if (p_limit_enabled && p_limit_upper >= p_limit_lower) {
-		// HACK(mihe): Since Godot's linear constraints seem to be inverted, and we emulate that
-		// even for the custom joints, we're forced to flip these to line up with the actual range
-		// of motion.
-
-		draw_line(-p_limit_upper, -p_limit_lower);
-		draw_square(-p_limit_upper);
-		draw_square(-p_limit_lower);
+		draw_line(p_limit_lower, p_limit_upper);
+		draw_square(p_limit_lower);
+		draw_square(p_limit_upper);
 	} else {
 		draw_line(GIZMO_RADIUS, -GIZMO_RADIUS);
 	}
