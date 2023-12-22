@@ -230,21 +230,16 @@ void JoltConeTwistJointImpl3D::rebuild() {
 		return;
 	}
 
-	JPH::BodyID body_ids[2] = {body_a->get_jolt_id()};
-	int32_t body_count = 1;
+	const JPH::BodyID body_ids[2] = {
+		body_a != nullptr ? body_a->get_jolt_id() : JPH::BodyID(),
+		body_b != nullptr ? body_b->get_jolt_id() : JPH::BodyID()};
 
-	if (body_b != nullptr) {
-		body_ids[1] = body_b->get_jolt_id();
-		body_count = 2;
-	}
-
-	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, body_count);
+	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, count_of(body_ids));
 
 	auto* jolt_body_a = static_cast<JPH::Body*>(jolt_bodies[0]);
-	ERR_FAIL_COND(jolt_body_a == nullptr);
-
 	auto* jolt_body_b = static_cast<JPH::Body*>(jolt_bodies[1]);
-	ERR_FAIL_COND(jolt_body_b == nullptr && body_count == 2);
+
+	ERR_FAIL_COND(jolt_body_a == nullptr && jolt_body_b == nullptr);
 
 	Transform3D shifted_ref_a;
 	Transform3D shifted_ref_b;
@@ -316,10 +311,12 @@ JPH::Constraint* JoltConeTwistJointImpl3D::_build_swing_twist(
 	constraint_settings.mPlaneAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mSwingType = JPH::ESwingType::Pyramid;
 
-	if (p_jolt_body_b != nullptr) {
-		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
-	} else {
+	if (p_jolt_body_a == nullptr) {
+		return constraint_settings.Create(JPH::Body::sFixedToWorld, *p_jolt_body_b);
+	} else if (p_jolt_body_b == nullptr) {
 		return constraint_settings.Create(*p_jolt_body_a, JPH::Body::sFixedToWorld);
+	} else {
+		return constraint_settings.Create(*p_jolt_body_a, *p_jolt_body_b);
 	}
 }
 

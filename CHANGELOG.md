@@ -11,8 +11,17 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
+- ⚠️ Changed so that joints that only have one node set now implicitly sets `node_a` to be the
+  "world node" rather than `node_b`. This diverges from how Godot Physics behaves, but matches how
+  Bullet behaves in Godot 3, and yields more intuitive outcomes for the 6DOF joints.
 - ⚠️ Changed `Generic6DOFJoint3D` and `ConeTwistJointImpl3D`, as well as their substitute joints, to
   use pyramid-shaped angular limits instead of cone-shaped limits, to better match Godot Physics.
+
+### Added
+
+- Added new project setting, "World Node", for controlling which of the two nodes in a joint becomes
+  the "world node" when omitting one of the nodes. This allows for reverting back to the behavior of
+  Godot Physics if needed, effectively undoing the breaking change mentioned above.
 
 ### Fixed
 

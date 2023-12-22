@@ -217,6 +217,21 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       </td>
     </tr>
     <tr>
+      <td>Joints</td>
+      <td>World Node</td>
+      <td>
+        Which of the two nodes should become the "world node" when omitting one of the nodes.
+      </td>
+      <td>
+        ⚠️ The default value for this setting, "Node A", differs from how this behaves in Godot
+        Physics, where this is effectively "Node B" instead.
+        <br><br>If you need 1-body joints to behave
+        like they do in Godot Physics then change this to "Node B". Note that this can result in
+        strange and unintuitive behavior when combining linear and angular degrees-of-freedom for
+        the 6DOF joint.
+      </td>
+    </tr>
+    <tr>
       <td>Continuous CD</td>
       <td>Movement Threshold</td>
       <td>

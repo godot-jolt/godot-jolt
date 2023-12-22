@@ -2,12 +2,19 @@
 
 namespace {
 
+enum JointWorldNode : int32_t {
+	JOINT_WORLD_NODE_A,
+	JOINT_WORLD_NODE_B
+};
+
 constexpr char SLEEP_ENABLED[] = "physics/jolt_3d/sleep/enabled";
 constexpr char SLEEP_VELOCITY_THRESHOLD[] = "physics/jolt_3d/sleep/velocity_threshold";
 constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_3d/sleep/time_threshold";
 
 constexpr char USE_SHAPE_MARGINS[] = "physics/jolt_3d/collisions/use_shape_margins";
 constexpr char AREAS_DETECT_STATIC[] = "physics/jolt_3d/collisions/areas_detect_static_bodies";
+
+constexpr char JOINT_WORLD_NODE[] = "physics/jolt_3d/joints/world_node";
 
 constexpr char CCD_MOVEMENT_THRESHOLD[] = "physics/jolt_3d/continuous_cd/movement_threshold";
 constexpr char CCD_MAX_PENETRATION[] = "physics/jolt_3d/continuous_cd/max_penetration";
@@ -91,6 +98,15 @@ void register_setting_ranged(
 	register_setting(p_name, p_value, p_needs_restart, PROPERTY_HINT_RANGE, p_hint_string);
 }
 
+void register_setting_enum(
+	const String& p_name,
+	const Variant& p_value,
+	const String& p_hint_string,
+	bool p_needs_restart = false
+) {
+	register_setting(p_name, p_value, p_needs_restart, PROPERTY_HINT_ENUM, p_hint_string);
+}
+
 template<typename TType>
 TType get_setting(const char* p_setting) {
 	const ProjectSettings* project_settings = ProjectSettings::get_singleton();
@@ -120,6 +136,8 @@ void JoltProjectSettings::register_settings() {
 
 	register_setting_plain(USE_SHAPE_MARGINS, true);
 	register_setting_plain(AREAS_DETECT_STATIC, false);
+
+	register_setting_enum(JOINT_WORLD_NODE, JOINT_WORLD_NODE_A, "Node A,Node B");
 
 	register_setting_ranged(CCD_MOVEMENT_THRESHOLD, 75.0f, U"0,100,0.1,suffix:%");
 	register_setting_ranged(CCD_MAX_PENETRATION, 25.0f, U"0,100,0.1,suffix:%");
@@ -165,6 +183,11 @@ bool JoltProjectSettings::use_shape_margins() {
 
 bool JoltProjectSettings::areas_detect_static_bodies() {
 	static const auto value = get_setting<bool>(AREAS_DETECT_STATIC);
+	return value;
+}
+
+bool JoltProjectSettings::use_joint_world_node_a() {
+	static const auto value = get_setting<int32_t>(JOINT_WORLD_NODE) == JOINT_WORLD_NODE_A;
 	return value;
 }
 
