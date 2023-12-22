@@ -615,20 +615,18 @@ void JoltGeneric6DOFJointImpl3D::_update_spring_equilibrium(int32_t p_axis) {
 
 	if (p_axis >= AXIS_LINEAR_X && p_axis <= AXIS_LINEAR_Z) {
 		const Vector3 target_position = Vector3(
-			(float)-spring_equilibrium[AXIS_LINEAR_X],
-			(float)-spring_equilibrium[AXIS_LINEAR_Y],
-			(float)-spring_equilibrium[AXIS_LINEAR_Z]
+			(float)spring_equilibrium[AXIS_LINEAR_X],
+			(float)spring_equilibrium[AXIS_LINEAR_Y],
+			(float)spring_equilibrium[AXIS_LINEAR_Z]
 		);
 
 		constraint->SetTargetPositionCS(to_jolt(target_position));
 	} else {
-		// HACK(mihe): These are flipped to match Bullet in Godot 3, presumably for the same
-		// reason that the angular motor velocity needs to be flipped. Godot 4 does not
-		// currently have springs implemented, so can't be used as a reference.
+		// NOTE(mihe): We flip the direction since Jolt is CCW but Godot is CW.
 		const Basis target_orientation = Basis::from_euler(
-			{(float)spring_equilibrium[AXIS_ANGULAR_X],
-			 (float)spring_equilibrium[AXIS_ANGULAR_Y],
-			 (float)spring_equilibrium[AXIS_ANGULAR_Z]}
+			{(float)-spring_equilibrium[AXIS_ANGULAR_X],
+			 (float)-spring_equilibrium[AXIS_ANGULAR_Y],
+			 (float)-spring_equilibrium[AXIS_ANGULAR_Z]}
 		);
 
 		constraint->SetTargetOrientationCS(to_jolt(target_orientation));
