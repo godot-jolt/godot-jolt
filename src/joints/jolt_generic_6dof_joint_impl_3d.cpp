@@ -565,7 +565,7 @@ void JoltGeneric6DOFJointImpl3D::_update_motor_velocity(int32_t p_axis) {
 			 (float)motor_speed[AXIS_LINEAR_Z]}
 		);
 	} else {
-		// HACK(mihe): We're forced to flip the direction of these to match Godot Physics.
+		// NOTE(mihe): We flip the direction since Jolt is CCW but Godot is CW.
 		constraint->SetTargetAngularVelocityCS(
 			{(float)-motor_speed[AXIS_ANGULAR_X],
 			 (float)-motor_speed[AXIS_ANGULAR_Y],
@@ -580,9 +580,8 @@ void JoltGeneric6DOFJointImpl3D::_update_motor_limit(int32_t p_axis) {
 
 	JPH::MotorSettings& motor_settings = constraint->GetMotorSettings((JoltAxis)p_axis);
 
-	// HACK(mihe): We only apply the motor limit if we're actually using a velocity motor, since
-	// it would otherwise affect a position motor as well, which doesn't seem to be how this is
-	// applied in the Bullet implementation in Godot 3.
+	// NOTE(mihe): We only apply the motor limit if we're actually using a velocity motor, since it
+	// would otherwise affect a position motor as well.
 	const auto limit = motor_enabled[p_axis] ? (float)motor_limit[p_axis] : FLT_MAX;
 
 	if (p_axis >= AXIS_LINEAR_X && p_axis <= AXIS_LINEAR_Z) {

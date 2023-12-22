@@ -338,8 +338,7 @@ void JoltConeTwistJointImpl3D::_update_twist_motor_state() {
 
 void JoltConeTwistJointImpl3D::_update_motor_velocity() {
 	if (auto* constraint = static_cast<JPH::SwingTwistConstraint*>(jolt_ref.GetPtr())) {
-		// HACK(mihe): For reasons I don't entirely understand we're forced to flip the directions
-		// of these for it to make sense with the direction of the joint's actual axes.
+		// NOTE(mihe): We flip the direction since Jolt is CCW but Godot is CW.
 		constraint->SetTargetAngularVelocityCS(
 			{(float)-twist_motor_target_speed,
 			 (float)-swing_motor_target_speed_y,
