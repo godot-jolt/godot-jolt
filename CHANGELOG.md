@@ -18,6 +18,10 @@ Breaking changes are denoted with ⚠️.
 
 - Fixed issue where contact shape indices would sometimes always be the same index.
 - Fixed runtime crash when setting the `max_contacts_reported` property to a lower value.
+- Fixed issue where `Generic6DOFJoint3D` and `JoltGeneric6DOFJoint3D` would yield odd limit shapes
+  when using both linear and angular limits.
+- Fixed issue where the equilibrium point for `Generic6DOFJoint3D` and `JoltGeneric6DOFJoint3D`
+  would be moved when using asymmetrical limits.
 
 ## [0.11.0] - 2023-12-01
 

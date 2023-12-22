@@ -456,49 +456,27 @@ void JoltGeneric6DOFJointImpl3D::rebuild() {
 
 	JPH::SixDOFConstraintSettings constraint_settings;
 
-	float ref_shift[AXIS_COUNT] = {};
-
 	for (int32_t axis = 0; axis < AXIS_COUNT; ++axis) {
-		if (!limit_enabled[axis]) {
-			constraint_settings.MakeFreeAxis((JoltAxis)axis);
-			continue;
+		double lower = limit_lower[axis];
+		double upper = limit_upper[axis];
+
+		if (axis >= AXIS_ANGULAR_X && axis <= AXIS_ANGULAR_Z) {
+			const double temp = lower;
+			lower = -upper;
+			upper = -temp;
 		}
 
-		const double lower = limit_lower[axis];
-		const double upper = limit_upper[axis];
-
-		if (lower > upper) {
-			// HACK(mihe): This seems to emulate the behavior of Godot Physics, where if the limits
-			// result in a negative span then the axis becomes unbounded.
+		if (!limit_enabled[axis] || lower > upper) {
 			constraint_settings.MakeFreeAxis((JoltAxis)axis);
 		} else {
-			const double midpoint = (lower + upper) / 2.0f;
-
-			ref_shift[axis] = (float)-midpoint;
-
-			if (Math::is_equal_approx(lower, upper)) {
-				constraint_settings.MakeFixedAxis((JoltAxis)axis);
-			} else {
-				const auto extent = float(upper - midpoint);
-				constraint_settings.SetLimitedAxis((JoltAxis)axis, -extent, extent);
-			}
+			constraint_settings.SetLimitedAxis((JoltAxis)axis, (float)lower, (float)upper);
 		}
 	}
-
-	const Vector3 linear_shift = {
-		ref_shift[AXIS_LINEAR_X],
-		ref_shift[AXIS_LINEAR_Y],
-		ref_shift[AXIS_LINEAR_Z]};
-
-	const Vector3 angular_shift = {
-		ref_shift[AXIS_ANGULAR_X],
-		ref_shift[AXIS_ANGULAR_Y],
-		ref_shift[AXIS_ANGULAR_Z]};
 
 	Transform3D shifted_ref_a;
 	Transform3D shifted_ref_b;
 
-	_shift_reference_frames(linear_shift, angular_shift, shifted_ref_a, shifted_ref_b);
+	_shift_reference_frames(Vector3(), Vector3(), shifted_ref_a, shifted_ref_b);
 
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
 	constraint_settings.mPosition1 = to_jolt(shifted_ref_a.origin);
