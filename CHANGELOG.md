@@ -11,13 +11,13 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
-- ⚠️ Changed so that joints that only have one node set now implicitly sets `node_a` to be the
-  "world node" rather than `node_b`. This diverges from how Godot Physics behaves, but matches how
-  Bullet behaves in Godot 3, and yields more intuitive outcomes for the 6DOF joints.
+- ⚠️ Changed so that single-body joints now implicitly sets `node_a` to be the "world node" rather
+  than `node_b`. This diverges from how Godot Physics behaves, but matches how Bullet behaves in
+  Godot 3, and yields more intuitive outcomes for the 6DOF joints.
 - ⚠️ Changed `Generic6DOFJoint3D` and `ConeTwistJointImpl3D`, as well as their substitute joints, to
   use pyramid-shaped angular limits instead of cone-shaped limits, to better match Godot Physics.
-- ⚠️ Inverted the direction of the `equilibrium_point` properties for `Generic6DOFJoint3D` and
-  `JoltGeneric6DOFJoint3D`, to match how it behaves in Bullet in Godot 3.
+- ⚠️ Reversed the direction of the `equilibrium_point` properties for `Generic6DOFJoint3D` and
+  `JoltGeneric6DOFJoint3D`, to match the direction of the angular limits.
 - ⚠️ Changed the rotation order of the `equilibrium_point` properties for `Generic6DOFJoint3D` and
   `JoltGeneric6DOFJoint3D`, from ZXY to XYZ, to match the rotation order of the angular limits.
 - Mirrored the way in which linear limits are visualized for `JoltSliderJoint3D` and
