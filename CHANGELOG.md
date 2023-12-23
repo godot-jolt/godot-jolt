@@ -25,13 +25,14 @@ Breaking changes are denoted with ⚠️.
 
 ### Added
 
-- Added new project setting, "World Node", for controlling which of the two nodes in a joint becomes
-  the "world node" when omitting one of the nodes. This allows for reverting back to the behavior of
-  Godot Physics if needed, effectively undoing the breaking change mentioned above.
+- Added new project setting, "World Node", for controlling which of the two nodes in a single-body
+  joint becomes the "world node" when omitting one of the nodes. This allows for reverting back to
+  the behavior of Godot Physics if needed, effectively undoing the breaking change mentioned above.
 
 ### Fixed
 
-- Fixed issue where contact shape indices would sometimes always be the same index.
+- Fixed issue where contact shape indices would sometimes always be the same index across all
+  contacts with a particular body.
 - Fixed runtime crash when setting the `max_contacts_reported` property to a lower value.
 - Fixed issue where `Generic6DOFJoint3D` and `JoltGeneric6DOFJoint3D` would yield odd limit shapes
   when using both linear and angular asymmetrical limits.
