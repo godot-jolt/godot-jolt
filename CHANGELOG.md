@@ -19,7 +19,7 @@ Breaking changes are denoted with ⚠️.
 - ⚠️ Inverted the direction of the `equilibrium_point` properties for `Generic6DOFJoint3D` and
   `JoltGeneric6DOFJoint3D`, to match how it behaves in Bullet in Godot 3.
 - ⚠️ Changed the rotation order of the `equilibrium_point` properties for `Generic6DOFJoint3D` and
-  `JoltGeneric6DOFJoint3D`, from YXZ to XYZ, to match the rotation order of the angular limits.
+  `JoltGeneric6DOFJoint3D`, from ZXY to XYZ, to match the rotation order of the angular limits.
 - Mirrored the way in which linear limits are visualized for `JoltSliderJoint3D` and
   `JoltGeneric6DOFJoint3D`.
 
