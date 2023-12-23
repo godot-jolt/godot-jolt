@@ -73,10 +73,6 @@ Also consider this note from Jolt's [documentation][jdc]:
 
 Currently the **only** supported version is **Godot 4.2** (including 4.2.x).
 
-Godot Jolt relies on the GDExtension API found in Godot 4 and only supports the latest stable
-version of Godot 4. Any custom build or pre-release of Godot, such as a beta or release candidate,
-may be incompatible and is therefore not supported.
-
 ## What platforms are supported?
 
 - Windows (x86-64, x86)
