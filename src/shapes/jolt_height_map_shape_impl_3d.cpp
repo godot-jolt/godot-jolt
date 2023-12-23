@@ -68,13 +68,17 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build() const {
 	);
 
 	if (width != depth) {
-		return _build_mesh();
+		return _build_double_sided(_build_mesh());
 	}
 
 	const int32_t block_size = 2; // Default of JPH::HeightFieldShapeSettings::mBlockSize
 	const int32_t block_count = width / block_size;
 
-	return _build_double_sided(block_count >= 2 ? _build_height_field() : _build_mesh());
+	if (block_count < 2) {
+		return _build_double_sided(_build_mesh());
+	}
+
+	return _build_double_sided(_build_height_field());
 }
 
 JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
@@ -100,7 +104,14 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
 		const float* row = heights_ptr + ptrdiff_t(z * width);
 		float* row_rev = heights_rev_ptr + ptrdiff_t(z_rev * width);
 
-		std::copy_n(row, width, row_rev);
+		for (int32_t x = 0; x < width; ++x) {
+			const float height = row[x];
+
+			// HACK(mihe): Godot has undocumented (accidental?) support for holes by passing NaN as
+			// the height value, whereas Jolt uses `FLT_MAX` instead, so we translate any NaN to
+			// `FLT_MAX` in order to be drop-in compatible.
+			row_rev[x] = std::isnan(height) ? FLT_MAX : height;
+		}
 	}
 
 	JPH::HeightFieldShapeSettings shape_settings(
@@ -162,6 +173,15 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_mesh() const {
 		return (p_z * width) + p_x;
 	};
 
+	auto is_vertex_hole = [&](int32_t p_index) {
+		const float height = vertices[(size_t)p_index].y;
+		return height == FLT_MAX || std::isnan(height);
+	};
+
+	auto is_triangle_hole = [&](int32_t p_index0, int32_t p_index1, int32_t p_index2) {
+		return is_vertex_hole(p_index0) || is_vertex_hole(p_index1) || is_vertex_hole(p_index2);
+	};
+
 	for (int32_t z = 0; z < quad_count_z; ++z) {
 		for (int32_t x = 0; x < quad_count_x; ++x) {
 			const int32_t lr = to_index(x + 0, z + 0);
@@ -169,8 +189,13 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_mesh() const {
 			const int32_t ur = to_index(x + 0, z + 1);
 			const int32_t ul = to_index(x + 1, z + 1);
 
-			indices.emplace_back(lr, ur, ll);
-			indices.emplace_back(ll, ur, ul);
+			if (!is_triangle_hole(lr, ur, ll)) {
+				indices.emplace_back(lr, ur, ll);
+			}
+
+			if (!is_triangle_hole(ll, ur, ul)) {
+				indices.emplace_back(ll, ur, ul);
+			}
 		}
 	}
 
