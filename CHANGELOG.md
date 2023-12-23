@@ -28,9 +28,12 @@ Breaking changes are denoted with ⚠️.
 - Added new project setting, "World Node", for controlling which of the two nodes in a single-body
   joint becomes the "world node" when omitting one of the nodes. This allows for reverting back to
   the behavior of Godot Physics if needed, effectively undoing the breaking change mentioned above.
+- Added support for using NaN to indicate holes in `HeightMapShape3D`.
+- Added support for holes in a non-square `HeightMapShape3D`.
 
 ### Fixed
 
+- ⚠️ Fixed issue with non-square `HeightMapShape3D` not using back-face collision.
 - Fixed issue where contact shape indices would sometimes always be the same index across all
   contacts with a particular body.
 - Fixed runtime crash when setting the `max_contacts_reported` property to a lower value.
