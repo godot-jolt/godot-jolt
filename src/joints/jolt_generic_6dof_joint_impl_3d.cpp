@@ -625,7 +625,8 @@ void JoltGeneric6DOFJointImpl3D::_update_spring_equilibrium(int32_t p_axis) {
 		const Basis target_orientation = Basis::from_euler(
 			{(float)-spring_equilibrium[AXIS_ANGULAR_X],
 			 (float)-spring_equilibrium[AXIS_ANGULAR_Y],
-			 (float)-spring_equilibrium[AXIS_ANGULAR_Z]}
+			 (float)-spring_equilibrium[AXIS_ANGULAR_Z]},
+			EULER_ORDER_XYZ
 		);
 
 		constraint->SetTargetOrientationCS(to_jolt(target_orientation));

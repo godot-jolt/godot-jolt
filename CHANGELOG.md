@@ -16,8 +16,10 @@ Breaking changes are denoted with ⚠️.
   Bullet behaves in Godot 3, and yields more intuitive outcomes for the 6DOF joints.
 - ⚠️ Changed `Generic6DOFJoint3D` and `ConeTwistJointImpl3D`, as well as their substitute joints, to
   use pyramid-shaped angular limits instead of cone-shaped limits, to better match Godot Physics.
-- ⚠️ Inverted the direction of the "Equilibrium Point" properties for `Generic6DOFJoint3D` and
+- ⚠️ Inverted the direction of the `equilibrium_point` properties for `Generic6DOFJoint3D` and
   `JoltGeneric6DOFJoint3D`, to match how it behaves in Bullet in Godot 3.
+- ⚠️ Changed the rotation order of the `equilibrium_point` properties for `Generic6DOFJoint3D` and
+  `JoltGeneric6DOFJoint3D`, from YXZ to XYZ, to match the rotation order of the angular limits.
 - Mirrored the way in which linear limits are visualized for `JoltSliderJoint3D` and
   `JoltGeneric6DOFJoint3D`.
 
