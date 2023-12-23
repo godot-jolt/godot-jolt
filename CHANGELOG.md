@@ -18,6 +18,8 @@ Breaking changes are denoted with ⚠️.
   use pyramid-shaped angular limits instead of cone-shaped limits, to better match Godot Physics.
 - ⚠️ Inverted the direction of the "Equilibrium Point" properties for `Generic6DOFJoint3D` and
   `JoltGeneric6DOFJoint3D`, to match how it behaves in Bullet in Godot 3.
+- Mirrored the way in which linear limits are visualized for `JoltSliderJoint3D` and
+  `JoltGeneric6DOFJoint3D`.
 
 ### Added
 
