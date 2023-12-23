@@ -17,9 +17,14 @@ JoltShapeInstance3D::JoltShapeInstance3D(
 	shape->add_owner(parent);
 }
 
-JoltShapeInstance3D::JoltShapeInstance3D(JoltShapeInstance3D&& p_other) noexcept {
-	*this = std::move(p_other);
-}
+JoltShapeInstance3D::JoltShapeInstance3D(JoltShapeInstance3D&& p_other) noexcept
+	: transform(p_other.transform)
+	, scale(p_other.scale)
+	, jolt_ref(std::move(p_other.jolt_ref))
+	, parent(std::exchange(p_other.parent, nullptr))
+	, shape(std::exchange(p_other.shape, nullptr))
+	, id(p_other.id)
+	, disabled(p_other.disabled) { }
 
 JoltShapeInstance3D::~JoltShapeInstance3D() {
 	if (shape != nullptr) {
@@ -54,9 +59,9 @@ JoltShapeInstance3D& JoltShapeInstance3D::operator=(JoltShapeInstance3D&& p_othe
 	if (this != &p_other) {
 		transform = p_other.transform;
 		scale = p_other.scale;
-		parent = std::exchange(p_other.parent, nullptr);
-		shape = std::exchange(p_other.shape, nullptr);
 		jolt_ref = std::move(p_other.jolt_ref);
+		std::swap(parent, p_other.parent);
+		std::swap(shape, p_other.shape);
 		id = p_other.id;
 		disabled = p_other.disabled;
 	}
