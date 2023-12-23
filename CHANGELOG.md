@@ -38,6 +38,8 @@ Breaking changes are denoted with ⚠️.
   when using both linear and angular asymmetrical limits.
 - Fixed issue where the equilibrium point for `Generic6DOFJoint3D` and `JoltGeneric6DOFJoint3D`
   would be moved when using asymmetrical limits.
+- Fixed crash that could occur under rare circumstances when shutting down the editor after having
+  added/removed collision shapes.
 
 ## [0.11.0] - 2023-12-01
 
