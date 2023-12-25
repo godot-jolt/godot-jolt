@@ -352,7 +352,7 @@ jobs:
           path: ./dist
 
       - name: Delete temporary artifacts
-        uses: geekyeggo/delete-artifact@v2
+        uses: geekyeggo/delete-artifact@v4
         with:
           name: |
             windows-x64
