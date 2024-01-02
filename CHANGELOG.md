@@ -28,6 +28,9 @@ Breaking changes are denoted with ⚠️.
 - Added new project setting, "World Node", for controlling which of the two nodes in a single-body
   joint becomes the "world node" when omitting one of the nodes. This allows for reverting back to
   the behavior of Godot Physics if needed, effectively undoing the breaking change mentioned above.
+- Added new project setting, "Report All Kinematic Contacts", for allowing `RigidBody3D` frozen with
+  `FREEZE_MODE_KINEMATIC` to report contacts/collisions with other kinematic/static bodies, at a
+  potentially heavy performance/memory cost.
 - Added support for using NaN to indicate holes in `HeightMapShape3D`.
 - Added support for holes in a non-square `HeightMapShape3D`.
 

@@ -13,6 +13,7 @@ constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_3d/sleep/time_threshold";
 
 constexpr char USE_SHAPE_MARGINS[] = "physics/jolt_3d/collisions/use_shape_margins";
 constexpr char AREAS_DETECT_STATIC[] = "physics/jolt_3d/collisions/areas_detect_static_bodies";
+constexpr char KINEMATIC_CONTACTS[] = "physics/jolt_3d/collisions/report_all_kinematic_contacts";
 
 constexpr char JOINT_WORLD_NODE[] = "physics/jolt_3d/joints/world_node";
 
@@ -136,6 +137,7 @@ void JoltProjectSettings::register_settings() {
 
 	register_setting_plain(USE_SHAPE_MARGINS, true);
 	register_setting_plain(AREAS_DETECT_STATIC, false);
+	register_setting_plain(KINEMATIC_CONTACTS, false);
 
 	register_setting_enum(JOINT_WORLD_NODE, JOINT_WORLD_NODE_A, "Node A,Node B");
 
@@ -183,6 +185,11 @@ bool JoltProjectSettings::use_shape_margins() {
 
 bool JoltProjectSettings::areas_detect_static_bodies() {
 	static const auto value = get_setting<bool>(AREAS_DETECT_STATIC);
+	return value;
+}
+
+bool JoltProjectSettings::report_all_kinematic_contacts() {
+	static const auto value = get_setting<bool>(KINEMATIC_CONTACTS);
 	return value;
 }
 

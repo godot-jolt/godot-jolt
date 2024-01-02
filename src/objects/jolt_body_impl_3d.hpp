@@ -103,6 +103,8 @@ public:
 
 	bool reports_contacts() const override { return !contacts.is_empty(); }
 
+	bool reports_all_kinematic_contacts() const;
+
 	void add_contact(
 		const JoltBodyImpl3D* p_collider,
 		float p_depth,
@@ -282,6 +284,8 @@ private:
 	void _update_group_filter();
 
 	void _update_joint_constraints();
+
+	void _update_possible_kinematic_contacts();
 
 	void _destroy_joint_constraints();
 

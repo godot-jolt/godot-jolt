@@ -14,6 +14,8 @@ public:
 
 	static bool areas_detect_static_bodies();
 
+	static bool report_all_kinematic_contacts();
+
 	static bool use_joint_world_node_a();
 
 	static float get_ccd_movement_threshold();
