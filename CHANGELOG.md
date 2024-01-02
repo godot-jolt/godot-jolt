@@ -43,6 +43,10 @@ Breaking changes are denoted with ⚠️.
   would be moved when using asymmetrical limits.
 - Fixed crash that could occur under rare circumstances when shutting down the editor after having
   added/removed collision shapes.
+- Fixed issue where a `RigidBody3D` with locked axes colliding with a `StaticBody3D` (or another
+  frozen `RigidBody3D` using `FREEZE_MODE_STATIC`) would result in NaNs.
+- Fixed issue where `HingeJoint3D` and `JoltHingeJoint3D` would sometimes dull forces applied to
+  either of its bodies when at either of its limits.
 
 ## [0.11.0] - 2023-12-01
 
