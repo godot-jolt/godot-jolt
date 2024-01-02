@@ -450,6 +450,10 @@ void JoltBodyImpl3D::set_max_contacts_reported(int32_t p_count) {
 	body_iface.SetUseManifoldReduction(jolt_id, use_manifold_reduction);
 }
 
+bool JoltBodyImpl3D::reports_all_kinematic_contacts() const {
+	return reports_contacts() && JoltProjectSettings::report_all_kinematic_contacts();
+}
+
 void JoltBodyImpl3D::add_contact(
 	const JoltBodyImpl3D* p_collider,
 	float p_depth,
@@ -1131,6 +1135,7 @@ void JoltBodyImpl3D::_create_in_space() {
 	_create_begin();
 
 	jolt_settings->mAllowDynamicOrKinematic = true;
+	jolt_settings->mCollideKinematicVsNonDynamic = reports_all_kinematic_contacts();
 	jolt_settings->mUseManifoldReduction = !reports_contacts();
 	jolt_settings->mMaxLinearVelocity = JoltProjectSettings::get_max_linear_velocity();
 	jolt_settings->mMaxAngularVelocity = JoltProjectSettings::get_max_angular_velocity();
@@ -1463,6 +1468,19 @@ void JoltBodyImpl3D::_update_joint_constraints() {
 	}
 }
 
+void JoltBodyImpl3D::_update_possible_kinematic_contacts() {
+	const bool value = reports_all_kinematic_contacts();
+
+	if (space == nullptr) {
+		jolt_settings->mCollideKinematicVsNonDynamic = value;
+	} else {
+		const JoltWritableBody3D body = space->write_body(jolt_id);
+		ERR_FAIL_COND(body.is_invalid());
+
+		body->SetCollideKinematicVsNonDynamic(value);
+	}
+}
+
 void JoltBodyImpl3D::_destroy_joint_constraints() {
 	for (JoltJointImpl3D* joint : joints) {
 		joint->destroy();
@@ -1536,5 +1554,6 @@ void JoltBodyImpl3D::_axis_lock_changed() {
 }
 
 void JoltBodyImpl3D::_contact_reporting_changed() {
+	_update_possible_kinematic_contacts();
 	wake_up();
 }
