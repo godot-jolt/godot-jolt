@@ -51,8 +51,7 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What else is different?
 
-- `Area3D` detecting static bodies is opt-in, with a potentially [heavy performance/memory
-  cost][jst]
+- `Area3D` detecting static bodies is opt-in, at a potentially [heavy performance/memory cost][jst]
 - Joints only support soft limits through their substitutes (`JoltHingeJoint3D`, etc.)
 - Springs and linear motors are actually implemented in `Generic6DOFJoint3D`
 - Single-body joints will make `node_a` be the "world node" rather than `node_b`
@@ -62,6 +61,8 @@ should not be relied upon if determinism is a hard requirement.
 - Shape margins are used, but are treated as an upper bound and scale with the shape's extents
 - Manipulating a body's shape(s) after it has entered a scene tree can be costly
 - Contact impulses are estimations and won't be accurate when colliding with multiple bodies
+- Contact reporting for kinematic bodies is partially opt-in, at a potentially [heavy
+  performance/memory cost][jst]
 
 Also consider this note from Jolt's [documentation][jdc]:
 

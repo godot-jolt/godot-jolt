@@ -229,7 +229,7 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
         <code>max_contacts_reported</code> to overlap with complex static geometry, such as
         <code>ConcavePolygonShape3D</code> or <code>HeightMapShape3D</code>.
         <br><br>It is strongly recommended that you set up your collision layers and masks in such a
-        way that only a few small such kinematic bodies to detect static bodies.
+        way that only a few small such kinematic bodies can detect static bodies.
       </td>
     </tr>
     <tr>
