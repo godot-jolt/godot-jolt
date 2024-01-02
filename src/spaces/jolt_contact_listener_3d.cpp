@@ -238,12 +238,10 @@ bool JoltContactListener3D::_try_evaluate_area_overlap(
 		return false;
 	}
 
-	const bool is_actually_overlapping = p_manifold.mPenetrationDepth >= 0.0f;
-
 	auto evaluate = [&](auto&& p_area, auto&& p_object, const JPH::SubShapeIDPair& p_shape_pair) {
 		const MutexLock write_lock(write_mutex);
 
-		if (is_actually_overlapping && p_area.can_monitor(p_object)) {
+		if (p_area.can_monitor(p_object)) {
 			if (!area_overlaps.has(p_shape_pair)) {
 				area_overlaps.insert(p_shape_pair);
 				area_enters.insert(p_shape_pair);
