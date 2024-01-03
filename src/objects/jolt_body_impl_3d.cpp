@@ -354,15 +354,18 @@ void JoltBodyImpl3D::set_angular_velocity(const Vector3& p_velocity) {
 		return;
 	}
 
+	// We need to clear locked angular axes since Jolt currently only clears linear axes
+	const Vector3 locked_velocity = _stop_locked_angular_axes(p_velocity);
+
 	if (space == nullptr) {
-		jolt_settings->mAngularVelocity = to_jolt(p_velocity);
+		jolt_settings->mAngularVelocity = to_jolt(locked_velocity);
 		return;
 	}
 
 	const JoltWritableBody3D body = space->write_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->GetMotionPropertiesUnchecked()->SetAngularVelocityClamped(to_jolt(p_velocity));
+	body->GetMotionPropertiesUnchecked()->SetAngularVelocityClamped(to_jolt(locked_velocity));
 }
 
 void JoltBodyImpl3D::set_axis_velocity(const Vector3& p_axis_velocity) {
@@ -537,7 +540,17 @@ void JoltBodyImpl3D::apply_force(const Vector3& p_force, const Vector3& p_positi
 	const JoltWritableBody3D body = space->write_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->AddForce(to_jolt(p_force), body->GetPosition() + to_jolt(p_position));
+	// We need to manually apply any induced torque despite there being an overload of `AddForce`
+	// that does this for us, since Jolt doesn't currently clear locked angular axes.
+
+	const Vector3 body_pos = to_godot(body->GetPosition());
+	const Vector3 body_com = to_godot(body->GetCenterOfMassPosition());
+	const Vector3 torque = (body_pos + p_position - body_com).cross(p_force);
+
+	const Vector3 locked_torque = _stop_locked_angular_axes(torque);
+
+	body->AddForce(to_jolt(p_force));
+	body->AddTorque(to_jolt(locked_torque));
 
 	_motion_changed();
 }
@@ -589,6 +602,8 @@ void JoltBodyImpl3D::apply_impulse(const Vector3& p_impulse, const Vector3& p_po
 
 	body->AddImpulse(to_jolt(p_impulse), body->GetPosition() + to_jolt(p_position));
 
+	_stop_locked_axes(*body);
+
 	_motion_changed();
 }
 
@@ -613,6 +628,8 @@ void JoltBodyImpl3D::apply_central_impulse(const Vector3& p_impulse) {
 	ERR_FAIL_COND(body.is_invalid());
 
 	body->AddImpulse(to_jolt(p_impulse));
+
+	_stop_locked_axes(*body);
 
 	_motion_changed();
 }
@@ -1158,6 +1175,9 @@ void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 	_update_gravity(p_jolt_body);
 
 	if (!custom_integrator) {
+		// We need to clear locked angular axes since Jolt currently only clears linear axes
+		const Vector3 locked_constant_torque = _stop_locked_angular_axes(constant_torque);
+
 		JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
 
 		motion_properties.SetLinearVelocityClamped(
@@ -1165,7 +1185,7 @@ void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 		);
 
 		p_jolt_body.AddForce(to_jolt(constant_force));
-		p_jolt_body.AddTorque(to_jolt(constant_torque));
+		p_jolt_body.AddTorque(to_jolt(locked_constant_torque));
 	}
 
 	sync_state = true;
@@ -1277,42 +1297,49 @@ JPH::MassProperties JoltBodyImpl3D::_calculate_mass_properties() const {
 	return _calculate_mass_properties(*jolt_shape);
 }
 
-void JoltBodyImpl3D::_stop_locked_axes(JPH::Body& p_jolt_body) const {
-	if (!are_axes_locked() && !is_rigid_linear()) {
-		return;
-	}
-
-	JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
-
-	JPH::Vec3 linear_velocity = motion_properties.GetLinearVelocity();
-	JPH::Vec3 angular_velocity = motion_properties.GetAngularVelocity();
-
+Vector3 JoltBodyImpl3D::_stop_locked_linear_axes(Vector3 p_vector) const {
 	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_X)) {
-		linear_velocity.SetX(0.0f);
+		p_vector.x = 0.0f;
 	}
 
 	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Y)) {
-		linear_velocity.SetY(0.0f);
+		p_vector.y = 0.0f;
 	}
 
 	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_LINEAR_Z)) {
-		linear_velocity.SetZ(0.0f);
+		p_vector.z = 0.0f;
 	}
 
+	return p_vector;
+}
+
+Vector3 JoltBodyImpl3D::_stop_locked_angular_axes(Vector3 p_vector) const {
 	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_X) || is_rigid_linear()) {
-		angular_velocity.SetX(0.0f);
+		p_vector.x = 0.0f;
 	}
 
 	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Y) || is_rigid_linear()) {
-		angular_velocity.SetY(0.0f);
+		p_vector.y = 0.0f;
 	}
 
 	if (is_axis_locked(PhysicsServer3D::BODY_AXIS_ANGULAR_Z) || is_rigid_linear()) {
-		angular_velocity.SetZ(0.0f);
+		p_vector.z = 0.0f;
 	}
 
-	motion_properties.SetLinearVelocity(linear_velocity);
-	motion_properties.SetAngularVelocity(angular_velocity);
+	return p_vector;
+}
+
+void JoltBodyImpl3D::_stop_locked_axes(JPH::Body& p_jolt_body) const {
+	JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
+
+	const Vector3 linear_velocity = to_godot(motion_properties.GetLinearVelocity());
+	const Vector3 angular_velocity = to_godot(motion_properties.GetAngularVelocity());
+
+	const Vector3 locked_linear_velocity = _stop_locked_linear_axes(linear_velocity);
+	const Vector3 locked_angular_velocity = _stop_locked_angular_axes(angular_velocity);
+
+	motion_properties.SetLinearVelocity(to_jolt(locked_linear_velocity));
+	motion_properties.SetAngularVelocity(to_jolt(locked_angular_velocity));
 }
 
 void JoltBodyImpl3D::_update_mass_properties() {

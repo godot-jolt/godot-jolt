@@ -271,6 +271,10 @@ private:
 
 	JPH::MassProperties _calculate_mass_properties() const;
 
+	Vector3 _stop_locked_linear_axes(Vector3 p_vector) const;
+
+	Vector3 _stop_locked_angular_axes(Vector3 p_vector) const;
+
 	void _stop_locked_axes(JPH::Body& p_jolt_body) const;
 
 	void _update_mass_properties();
