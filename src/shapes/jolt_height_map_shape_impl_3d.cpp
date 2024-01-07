@@ -110,7 +110,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
 			// HACK(mihe): Godot has undocumented (accidental?) support for holes by passing NaN as
 			// the height value, whereas Jolt uses `FLT_MAX` instead, so we translate any NaN to
 			// `FLT_MAX` in order to be drop-in compatible.
-			row_rev[x] = std::isnan(height) ? FLT_MAX : height;
+			row_rev[x] = Math::is_nan(height) ? FLT_MAX : height;
 		}
 	}
 
@@ -175,7 +175,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_mesh() const {
 
 	auto is_vertex_hole = [&](int32_t p_index) {
 		const float height = vertices[(size_t)p_index].y;
-		return height == FLT_MAX || std::isnan(height);
+		return height == FLT_MAX || Math::is_nan(height);
 	};
 
 	auto is_triangle_hole = [&](int32_t p_index0, int32_t p_index1, int32_t p_index2) {

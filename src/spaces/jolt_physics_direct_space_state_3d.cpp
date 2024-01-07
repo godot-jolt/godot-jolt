@@ -646,7 +646,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 
 	// Figure out the number of steps we need in our binary search in order to achieve millimeter
 	// precision, within reason. Derived from `2^-step_count * motion_length = 0.001`.
-	const int32_t step_count = clamp(int32_t(logf(1000.0f * motion_length) / Math_LN2), 4, 16);
+	const int32_t step_count = clamp(int32_t(logf(1000.0f * motion_length) / Mathf_LN2), 4, 16);
 
 	bool collided = false;
 
