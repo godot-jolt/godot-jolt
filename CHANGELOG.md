@@ -50,6 +50,7 @@ Breaking changes are denoted with ⚠️.
   frozen `RigidBody3D` using `FREEZE_MODE_STATIC`) would result in NaNs.
 - Fixed issue where `HingeJoint3D` and `JoltHingeJoint3D` would sometimes dull forces applied to
   either of its bodies when at either of its limits.
+- Fixed issue with iOS `Info.plist` missing the `MinimumOSVersion` key.
 
 ## [0.11.0] - 2023-12-01
 
