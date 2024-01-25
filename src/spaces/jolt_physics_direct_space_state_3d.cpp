@@ -618,6 +618,8 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 		return false;
 	}
 
+	const JPH::Vec3 base_offset = transform_com.GetTranslation();
+
 	JoltCustomMotionShape motion_shape(static_cast<const JPH::ConvexShape&>(p_jolt_shape));
 
 	auto collides = [&](const JPH::Body& p_other_body, float p_fraction) {
@@ -627,16 +629,12 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 
 		JoltQueryCollectorAny<JPH::CollideShapeCollector> collide_collector;
 
-		JPH::CollisionDispatch::sCollideShapeVsShape(
+		other_shape.CollideShape(
 			&motion_shape,
-			other_shape.mShape,
 			scale,
-			other_shape.GetShapeScale(),
 			transform_com,
-			other_shape.GetCenterOfMassTransform(),
-			JPH::SubShapeIDCreator(),
-			JPH::SubShapeIDCreator(),
 			p_settings,
+			base_offset,
 			collide_collector,
 			p_shape_filter
 		);
