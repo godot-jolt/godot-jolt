@@ -21,6 +21,8 @@
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
+#include <godot_cpp/classes/performance.hpp>
+
 void JoltPhysicsServer3D::_bind_methods() {
 #ifdef GDJ_CONFIG_EDITOR
 	BIND_METHOD(JoltPhysicsServer3D, dump_debug_snapshots, "dir");
@@ -119,6 +121,9 @@ void JoltPhysicsServer3D::_bind_methods() {
 	BIND_ENUM_CONSTANT(G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT_SPRING);
 	BIND_ENUM_CONSTANT(G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING_FREQUENCY);
 	BIND_ENUM_CONSTANT(G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING_FREQUENCY);
+
+	ClassDB::bind_method(D_METHOD("get_current_memory", "format"), &JoltPhysicsServer3D::get_current_memory, DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("get_max_memory", "format"), &JoltPhysicsServer3D::get_max_memory, DEFVAL(0));
 }
 
 JoltPhysicsServer3D::JoltPhysicsServer3D() {
@@ -1789,6 +1794,8 @@ void JoltPhysicsServer3D::_set_active(bool p_active) {
 
 void JoltPhysicsServer3D::_init() {
 	job_system = new JoltJobSystem();
+
+	init_performance_monitor();
 }
 
 void JoltPhysicsServer3D::_step(double p_step) {
@@ -1825,6 +1832,8 @@ void JoltPhysicsServer3D::_flush_queries() {
 
 void JoltPhysicsServer3D::_finish() {
 	delete_safely(job_system);
+
+	finish_performance_monitor();
 }
 
 bool JoltPhysicsServer3D::_is_flushing_queries() const {
@@ -2244,4 +2253,74 @@ float JoltPhysicsServer3D::generic_6dof_joint_get_applied_torque(const RID& p_jo
 	auto* g6dof_joint = static_cast<JoltGeneric6DOFJointImpl3D*>(joint);
 
 	return g6dof_joint->get_applied_torque();
+}
+
+
+void JoltPhysicsServer3D::init_performance_monitor() {
+	// abort if the server is not inicialized in editor build
+	if (!OS::get_singleton()->has_feature("editor") || Engine::get_singleton()->is_editor_hint()) {
+		return;
+	}
+
+	Performance* performance = Performance::get_singleton();
+	if (performance == nullptr) {
+		return;
+	}
+
+	// bound args for the monitor functions - 2 for formatting in MiB
+	Array memory_monitor_format_args = Array();
+	memory_monitor_format_args.push_back(2);
+	// add the custom monitors
+	if (!performance->has_custom_monitor("Jolt Physics/Current memory (MiB)")) {
+		performance->add_custom_monitor("Jolt Physics/Current memory (MiB)", Callable(this, "get_current_memory"), DEFVAL(memory_monitor_format_args));
+	}
+	if (!performance->has_custom_monitor("Jolt Physics/Max memory (MiB)")){
+		performance->add_custom_monitor("Jolt Physics/Max memory (MiB)", Callable(this, "get_max_memory"), DEFVAL(memory_monitor_format_args));
+	}
+}
+
+
+void JoltPhysicsServer3D::finish_performance_monitor() {
+	// abort if the server is not inicialized in editor build
+	if (!OS::get_singleton()->has_feature("editor") || Engine::get_singleton()->is_editor_hint()) {
+		return;
+	}
+
+	Performance* performance = Performance::get_singleton();
+	if (performance == nullptr) {
+		return;
+	}
+
+	// delete the custom monitors
+	if (performance->has_custom_monitor("Jolt Physics/Current memory (MiB)")) {
+		performance->remove_custom_monitor("Jolt Physics/Current memory (MiB)");
+	}
+	if (performance->has_custom_monitor("Jolt Physics/Max memory (MiB)")) {
+		performance->remove_custom_monitor("Jolt Physics/Max memory (MiB)");
+	}
+}
+
+void JoltPhysicsServer3D::update_current_memory(int64_t change) {
+	JoltPhysicsServer3D::current_memory += change;
+	if (JoltPhysicsServer3D::current_memory > JoltPhysicsServer3D::max_memory) {
+		JoltPhysicsServer3D::max_memory = JoltPhysicsServer3D::current_memory;
+	}
+}
+
+double JoltPhysicsServer3D::get_current_memory(int64_t p_format) const {
+	if (p_format < 0 || p_format > 4){
+		WARN_PRINT("Format must be between 0 and 4. 0=B, 1=KB, 2=MB, 3=GB, 4=TB");
+		p_format = 0;
+	}
+	return JoltPhysicsServer3D::current_memory / pow(1024.0, p_format);
+	// this could be alternatively used for reporting the memory as int as the decimal values are not formatted
+	//return (current_memory >> (p_format * 10));
+}
+
+double JoltPhysicsServer3D::get_max_memory(int64_t p_format) const {
+	if (p_format < 0 || p_format > 4) {
+		WARN_PRINT("Format must be between 0 and 4. 0=B, 1=KB, 2=MB, 3=GB, 4=TB");
+		p_format = 0;
+	}
+	return JoltPhysicsServer3D::max_memory / pow(1024.0, p_format);
 }

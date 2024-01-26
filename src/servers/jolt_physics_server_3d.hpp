@@ -76,8 +76,14 @@ public:
 		G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING_FREQUENCY,
 	};
 
+	static inline int64_t current_memory = 0;
+	static inline int64_t max_memory = 0;
+
 private:
 	static void _bind_methods();
+
+	void init_performance_monitor();
+	void finish_performance_monitor();
 
 public:
 	JoltPhysicsServer3D();
@@ -739,6 +745,11 @@ public:
 	float generic_6dof_joint_get_applied_force(const RID& p_joint);
 
 	float generic_6dof_joint_get_applied_torque(const RID& p_joint);
+
+	static void update_current_memory(int64_t change);
+
+	double get_current_memory(int64_t p_format) const;
+	double get_max_memory(int64_t p_format) const;
 
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
