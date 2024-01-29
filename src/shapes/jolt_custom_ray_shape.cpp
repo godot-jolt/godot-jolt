@@ -69,12 +69,7 @@ void collide_ray_vs_shape(
 
 	JPH::RayCastSettings ray_cast_settings;
 	ray_cast_settings.mBackFaceMode = p_collide_shape_settings.mBackFaceMode;
-
-	// NOTE(mihe): Treating convex shapes as solid deviates from how these shapes behave in Godot
-	// Physics, where no collision is registered when fully enveloped by a convex shape. It's not
-	// clear to me whether the behavior of Godot Physics is desired or just the result of a simple
-	// implementation. I assume it's the latter, hence the deviation.
-	ray_cast_settings.mTreatConvexAsSolid = true;
+	ray_cast_settings.mTreatConvexAsSolid = false;
 
 	JoltQueryCollectorClosest<JPH::CastRayCollector> ray_collector;
 

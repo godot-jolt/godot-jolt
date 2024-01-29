@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- Changed `SeparationRayShape3D` to not treat other convex shapes as solid, meaning it will now only
+  ever collide with the hull of other convex shapes, which better matches Godot Physics.
+
 ## [0.12.0] - 2024-01-07
 
 ### Changed
