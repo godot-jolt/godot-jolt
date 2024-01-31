@@ -93,9 +93,9 @@ public:
 	String to_string() const;
 
 private:
-	JPH::BroadPhaseLayer _get_broad_phase_layer() const;
+	JPH::BroadPhaseLayer _get_broad_phase_layer() const override;
 
-	JPH::ObjectLayer _get_object_layer() const;
+	JPH::ObjectLayer _get_object_layer() const override;
 
 	void _space_changing() override;
 
