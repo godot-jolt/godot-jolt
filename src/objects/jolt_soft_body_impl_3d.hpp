@@ -16,7 +16,7 @@ class JoltSoftBodyImpl3D final : public JoltObjectImpl3D {
 public:
 	JoltSoftBodyImpl3D();
 
-	~JoltSoftBodyImpl3D();
+	~JoltSoftBodyImpl3D() override;
 
 	void add_collision_exception(const RID& p_excepted_body);
 
