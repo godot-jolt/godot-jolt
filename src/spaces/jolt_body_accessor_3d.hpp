@@ -1,8 +1,9 @@
 #pragma once
 
+#include "objects/jolt_object_impl_3d.hpp"
+
 class JoltAreaImpl3D;
 class JoltBodyImpl3D;
-class JoltObjectImpl3D;
 class JoltShapedObjectImpl3D;
 class JoltSpace3D;
 
