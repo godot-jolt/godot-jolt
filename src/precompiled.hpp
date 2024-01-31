@@ -118,6 +118,9 @@
 #include <Jolt/Physics/Constraints/SwingTwistConstraint.h>
 #include <Jolt/Physics/PhysicsScene.h>
 #include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/SoftBody/SoftBodyCreationSettings.h>
+#include <Jolt/Physics/SoftBody/SoftBodyMotionProperties.h>
+#include <Jolt/Physics/SoftBody/SoftBodySharedSettings.h>
 #include <Jolt/RegisterTypes.h>
 
 #ifdef JPH_DEBUG_RENDERER
@@ -153,6 +156,7 @@ using namespace godot;
 #include "containers/inline_vector.hpp"
 #include "containers/local_vector.hpp"
 #include "containers/rid_owner.hpp"
+#include "containers/symmetric_bit_table.hpp"
 #include "misc/bind_macros.hpp"
 #include "misc/error_macros.hpp"
 #include "misc/gdclass_macros.hpp"

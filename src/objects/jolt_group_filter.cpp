@@ -42,35 +42,7 @@ bool JoltGroupFilter::CanCollide(
 		p_group2.GetSubGroupID()
 	);
 
-	const JoltAreaImpl3D* area1 = object1->is_area()
-		? reinterpret_cast<const JoltAreaImpl3D*>(object1)
-		: nullptr;
-
-	const JoltAreaImpl3D* area2 = object2->is_area()
-		? reinterpret_cast<const JoltAreaImpl3D*>(object2)
-		: nullptr;
-
-	const JoltBodyImpl3D* body1 = area1 == nullptr
-		? reinterpret_cast<const JoltBodyImpl3D*>(object1)
-		: nullptr;
-
-	const JoltBodyImpl3D* body2 = area2 == nullptr
-		? reinterpret_cast<const JoltBodyImpl3D*>(object2)
-		: nullptr;
-
-	if (body1 != nullptr && body2 != nullptr) {
-		return body1->can_interact_with(*body2);
-	}
-
-	if (area1 != nullptr && area2 != nullptr) {
-		return area1->can_interact_with(*area2);
-	} else if (area1 != nullptr && body2 != nullptr) {
-		return area1->can_interact_with(*body2);
-	} else if (area2 != nullptr && body1 != nullptr) {
-		return area2->can_interact_with(*body1);
-	} else {
-		return false;
-	}
+	return object1->can_interact_with(*object2);
 }
 
 // NOLINTNEXTLINE(bugprone-sizeof-expression)

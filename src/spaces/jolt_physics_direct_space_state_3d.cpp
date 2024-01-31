@@ -76,17 +76,18 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 		}
 	}
 
-	const ObjectID object_id = object->get_instance_id();
-
-	const int32_t shape_index = object->find_shape_index(sub_shape_id);
-	ERR_FAIL_COND_D(shape_index == -1);
-
 	p_result->position = to_godot(position);
 	p_result->normal = to_godot(normal);
 	p_result->rid = object->get_rid();
-	p_result->collider_id = object_id;
+	p_result->collider_id = object->get_instance_id();
 	p_result->collider = object->get_instance_unsafe();
-	p_result->shape = shape_index;
+	p_result->shape = 0;
+
+	if (const JoltShapedObjectImpl3D* shaped_object = object->as_shaped()) {
+		const int32_t shape_index = shaped_object->find_shape_index(sub_shape_id);
+		ERR_FAIL_COND_D(shape_index == -1);
+		p_result->shape = shape_index;
+	}
 
 	return true;
 }
@@ -120,15 +121,18 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
 		const JoltObjectImpl3D* object = body.as_object();
 		ERR_FAIL_NULL_D(object);
 
-		const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
-		ERR_FAIL_COND_D(shape_index == -1);
-
 		PhysicsServer3DExtensionShapeResult& result = *p_results++;
 
 		result.rid = object->get_rid();
 		result.collider_id = object->get_instance_id();
 		result.collider = object->get_instance_unsafe();
-		result.shape = shape_index;
+		result.shape = 0;
+
+		if (const JoltShapedObjectImpl3D* shaped_object = object->as_shaped()) {
+			const int32_t shape_index = shaped_object->find_shape_index(hit.mSubShapeID2);
+			ERR_FAIL_COND_D(shape_index == -1);
+			result.shape = shape_index;
+		}
 	}
 
 	return hit_count;
@@ -191,15 +195,18 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 		const JoltObjectImpl3D* object = body.as_object();
 		ERR_FAIL_NULL_D(object);
 
-		const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
-		ERR_FAIL_COND_D(shape_index == -1);
-
 		PhysicsServer3DExtensionShapeResult& result = *p_results++;
 
 		result.rid = object->get_rid();
 		result.collider_id = object->get_instance_id();
 		result.collider = object->get_instance_unsafe();
-		result.shape = shape_index;
+		result.shape = 0;
+
+		if (const JoltShapedObjectImpl3D* shaped_object = object->as_shaped()) {
+			const int32_t shape_index = shaped_object->find_shape_index(hit.mSubShapeID2);
+			ERR_FAIL_COND_D(shape_index == -1);
+			result.shape = shape_index;
+		}
 	}
 
 	return hit_count;
@@ -390,17 +397,20 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	const JoltObjectImpl3D* object = body.as_object();
 	ERR_FAIL_NULL_D(object);
 
-	const int32_t shape_index = object->find_shape_index(hit.mSubShapeID2);
-	ERR_FAIL_COND_D(shape_index == -1);
-
 	const Vector3 hit_point = base_offset + to_godot(hit.mContactPointOn2);
 
 	p_info->point = hit_point;
 	p_info->normal = to_godot(-hit.mPenetrationAxis.Normalized());
 	p_info->rid = object->get_rid();
 	p_info->collider_id = object->get_instance_id();
-	p_info->shape = shape_index;
+	p_info->shape = 0;
 	p_info->linear_velocity = object->get_velocity_at_position(hit_point);
+
+	if (const JoltShapedObjectImpl3D* shaped_object = object->as_shaped()) {
+		const int32_t shape_index = shaped_object->find_shape_index(hit.mSubShapeID2);
+		ERR_FAIL_COND_D(shape_index == -1);
+		p_info->shape = shape_index;
+	}
 
 	return true;
 }
@@ -939,7 +949,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		}
 
 		const JoltReadableBody3D collider_jolt_body = space->read_body(hit.mBodyID2);
-		const JoltObjectImpl3D* collider = collider_jolt_body.as_object();
+		const JoltShapedObjectImpl3D* collider = collider_jolt_body.as_shaped();
 		ERR_FAIL_NULL_D(collider);
 
 		const Vector3 position = base_offset + to_godot(hit.mContactPointOn2);

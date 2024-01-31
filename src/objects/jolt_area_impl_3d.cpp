@@ -2,6 +2,7 @@
 
 #include "objects/jolt_body_impl_3d.hpp"
 #include "objects/jolt_group_filter.hpp"
+#include "objects/jolt_soft_body_impl_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
@@ -17,7 +18,37 @@ const Vector3 DEFAULT_WIND_DIRECTION = {};
 } // namespace
 
 JoltAreaImpl3D::JoltAreaImpl3D()
-	: JoltObjectImpl3D(JoltObjectImpl3D::OBJECT_TYPE_AREA) { }
+	: JoltShapedObjectImpl3D(OBJECT_TYPE_AREA) { }
+
+bool JoltAreaImpl3D::is_default_area() const {
+	return space != nullptr && space->get_default_area() == this;
+}
+
+void JoltAreaImpl3D::set_default_area() {
+	_update_default_gravity();
+}
+
+void JoltAreaImpl3D::set_transform(const Transform3D& p_transform) {
+	Vector3 new_scale;
+	const Transform3D new_transform = Math::decomposed(p_transform, new_scale);
+
+	if (!scale.is_equal_approx(new_scale)) {
+		scale = new_scale;
+		_shapes_changed();
+	}
+
+	if (space == nullptr) {
+		jolt_settings->mPosition = to_jolt(new_transform.origin);
+		jolt_settings->mRotation = to_jolt(new_transform.basis);
+	} else {
+		space->get_body_iface().SetPositionAndRotation(
+			jolt_id,
+			to_jolt(new_transform.origin),
+			to_jolt(new_transform.basis),
+			JPH::EActivation::DontActivate
+		);
+	}
+}
 
 Variant JoltAreaImpl3D::get_param(PhysicsServer3D::AreaParameter p_param) const {
 	switch (p_param) {
@@ -181,6 +212,10 @@ bool JoltAreaImpl3D::can_monitor(const JoltBodyImpl3D& p_other) const {
 	return (collision_mask & p_other.get_collision_layer()) != 0;
 }
 
+bool JoltAreaImpl3D::can_monitor([[maybe_unused]] const JoltSoftBodyImpl3D& p_other) const {
+	return false;
+}
+
 bool JoltAreaImpl3D::can_monitor(const JoltAreaImpl3D& p_other) const {
 	return p_other.is_monitorable() && (collision_mask & p_other.get_collision_layer()) != 0;
 }
@@ -189,12 +224,66 @@ bool JoltAreaImpl3D::can_interact_with(const JoltBodyImpl3D& p_other) const {
 	return can_monitor(p_other);
 }
 
+bool JoltAreaImpl3D::can_interact_with([[maybe_unused]] const JoltSoftBodyImpl3D& p_other) const {
+	return false;
+}
+
 bool JoltAreaImpl3D::can_interact_with(const JoltAreaImpl3D& p_other) const {
 	return can_monitor(p_other) || p_other.can_monitor(*this);
 }
 
 Vector3 JoltAreaImpl3D::get_velocity_at_position([[maybe_unused]] const Vector3& p_position) const {
 	return {0.0f, 0.0f, 0.0f};
+}
+
+void JoltAreaImpl3D::set_point_gravity(bool p_enabled) {
+	if (point_gravity == p_enabled) {
+		return;
+	}
+
+	point_gravity = p_enabled;
+
+	_gravity_changed();
+}
+
+void JoltAreaImpl3D::set_gravity(float p_gravity) {
+	if (gravity == p_gravity) {
+		return;
+	}
+
+	gravity = p_gravity;
+
+	_gravity_changed();
+}
+
+void JoltAreaImpl3D::set_point_gravity_distance(float p_distance) {
+	if (point_gravity_distance == p_distance) {
+		return;
+	}
+
+	point_gravity_distance = p_distance;
+
+	_gravity_changed();
+}
+
+void JoltAreaImpl3D::set_gravity_mode(OverrideMode p_mode) {
+	if (gravity_mode == p_mode) {
+		return;
+	}
+
+	gravity_mode = p_mode;
+
+	_gravity_changed();
+}
+
+void JoltAreaImpl3D::set_gravity_vector(const Vector3& p_vector) {
+	if (gravity_vector == p_vector) {
+		return;
+	}
+
+	gravity_vector = p_vector;
+
+	_gravity_changed();
 }
 
 Vector3 JoltAreaImpl3D::compute_gravity(const Vector3& p_position) const {
@@ -294,9 +383,27 @@ JPH::BroadPhaseLayer JoltAreaImpl3D::_get_broad_phase_layer() const {
 		: JoltBroadPhaseLayer::AREA_UNDETECTABLE;
 }
 
-void JoltAreaImpl3D::_create_in_space() {
-	_create_begin();
+JPH::ObjectLayer JoltAreaImpl3D::_get_object_layer() const {
+	ERR_FAIL_NULL_D(space);
 
+	return space->map_to_object_layer(_get_broad_phase_layer(), collision_layer, collision_mask);
+}
+
+void JoltAreaImpl3D::_add_to_space() {
+	ON_SCOPE_EXIT {
+		delete_safely(jolt_settings);
+	};
+
+	jolt_shape = build_shape();
+
+	JPH::CollisionGroup::GroupID group_id = 0;
+	JPH::CollisionGroup::SubGroupID sub_group_id = 0;
+	JoltGroupFilter::encode_object(this, group_id, sub_group_id);
+
+	jolt_settings->mUserData = reinterpret_cast<JPH::uint64>(this);
+	jolt_settings->mObjectLayer = _get_object_layer();
+	jolt_settings->mCollisionGroup = JPH::CollisionGroup(nullptr, group_id, sub_group_id);
+	jolt_settings->mMotionType = _get_motion_type();
 	jolt_settings->mIsSensor = true;
 	jolt_settings->mUseManifoldReduction = false;
 
@@ -304,7 +411,25 @@ void JoltAreaImpl3D::_create_in_space() {
 		jolt_settings->mCollideKinematicVsNonDynamic = true;
 	}
 
-	_create_end();
+	jolt_settings->SetShape(build_shape());
+
+	JPH::BodyInterface& body_iface = space->get_body_iface();
+	JPH::Body* body = body_iface.CreateBody(*jolt_settings);
+
+	ERR_FAIL_NULL_MSG(
+		body,
+		vformat(
+			"Failed to create underlying Jolt body for '%s'. "
+			"Consider increasing maximum number of bodies in project settings. "
+			"Maximum number of bodies is currently set to %d.",
+			to_string(),
+			JoltProjectSettings::get_max_bodies()
+		)
+	);
+
+	jolt_id = body->GetID();
+
+	body_iface.AddBody(jolt_id, JPH::EActivation::Activate);
 }
 
 void JoltAreaImpl3D::_add_shape_pair(
@@ -314,7 +439,7 @@ void JoltAreaImpl3D::_add_shape_pair(
 	const JPH::SubShapeID& p_self_shape_id
 ) {
 	const JoltReadableBody3D other_jolt_body = space->read_body(p_body_id);
-	const JoltObjectImpl3D* other_object = other_jolt_body.as_object();
+	const JoltShapedObjectImpl3D* other_object = other_jolt_body.as_shaped();
 	ERR_FAIL_NULL(other_object);
 
 	p_overlap.rid = other_object->get_rid();
@@ -475,7 +600,15 @@ void JoltAreaImpl3D::_update_group_filter() {
 	body->GetCollisionGroup().SetGroupFilter(JoltGroupFilter::instance);
 }
 
+void JoltAreaImpl3D::_update_default_gravity() {
+	if (is_default_area()) {
+		space->get_physics_system().SetGravity(to_jolt(gravity_vector) * gravity);
+	}
+}
+
 void JoltAreaImpl3D::_space_changing() {
+	JoltShapedObjectImpl3D::_space_changing();
+
 	if (space != nullptr) {
 		// HACK(mihe): Ideally we would rely on our contact listener to report all the exits when we
 		// move between (or out of) spaces, but because our Jolt body is going to be destroyed when
@@ -487,7 +620,10 @@ void JoltAreaImpl3D::_space_changing() {
 }
 
 void JoltAreaImpl3D::_space_changed() {
+	JoltShapedObjectImpl3D::_space_changed();
+
 	_update_group_filter();
+	_update_default_gravity();
 }
 
 void JoltAreaImpl3D::_body_monitoring_changed() {
@@ -508,4 +644,8 @@ void JoltAreaImpl3D::_area_monitoring_changed() {
 
 void JoltAreaImpl3D::_monitorable_changed() {
 	_update_object_layer();
+}
+
+void JoltAreaImpl3D::_gravity_changed() {
+	_update_default_gravity();
 }

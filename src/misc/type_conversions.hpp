@@ -33,6 +33,10 @@ _FORCE_INLINE_ String to_godot(const JPH::String& p_str) {
 	return String::utf8(p_str.c_str(), (int32_t)p_str.length());
 }
 
+_FORCE_INLINE_ AABB to_godot(const JPH::AABox& p_aabb) {
+	return {to_godot(p_aabb.mMin), to_godot(p_aabb.mMax - p_aabb.mMin)};
+}
+
 _FORCE_INLINE_ JPH::Vec3 to_jolt(const Vector3& p_vec) {
 	return {p_vec.x, p_vec.y, p_vec.z};
 }
@@ -60,4 +64,8 @@ _FORCE_INLINE_ JPH::Color to_jolt(const Color& p_color) {
 _FORCE_INLINE_ JPH::String to_jolt(const String& p_str) {
 	const CharString str_utf8 = p_str.utf8();
 	return {str_utf8.get_data(), (size_t)str_utf8.length()};
+}
+
+_FORCE_INLINE_ JPH::AABox to_jolt(const AABB& p_aabb) {
+	return {to_jolt(p_aabb.position), to_jolt(p_aabb.position + p_aabb.size)};
 }

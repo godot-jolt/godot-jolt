@@ -3,6 +3,7 @@
 class JoltAreaImpl3D;
 class JoltBodyImpl3D;
 class JoltObjectImpl3D;
+class JoltShapedObjectImpl3D;
 class JoltSpace3D;
 
 class JoltBodyAccessor3D {
@@ -153,8 +154,16 @@ public:
 		}
 	}
 
+	JoltShapedObjectImpl3D* as_shaped() const {
+		if (JoltObjectImpl3D* object = as_object(); object != nullptr && object->is_shaped()) {
+			return reinterpret_cast<JoltShapedObjectImpl3D*>(body->GetUserData());
+		} else {
+			return nullptr;
+		}
+	}
+
 	JoltBodyImpl3D* as_body() const {
-		if (body != nullptr && !body->IsSensor()) {
+		if (JoltObjectImpl3D* object = as_object(); object != nullptr && object->is_body()) {
 			return reinterpret_cast<JoltBodyImpl3D*>(body->GetUserData());
 		} else {
 			return nullptr;
@@ -162,7 +171,7 @@ public:
 	}
 
 	JoltAreaImpl3D* as_area() const {
-		if (body != nullptr && body->IsSensor()) {
+		if (JoltObjectImpl3D* object = as_object(); object != nullptr && object->is_area()) {
 			return reinterpret_cast<JoltAreaImpl3D*>(body->GetUserData());
 		} else {
 			return nullptr;

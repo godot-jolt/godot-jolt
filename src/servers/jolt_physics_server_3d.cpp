@@ -8,6 +8,7 @@
 #include "joints/jolt_slider_joint_impl_3d.hpp"
 #include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_body_impl_3d.hpp"
+#include "objects/jolt_soft_body_impl_3d.hpp"
 #include "shapes/jolt_box_shape_impl_3d.hpp"
 #include "shapes/jolt_capsule_shape_impl_3d.hpp"
 #include "shapes/jolt_concave_polygon_shape_impl_3d.hpp"
@@ -723,10 +724,13 @@ void JoltPhysicsServer3D::_body_set_shape_disabled(
 }
 
 void JoltPhysicsServer3D::_body_attach_object_instance_id(const RID& p_body, uint64_t p_id) {
-	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
-	ERR_FAIL_NULL(body);
-
-	body->set_instance_id(ObjectID(p_id));
+	if (JoltBodyImpl3D* body = body_owner.get_or_null(p_body)) {
+		body->set_instance_id(ObjectID(p_id));
+	} else if (JoltSoftBodyImpl3D* soft_body = soft_body_owner.get_or_null(p_body)) {
+		soft_body->set_instance_id(ObjectID(p_id));
+	} else {
+		ERR_FAIL();
+	}
 }
 
 uint64_t JoltPhysicsServer3D::_body_get_object_instance_id(const RID& p_body) const {
@@ -1121,235 +1125,295 @@ PhysicsDirectBodyState3D* JoltPhysicsServer3D::_body_get_direct_state(const RID&
 }
 
 RID JoltPhysicsServer3D::_soft_body_create() {
-#ifdef GDJ_CONFIG_EDITOR
-	// HACK(mihe): The editor needs to have a usable body in order for the documentation generation
-	// to not emit errors when doing stuff like attaching instance IDs, so we just give it a regular
-	// body instead.
-	return _body_create();
-#else // GDJ_CONFIG_EDITOR
-	ERR_FAIL_D_MSG("SoftBody3D is not supported by Godot Jolt.");
-#endif // GDJ_CONFIG_EDITOR
+	JoltSoftBodyImpl3D* body = memnew(JoltSoftBodyImpl3D);
+	RID rid = soft_body_owner.make_rid(body);
+	body->set_rid(rid);
+	return rid;
 }
 
 void JoltPhysicsServer3D::_soft_body_update_rendering_server(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] PhysicsServer3DRenderingServerHandler* p_rendering_server_handler
+	const RID& p_body,
+	PhysicsServer3DRenderingServerHandler* p_rendering_server_handler
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->update_rendering_server(p_rendering_server_handler);
 }
 
-void JoltPhysicsServer3D::_soft_body_set_space(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const RID& p_space
-) {
-	// SoftBody3D is not supported
+void JoltPhysicsServer3D::_soft_body_set_space(const RID& p_body, const RID& p_space) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	JoltSpace3D* space = nullptr;
+
+	if (p_space.is_valid()) {
+		space = space_owner.get_or_null(p_space);
+		ERR_FAIL_NULL(space);
+	}
+
+	body->set_space(space);
 }
 
-RID JoltPhysicsServer3D::_soft_body_get_space([[maybe_unused]] const RID& p_body) const {
-	// SoftBody3D is not supported
-	return {};
+RID JoltPhysicsServer3D::_soft_body_get_space(const RID& p_body) const {
+	const JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	const JoltSpace3D* space = body->get_space();
+
+	if (space == nullptr) {
+		return {};
+	}
+
+	return space->get_rid();
 }
 
-void JoltPhysicsServer3D::_soft_body_set_mesh(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const RID& p_mesh
-) {
-	// SoftBody3D is not supported
+void JoltPhysicsServer3D::_soft_body_set_mesh(const RID& p_body, const RID& p_mesh) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_mesh(p_mesh);
 }
 
-AABB JoltPhysicsServer3D::_soft_body_get_bounds([[maybe_unused]] const RID& p_body) const {
-	// SoftBody3D is not supported
-	return {};
+AABB JoltPhysicsServer3D::_soft_body_get_bounds(const RID& p_body) const {
+	const JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_bounds();
 }
 
-void JoltPhysicsServer3D::_soft_body_set_collision_layer(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] uint32_t p_layer
-) {
-	// SoftBody3D is not supported
+void JoltPhysicsServer3D::_soft_body_set_collision_layer(const RID& p_body, uint32_t p_layer) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_collision_layer(p_layer);
 }
 
-uint32_t JoltPhysicsServer3D::_soft_body_get_collision_layer([[maybe_unused]] const RID& p_body
-) const {
-	// SoftBody3D is not supported
-	return {};
+uint32_t JoltPhysicsServer3D::_soft_body_get_collision_layer(const RID& p_body) const {
+	const JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_collision_layer();
 }
 
-void JoltPhysicsServer3D::_soft_body_set_collision_mask(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] uint32_t p_mask
-) {
-	// SoftBody3D is not supported
+void JoltPhysicsServer3D::_soft_body_set_collision_mask(const RID& p_body, uint32_t p_mask) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_collision_mask(p_mask);
 }
 
-uint32_t JoltPhysicsServer3D::_soft_body_get_collision_mask([[maybe_unused]] const RID& p_body
-) const {
-	// SoftBody3D is not supported
-	return {};
+uint32_t JoltPhysicsServer3D::_soft_body_get_collision_mask(const RID& p_body) const {
+	const JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_collision_mask();
 }
 
 void JoltPhysicsServer3D::_soft_body_add_collision_exception(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const RID& p_body_b
+	const RID& p_body,
+	const RID& p_excepted_body
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->add_collision_exception(p_excepted_body);
 }
 
 void JoltPhysicsServer3D::_soft_body_remove_collision_exception(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const RID& p_body_b
+	const RID& p_body,
+	const RID& p_excepted_body
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->remove_collision_exception(p_excepted_body);
 }
 
-TypedArray<RID> JoltPhysicsServer3D::_soft_body_get_collision_exceptions(
-	[[maybe_unused]] const RID& p_body
-) const {
-	// SoftBody3D is not supported
-	return {};
+TypedArray<RID> JoltPhysicsServer3D::_soft_body_get_collision_exceptions(const RID& p_body) const {
+	const JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_collision_exceptions();
 }
 
 void JoltPhysicsServer3D::_soft_body_set_state(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] BodyState p_state,
-	[[maybe_unused]] const Variant& p_variant
+	const RID& p_body,
+	BodyState p_state,
+	const Variant& p_value
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_state(p_state, p_value);
 }
 
-Variant JoltPhysicsServer3D::_soft_body_get_state(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] BodyState p_state
-) const {
-	// SoftBody3D is not supported
-	return {};
+Variant JoltPhysicsServer3D::_soft_body_get_state(const RID& p_body, BodyState p_state) const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_state(p_state);
 }
 
 void JoltPhysicsServer3D::_soft_body_set_transform(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] const Transform3D& p_transform
+	const RID& p_body,
+	const Transform3D& p_transform
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->set_transform(p_transform);
 }
 
-void JoltPhysicsServer3D::_soft_body_set_ray_pickable(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] bool p_enable
-) {
-	// SoftBody3D is not supported
+void JoltPhysicsServer3D::_soft_body_set_ray_pickable(const RID& p_body, bool p_enable) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->set_pickable(p_enable);
 }
 
 void JoltPhysicsServer3D::_soft_body_set_simulation_precision(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_simulation_precision
+	const RID& p_body,
+	int32_t p_precision
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->set_simulation_precision(p_precision);
 }
 
-int32_t JoltPhysicsServer3D::_soft_body_get_simulation_precision([[maybe_unused]] const RID& p_body
-) const {
-	// SoftBody3D is not supported
-	return {};
+int32_t JoltPhysicsServer3D::_soft_body_get_simulation_precision(const RID& p_body) const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_simulation_precision();
 }
 
-void JoltPhysicsServer3D::_soft_body_set_total_mass(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] double p_total_mass
-) {
-	// SoftBody3D is not supported
+void JoltPhysicsServer3D::_soft_body_set_total_mass(const RID& p_body, double p_total_mass) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->set_mass((float)p_total_mass);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_total_mass([[maybe_unused]] const RID& p_body) const {
-	// SoftBody3D is not supported
-	return {};
+double JoltPhysicsServer3D::_soft_body_get_total_mass(const RID& p_body) const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return (double)body->get_mass();
 }
 
-void JoltPhysicsServer3D::_soft_body_set_linear_stiffness(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] double p_linear_stiffness
-) {
-	// SoftBody3D is not supported
+void JoltPhysicsServer3D::_soft_body_set_linear_stiffness(const RID& p_body, double p_coefficient) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->set_stiffness_coefficient((float)p_coefficient);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_linear_stiffness([[maybe_unused]] const RID& p_body
-) const {
-	// SoftBody3D is not supported
-	return {};
+double JoltPhysicsServer3D::_soft_body_get_linear_stiffness(const RID& p_body) const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return (double)body->get_stiffness_coefficient();
 }
 
 void JoltPhysicsServer3D::_soft_body_set_pressure_coefficient(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] double p_pressure_coefficient
+	const RID& p_body,
+	double p_coefficient
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->set_pressure((float)p_coefficient);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_pressure_coefficient([[maybe_unused]] const RID& p_body
-) const {
-	// SoftBody3D is not supported
-	return {};
+double JoltPhysicsServer3D::_soft_body_get_pressure_coefficient(const RID& p_body) const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return (double)body->get_pressure();
 }
 
 void JoltPhysicsServer3D::_soft_body_set_damping_coefficient(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] double p_damping_coefficient
+	const RID& p_body,
+	double p_coefficient
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->set_linear_damping((float)p_coefficient);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_damping_coefficient([[maybe_unused]] const RID& p_body
-) const {
-	// SoftBody3D is not supported
-	return {};
+double JoltPhysicsServer3D::_soft_body_get_damping_coefficient(const RID& p_body) const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return (double)body->get_linear_damping();
 }
 
-void JoltPhysicsServer3D::_soft_body_set_drag_coefficient(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] double p_drag_coefficient
-) {
-	// SoftBody3D is not supported
+void JoltPhysicsServer3D::_soft_body_set_drag_coefficient(const RID& p_body, double p_coefficient) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->set_drag((float)p_coefficient);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_drag_coefficient([[maybe_unused]] const RID& p_body
-) const {
-	// SoftBody3D is not supported
-	return {};
+double JoltPhysicsServer3D::_soft_body_get_drag_coefficient(const RID& p_body) const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return (double)body->get_drag();
 }
 
 void JoltPhysicsServer3D::_soft_body_move_point(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_point_index,
-	[[maybe_unused]] const Vector3& p_global_position
+	const RID& p_body,
+	int32_t p_point_index,
+	const Vector3& p_global_position
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_vertex_position(p_point_index, p_global_position);
 }
 
 Vector3 JoltPhysicsServer3D::_soft_body_get_point_global_position(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_point_index
+	const RID& p_body,
+	int32_t p_point_index
 ) const {
-	// SoftBody3D is not supported
-	return {};
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->get_vertex_position(p_point_index);
 }
 
-void JoltPhysicsServer3D::_soft_body_remove_all_pinned_points([[maybe_unused]] const RID& p_body) {
-	// SoftBody3D is not supported
+void JoltPhysicsServer3D::_soft_body_remove_all_pinned_points(const RID& p_body) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->unpin_all_vertices();
 }
 
 void JoltPhysicsServer3D::_soft_body_pin_point(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_point_index,
-	[[maybe_unused]] bool p_pin
+	const RID& p_body,
+	int32_t p_point_index,
+	bool p_pin
 ) {
-	// SoftBody3D is not supported
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	if (p_pin) {
+		body->pin_vertex(p_point_index);
+	} else {
+		body->unpin_vertex(p_point_index);
+	}
 }
 
-bool JoltPhysicsServer3D::_soft_body_is_point_pinned(
-	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] int32_t p_point_index
-) const {
-	// SoftBody3D is not supported
-	return {};
+bool JoltPhysicsServer3D::_soft_body_is_point_pinned(const RID& p_body, int32_t p_point_index)
+	const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return body->is_vertex_pinned(p_point_index);
 }
 
 RID JoltPhysicsServer3D::_joint_create() {
@@ -1776,6 +1840,8 @@ void JoltPhysicsServer3D::_free_rid(const RID& p_rid) {
 		free_joint(joint);
 	} else if (JoltAreaImpl3D* area = area_owner.get_or_null(p_rid)) {
 		free_area(area);
+	} else if (JoltSoftBodyImpl3D* soft_body = soft_body_owner.get_or_null(p_rid)) {
+		free_soft_body(soft_body);
 	} else if (JoltSpace3D* space = space_owner.get_or_null(p_rid)) {
 		free_space(space);
 	} else {
@@ -1857,6 +1923,14 @@ void JoltPhysicsServer3D::free_body(JoltBodyImpl3D* p_body) {
 
 	p_body->set_space(nullptr);
 	body_owner.free(p_body->get_rid());
+	memdelete_safely(p_body);
+}
+
+void JoltPhysicsServer3D::free_soft_body(JoltSoftBodyImpl3D* p_body) {
+	ERR_FAIL_NULL(p_body);
+
+	p_body->set_space(nullptr);
+	soft_body_owner.free(p_body->get_rid());
 	memdelete_safely(p_body);
 }
 

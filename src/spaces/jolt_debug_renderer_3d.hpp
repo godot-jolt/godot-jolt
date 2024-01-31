@@ -23,6 +23,14 @@ public:
 
 		bool draw_velocities = false;
 
+		bool draw_soft_body_vertices = false;
+
+		bool draw_soft_body_edge_constraints = false;
+
+		bool draw_soft_body_volume_constraints = false;
+
+		bool draw_soft_body_predicted_bounds = false;
+
 		bool draw_constraint_reference_frames = false;
 
 		bool draw_constraint_limits = false;

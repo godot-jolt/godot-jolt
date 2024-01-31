@@ -56,6 +56,22 @@ public:
 
 	void set_draw_triangle_outlines(bool p_enabled);
 
+	bool get_draw_soft_body_vertices() const;
+
+	void set_draw_soft_body_vertices(bool p_enabled);
+
+	bool get_draw_soft_body_edge_constraints() const;
+
+	void set_draw_soft_body_edge_constraints(bool p_enabled);
+
+	bool get_draw_soft_body_volume_constraints() const;
+
+	void set_draw_soft_body_volume_constraints(bool p_enabled);
+
+	bool get_draw_soft_body_predicted_bounds() const;
+
+	void set_draw_soft_body_predicted_bounds(bool p_enabled);
+
 	bool get_draw_constraint_reference_frames() const;
 
 	void set_draw_constraint_reference_frames(bool p_enabled);

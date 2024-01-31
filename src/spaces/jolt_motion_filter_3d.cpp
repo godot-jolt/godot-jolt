@@ -53,6 +53,10 @@ bool JoltMotionFilter3D::ShouldCollide(const JPH::BodyID& p_jolt_id) const {
 }
 
 bool JoltMotionFilter3D::ShouldCollideLocked(const JPH::Body& p_jolt_body) const {
+	if (p_jolt_body.IsSoftBody()) {
+		return false;
+	}
+
 	const auto* object = reinterpret_cast<const JoltObjectImpl3D*>(p_jolt_body.GetUserData());
 
 	if (physics_server.body_test_motion_is_excluding_object(object->get_instance_id()) ||
