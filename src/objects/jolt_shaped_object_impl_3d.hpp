@@ -6,7 +6,7 @@ class JoltShapedObjectImpl3D : public JoltObjectImpl3D {
 public:
 	explicit JoltShapedObjectImpl3D(ObjectType p_object_type);
 
-	virtual ~JoltShapedObjectImpl3D() = 0;
+	~JoltShapedObjectImpl3D() override;
 
 	Transform3D get_transform_unscaled() const;
 

@@ -18,7 +18,7 @@ public:
 
 		const int32_t index = _calculate_index(p_x, p_y);
 		const int32_t byte_index = index / 8;
-		const auto bit_index = uint32_t(index % 8);
+		const auto bit_index = uint8_t(index % 8);
 
 		bits[byte_index] |= (1U << bit_index);
 	}
@@ -29,7 +29,7 @@ public:
 
 		const int32_t index = _calculate_index(p_x, p_y);
 		const int32_t byte_index = index / 8;
-		const auto bit_index = uint32_t(index % 8);
+		const auto bit_index = uint8_t(index % 8);
 
 		bits[byte_index] &= ~(1U << bit_index);
 	}
@@ -40,9 +40,9 @@ public:
 
 		const int32_t index = _calculate_index(p_x, p_y);
 		const int32_t byte_index = index / 8;
-		const auto bit_index = uint32_t(index % 8);
+		const auto bit_index = uint8_t(index % 8);
 
-		return (bits[byte_index] >> bit_index) & 1U;
+		return (uint8_t(bits[byte_index] >> bit_index) & 1U) != 0;
 	}
 
 private:
