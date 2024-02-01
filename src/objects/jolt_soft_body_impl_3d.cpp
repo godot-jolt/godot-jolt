@@ -487,17 +487,6 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 	if (iter_shared_data == mesh_to_shared.end()) {
 		RenderingServer* rendering = RenderingServer::get_singleton();
 
-		iter_shared_data = mesh_to_shared.emplace(mesh);
-
-		Shared& shared_data = iter_shared_data->second;
-
-		LocalVector<int32_t>& mesh_to_physics = shared_data.mesh_to_physics;
-		JPH::SoftBodySharedSettings& settings = *shared_data.settings;
-
-		JPH::Array<SoftBodyVertex>& physics_vertices = settings.mVertices;
-		JPH::Array<SoftBodyFace>& physics_faces = settings.mFaces;
-		JPH::Array<SoftBodyEdge>& physics_edges = settings.mEdgeConstraints;
-
 		const Array mesh_data = rendering->mesh_surface_get_arrays(mesh, 0);
 		ERR_FAIL_COND_D(mesh_data.is_empty());
 
@@ -506,6 +495,14 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 
 		const PackedVector3Array mesh_vertices = mesh_data[RenderingServer::ARRAY_VERTEX];
 		ERR_FAIL_COND_D(mesh_vertices.is_empty());
+
+		iter_shared_data = mesh_to_shared.emplace(mesh);
+
+		LocalVector<int32_t>& mesh_to_physics = iter_shared_data->second.mesh_to_physics;
+		JPH::SoftBodySharedSettings& settings = *iter_shared_data->second.settings;
+		JPH::Array<SoftBodyVertex>& physics_vertices = settings.mVertices;
+		JPH::Array<SoftBodyFace>& physics_faces = settings.mFaces;
+		JPH::Array<SoftBodyEdge>& physics_edges = settings.mEdgeConstraints;
 
 		HashMap<Vector3, int32_t> vertex_to_physics;
 
