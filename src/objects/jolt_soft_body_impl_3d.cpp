@@ -613,6 +613,7 @@ void JoltSoftBodyImpl3D::_update_mass() {
 	}
 
 	for (int32_t pin_mesh_index : pinned_vertices) {
+		ERR_FAIL_INDEX(pin_mesh_index, shared->mesh_to_physics.size());
 		const int32_t pin_physics_index = shared->mesh_to_physics[pin_mesh_index];
 		ERR_FAIL_INDEX(pin_physics_index, (int32_t)physics_vertices.size());
 
