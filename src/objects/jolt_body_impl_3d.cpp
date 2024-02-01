@@ -1562,16 +1562,17 @@ void JoltBodyImpl3D::_destroy_joint_constraints() {
 }
 
 void JoltBodyImpl3D::_update_group_filter() {
+	JPH::GroupFilter* group_filter = !exceptions.is_empty() ? JoltGroupFilter::instance : nullptr;
+
 	if (space == nullptr) {
+		jolt_settings->mCollisionGroup.SetGroupFilter(group_filter);
 		return;
 	}
 
 	const JoltWritableBody3D body = space->write_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->GetCollisionGroup().SetGroupFilter(
-		!exceptions.is_empty() ? JoltGroupFilter::instance : nullptr
-	);
+	body->GetCollisionGroup().SetGroupFilter(group_filter);
 }
 
 void JoltBodyImpl3D::_mode_changed() {

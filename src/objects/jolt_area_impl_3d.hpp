@@ -59,7 +59,7 @@ public:
 
 	bool is_default_area() const;
 
-	void set_default_area();
+	void set_default_area(bool p_value);
 
 	void set_transform(const Transform3D& p_transform);
 

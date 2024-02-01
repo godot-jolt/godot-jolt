@@ -24,8 +24,10 @@ bool JoltAreaImpl3D::is_default_area() const {
 	return space != nullptr && space->get_default_area() == this;
 }
 
-void JoltAreaImpl3D::set_default_area() {
-	_update_default_gravity();
+void JoltAreaImpl3D::set_default_area(bool p_value) {
+	if (p_value) {
+		_update_default_gravity();
+	}
 }
 
 void JoltAreaImpl3D::set_transform(const Transform3D& p_transform) {

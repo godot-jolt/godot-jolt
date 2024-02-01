@@ -351,8 +351,15 @@ void JoltSpace3D::set_default_area(JoltAreaImpl3D* p_area) {
 		return;
 	}
 
+	if (default_area != nullptr) {
+		default_area->set_default_area(false);
+	}
+
 	default_area = p_area;
-	default_area->set_default_area();
+
+	if (default_area != nullptr) {
+		default_area->set_default_area(true);
+	}
 }
 
 void JoltSpace3D::add_joint(JPH::Constraint* p_jolt_ref) {
