@@ -139,6 +139,8 @@ private:
 
 	LocalVector<RID> exceptions;
 
+	LocalVector<Vector3> normals;
+
 	const Shared* shared = nullptr;
 
 	RID mesh;

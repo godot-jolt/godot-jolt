@@ -254,32 +254,48 @@ void JoltSoftBodyImpl3D::update_rendering_server(
 	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
-	const Vector3 center_of_mass = to_godot(body->GetCenterOfMassPosition());
-
 	const auto& motion_properties = static_cast<const JPH::SoftBodyMotionProperties&>(
 		*body->GetMotionPropertiesUnchecked()
 	);
 
-	const JPH::Array<JPH::SoftBodyVertex>& physics_vertices = motion_properties.GetVertices();
+	using SoftBodyVertex = JPH::SoftBodyMotionProperties::Vertex;
+	using SoftBodyFace = JPH::SoftBodyMotionProperties::Face;
 
-	Vector3 face[3];
+	const JPH::Array<SoftBodyVertex>& physics_vertices = motion_properties.GetVertices();
+	const JPH::Array<SoftBodyFace>& physics_faces = motion_properties.GetFaces();
 
-	for (int32_t i = 0; i < shared->mesh_to_physics.size(); i += 3) {
-		for (int32_t j = 0; j < 3; ++j) {
-			const int32_t mesh_index = i + j;
-			const auto physics_index = (size_t)shared->mesh_to_physics[mesh_index];
-			const Vector3 local_vertex = to_godot(physics_vertices[physics_index].mPosition);
-			face[j] = center_of_mass + local_vertex;
-			p_rendering_server_handler->set_vertex(mesh_index, face[j]);
-		}
+	const auto physics_vertex_count = (int32_t)physics_vertices.size();
 
-		const Vector3 v0_to_v1 = face[1] - face[0];
-		const Vector3 v0_to_v2 = face[2] - face[0];
-		const Vector3 normal = v0_to_v2.cross(v0_to_v1).normalized();
+	normals.resize(physics_vertex_count);
 
-		for (int32_t j = 0; j < 3; ++j) {
-			p_rendering_server_handler->set_normal(i + j, normal);
-		}
+	for (const SoftBodyFace& physics_face : physics_faces) {
+		// Jolt uses a different winding order, so we swap the indices to account for that.
+
+		const uint32_t i0 = physics_face.mVertex[2];
+		const uint32_t i1 = physics_face.mVertex[1];
+		const uint32_t i2 = physics_face.mVertex[0];
+
+		const Vector3 v0 = to_godot(physics_vertices[i0].mPosition);
+		const Vector3 v1 = to_godot(physics_vertices[i1].mPosition);
+		const Vector3 v2 = to_godot(physics_vertices[i2].mPosition);
+
+		const Vector3 normal = (v2 - v0).cross(v1 - v0).normalized();
+
+		normals[(int32_t)i0] = normal;
+		normals[(int32_t)i1] = normal;
+		normals[(int32_t)i2] = normal;
+	}
+
+	const int32_t mesh_vertex_count = shared->mesh_to_physics.size();
+
+	for (int32_t i = 0; i < mesh_vertex_count; ++i) {
+		const auto physics_index = (size_t)shared->mesh_to_physics[i];
+
+		const Vector3 vertex = to_godot(physics_vertices[physics_index].mPosition);
+		const Vector3 normal = normals[(int32_t)physics_index];
+
+		p_rendering_server_handler->set_vertex(i, vertex);
+		p_rendering_server_handler->set_normal(i, normal);
 	}
 
 	p_rendering_server_handler->set_aabb(get_bounds());
@@ -471,6 +487,17 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 	if (iter_shared_data == mesh_to_shared.end()) {
 		RenderingServer* rendering = RenderingServer::get_singleton();
 
+		iter_shared_data = mesh_to_shared.emplace(mesh);
+
+		Shared& shared_data = iter_shared_data->second;
+
+		LocalVector<int32_t>& mesh_to_physics = shared_data.mesh_to_physics;
+		JPH::SoftBodySharedSettings& settings = *shared_data.settings;
+
+		JPH::Array<SoftBodyVertex>& physics_vertices = settings.mVertices;
+		JPH::Array<SoftBodyFace>& physics_faces = settings.mFaces;
+		JPH::Array<SoftBodyEdge>& physics_edges = settings.mEdgeConstraints;
+
 		const Array mesh_data = rendering->mesh_surface_get_arrays(mesh, 0);
 		ERR_FAIL_COND_D(mesh_data.is_empty());
 
@@ -479,14 +506,6 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 
 		const PackedVector3Array mesh_vertices = mesh_data[RenderingServer::ARRAY_VERTEX];
 		ERR_FAIL_COND_D(mesh_vertices.is_empty());
-
-		iter_shared_data = mesh_to_shared.emplace(mesh);
-
-		LocalVector<int32_t>& mesh_to_physics = iter_shared_data->second.mesh_to_physics;
-		JPH::SoftBodySharedSettings& settings = *iter_shared_data->second.settings;
-		JPH::Array<SoftBodyVertex>& physics_vertices = settings.mVertices;
-		JPH::Array<SoftBodyFace>& physics_faces = settings.mFaces;
-		JPH::Array<SoftBodyEdge>& physics_edges = settings.mEdgeConstraints;
 
 		HashMap<Vector3, int32_t> vertex_to_physics;
 
@@ -535,6 +554,8 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 					mesh_face[2]
 				)
 			);
+
+			// Jolt uses a different winding order, so we swap the indices to account for that.
 
 			physics_faces.emplace_back(
 				(JPH::uint32)physics_face[2],
