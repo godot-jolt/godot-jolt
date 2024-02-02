@@ -153,7 +153,7 @@ private:
 
 	float linear_damping = 0.01f;
 
-	float stiffness_coefficient = 0.0f;
+	float stiffness_coefficient = 1.0f;
 
 	int32_t simulation_precision = 5;
 };
