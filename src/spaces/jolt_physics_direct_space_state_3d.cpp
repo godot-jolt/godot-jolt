@@ -510,8 +510,8 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	bool p_recovery_as_collision,
 	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
-	p_margin = max(p_margin, 0.0001f);
-	p_max_collisions = min(p_max_collisions, 32);
+	p_margin = MAX(p_margin, 0.0001f);
+	p_max_collisions = MIN(p_max_collisions, 32);
 
 	Vector3 scale;
 	Transform3D transform = Math::decomposed(p_transform, scale);
@@ -644,7 +644,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 
 	// Figure out the number of steps we need in our binary search in order to achieve millimeter
 	// precision, within reason. Derived from `2^-step_count * motion_length = 0.001`.
-	const int32_t step_count = clamp(int32_t(logf(1000.0f * motion_length) / Mathf_LN2), 4, 16);
+	const int32_t step_count = CLAMP(int32_t(logf(1000.0f * motion_length) / Mathf_LN2), 4, 16);
 
 	bool collided = false;
 
@@ -766,7 +766,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 			combined_priority += other_body->get_collision_priority();
 		}
 
-		const float average_priority = max(combined_priority / (float)hit_count, CMP_EPSILON);
+		const float average_priority = MAX(combined_priority / (float)hit_count, CMP_EPSILON);
 
 		recovered = true;
 
@@ -870,8 +870,8 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 			shape_unsafe_fraction
 		);
 
-		p_safe_fraction = min(p_safe_fraction, shape_safe_fraction);
-		p_unsafe_fraction = min(p_unsafe_fraction, shape_unsafe_fraction);
+		p_safe_fraction = MIN(p_safe_fraction, shape_safe_fraction);
+		p_unsafe_fraction = MIN(p_unsafe_fraction, shape_unsafe_fraction);
 	}
 
 	return collided;
@@ -925,7 +925,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	// wall ever so slightly, which `move_and_slide` will interpret as being trapped in a corner and
 	// stop the character altogether. We still need distances smaller than this (like none at all)
 	// to actually emit contacts though, so we clamp it by the distance moved.
-	const float min_contact_depth = min(0.0001f, p_distance);
+	const float min_contact_depth = MIN(0.0001f, p_distance);
 
 	int32_t count = 0;
 

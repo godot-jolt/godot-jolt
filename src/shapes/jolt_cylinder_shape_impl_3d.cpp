@@ -52,7 +52,9 @@ String JoltCylinderShapeImpl3D::to_string() const {
 
 JPH::ShapeRefC JoltCylinderShapeImpl3D::_build() const {
 	const float half_height = height / 2.0f;
-	const float shrunk_margin = min(margin, half_height * MARGIN_FACTOR, radius * MARGIN_FACTOR);
+	const float height_margin = half_height * MARGIN_FACTOR;
+	const float radius_margin = radius * MARGIN_FACTOR;
+	const float shrunk_margin = MIN(margin, MIN(height_margin, radius_margin));
 	const float actual_margin = JoltProjectSettings::use_shape_margins() ? shrunk_margin : 0.0f;
 
 	const JPH::CylinderShapeSettings shape_settings(half_height, radius, actual_margin);
