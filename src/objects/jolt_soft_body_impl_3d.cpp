@@ -499,7 +499,10 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 		iter_shared_data = mesh_to_shared.emplace(mesh);
 
 		LocalVector<int32_t>& mesh_to_physics = iter_shared_data->second.mesh_to_physics;
+
 		JPH::SoftBodySharedSettings& settings = *iter_shared_data->second.settings;
+		settings.mVertexRadius = JoltProjectSettings::get_soft_body_point_margin();
+
 		JPH::Array<SoftBodyVertex>& physics_vertices = settings.mVertices;
 		JPH::Array<SoftBodyFace>& physics_faces = settings.mFaces;
 		JPH::Array<SoftBodyEdge>& physics_edges = settings.mEdgeConstraints;

@@ -15,6 +15,8 @@ constexpr char USE_SHAPE_MARGINS[] = "physics/jolt_3d/collisions/use_shape_margi
 constexpr char AREAS_DETECT_STATIC[] = "physics/jolt_3d/collisions/areas_detect_static_bodies";
 constexpr char KINEMATIC_CONTACTS[] = "physics/jolt_3d/collisions/report_all_kinematic_contacts";
 
+constexpr char SOFT_BODY_POINT_MARGIN[] = "physics/jolt_3d/soft_bodies/point_margin";
+
 constexpr char JOINT_WORLD_NODE[] = "physics/jolt_3d/joints/world_node";
 
 constexpr char CCD_MOVEMENT_THRESHOLD[] = "physics/jolt_3d/continuous_cd/movement_threshold";
@@ -139,6 +141,8 @@ void JoltProjectSettings::register_settings() {
 	register_setting_plain(AREAS_DETECT_STATIC, false);
 	register_setting_plain(KINEMATIC_CONTACTS, false);
 
+	register_setting_ranged(SOFT_BODY_POINT_MARGIN, 0.01f, U"0,1,0.001,or_greater,suffix:m");
+
 	register_setting_enum(JOINT_WORLD_NODE, JOINT_WORLD_NODE_A, "Node A,Node B");
 
 	register_setting_ranged(CCD_MOVEMENT_THRESHOLD, 75.0f, U"0,100,0.1,suffix:%");
@@ -190,6 +194,11 @@ bool JoltProjectSettings::areas_detect_static_bodies() {
 
 bool JoltProjectSettings::report_all_kinematic_contacts() {
 	static const auto value = get_setting<bool>(KINEMATIC_CONTACTS);
+	return value;
+}
+
+float JoltProjectSettings::get_soft_body_point_margin() {
+	static const auto value = get_setting<float>(SOFT_BODY_POINT_MARGIN);
 	return value;
 }
 
