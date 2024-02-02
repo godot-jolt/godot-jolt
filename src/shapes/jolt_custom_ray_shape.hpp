@@ -131,9 +131,7 @@ public:
 		[[maybe_unused]] float p_delta_time,
 		[[maybe_unused]] JPH::Vec3Arg p_displacement_due_to_gravity,
 		[[maybe_unused]] int p_colliding_shape_index
-	) const override {
-		ERR_FAIL_NOT_IMPL();
-	}
+	) const override { }
 
 	JPH::Shape::Stats GetStats() const override { return {sizeof(*this), 0}; }
 
