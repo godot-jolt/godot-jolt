@@ -62,7 +62,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 		   [[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id1,
 		   const JPH::Body& p_body2,
 		   [[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id2) {
-			return abs(min(p_body1.GetFriction(), p_body2.GetFriction()));
+			return ABS(MIN(p_body1.GetFriction(), p_body2.GetFriction()));
 		}
 	);
 
@@ -71,7 +71,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 		   [[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id1,
 		   const JPH::Body& p_body2,
 		   [[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id2) {
-			return clamp(p_body1.GetRestitution() + p_body2.GetRestitution(), 0.0f, 1.0f);
+			return CLAMP(p_body1.GetRestitution() + p_body2.GetRestitution(), 0.0f, 1.0f);
 		}
 	);
 

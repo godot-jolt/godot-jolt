@@ -468,7 +468,7 @@ void JoltBodyImpl3D::set_max_contacts_reported(int32_t p_count) {
 	};
 
 	contacts.resize(p_count);
-	contact_count = min(contact_count, p_count);
+	contact_count = MIN(contact_count, p_count);
 
 	const bool use_manifold_reduction = !reports_contacts();
 
