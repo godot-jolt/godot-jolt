@@ -76,7 +76,7 @@ void JoltSoftBodyImpl3D::set_mesh(const RID& p_mesh) {
 void JoltSoftBodyImpl3D::set_simulation_precision(int32_t p_precision) {
 	QUIET_FAIL_COND(simulation_precision == p_precision);
 
-	simulation_precision = p_precision;
+	simulation_precision = MAX(p_precision, 0);
 
 	_simulation_precision_changed();
 }
@@ -84,7 +84,7 @@ void JoltSoftBodyImpl3D::set_simulation_precision(int32_t p_precision) {
 void JoltSoftBodyImpl3D::set_mass(float p_mass) {
 	QUIET_FAIL_COND(mass == p_mass);
 
-	mass = p_mass;
+	mass = MAX(p_mass, 0.0f);
 
 	_mass_changed();
 }
@@ -96,13 +96,13 @@ float JoltSoftBodyImpl3D::get_stiffness_coefficient() const {
 void JoltSoftBodyImpl3D::set_stiffness_coefficient(float p_coefficient) {
 	QUIET_FAIL_COND(stiffness_coefficient == p_coefficient);
 
-	stiffness_coefficient = clamp(p_coefficient, 0.0f, 1.0f);
+	stiffness_coefficient = CLAMP(p_coefficient, 0.0f, 1.0f);
 }
 
 void JoltSoftBodyImpl3D::set_pressure(float p_pressure) {
 	QUIET_FAIL_COND(pressure == p_pressure);
 
-	pressure = p_pressure;
+	pressure = MAX(p_pressure, 0.0f);
 
 	_pressure_changed();
 }
@@ -110,7 +110,7 @@ void JoltSoftBodyImpl3D::set_pressure(float p_pressure) {
 void JoltSoftBodyImpl3D::set_linear_damping(float p_damping) {
 	QUIET_FAIL_COND(linear_damping == p_damping);
 
-	linear_damping = p_damping;
+	linear_damping = MAX(p_damping, 0.0f);
 
 	_damping_changed();
 }
@@ -567,7 +567,7 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 		// HACK(mihe): Since Godot's stiffness is input as a coefficient between 0 and 1, and Jolt
 		// uses actual stiffness for its edge constraints, we crudely map one to the other with an
 		// arbitrary constant.
-		const float stiffness = max(stiffness_coefficient * 100'000.0f, 0.00001f);
+		const float stiffness = MAX(stiffness_coefficient * 100'000.0f, 0.00001f);
 		const float inverse_stiffness = 1.0f / stiffness;
 
 		SymmetricBitTable marked_edges((int32_t)physics_vertices.size());
