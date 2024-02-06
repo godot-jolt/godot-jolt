@@ -710,11 +710,15 @@ void JoltSoftBodyImpl3D::_update_group_filter() {
 	body->GetCollisionGroup().SetGroupFilter(group_filter);
 }
 
-void JoltSoftBodyImpl3D::_mesh_changed() {
+void JoltSoftBodyImpl3D::_try_rebuild() {
 	if (space != nullptr) {
 		_deref_shared_data();
 		_reset_space();
 	}
+}
+
+void JoltSoftBodyImpl3D::_mesh_changed() {
+	_try_rebuild();
 }
 
 void JoltSoftBodyImpl3D::_damping_changed() {

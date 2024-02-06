@@ -117,6 +117,8 @@ private:
 
 	void _update_group_filter();
 
+	void _try_rebuild();
+
 	void _mesh_changed();
 
 	void _damping_changed();
