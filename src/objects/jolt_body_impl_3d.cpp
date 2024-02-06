@@ -57,20 +57,18 @@ void JoltBodyImpl3D::set_transform(const Transform3D& p_transform) {
 		_shapes_changed();
 	}
 
-	if (is_kinematic()) {
+	if (space == nullptr) {
+		jolt_settings->mPosition = to_jolt(new_transform.origin);
+		jolt_settings->mRotation = to_jolt(new_transform.basis);
+	} else if (is_kinematic()) {
 		kinematic_transform = p_transform;
 	} else {
-		if (space == nullptr) {
-			jolt_settings->mPosition = to_jolt(new_transform.origin);
-			jolt_settings->mRotation = to_jolt(new_transform.basis);
-		} else {
-			space->get_body_iface().SetPositionAndRotation(
-				jolt_id,
-				to_jolt(new_transform.origin),
-				to_jolt(new_transform.basis),
-				JPH::EActivation::DontActivate
-			);
-		}
+		space->get_body_iface().SetPositionAndRotation(
+			jolt_id,
+			to_jolt(new_transform.origin),
+			to_jolt(new_transform.basis),
+			JPH::EActivation::DontActivate
+		);
 	}
 
 	_transform_changed();
