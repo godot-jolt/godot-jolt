@@ -119,13 +119,7 @@ private:
 
 	void _mesh_changed();
 
-	void _mass_changed();
-
-	void _pressure_changed();
-
 	void _damping_changed();
-
-	void _simulation_precision_changed();
 
 	void _pins_changed();
 

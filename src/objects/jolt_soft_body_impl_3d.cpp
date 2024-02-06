@@ -78,7 +78,7 @@ void JoltSoftBodyImpl3D::set_simulation_precision(int32_t p_precision) {
 
 	simulation_precision = MAX(p_precision, 0);
 
-	_simulation_precision_changed();
+	_update_simulation_precision();
 }
 
 void JoltSoftBodyImpl3D::set_mass(float p_mass) {
@@ -86,7 +86,7 @@ void JoltSoftBodyImpl3D::set_mass(float p_mass) {
 
 	mass = MAX(p_mass, 0.0f);
 
-	_mass_changed();
+	_update_mass();
 }
 
 float JoltSoftBodyImpl3D::get_stiffness_coefficient() const {
@@ -102,7 +102,7 @@ void JoltSoftBodyImpl3D::set_pressure(float p_pressure) {
 
 	pressure = MAX(p_pressure, 0.0f);
 
-	_pressure_changed();
+	_update_pressure();
 }
 
 void JoltSoftBodyImpl3D::set_linear_damping(float p_damping) {
@@ -110,7 +110,7 @@ void JoltSoftBodyImpl3D::set_linear_damping(float p_damping) {
 
 	linear_damping = MAX(p_damping, 0.0f);
 
-	_damping_changed();
+	_update_damping();
 }
 
 float JoltSoftBodyImpl3D::get_drag() const {
@@ -717,20 +717,8 @@ void JoltSoftBodyImpl3D::_mesh_changed() {
 	}
 }
 
-void JoltSoftBodyImpl3D::_mass_changed() {
-	_update_mass();
-}
-
-void JoltSoftBodyImpl3D::_pressure_changed() {
-	_update_pressure();
-}
-
 void JoltSoftBodyImpl3D::_damping_changed() {
 	_update_damping();
-}
-
-void JoltSoftBodyImpl3D::_simulation_precision_changed() {
-	_update_simulation_precision();
 }
 
 void JoltSoftBodyImpl3D::_pins_changed() {
