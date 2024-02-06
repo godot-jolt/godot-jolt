@@ -94,8 +94,6 @@ float JoltSoftBodyImpl3D::get_stiffness_coefficient() const {
 }
 
 void JoltSoftBodyImpl3D::set_stiffness_coefficient(float p_coefficient) {
-	QUIET_FAIL_COND(stiffness_coefficient == p_coefficient);
-
 	stiffness_coefficient = CLAMP(p_coefficient, 0.0f, 1.0f);
 }
 
