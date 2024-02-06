@@ -103,8 +103,6 @@ private:
 
 	void _add_to_space() override;
 
-	bool _create_shared(Shared* p_result);
-
 	bool _ref_shared_data();
 
 	void _deref_shared_data();
