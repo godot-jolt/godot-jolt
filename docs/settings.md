@@ -233,6 +233,15 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       </td>
     </tr>
     <tr>
+      <td>Soft Bodies</td>
+      <td>Point Margin</td>
+      <td>
+        How much of a margin to add to the soft body points. This can keep soft bodies (like cloth)
+        from laying perfectly flush against other surfaces, thereby preventing Z-fighting.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
       <td>Joints</td>
       <td>World Node</td>
       <td>
