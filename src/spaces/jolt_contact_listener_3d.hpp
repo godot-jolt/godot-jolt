@@ -1,6 +1,6 @@
 #pragma once
 
-class JoltObjectImpl3D;
+class JoltShapedObjectImpl3D;
 class JoltSpace3D;
 
 class JoltContactListener3D final : public JPH::ContactListener {
@@ -58,7 +58,7 @@ public:
 	explicit JoltContactListener3D(JoltSpace3D* p_space)
 		: space(p_space) { }
 
-	void listen_for(JoltObjectImpl3D* p_object);
+	void listen_for(JoltShapedObjectImpl3D* p_object);
 
 	void pre_step();
 

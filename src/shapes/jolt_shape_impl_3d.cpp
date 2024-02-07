@@ -1,6 +1,6 @@
 #include "jolt_shape_impl_3d.hpp"
 
-#include "objects/jolt_object_impl_3d.hpp"
+#include "objects/jolt_shaped_object_impl_3d.hpp"
 #include "shapes/jolt_custom_user_data_shape.hpp"
 
 namespace {
@@ -11,11 +11,11 @@ constexpr float DEFAULT_SOLVER_BIAS = 0.0;
 
 JoltShapeImpl3D::~JoltShapeImpl3D() = default;
 
-void JoltShapeImpl3D::add_owner(JoltObjectImpl3D* p_owner) {
+void JoltShapeImpl3D::add_owner(JoltShapedObjectImpl3D* p_owner) {
 	ref_counts_by_owner[p_owner]++;
 }
 
-void JoltShapeImpl3D::remove_owner(JoltObjectImpl3D* p_owner) {
+void JoltShapeImpl3D::remove_owner(JoltShapedObjectImpl3D* p_owner) {
 	if (--ref_counts_by_owner[p_owner] <= 0) {
 		ref_counts_by_owner.erase(p_owner);
 	}
@@ -313,7 +313,7 @@ String JoltShapeImpl3D::_owners_to_string() const {
 		return "'<unknown>' and 0 other object(s)";
 	}
 
-	const JoltObjectImpl3D& random_owner = *ref_counts_by_owner.begin()->first;
+	const JoltShapedObjectImpl3D& random_owner = *ref_counts_by_owner.begin()->first;
 
 	return vformat("'%s' and %d other object(s)", random_owner.to_string(), owner_count - 1);
 }

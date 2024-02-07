@@ -4,6 +4,7 @@
 #include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_group_filter.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
+#include "objects/jolt_soft_body_impl_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
@@ -41,13 +42,39 @@ bool integrate(TValue& p_value, PhysicsServer3D::AreaSpaceOverrideMode p_mode, T
 } // namespace
 
 JoltBodyImpl3D::JoltBodyImpl3D()
-	: JoltObjectImpl3D(JoltObjectImpl3D::OBJECT_TYPE_BODY) { }
+	: JoltShapedObjectImpl3D(OBJECT_TYPE_BODY) { }
 
 JoltBodyImpl3D::~JoltBodyImpl3D() {
 	memdelete_safely(direct_state);
 }
 
-Variant JoltBodyImpl3D::get_state(PhysicsServer3D::BodyState p_state) {
+void JoltBodyImpl3D::set_transform(const Transform3D& p_transform) {
+	Vector3 new_scale;
+	const Transform3D new_transform = Math::decomposed(p_transform, new_scale);
+
+	if (!scale.is_equal_approx(new_scale)) {
+		scale = new_scale;
+		_shapes_changed();
+	}
+
+	if (space == nullptr) {
+		jolt_settings->mPosition = to_jolt(new_transform.origin);
+		jolt_settings->mRotation = to_jolt(new_transform.basis);
+	} else if (is_kinematic()) {
+		kinematic_transform = p_transform;
+	} else {
+		space->get_body_iface().SetPositionAndRotation(
+			jolt_id,
+			to_jolt(new_transform.origin),
+			to_jolt(new_transform.basis),
+			JPH::EActivation::DontActivate
+		);
+	}
+
+	_transform_changed();
+}
+
+Variant JoltBodyImpl3D::get_state(PhysicsServer3D::BodyState p_state) const {
 	switch (p_state) {
 		case PhysicsServer3D::BODY_STATE_TRANSFORM: {
 			return get_transform_scaled();
@@ -1020,27 +1047,12 @@ void JoltBodyImpl3D::set_friction(float p_friction) {
 	body->SetFriction(p_friction);
 }
 
-float JoltBodyImpl3D::get_gravity_scale() const {
-	if (space == nullptr) {
-		return jolt_settings->mGravityFactor;
-	}
-
-	const JoltReadableBody3D body = space->read_body(jolt_id);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return body->GetMotionPropertiesUnchecked()->GetGravityFactor();
-}
-
 void JoltBodyImpl3D::set_gravity_scale(float p_scale) {
-	if (space == nullptr) {
-		jolt_settings->mGravityFactor = p_scale;
+	if (gravity_scale == p_scale) {
 		return;
 	}
 
-	const JoltWritableBody3D body = space->write_body(jolt_id);
-	ERR_FAIL_COND(body.is_invalid());
-
-	body->GetMotionPropertiesUnchecked()->SetGravityFactor(p_scale);
+	gravity_scale = p_scale;
 
 	_motion_changed();
 }
@@ -1105,13 +1117,17 @@ void JoltBodyImpl3D::set_axis_lock(PhysicsServer3D::BodyAxis p_axis, bool p_enab
 	}
 }
 
-bool JoltBodyImpl3D::can_collide_with(const JoltBodyImpl3D& p_other) const {
-	return (collision_mask & p_other.get_collision_layer()) != 0;
-}
-
 bool JoltBodyImpl3D::can_interact_with(const JoltBodyImpl3D& p_other) const {
 	return (can_collide_with(p_other) || p_other.can_collide_with(*this)) &&
 		!has_collision_exception(p_other.get_rid()) && !p_other.has_collision_exception(rid);
+}
+
+bool JoltBodyImpl3D::can_interact_with(const JoltSoftBodyImpl3D& p_other) const {
+	return p_other.can_interact_with(*this);
+}
+
+bool JoltBodyImpl3D::can_interact_with(const JoltAreaImpl3D& p_other) const {
+	return p_other.can_interact_with(*this);
 }
 
 JPH::BroadPhaseLayer JoltBodyImpl3D::_get_broad_phase_layer() const {
@@ -1128,6 +1144,12 @@ JPH::BroadPhaseLayer JoltBodyImpl3D::_get_broad_phase_layer() const {
 			ERR_FAIL_D_MSG(vformat("Unhandled body mode: '%d'", mode));
 		}
 	}
+}
+
+JPH::ObjectLayer JoltBodyImpl3D::_get_object_layer() const {
+	ERR_FAIL_NULL_D(space);
+
+	return space->map_to_object_layer(_get_broad_phase_layer(), collision_layer, collision_mask);
 }
 
 JPH::EMotionType JoltBodyImpl3D::_get_motion_type() const {
@@ -1148,9 +1170,21 @@ JPH::EMotionType JoltBodyImpl3D::_get_motion_type() const {
 	}
 }
 
-void JoltBodyImpl3D::_create_in_space() {
-	_create_begin();
+void JoltBodyImpl3D::_add_to_space() {
+	ON_SCOPE_EXIT {
+		delete_safely(jolt_settings);
+	};
 
+	jolt_shape = build_shape();
+
+	JPH::CollisionGroup::GroupID group_id = 0;
+	JPH::CollisionGroup::SubGroupID sub_group_id = 0;
+	JoltGroupFilter::encode_object(this, group_id, sub_group_id);
+
+	jolt_settings->mUserData = reinterpret_cast<JPH::uint64>(this);
+	jolt_settings->mObjectLayer = _get_object_layer();
+	jolt_settings->mCollisionGroup = JPH::CollisionGroup(nullptr, group_id, sub_group_id);
+	jolt_settings->mMotionType = _get_motion_type();
 	jolt_settings->mAllowDynamicOrKinematic = true;
 	jolt_settings->mCollideKinematicVsNonDynamic = reports_all_kinematic_contacts();
 	jolt_settings->mUseManifoldReduction = !reports_contacts();
@@ -1164,7 +1198,28 @@ void JoltBodyImpl3D::_create_in_space() {
 	jolt_settings->mMassPropertiesOverride.mMass = 1.0f;
 	jolt_settings->mMassPropertiesOverride.mInertia = JPH::Mat44::sIdentity();
 
-	_create_end();
+	jolt_settings->SetShape(jolt_shape);
+
+	JPH::BodyInterface& body_iface = space->get_body_iface();
+	JPH::Body* body = body_iface.CreateBody(*jolt_settings);
+
+	ERR_FAIL_NULL_MSG(
+		body,
+		vformat(
+			"Failed to create underlying Jolt body for '%s'. "
+			"Consider increasing maximum number of bodies in project settings. "
+			"Maximum number of bodies is currently set to %d.",
+			to_string(),
+			JoltProjectSettings::get_max_bodies()
+		)
+	);
+
+	jolt_id = body->GetID();
+
+	// HACK(mihe): Since `BODY_STATE_TRANSFORM` will be set right after creation it's more or less
+	// impossible to have a body be sleeping when created, so we default to always starting out as
+	// awake/active.
+	body_iface.AddBody(jolt_id, JPH::EActivation::Activate);
 }
 
 void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {
@@ -1212,16 +1267,6 @@ void JoltBodyImpl3D::_pre_step_kinematic(float p_step, JPH::Body& p_jolt_body) {
 		// are set as active (and thereby have their state synchronized on every step) only if its
 		// max reported contacts is non-zero.
 		sync_state = true;
-	}
-}
-
-void JoltBodyImpl3D::_apply_transform(const Transform3D& p_transform) {
-	if (is_kinematic()) {
-		kinematic_transform = p_transform;
-	}
-
-	if (!is_kinematic() || space == nullptr) {
-		JoltObjectImpl3D::_apply_transform(p_transform);
 	}
 }
 
@@ -1410,7 +1455,7 @@ void JoltBodyImpl3D::_update_gravity(JPH::Body& p_jolt_body) {
 		gravity += space->get_default_area()->compute_gravity(position);
 	}
 
-	gravity *= p_jolt_body.GetMotionPropertiesUnchecked()->GetGravityFactor();
+	gravity *= gravity_scale;
 }
 
 void JoltBodyImpl3D::_update_damp() {
@@ -1515,16 +1560,17 @@ void JoltBodyImpl3D::_destroy_joint_constraints() {
 }
 
 void JoltBodyImpl3D::_update_group_filter() {
+	JPH::GroupFilter* group_filter = !exceptions.is_empty() ? JoltGroupFilter::instance : nullptr;
+
 	if (space == nullptr) {
+		jolt_settings->mCollisionGroup.SetGroupFilter(group_filter);
 		return;
 	}
 
 	const JoltWritableBody3D body = space->write_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
-	body->GetCollisionGroup().SetGroupFilter(
-		!exceptions.is_empty() ? JoltGroupFilter::instance : nullptr
-	);
+	body->GetCollisionGroup().SetGroupFilter(group_filter);
 }
 
 void JoltBodyImpl3D::_mode_changed() {
@@ -1535,16 +1581,22 @@ void JoltBodyImpl3D::_mode_changed() {
 }
 
 void JoltBodyImpl3D::_shapes_built() {
+	JoltShapedObjectImpl3D::_shapes_built();
+
 	_update_mass_properties();
 	_update_joint_constraints();
 	wake_up();
 }
 
 void JoltBodyImpl3D::_space_changing() {
+	JoltShapedObjectImpl3D::_space_changing();
+
 	_destroy_joint_constraints();
 }
 
 void JoltBodyImpl3D::_space_changed() {
+	JoltShapedObjectImpl3D::_space_changed();
+
 	_update_kinematic_transform();
 	_update_mass_properties();
 	_update_group_filter();

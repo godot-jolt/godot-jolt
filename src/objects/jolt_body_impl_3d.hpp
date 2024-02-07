@@ -1,12 +1,13 @@
 #pragma once
 
-#include "objects/jolt_object_impl_3d.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
+#include "objects/jolt_shaped_object_impl_3d.hpp"
 
 class JoltAreaImpl3D;
 class JoltJointImpl3D;
+class JoltSoftBodyImpl3D;
 
-class JoltBodyImpl3D final : public JoltObjectImpl3D {
+class JoltBodyImpl3D final : public JoltShapedObjectImpl3D {
 public:
 	using DampMode = PhysicsServer3D::BodyDampMode;
 
@@ -38,7 +39,9 @@ public:
 
 	~JoltBodyImpl3D() override;
 
-	Variant get_state(PhysicsServer3D::BodyState p_state);
+	void set_transform(const Transform3D& p_transform);
+
+	Variant get_state(PhysicsServer3D::BodyState p_state) const;
 
 	void set_state(PhysicsServer3D::BodyState p_state, const Variant& p_value);
 
@@ -208,7 +211,7 @@ public:
 
 	void set_friction(float p_friction);
 
-	float get_gravity_scale() const;
+	float get_gravity_scale() const { return gravity_scale; };
 
 	void set_gravity_scale(float p_scale);
 
@@ -244,16 +247,20 @@ public:
 
 	bool are_axes_locked() const { return locked_axes != 0; }
 
-	bool can_collide_with(const JoltBodyImpl3D& p_other) const;
+	bool can_interact_with(const JoltBodyImpl3D& p_other) const override;
 
-	bool can_interact_with(const JoltBodyImpl3D& p_other) const;
+	bool can_interact_with(const JoltSoftBodyImpl3D& p_other) const override;
+
+	bool can_interact_with(const JoltAreaImpl3D& p_other) const override;
 
 private:
 	JPH::BroadPhaseLayer _get_broad_phase_layer() const override;
 
+	JPH::ObjectLayer _get_object_layer() const override;
+
 	JPH::EMotionType _get_motion_type() const override;
 
-	void _create_in_space() override;
+	void _add_to_space() override;
 
 	void _integrate_forces(float p_step, JPH::Body& p_jolt_body);
 
@@ -262,8 +269,6 @@ private:
 	void _pre_step_rigid(float p_step, JPH::Body& p_jolt_body);
 
 	void _pre_step_kinematic(float p_step, JPH::Body& p_jolt_body);
-
-	void _apply_transform(const Transform3D& p_transform) override;
 
 	JPH::EAllowedDOFs _calculate_allowed_dofs() const;
 
@@ -305,7 +310,7 @@ private:
 
 	void _joints_changed();
 
-	void _transform_changed() override;
+	void _transform_changed();
 
 	void _motion_changed();
 
@@ -362,6 +367,8 @@ private:
 	float total_linear_damp = 0.0f;
 
 	float total_angular_damp = 0.0f;
+
+	float gravity_scale = 1.0f;
 
 	float collision_priority = 1.0f;
 

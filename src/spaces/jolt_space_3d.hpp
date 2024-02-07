@@ -66,9 +66,9 @@ public:
 
 	JoltPhysicsDirectSpaceState3D* get_direct_state();
 
-	void set_default_area(JoltAreaImpl3D* p_area) { default_area = p_area; }
-
 	JoltAreaImpl3D* get_default_area() const { return default_area; }
+
+	void set_default_area(JoltAreaImpl3D* p_area);
 
 	float get_last_step() const { return last_step; }
 

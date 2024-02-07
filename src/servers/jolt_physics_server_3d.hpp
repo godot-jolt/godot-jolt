@@ -5,6 +5,7 @@ class JoltBodyImpl3D;
 class JoltJobSystem;
 class JoltJointImpl3D;
 class JoltShapeImpl3D;
+class JoltSoftBodyImpl3D;
 class JoltSpace3D;
 
 class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
@@ -389,16 +390,17 @@ public:
 
 	uint32_t _soft_body_get_collision_mask(const RID& p_body) const override;
 
-	void _soft_body_add_collision_exception(const RID& p_body, const RID& p_body_b) override;
+	void _soft_body_add_collision_exception(const RID& p_body, const RID& p_excepted_body) override;
 
-	void _soft_body_remove_collision_exception(const RID& p_body, const RID& p_body_b) override;
+	void _soft_body_remove_collision_exception(const RID& p_body, const RID& p_excepted_body)
+		override;
 
 	TypedArray<RID> _soft_body_get_collision_exceptions(const RID& p_body) const override;
 
 	void _soft_body_set_state(
 		const RID& p_body,
 		PhysicsServer3D::BodyState p_state,
-		const Variant& p_variant
+		const Variant& p_value
 	) override;
 
 	Variant _soft_body_get_state(const RID& p_body, PhysicsServer3D::BodyState p_state)
@@ -406,8 +408,7 @@ public:
 
 	void _soft_body_set_transform(const RID& p_body, const Transform3D& p_transform) override;
 
-	void _soft_body_set_simulation_precision(const RID& p_body, int32_t p_simulation_precision)
-		override;
+	void _soft_body_set_simulation_precision(const RID& p_body, int32_t p_precision) override;
 
 	int32_t _soft_body_get_simulation_precision(const RID& p_body) const override;
 
@@ -415,21 +416,19 @@ public:
 
 	double _soft_body_get_total_mass(const RID& p_body) const override;
 
-	void _soft_body_set_linear_stiffness(const RID& p_body, double p_linear_stiffness) override;
+	void _soft_body_set_linear_stiffness(const RID& p_body, double p_coefficient) override;
 
 	double _soft_body_get_linear_stiffness(const RID& p_body) const override;
 
-	void _soft_body_set_pressure_coefficient(const RID& p_body, double p_pressure_coefficient)
-		override;
+	void _soft_body_set_pressure_coefficient(const RID& p_body, double p_coefficient) override;
 
 	double _soft_body_get_pressure_coefficient(const RID& p_body) const override;
 
-	void _soft_body_set_damping_coefficient(const RID& p_body, double p_damping_coefficient)
-		override;
+	void _soft_body_set_damping_coefficient(const RID& p_body, double p_coefficient) override;
 
 	double _soft_body_get_damping_coefficient(const RID& p_body) const override;
 
-	void _soft_body_set_drag_coefficient(const RID& p_body, double p_drag_coefficient) override;
+	void _soft_body_set_drag_coefficient(const RID& p_body, double p_coefficient) override;
 
 	double _soft_body_get_drag_coefficient(const RID& p_body) const override;
 
@@ -623,6 +622,8 @@ public:
 
 	void free_body(JoltBodyImpl3D* p_body);
 
+	void free_soft_body(JoltSoftBodyImpl3D* p_body);
+
 	void free_shape(JoltShapeImpl3D* p_shape);
 
 	void free_joint(JoltJointImpl3D* p_joint);
@@ -746,6 +747,8 @@ private:
 	mutable RID_PtrOwner<JoltAreaImpl3D> area_owner;
 
 	mutable RID_PtrOwner<JoltBodyImpl3D> body_owner;
+
+	mutable RID_PtrOwner<JoltSoftBodyImpl3D> soft_body_owner;
 
 	mutable RID_PtrOwner<JoltShapeImpl3D> shape_owner;
 

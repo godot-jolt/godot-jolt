@@ -78,6 +78,10 @@ void JoltDebugRenderer3D::draw(
 		jolt_settings.mDrawVelocity = p_settings.draw_velocities;
 		jolt_settings.mDrawMassAndInertia = false;
 		jolt_settings.mDrawSleepStats = false;
+		jolt_settings.mDrawSoftBodyVertices = p_settings.draw_soft_body_vertices;
+		jolt_settings.mDrawSoftBodyEdgeConstraints = p_settings.draw_soft_body_edge_constraints;
+		jolt_settings.mDrawSoftBodyVolumeConstraints = p_settings.draw_soft_body_volume_constraints;
+		jolt_settings.mDrawSoftBodyPredictedBounds = p_settings.draw_soft_body_predicted_bounds;
 
 		physics_system.DrawBodies(jolt_settings, this);
 	}

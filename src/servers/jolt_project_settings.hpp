@@ -16,6 +16,8 @@ public:
 
 	static bool report_all_kinematic_contacts();
 
+	static float get_soft_body_point_margin();
+
 	static bool use_joint_world_node_a();
 
 	static float get_ccd_movement_threshold();

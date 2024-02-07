@@ -1,10 +1,11 @@
 #pragma once
 
-#include "objects/jolt_object_impl_3d.hpp"
+#include "objects/jolt_shaped_object_impl_3d.hpp"
 
 class JoltBodyImpl3D;
+class JoltSoftBodyImpl3D;
 
-class JoltAreaImpl3D final : public JoltObjectImpl3D {
+class JoltAreaImpl3D final : public JoltShapedObjectImpl3D {
 	struct BodyIDHasher {
 		static uint32_t hash(const JPH::BodyID& p_id) {
 			return hash_fmix32(p_id.GetIndexAndSequenceNumber());
@@ -56,6 +57,12 @@ public:
 
 	JoltAreaImpl3D();
 
+	bool is_default_area() const;
+
+	void set_default_area(bool p_value);
+
+	void set_transform(const Transform3D& p_transform);
+
 	Variant get_param(PhysicsServer3D::AreaParameter p_param) const;
 
 	void set_param(PhysicsServer3D::AreaParameter p_param, const Variant& p_value);
@@ -74,11 +81,15 @@ public:
 
 	bool can_monitor(const JoltBodyImpl3D& p_other) const;
 
+	bool can_monitor(const JoltSoftBodyImpl3D& p_other) const;
+
 	bool can_monitor(const JoltAreaImpl3D& p_other) const;
 
-	bool can_interact_with(const JoltBodyImpl3D& p_other) const;
+	bool can_interact_with(const JoltBodyImpl3D& p_other) const override;
 
-	bool can_interact_with(const JoltAreaImpl3D& p_other) const;
+	bool can_interact_with(const JoltSoftBodyImpl3D& p_other) const override;
+
+	bool can_interact_with(const JoltAreaImpl3D& p_other) const override;
 
 	Vector3 get_velocity_at_position(const Vector3& p_position) const override;
 
@@ -86,7 +97,7 @@ public:
 
 	bool is_point_gravity() const { return point_gravity; }
 
-	void set_point_gravity(bool p_enabled) { point_gravity = p_enabled; }
+	void set_point_gravity(bool p_enabled);
 
 	float get_priority() const { return priority; }
 
@@ -94,11 +105,11 @@ public:
 
 	float get_gravity() const { return gravity; }
 
-	void set_gravity(float p_gravity) { gravity = p_gravity; }
+	void set_gravity(float p_gravity);
 
 	float get_point_gravity_distance() const { return point_gravity_distance; }
 
-	void set_point_gravity_distance(float p_distance) { point_gravity_distance = p_distance; }
+	void set_point_gravity_distance(float p_distance);
 
 	float get_linear_damp() const { return linear_damp; }
 
@@ -110,7 +121,7 @@ public:
 
 	OverrideMode get_gravity_mode() const { return gravity_mode; }
 
-	void set_gravity_mode(OverrideMode p_mode) { gravity_mode = p_mode; }
+	void set_gravity_mode(OverrideMode p_mode);
 
 	OverrideMode get_linear_damp_mode() const { return linear_damp_mode; }
 
@@ -122,7 +133,7 @@ public:
 
 	Vector3 get_gravity_vector() const { return gravity_vector; }
 
-	void set_gravity_vector(const Vector3& p_vector) { gravity_vector = p_vector; }
+	void set_gravity_vector(const Vector3& p_vector);
 
 	Vector3 compute_gravity(const Vector3& p_position) const;
 
@@ -165,9 +176,11 @@ public:
 private:
 	JPH::BroadPhaseLayer _get_broad_phase_layer() const override;
 
+	JPH::ObjectLayer _get_object_layer() const override;
+
 	JPH::EMotionType _get_motion_type() const override { return JPH::EMotionType::Kinematic; }
 
-	void _create_in_space() override;
+	void _add_to_space() override;
 
 	void _add_shape_pair(
 		Overlap& p_overlap,
@@ -207,6 +220,8 @@ private:
 
 	void _update_group_filter();
 
+	void _update_default_gravity();
+
 	void _space_changing() override;
 
 	void _space_changed() override;
@@ -216,6 +231,8 @@ private:
 	void _area_monitoring_changed();
 
 	void _monitorable_changed();
+
+	void _gravity_changed();
 
 	OverlapsById bodies_by_id;
 

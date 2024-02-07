@@ -29,6 +29,18 @@ void JoltDebugGeometry3D::_bind_methods() {
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_triangle_outlines);
 	BIND_METHOD(JoltDebugGeometry3D, set_draw_triangle_outlines, "enabled");
 
+	BIND_METHOD(JoltDebugGeometry3D, get_draw_soft_body_vertices);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_soft_body_vertices, "enabled");
+
+	BIND_METHOD(JoltDebugGeometry3D, get_draw_soft_body_edge_constraints);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_soft_body_edge_constraints, "enabled");
+
+	BIND_METHOD(JoltDebugGeometry3D, get_draw_soft_body_volume_constraints);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_soft_body_volume_constraints, "enabled");
+
+	BIND_METHOD(JoltDebugGeometry3D, get_draw_soft_body_predicted_bounds);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_soft_body_predicted_bounds, "enabled");
+
 	BIND_METHOD(JoltDebugGeometry3D, get_draw_constraint_reference_frames);
 	BIND_METHOD(JoltDebugGeometry3D, set_draw_constraint_reference_frames, "enabled");
 
@@ -61,6 +73,14 @@ void JoltDebugGeometry3D::_bind_methods() {
 	BIND_PROPERTY("draw_velocities", Variant::BOOL);
 
 	BIND_PROPERTY("draw_triangle_outlines", Variant::BOOL);
+
+	BIND_PROPERTY("draw_soft_body_vertices", Variant::BOOL);
+
+	BIND_PROPERTY("draw_soft_body_edge_constraints", Variant::BOOL);
+
+	BIND_PROPERTY("draw_soft_body_volume_constraints", Variant::BOOL);
+
+	BIND_PROPERTY("draw_soft_body_predicted_bounds", Variant::BOOL);
 
 	BIND_PROPERTY("draw_constraint_reference_frames", Variant::BOOL);
 
@@ -262,6 +282,62 @@ void JoltDebugGeometry3D::set_draw_triangle_outlines([[maybe_unused]] bool p_ena
 #ifdef JPH_DEBUG_RENDERER
 	JPH::MeshShape::sDrawTriangleOutlines = p_enabled;
 	JPH::HeightFieldShape::sDrawTriangleOutlines = p_enabled;
+#endif // JPH_DEBUG_RENDERER
+}
+
+bool JoltDebugGeometry3D::get_draw_soft_body_vertices() const {
+#ifdef JPH_DEBUG_RENDERER
+	return draw_settings.draw_soft_body_vertices;
+#else // JPH_DEBUG_RENDERER
+	return false;
+#endif // JPH_DEBUG_RENDERER
+}
+
+void JoltDebugGeometry3D::set_draw_soft_body_vertices([[maybe_unused]] bool p_enabled) {
+#ifdef JPH_DEBUG_RENDERER
+	draw_settings.draw_soft_body_vertices = p_enabled;
+#endif // JPH_DEBUG_RENDERER
+}
+
+bool JoltDebugGeometry3D::get_draw_soft_body_edge_constraints() const {
+#ifdef JPH_DEBUG_RENDERER
+	return draw_settings.draw_soft_body_edge_constraints;
+#else // JPH_DEBUG_RENDERER
+	return false;
+#endif // JPH_DEBUG_RENDERER
+}
+
+void JoltDebugGeometry3D::set_draw_soft_body_edge_constraints([[maybe_unused]] bool p_enabled) {
+#ifdef JPH_DEBUG_RENDERER
+	draw_settings.draw_soft_body_edge_constraints = p_enabled;
+#endif // JPH_DEBUG_RENDERER
+}
+
+bool JoltDebugGeometry3D::get_draw_soft_body_volume_constraints() const {
+#ifdef JPH_DEBUG_RENDERER
+	return draw_settings.draw_soft_body_volume_constraints;
+#else // JPH_DEBUG_RENDERER
+	return false;
+#endif // JPH_DEBUG_RENDERER
+}
+
+void JoltDebugGeometry3D::set_draw_soft_body_volume_constraints([[maybe_unused]] bool p_enabled) {
+#ifdef JPH_DEBUG_RENDERER
+	draw_settings.draw_soft_body_volume_constraints = p_enabled;
+#endif // JPH_DEBUG_RENDERER
+}
+
+bool JoltDebugGeometry3D::get_draw_soft_body_predicted_bounds() const {
+#ifdef JPH_DEBUG_RENDERER
+	return draw_settings.draw_soft_body_predicted_bounds;
+#else // JPH_DEBUG_RENDERER
+	return false;
+#endif // JPH_DEBUG_RENDERER
+}
+
+void JoltDebugGeometry3D::set_draw_soft_body_predicted_bounds([[maybe_unused]] bool p_enabled) {
+#ifdef JPH_DEBUG_RENDERER
+	draw_settings.draw_soft_body_predicted_bounds = p_enabled;
 #endif // JPH_DEBUG_RENDERER
 }
 
