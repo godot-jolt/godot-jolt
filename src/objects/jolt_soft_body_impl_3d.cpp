@@ -169,20 +169,8 @@ void JoltSoftBodyImpl3D::set_state(PhysicsServer3D::BodyState p_state, const Var
 }
 
 Transform3D JoltSoftBodyImpl3D::get_transform() const {
-	ERR_FAIL_NULL_D_MSG(
-		space,
-		vformat(
-			"Failed to retrieve transform for '%s'. "
-			"Doing so without a physics space is not supported by Godot Jolt. "
-			"If this relates to a node, try adding the node to a scene tree first.",
-			to_string()
-		)
-	);
-
-	const JoltReadableBody3D body = space->read_body(jolt_id);
-	ERR_FAIL_COND_D(body.is_invalid());
-
-	return {to_godot(body->GetRotation()), to_godot(body->GetPosition())};
+	// Since any transform gets baked into the vertices anyway we can just return identity here.
+	return {};
 }
 
 void JoltSoftBodyImpl3D::set_transform(const Transform3D& p_transform) {
