@@ -1,9 +1,6 @@
 #include "jolt_object_impl_3d.hpp"
 
-// #include "objects/jolt_area_impl_3d.hpp"
-// #include "objects/jolt_body_impl_3d.hpp"
 #include "objects/jolt_group_filter.hpp"
-// #include "objects/jolt_soft_body_impl_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_layer_mapper.hpp"
 #include "spaces/jolt_space_3d.hpp"
