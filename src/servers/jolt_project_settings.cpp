@@ -250,7 +250,10 @@ float JoltProjectSettings::get_position_correction() {
 }
 
 float JoltProjectSettings::get_active_edge_threshold() {
-	static const auto value = Math::cos(get_setting<float>(ACTIVE_EDGE_THRESHOLD));
+	static const auto value = use_enhanced_edge_removal()
+		? 0.996195f // Math::cos(5 degrees)
+		: Math::cos(get_setting<float>(ACTIVE_EDGE_THRESHOLD));
+
 	return value;
 }
 

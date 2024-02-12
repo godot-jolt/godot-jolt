@@ -170,7 +170,6 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	settings.mMaxSeparationDistance = (float)p_margin;
 
 	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 	}
 
@@ -255,7 +254,6 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	settings.mMaxSeparationDistance = (float)p_margin;
 
 	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 	}
 
@@ -315,7 +313,6 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	settings.mMaxSeparationDistance = (float)p_margin;
 
 	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 	}
 
@@ -386,7 +383,6 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	settings.mMaxSeparationDistance = (float)p_margin;
 
 	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 	}
 
@@ -756,7 +752,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 	settings.mMaxSeparationDistance = p_margin;
 
 	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 	}
 
@@ -863,7 +858,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 	JPH::CollideShapeSettings settings;
 
 	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 	}
 
@@ -935,7 +929,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	settings.mMaxSeparationDistance = p_margin;
 
 	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
 		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 	}
 
