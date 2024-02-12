@@ -42,12 +42,14 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What's not supported?
 
-- `SoftBody3D` is not supported (yet)
 - `WorldBoundaryShape3D` is not supported
 - The physics server is not thread-safe (yet)
 - Double-precision builds of Godot are not supported (yet)
 - Memory usage is not reflected in Godot's performance monitors (yet)
 - Ray-casts do not support `face_index`
+- Soft bodies do not support asymmetrical/one-way collisions (yet)
+- Soft bodies do not support the wind properties of `Area3D`
+- Soft bodies do not support the gravity/damping overrides of `Area3D`
 
 ## What else is different?
 
