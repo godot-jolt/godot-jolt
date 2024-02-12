@@ -41,14 +41,12 @@ public:
 	}
 
 	void GetSupportingFace(
-		[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id,
-		[[maybe_unused]] JPH::Vec3Arg p_direction,
-		[[maybe_unused]] JPH::Vec3Arg p_scale,
-		[[maybe_unused]] JPH::Mat44Arg p_center_of_mass_transform,
-		[[maybe_unused]] JPH::Shape::SupportingFace& p_vertices
-	) const override {
-		ERR_FAIL_NOT_IMPL();
-	}
+		const JPH::SubShapeID& p_sub_shape_id,
+		JPH::Vec3Arg p_direction,
+		JPH::Vec3Arg p_scale,
+		JPH::Mat44Arg p_center_of_mass_transform,
+		JPH::Shape::SupportingFace& p_vertices
+	) const override;
 
 	JPH::uint64 GetSubShapeUserData([[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id
 	) const override {

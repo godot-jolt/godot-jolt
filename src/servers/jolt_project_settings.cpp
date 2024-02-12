@@ -11,7 +11,8 @@ constexpr char SLEEP_ENABLED[] = "physics/jolt_3d/sleep/enabled";
 constexpr char SLEEP_VELOCITY_THRESHOLD[] = "physics/jolt_3d/sleep/velocity_threshold";
 constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_3d/sleep/time_threshold";
 
-constexpr char USE_SHAPE_MARGINS[] = "physics/jolt_3d/collisions/use_shape_margins";
+constexpr char SHAPE_MARGINS[] = "physics/jolt_3d/collisions/use_shape_margins";
+constexpr char EDGE_REMOVAL[] = "physics/jolt_3d/collisions/use_enhanced_internal_edge_removal";
 constexpr char AREAS_DETECT_STATIC[] = "physics/jolt_3d/collisions/areas_detect_static_bodies";
 constexpr char KINEMATIC_CONTACTS[] = "physics/jolt_3d/collisions/report_all_kinematic_contacts";
 
@@ -137,7 +138,8 @@ void JoltProjectSettings::register_settings() {
 	register_setting_hinted(SLEEP_VELOCITY_THRESHOLD, 0.03f, U"suffix:m/s");
 	register_setting_ranged(SLEEP_TIME_THRESHOLD, 0.5f, U"0,5,0.01,or_greater,suffix:s");
 
-	register_setting_plain(USE_SHAPE_MARGINS, true);
+	register_setting_plain(SHAPE_MARGINS, true);
+	register_setting_plain(EDGE_REMOVAL, true);
 	register_setting_plain(AREAS_DETECT_STATIC, false);
 	register_setting_plain(KINEMATIC_CONTACTS, false);
 
@@ -183,7 +185,7 @@ float JoltProjectSettings::get_sleep_time_threshold() {
 }
 
 bool JoltProjectSettings::use_shape_margins() {
-	static const auto value = get_setting<bool>(USE_SHAPE_MARGINS);
+	static const auto value = get_setting<bool>(SHAPE_MARGINS);
 	return value;
 }
 
@@ -194,6 +196,11 @@ bool JoltProjectSettings::areas_detect_static_bodies() {
 
 bool JoltProjectSettings::report_all_kinematic_contacts() {
 	static const auto value = get_setting<bool>(KINEMATIC_CONTACTS);
+	return value;
+}
+
+bool JoltProjectSettings::use_enhanced_edge_removal() {
+	static const auto value = get_setting<bool>(EDGE_REMOVAL);
 	return value;
 }
 
@@ -243,7 +250,10 @@ float JoltProjectSettings::get_position_correction() {
 }
 
 float JoltProjectSettings::get_active_edge_threshold() {
-	static const auto value = Math::cos(get_setting<float>(ACTIVE_EDGE_THRESHOLD));
+	static const auto value = use_enhanced_edge_removal()
+		? 0.996195f // Math::cos(5 degrees)
+		: Math::cos(get_setting<float>(ACTIVE_EDGE_THRESHOLD));
+
 	return value;
 }
 

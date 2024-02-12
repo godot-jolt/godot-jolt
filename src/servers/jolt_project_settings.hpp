@@ -16,6 +16,8 @@ public:
 
 	static bool report_all_kinematic_contacts();
 
+	static bool use_enhanced_edge_removal();
+
 	static float get_soft_body_point_margin();
 
 	static bool use_joint_world_node_a();
