@@ -203,6 +203,21 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Collisions</td>
+      <td>Use Enhanced Internal Edge Removal</td>
+      <td>
+        Whether or not to enable the enhanced internal edge removal, which means that extra effort
+        will be made to try to remove collisions with internal edges of `ConcavePolygonShape3D` and
+        `HeightMapShape3D`. This makes physics bodies move smoother over such shapes, at the cost of
+        performance.
+      </td>
+      <td>
+        Note that this applies to `RigidBody3D` as well as physics queries like `get_rest_info`,
+        `move_and_collide` and `move_and_slide`, which means that `CharacterBody3D` also benefits
+        from this.
+      </td>
+    </tr>
+    <tr>
+      <td>Collisions</td>
       <td>Areas Detect Static Bodies</td>
       <td>
         Whether or not <code>Area3D</code> is able to detect overlaps with <code>StaticBody3D</code>

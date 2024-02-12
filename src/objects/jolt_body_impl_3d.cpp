@@ -1191,6 +1191,10 @@ void JoltBodyImpl3D::_add_to_space() {
 	jolt_settings->mMaxLinearVelocity = JoltProjectSettings::get_max_linear_velocity();
 	jolt_settings->mMaxAngularVelocity = JoltProjectSettings::get_max_angular_velocity();
 
+	if (JoltProjectSettings::use_enhanced_edge_removal()) {
+		jolt_settings->mEnhancedInternalEdgeRemoval = true;
+	}
+
 	// HACK(mihe): We need to defer the setting of mass properties, to allow for modifying the
 	// inverse inertia for the axis-locking, which we can't do until the body is created, so we set
 	// it to some random values and calculate it properly once the body is created instead.
