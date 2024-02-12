@@ -139,7 +139,7 @@ void JoltProjectSettings::register_settings() {
 	register_setting_ranged(SLEEP_TIME_THRESHOLD, 0.5f, U"0,5,0.01,or_greater,suffix:s");
 
 	register_setting_plain(SHAPE_MARGINS, true);
-	register_setting_plain(EDGE_REMOVAL, false);
+	register_setting_plain(EDGE_REMOVAL, true);
 	register_setting_plain(AREAS_DETECT_STATIC, false);
 	register_setting_plain(KINEMATIC_CONTACTS, false);
 
