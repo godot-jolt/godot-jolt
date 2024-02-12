@@ -175,7 +175,7 @@ public:
 	using Hit = typename TInnerCollector::ResultType;
 
 	template<typename... TArgs>
-	JoltQueryCollectorNoEdges(TArgs&&... p_args)
+	explicit JoltQueryCollectorNoEdges(TArgs&&... p_args)
 		: Base(inner_collector)
 		, inner_collector(std::forward<TArgs>(p_args)...) { }
 
