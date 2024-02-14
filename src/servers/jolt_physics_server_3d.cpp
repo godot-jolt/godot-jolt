@@ -471,14 +471,28 @@ void JoltPhysicsServer3D::_area_set_shape_disabled(
 }
 
 void JoltPhysicsServer3D::_area_attach_object_instance_id(const RID& p_area, uint64_t p_id) {
-	JoltAreaImpl3D* area = area_owner.get_or_null(p_area);
+	RID area_rid = p_area;
+
+	if (space_owner.owns(area_rid)) {
+		const JoltSpace3D* space = space_owner.get_or_null(area_rid);
+		area_rid = space->get_default_area()->get_rid();
+	}
+
+	JoltAreaImpl3D* area = area_owner.get_or_null(area_rid);
 	ERR_FAIL_NULL(area);
 
 	area->set_instance_id(ObjectID(p_id));
 }
 
 uint64_t JoltPhysicsServer3D::_area_get_object_instance_id(const RID& p_area) const {
-	const JoltAreaImpl3D* area = area_owner.get_or_null(p_area);
+	RID area_rid = p_area;
+
+	if (space_owner.owns(area_rid)) {
+		const JoltSpace3D* space = space_owner.get_or_null(area_rid);
+		area_rid = space->get_default_area()->get_rid();
+	}
+
+	JoltAreaImpl3D* area = area_owner.get_or_null(area_rid);
 	ERR_FAIL_NULL_D(area);
 
 	return area->get_instance_id();
@@ -510,7 +524,14 @@ void JoltPhysicsServer3D::_area_set_transform(const RID& p_area, const Transform
 }
 
 Variant JoltPhysicsServer3D::_area_get_param(const RID& p_area, AreaParameter p_param) const {
-	const JoltAreaImpl3D* area = area_owner.get_or_null(p_area);
+	RID area_rid = p_area;
+
+	if (space_owner.owns(area_rid)) {
+		const JoltSpace3D* space = space_owner.get_or_null(area_rid);
+		area_rid = space->get_default_area()->get_rid();
+	}
+
+	JoltAreaImpl3D* area = area_owner.get_or_null(area_rid);
 	ERR_FAIL_NULL_D(area);
 
 	return area->get_param(p_param);
