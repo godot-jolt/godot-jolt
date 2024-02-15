@@ -14,7 +14,6 @@
 size = Vector3(5, 1, 5)
 
 [node name="Joints" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1e+06, 1e+06, 1e+06)
 
 [node name="Environment" type="WorldEnvironment" parent="."]
 environment = ExtResource("1_aom0t")
