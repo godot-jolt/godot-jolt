@@ -17,6 +17,7 @@ Breaking changes are denoted with ⚠️.
 ### Added
 
 - Added support for `SoftBody3D`.
+- Added support for double-precision.
 - ⚠️ Added new project setting, "Use Enhanced Internal Edge Detection", which can help alleviate
   collisions with internal edges of `ConcavePolygonShape3D` and `HeightMapShape3D` shapes, also
   known as ghost collisions. This setting is enabled by default and may change the behavior of
