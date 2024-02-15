@@ -119,6 +119,7 @@ set(target_sse2 $<STREQUAL:${GDJ_X86_INSTRUCTION_SET},SSE2>)
 set(is_msvc_like $<BOOL:${MSVC}>)
 set(is_msvc_cl $<CXX_COMPILER_ID:MSVC>)
 set(is_llvm_clang $<CXX_COMPILER_ID:Clang>)
+set(is_apple_clang $<CXX_COMPILER_ID:AppleClang>)
 set(is_gcc $<CXX_COMPILER_ID:GNU>)
 set(is_clang_cl $<AND:${is_msvc_like},${is_llvm_clang}>)
 
@@ -256,6 +257,7 @@ else()
 		PRIVATE $<${use_avx512}:-mavx512vl> # Enable AVX-512 Vector Length instructions
 		PRIVATE $<${use_avx512}:-mavx512dq> # Enable AVX-512 Doubleword and Quadword instructions
 		PRIVATE $<${is_gcc}:-no-integrated-cpp> # Workaround for GCC ignoring _Pragma (GCC#53431)
+		PRIVATE $<${is_apple_clang}:-faligned-allocation> # Silence non-aligned allocation errors
 	)
 
 	if(APPLE)

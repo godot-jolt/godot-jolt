@@ -55,7 +55,7 @@ JPH::ShapeRefC JoltConvexPolygonShapeImpl3D::_build() const {
 	const Vector3* vertices_end = vertices_begin + vertex_count;
 
 	for (const Vector3* vertex = vertices_begin; vertex != vertices_end; ++vertex) {
-		jolt_vertices.emplace_back(vertex->x, vertex->y, vertex->z);
+		jolt_vertices.emplace_back((float)vertex->x, (float)vertex->y, (float)vertex->z);
 	}
 
 	const float actual_margin = JoltProjectSettings::use_shape_margins() ? margin : 0.0f;

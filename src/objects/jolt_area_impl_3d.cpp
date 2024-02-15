@@ -40,12 +40,12 @@ void JoltAreaImpl3D::set_transform(const Transform3D& p_transform) {
 	}
 
 	if (space == nullptr) {
-		jolt_settings->mPosition = to_jolt(new_transform.origin);
+		jolt_settings->mPosition = to_jolt_r(new_transform.origin);
 		jolt_settings->mRotation = to_jolt(new_transform.basis);
 	} else {
 		space->get_body_iface().SetPositionAndRotation(
 			jolt_id,
-			to_jolt(new_transform.origin),
+			to_jolt_r(new_transform.origin),
 			to_jolt(new_transform.basis),
 			JPH::EActivation::DontActivate
 		);
@@ -295,7 +295,7 @@ Vector3 JoltAreaImpl3D::compute_gravity(const Vector3& p_position) const {
 
 	const Vector3 point = get_transform_scaled().xform(gravity_vector);
 	const Vector3 to_point = point - p_position;
-	const float to_point_dist_sq = MAX(to_point.length_squared(), CMP_EPSILON);
+	const real_t to_point_dist_sq = MAX(to_point.length_squared(), (real_t)CMP_EPSILON);
 	const Vector3 to_point_dir = to_point / Math::sqrt(to_point_dist_sq);
 
 	if (point_gravity_distance == 0.0f) {

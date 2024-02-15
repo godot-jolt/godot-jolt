@@ -67,6 +67,10 @@ defaults by passing `-DGDJ_SOME_VARIABLE=VALUE` to CMake.
 - `GDJ_INSTALL_DEBUG_SYMBOLS`
   - Whether to install debug symbols along with the binaries
   - Default is `FALSE`.
+- `GDJ_DOUBLE_PRECISION`
+  - Whether to build with 64-bit floating-point precision.
+  - ⚠️ This only applies to positions, everything else will use 32-bit precision.
+  - Default is `FALSE`.
 
 ## Presets
 

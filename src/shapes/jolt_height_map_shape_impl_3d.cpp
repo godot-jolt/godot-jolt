@@ -23,7 +23,12 @@ void JoltHeightMapShapeImpl3D::set_data(const Variant& p_data) {
 	const Dictionary data = p_data;
 
 	const Variant maybe_heights = data.get("heights", {});
+
+#ifdef REAL_T_IS_DOUBLE
+	ERR_FAIL_COND(maybe_heights.get_type() != Variant::PACKED_FLOAT64_ARRAY);
+#else // REAL_T_IS_DOUBLE
 	ERR_FAIL_COND(maybe_heights.get_type() != Variant::PACKED_FLOAT32_ARRAY);
+#endif // REAL_T_IS_DOUBLE
 
 	const Variant maybe_width = data.get("width", {});
 	ERR_FAIL_COND(maybe_width.get_type() != Variant::INT);
@@ -95,22 +100,22 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
 	LocalVector<float> heights_rev;
 	heights_rev.resize((int32_t)heights.size());
 
-	const float* heights_ptr = heights.ptr();
+	const real_t* heights_ptr = heights.ptr();
 	float* heights_rev_ptr = heights_rev.ptr();
 
 	for (int32_t z = 0; z < depth; ++z) {
 		const int32_t z_rev = (depth - 1) - z;
 
-		const float* row = heights_ptr + ptrdiff_t(z * width);
+		const real_t* row = heights_ptr + ptrdiff_t(z * width);
 		float* row_rev = heights_rev_ptr + ptrdiff_t(z_rev * width);
 
 		for (int32_t x = 0; x < width; ++x) {
-			const float height = row[x];
+			const real_t height = row[x];
 
 			// HACK(mihe): Godot has undocumented (accidental?) support for holes by passing NaN as
 			// the height value, whereas Jolt uses `FLT_MAX` instead, so we translate any NaN to
 			// `FLT_MAX` in order to be drop-in compatible.
-			row_rev[x] = Math::is_nan(height) ? FLT_MAX : height;
+			row_rev[x] = Math::is_nan(height) ? FLT_MAX : (float)height;
 		}
 	}
 
@@ -162,7 +167,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_mesh() const {
 	for (int32_t z = 0; z < depth; ++z) {
 		for (int32_t x = 0; x < width; ++x) {
 			const float vertex_x = offset_x + (float)x;
-			const float vertex_y = heights[z * width + x];
+			const auto vertex_y = (float)heights[z * width + x];
 			const float vertex_z = offset_z + (float)z;
 
 			vertices.emplace_back(vertex_x, vertex_y, vertex_z);

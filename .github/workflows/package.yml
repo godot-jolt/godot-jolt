@@ -18,8 +18,9 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x64, x86]
+        precision: [single, double]
 
-    name: Build (windows-${{ matrix.arch }})
+    name: Build (windows-${{ matrix.arch }}-${{ matrix.precision }})
 
     steps:
       - name: Checkout code
@@ -35,6 +36,7 @@ jobs:
         with:
           platform: windows-clangcl
           arch: ${{ matrix.arch }}
+          double: ${{ matrix.precision == 'double' && 'true' || 'false' }}
           args: >
             -DCMAKE_INSTALL_PREFIX=dist
             -DGDJ_INSTALL_DEBUG_SYMBOLS=TRUE
@@ -61,7 +63,7 @@ jobs:
       - name: Upload builds
         uses: actions/upload-artifact@v4
         with:
-          name: windows-${{ matrix.arch }}
+          name: windows-${{ matrix.arch }}-${{ matrix.precision }}
           path: ./dist/**
           retention-days: 1
 
@@ -72,8 +74,9 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x64, x86]
+        precision: [single, double]
 
-    name: Build (linux-${{ matrix.arch }})
+    name: Build (linux-${{ matrix.arch }}-${{ matrix.precision }})
 
     steps:
       - name: Checkout code
@@ -92,6 +95,7 @@ jobs:
         with:
           platform: linux-clang
           arch: ${{ matrix.arch }}
+          double: ${{ matrix.precision == 'double' && 'true' || 'false' }}
           args: >
             -DCMAKE_INSTALL_PREFIX=dist
             -DGDJ_INSTALL_DEBUG_SYMBOLS=TRUE
@@ -118,14 +122,19 @@ jobs:
       - name: Upload builds
         uses: actions/upload-artifact@v4
         with:
-          name: linux-${{ matrix.arch }}
+          name: linux-${{ matrix.arch }}-${{ matrix.precision }}
           path: ./dist/**
           retention-days: 1
 
   macos:
     runs-on: macos-13
 
-    name: Build (macos)
+    strategy:
+      fail-fast: false
+      matrix:
+        precision: [single, double]
+
+    name: Build (macos-${{ matrix.precision }})
 
     steps:
       - name: Checkout code
@@ -138,6 +147,7 @@ jobs:
         uses: ./.github/actions/cmake-configure
         with:
           platform: macos-clang
+          double: ${{ matrix.precision == 'double' && 'true' || 'false' }}
           args: >
             -DCMAKE_INSTALL_PREFIX=tmp
             -DGDJ_INSTALL_DEBUG_SYMBOLS=TRUE
@@ -184,14 +194,19 @@ jobs:
       - name: Upload builds
         uses: actions/upload-artifact@v4
         with:
-          name: macos
+          name: macos-${{ matrix.precision }}
           path: ./dist/**
           retention-days: 1
 
   ios:
     runs-on: macos-13
 
-    name: Build (ios)
+    strategy:
+      fail-fast: false
+      matrix:
+        precision: [single, double]
+
+    name: Build (ios-${{ matrix.precision }})
 
     steps:
       - name: Checkout code
@@ -204,6 +219,7 @@ jobs:
         uses: ./.github/actions/cmake-configure
         with:
           platform: macos-ios
+          double: ${{ matrix.precision == 'double' && 'true' || 'false' }}
           args: >
             -DCMAKE_INSTALL_PREFIX=dist
             -DGDJ_INSTALL_DEBUG_SYMBOLS=TRUE
@@ -228,7 +244,7 @@ jobs:
       - name: Upload builds
         uses: actions/upload-artifact@v4
         with:
-          name: ios
+          name: ios-${{ matrix.precision }}
           path: ./dist/**
           retention-days: 1
 
@@ -239,8 +255,9 @@ jobs:
       fail-fast: false
       matrix:
         arch: [arm64, arm32, x64, x86]
+        precision: [single, double]
 
-    name: Build (android-${{ matrix.arch }})
+    name: Build (android-${{ matrix.arch }}-${{ matrix.precision }})
 
     steps:
       - name: Checkout code
@@ -254,6 +271,7 @@ jobs:
         with:
           platform: linux-android
           arch: ${{ matrix.arch }}
+          double: ${{ matrix.precision == 'double' && 'true' || 'false' }}
           args: >
             -DCMAKE_INSTALL_PREFIX=dist
             -DGDJ_INSTALL_DEBUG_SYMBOLS=TRUE
@@ -280,12 +298,18 @@ jobs:
       - name: Upload builds
         uses: actions/upload-artifact@v4
         with:
-          name: android-${{ matrix.arch }}
+          name: android-${{ matrix.arch }}-${{ matrix.precision }}
           path: ./dist/**
           retention-days: 1
 
   upload:
     runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        precision: [single, double]
+
     needs: [windows, linux, macos, ios, android]
 
     name: Upload
@@ -294,61 +318,61 @@ jobs:
       - name: Download builds (windows-x64)
         uses: actions/download-artifact@v4
         with:
-          name: windows-x64
+          name: windows-x64-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (windows-x86)
         uses: actions/download-artifact@v4
         with:
-          name: windows-x86
+          name: windows-x86-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (linux-x64)
         uses: actions/download-artifact@v4
         with:
-          name: linux-x64
+          name: linux-x64-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (linux-x86)
         uses: actions/download-artifact@v4
         with:
-          name: linux-x86
+          name: linux-x86-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (macos)
         uses: actions/download-artifact@v4
         with:
-          name: macos
+          name: macos-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (ios)
         uses: actions/download-artifact@v4
         with:
-          name: ios
+          name: ios-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (android-arm64)
         uses: actions/download-artifact@v4
         with:
-          name: android-arm64
+          name: android-arm64-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (android-arm32)
         uses: actions/download-artifact@v4
         with:
-          name: android-arm32
+          name: android-arm32-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (android-x64)
         uses: actions/download-artifact@v4
         with:
-          name: android-x64
+          name: android-x64-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (android-x86)
         uses: actions/download-artifact@v4
         with:
-          name: android-x86
+          name: android-x86-${{ matrix.precision }}
           path: ./dist
 
       - name: Delete temporary artifacts
@@ -356,16 +380,16 @@ jobs:
         with:
           token: ${{ github.token }}
           name: |
-            windows-x64
-            windows-x86
-            linux-x64
-            linux-x86
-            macos
-            ios
-            android-arm64
-            android-arm32
-            android-x64
-            android-x86
+            windows-x64-${{ matrix.precision }}
+            windows-x86-${{ matrix.precision }}
+            linux-x64-${{ matrix.precision }}
+            linux-x86-${{ matrix.precision }}
+            macos-${{ matrix.precision }}
+            ios-${{ matrix.precision }}
+            android-arm64-${{ matrix.precision }}
+            android-arm32-${{ matrix.precision }}
+            android-x64-${{ matrix.precision }}
+            android-x86-${{ matrix.precision }}
 
       - name: Separate debug symbols
         run: >
@@ -385,13 +409,13 @@ jobs:
       - name: Upload builds
         uses: actions/upload-artifact@v4
         with:
-          name: godot-jolt_${{ github.ref_name }}
+          name: godot-jolt_${{ github.ref_name }}_${{ matrix.precision }}
           path: ./dist/**
           retention-days: 1
 
       - name: Upload debug symbols
         uses: actions/upload-artifact@v4
         with:
-          name: godot-jolt_${{ github.ref_name }}_symbols
+          name: godot-jolt_${{ github.ref_name }}_${{ matrix.precision }}_symbols
           path: ./symbols/**
           retention-days: 1

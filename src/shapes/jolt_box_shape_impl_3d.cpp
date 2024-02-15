@@ -39,7 +39,7 @@ String JoltBoxShapeImpl3D::to_string() const {
 }
 
 JPH::ShapeRefC JoltBoxShapeImpl3D::_build() const {
-	const float min_half_extent = half_extents[half_extents.min_axis_index()];
+	const auto min_half_extent = (float)half_extents[half_extents.min_axis_index()];
 	const float shrunk_margin = MIN(margin, min_half_extent * MARGIN_FACTOR);
 	const float actual_margin = JoltProjectSettings::use_shape_margins() ? shrunk_margin : 0.0f;
 

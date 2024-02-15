@@ -27,7 +27,11 @@ private:
 
 	JPH::ShapeRefC _build_double_sided(const JPH::Shape* p_shape) const;
 
+#ifdef REAL_T_IS_DOUBLE
+	PackedFloat64Array heights;
+#else // REAL_T_IS_DOUBLE
 	PackedFloat32Array heights;
+#endif // REAL_T_IS_DOUBLE
 
 	int32_t width = 0;
 

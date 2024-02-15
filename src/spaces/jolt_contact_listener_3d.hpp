@@ -27,9 +27,9 @@ class JoltContactListener3D final : public JPH::ContactListener {
 	struct Contact {
 		JPH::Vec3 normal = {};
 
-		JPH::Vec3 point_self = {};
+		JPH::RVec3 point_self = {};
 
-		JPH::Vec3 point_other = {};
+		JPH::RVec3 point_other = {};
 
 		JPH::Vec3 velocity_self = {};
 

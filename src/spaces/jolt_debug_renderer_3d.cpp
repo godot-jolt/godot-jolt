@@ -6,7 +6,7 @@
 
 namespace {
 
-constexpr int64_t DEBUG_VERTEX_STRIDE = sizeof(Vector3);
+constexpr int64_t DEBUG_VERTEX_STRIDE = sizeof(float) * 3;
 constexpr int64_t DEBUG_ATTRIBUTE_STRIDE = sizeof(uint32_t);
 
 } // namespace
@@ -160,15 +160,15 @@ int32_t JoltDebugRenderer3D::submit(const RID& p_mesh) {
 	return surface_count;
 }
 
-void JoltDebugRenderer3D::DrawLine(JPH::Vec3 p_from, JPH::Vec3 p_to, JPH::Color p_color) {
+void JoltDebugRenderer3D::DrawLine(JPH::RVec3Arg p_from, JPH::RVec3Arg p_to, JPH::Color p_color) {
 	_reserve_lines(1);
 	_add_line(to_godot(p_from), to_godot(p_to), to_godot(p_color).to_abgr32());
 }
 
 void JoltDebugRenderer3D::DrawTriangle(
-	JPH::Vec3 p_vertex1,
-	JPH::Vec3 p_vertex2,
-	JPH::Vec3 p_vertex3,
+	JPH::RVec3Arg p_vertex1,
+	JPH::RVec3Arg p_vertex2,
+	JPH::RVec3Arg p_vertex3,
 	JPH::Color p_color,
 	[[maybe_unused]] ECastShadow p_cast_shadow
 ) {
@@ -226,7 +226,7 @@ JPH::DebugRenderer::Batch JoltDebugRenderer3D::CreateTriangleBatch(
 }
 
 void JoltDebugRenderer3D::DrawGeometry(
-	const JPH::Mat44& p_model_matrix,
+	JPH::RMat44Arg p_model_matrix,
 	const JPH::AABox& p_world_space_bounds,
 	float p_lod_scale_sq,
 	JPH::Color p_model_color,
@@ -304,7 +304,7 @@ void JoltDebugRenderer3D::DrawGeometry(
 }
 
 void JoltDebugRenderer3D::DrawText3D(
-	[[maybe_unused]] const JPH::Vec3 p_position,
+	[[maybe_unused]] JPH::RVec3Arg p_position,
 	[[maybe_unused]] const JPH::string_view& p_string,
 	[[maybe_unused]] JPH::Color p_color,
 	[[maybe_unused]] float p_height
@@ -344,12 +344,23 @@ void JoltDebugRenderer3D::_add_triangle(
 ) {
 	const int32_t vertex_count = triangle_count * 3;
 
-	auto* vertices_ptr = reinterpret_cast<Vector3*>(triangle_vertices.ptrw()) + vertex_count;
-	auto* attributes_ptr = reinterpret_cast<uint32_t*>(triangle_attributes.ptrw()) + vertex_count;
+	auto* vertices_ptr = reinterpret_cast<float*>(triangle_vertices.ptrw()) +
+		ptrdiff_t(vertex_count * 3);
 
-	*vertices_ptr++ = p_vertex1;
-	*vertices_ptr++ = p_vertex2;
-	*vertices_ptr++ = p_vertex3;
+	auto* attributes_ptr = reinterpret_cast<uint32_t*>(triangle_attributes.ptrw()) +
+		ptrdiff_t(vertex_count);
+
+	*vertices_ptr++ = (float)p_vertex1.x;
+	*vertices_ptr++ = (float)p_vertex1.y;
+	*vertices_ptr++ = (float)p_vertex1.z;
+
+	*vertices_ptr++ = (float)p_vertex2.x;
+	*vertices_ptr++ = (float)p_vertex2.y;
+	*vertices_ptr++ = (float)p_vertex2.z;
+
+	*vertices_ptr++ = (float)p_vertex3.x;
+	*vertices_ptr++ = (float)p_vertex3.y;
+	*vertices_ptr++ = (float)p_vertex3.z;
 
 	*attributes_ptr++ = p_color_abgr;
 	*attributes_ptr++ = p_color_abgr;
@@ -369,11 +380,19 @@ void JoltDebugRenderer3D::_add_line(
 ) {
 	const int32_t vertex_count = line_count * 2;
 
-	auto* vertices_ptr = reinterpret_cast<Vector3*>(line_vertices.ptrw()) + vertex_count;
-	auto* attributes_ptr = reinterpret_cast<uint32_t*>(line_attributes.ptrw()) + vertex_count;
+	auto* vertices_ptr = reinterpret_cast<float*>(line_vertices.ptrw()) +
+		ptrdiff_t(vertex_count * 3);
 
-	*vertices_ptr++ = p_from;
-	*vertices_ptr++ = p_to;
+	auto* attributes_ptr = reinterpret_cast<uint32_t*>(line_attributes.ptrw()) +
+		ptrdiff_t(vertex_count);
+
+	*vertices_ptr++ = (float)p_from.x;
+	*vertices_ptr++ = (float)p_from.y;
+	*vertices_ptr++ = (float)p_from.z;
+
+	*vertices_ptr++ = (float)p_to.x;
+	*vertices_ptr++ = (float)p_to.y;
+	*vertices_ptr++ = (float)p_to.z;
 
 	*attributes_ptr++ = p_color_abgr;
 	*attributes_ptr++ = p_color_abgr;

@@ -28,6 +28,11 @@ set(GDJ_PRECOMPILE_HEADERS TRUE
 	"Precompile header files that don't change often, like external ones."
 )
 
+set(GDJ_DOUBLE_PRECISION FALSE
+	CACHE BOOL
+	"Compile with 64-bit floating-point precision."
+)
+
 if(NOT APPLE AND NOT ANDROID)
 	set(GDJ_X86_INSTRUCTION_SET SSE2
 		CACHE STRING

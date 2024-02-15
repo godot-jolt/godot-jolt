@@ -341,7 +341,8 @@ void JoltSoftBodyImpl3D::set_vertex_position(int32_t p_index, const Vector3& p_p
 	JPH::Array<JPH::SoftBodyVertex>& physics_vertices = motion_properties.GetVertices();
 	JPH::SoftBodyVertex& physics_vertex = physics_vertices[(size_t)physics_index];
 
-	const JPH::Vec3 local_position = to_jolt(p_position) - body->GetCenterOfMassPosition();
+	const JPH::RVec3 center_of_mass = body->GetCenterOfMassPosition();
+	const JPH::Vec3 local_position = JPH::Vec3(to_jolt_r(p_position) - center_of_mass);
 	const JPH::Vec3 displacement = local_position - physics_vertex.mPosition;
 	const JPH::Vec3 velocity = displacement / last_step;
 
@@ -519,7 +520,12 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 				auto iter_physics_index = vertex_to_physics.find(vertex);
 
 				if (iter_physics_index == vertex_to_physics.end()) {
-					physics_vertices.emplace_back(JPH::Float3(vertex.x, vertex.y, vertex.z));
+					physics_vertices.emplace_back(
+						JPH::Float3((float)vertex.x, (float)vertex.y, (float)vertex.z),
+						JPH::Float3(0.0f, 0.0f, 0.0f),
+						1.0f
+					);
+
 					iter_physics_index = vertex_to_physics.insert(vertex, physics_index_count++);
 				}
 

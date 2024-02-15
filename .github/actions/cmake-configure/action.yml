@@ -5,6 +5,8 @@ inputs:
     required: true
   arch:
     default: null
+  double:
+    default: false
   args:
     default: ''
 
@@ -25,4 +27,5 @@ runs:
           --warn-uninitialized `
           -Werror=dev `
           --preset $ConfigurePreset `
+          ${{ inputs.double == 'true' && '-DGDJ_DOUBLE_PRECISION=TRUE' || '' }} `
           ${{ inputs.args }}

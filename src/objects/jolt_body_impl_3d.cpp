@@ -58,14 +58,14 @@ void JoltBodyImpl3D::set_transform(const Transform3D& p_transform) {
 	}
 
 	if (space == nullptr) {
-		jolt_settings->mPosition = to_jolt(new_transform.origin);
+		jolt_settings->mPosition = to_jolt_r(new_transform.origin);
 		jolt_settings->mRotation = to_jolt(new_transform.basis);
 	} else if (is_kinematic()) {
 		kinematic_transform = p_transform;
 	} else {
 		space->get_body_iface().SetPositionAndRotation(
 			jolt_id,
-			to_jolt(new_transform.origin),
+			to_jolt_r(new_transform.origin),
 			to_jolt(new_transform.basis),
 			JPH::EActivation::DontActivate
 		);
@@ -898,10 +898,10 @@ void JoltBodyImpl3D::move_kinematic(float p_step, JPH::Body& p_jolt_body) {
 	p_jolt_body.SetLinearVelocity(JPH::Vec3::sZero());
 	p_jolt_body.SetAngularVelocity(JPH::Vec3::sZero());
 
-	const JPH::Vec3 current_position = p_jolt_body.GetPosition();
+	const JPH::RVec3 current_position = p_jolt_body.GetPosition();
 	const JPH::Quat current_rotation = p_jolt_body.GetRotation();
 
-	const JPH::Vec3 new_position = to_jolt(kinematic_transform.origin);
+	const JPH::RVec3 new_position = to_jolt_r(kinematic_transform.origin);
 	const JPH::Quat new_rotation = to_jolt(kinematic_transform.basis);
 
 	if (new_position == current_position && new_rotation == current_rotation) {
@@ -1332,9 +1332,9 @@ JPH::MassProperties JoltBodyImpl3D::_calculate_mass_properties(const JPH::Shape&
 		mass_properties.ScaleToMass(mass);
 	} else {
 		mass_properties.mMass = mass;
-		mass_properties.mInertia(0, 0) = inertia.x;
-		mass_properties.mInertia(1, 1) = inertia.y;
-		mass_properties.mInertia(2, 2) = inertia.z;
+		mass_properties.mInertia(0, 0) = (float)inertia.x;
+		mass_properties.mInertia(1, 1) = (float)inertia.y;
+		mass_properties.mInertia(2, 2) = (float)inertia.z;
 	}
 
 	mass_properties.mInertia(3, 3) = 1.0f;
