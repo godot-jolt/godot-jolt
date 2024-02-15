@@ -519,10 +519,10 @@ JPH::Constraint* JoltSliderJointImpl3D::_build_slider(
 
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
 	constraint_settings.mAutoDetectPoint = false;
-	constraint_settings.mPoint1 = to_jolt(p_shifted_ref_a.origin);
+	constraint_settings.mPoint1 = to_jolt_r(p_shifted_ref_a.origin);
 	constraint_settings.mSliderAxis1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mNormalAxis1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mPoint2 = to_jolt(p_shifted_ref_b.origin);
+	constraint_settings.mPoint2 = to_jolt_r(p_shifted_ref_b.origin);
 	constraint_settings.mSliderAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mNormalAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mLimitsMin = -p_limit;
@@ -552,10 +552,10 @@ JPH::Constraint* JoltSliderJointImpl3D::_build_fixed(
 
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
 	constraint_settings.mAutoDetectPoint = false;
-	constraint_settings.mPoint1 = to_jolt(p_shifted_ref_a.origin);
+	constraint_settings.mPoint1 = to_jolt_r(p_shifted_ref_a.origin);
 	constraint_settings.mAxisX1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mAxisY1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
-	constraint_settings.mPoint2 = to_jolt(p_shifted_ref_b.origin);
+	constraint_settings.mPoint2 = to_jolt_r(p_shifted_ref_b.origin);
 	constraint_settings.mAxisX2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mAxisY2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
 

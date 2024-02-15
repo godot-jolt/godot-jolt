@@ -49,12 +49,12 @@ public:
 private:
 	JoltDebugRenderer3D() { Initialize(); }
 
-	void DrawLine(JPH::Vec3 p_from, JPH::Vec3 p_to, JPH::Color p_color) override;
+	void DrawLine(JPH::RVec3Arg p_from, JPH::RVec3Arg p_to, JPH::Color p_color) override;
 
 	void DrawTriangle(
-		JPH::Vec3 p_vertex1,
-		JPH::Vec3 p_vertex2,
-		JPH::Vec3 p_vertex3,
+		JPH::RVec3Arg p_vertex1,
+		JPH::RVec3Arg p_vertex2,
+		JPH::RVec3Arg p_vertex3,
 		JPH::Color p_color,
 		ECastShadow p_cast_shadow
 	) override;
@@ -72,7 +72,7 @@ private:
 	) override;
 
 	void DrawGeometry(
-		const JPH::Mat44& p_model_matrix,
+		JPH::RMat44Arg p_model_matrix,
 		const JPH::AABox& p_world_space_bounds,
 		float p_lod_scale_sq,
 		JPH::Color p_model_color,
@@ -83,7 +83,7 @@ private:
 	) override;
 
 	void DrawText3D(
-		JPH::Vec3 p_position,
+		JPH::RVec3Arg p_position,
 		const JPH::string_view& p_string,
 		JPH::Color p_color = JPH::Color::sWhite,
 		float p_height = 0.5f

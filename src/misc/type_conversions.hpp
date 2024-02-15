@@ -1,7 +1,11 @@
 #pragma once
 
 _FORCE_INLINE_ Vector3 to_godot(const JPH::Vec3& p_vec) {
-	return {p_vec.GetX(), p_vec.GetY(), p_vec.GetZ()};
+	return {(real_t)p_vec.GetX(), (real_t)p_vec.GetY(), (real_t)p_vec.GetZ()};
+}
+
+_FORCE_INLINE_ Vector3 to_godot(const JPH::DVec3& p_vec) {
+	return {(real_t)p_vec.GetX(), (real_t)p_vec.GetY(), (real_t)p_vec.GetZ()};
 }
 
 _FORCE_INLINE_ Basis to_godot(const JPH::Quat& p_quat) {
@@ -38,12 +42,12 @@ _FORCE_INLINE_ AABB to_godot(const JPH::AABox& p_aabb) {
 }
 
 _FORCE_INLINE_ JPH::Vec3 to_jolt(const Vector3& p_vec) {
-	return {p_vec.x, p_vec.y, p_vec.z};
+	return {(float)p_vec.x, (float)p_vec.y, (float)p_vec.z};
 }
 
 _FORCE_INLINE_ JPH::Quat to_jolt(const Basis& p_basis) {
 	const Quaternion quat = p_basis.get_quaternion();
-	return {quat.x, quat.y, quat.z, quat.w};
+	return {(float)quat.x, (float)quat.y, (float)quat.z, (float)quat.w};
 }
 
 _FORCE_INLINE_ JPH::Mat44 to_jolt(const Transform3D& p_transform) {
@@ -54,7 +58,7 @@ _FORCE_INLINE_ JPH::Mat44 to_jolt(const Transform3D& p_transform) {
 		JPH::Vec4(b[0][0], b[1][0], b[2][0], 0.0f),
 		JPH::Vec4(b[0][1], b[1][1], b[2][1], 0.0f),
 		JPH::Vec4(b[0][2], b[1][2], b[2][2], 0.0f),
-		JPH::Vec4(o.x, o.y, o.z, 1.0f)};
+		JPH::Vec3(o.x, o.y, o.z)};
 }
 
 _FORCE_INLINE_ JPH::Color to_jolt(const Color& p_color) {
@@ -68,4 +72,19 @@ _FORCE_INLINE_ JPH::String to_jolt(const String& p_str) {
 
 _FORCE_INLINE_ JPH::AABox to_jolt(const AABB& p_aabb) {
 	return {to_jolt(p_aabb.position), to_jolt(p_aabb.position + p_aabb.size)};
+}
+
+_FORCE_INLINE_ JPH::RVec3 to_jolt_r(const Vector3& p_vec) {
+	return {p_vec.x, p_vec.y, p_vec.z};
+}
+
+_FORCE_INLINE_ JPH::RMat44 to_jolt_r(const Transform3D& p_transform) {
+	const Basis& b = p_transform.basis;
+	const Vector3& o = p_transform.origin;
+
+	return {
+		JPH::Vec4(b[0][0], b[1][0], b[2][0], 0.0f),
+		JPH::Vec4(b[0][1], b[1][1], b[2][1], 0.0f),
+		JPH::Vec4(b[0][2], b[1][2], b[2][2], 0.0f),
+		JPH::RVec3(o.x, o.y, o.z)};
 }

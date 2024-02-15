@@ -65,7 +65,7 @@ func _generate() -> void:
 	noise_gen.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise_gen.fractal_type = FastNoiseLite.FRACTAL_NONE
 
-	var heights := PackedFloat32Array()
+	var heights := PackedFloat64Array()
 	heights.resize(resolution * resolution)
 
 	for z in range(resolution):

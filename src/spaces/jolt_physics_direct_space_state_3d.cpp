@@ -34,9 +34,9 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 		p_pick_ray
 	);
 
-	const JPH::Vec3 from = to_jolt(p_from);
-	const JPH::Vec3 to = to_jolt(p_to);
-	const JPH::Vec3 vector = to - from;
+	const JPH::RVec3 from = to_jolt_r(p_from);
+	const JPH::RVec3 to = to_jolt_r(p_to);
+	const auto vector = JPH::Vec3(to - from);
 	const JPH::RRayCast ray(from, vector);
 
 	JPH::RayCastSettings settings;
@@ -63,7 +63,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const JoltObjectImpl3D* object = body.as_object();
 	ERR_FAIL_NULL_D(object);
 
-	const JPH::Vec3 position = ray.GetPointOnRay(hit.mFraction);
+	const JPH::RVec3 position = ray.GetPointOnRay(hit.mFraction);
 
 	JPH::Vec3 normal = JPH::Vec3::sZero();
 
@@ -110,7 +110,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
 	JoltQueryCollectorAnyMulti<JPH::CollidePointCollector, 32> collector(p_max_results);
 
 	space->get_narrow_phase_query()
-		.CollidePoint(to_jolt(p_position), collector, query_filter, query_filter, query_filter);
+		.CollidePoint(to_jolt_r(p_position), collector, query_filter, query_filter, query_filter);
 
 	const int32_t hit_count = collector.get_hit_count();
 
@@ -181,9 +181,9 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	space->get_narrow_phase_query().CollideShape(
 		jolt_shape,
 		to_jolt(scale),
-		to_jolt(transform_com),
+		to_jolt_r(transform_com),
 		settings,
-		to_jolt(transform_com.origin),
+		to_jolt_r(transform_com.origin),
 		collector,
 		query_filter,
 		query_filter,
@@ -326,9 +326,9 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	space->get_narrow_phase_query().CollideShape(
 		jolt_shape,
 		to_jolt(scale),
-		to_jolt(transform_com),
+		to_jolt_r(transform_com),
 		settings,
-		to_jolt(base_offset),
+		to_jolt_r(base_offset),
 		collector,
 		query_filter,
 		query_filter,
@@ -396,9 +396,9 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	space->get_narrow_phase_query().CollideShape(
 		jolt_shape,
 		to_jolt(scale),
-		to_jolt(transform_com),
+		to_jolt_r(transform_com),
 		settings,
-		to_jolt(base_offset),
+		to_jolt_r(base_offset),
 		collector,
 		query_filter,
 		query_filter,
@@ -454,10 +454,10 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 	JoltQueryCollectorAll<JPH::TransformedShapeCollector, 32> collector;
 	root_shape.CollectTransformedShapes(body->GetWorldSpaceBounds(), collector);
 
-	const JPH::Vec3 point = to_jolt(p_point);
+	const JPH::RVec3 point = to_jolt_r(p_point);
 
 	float closest_distance_sq = FLT_MAX;
-	JPH::Vec3 closest_point = JPH::Vec3::sZero();
+	JPH::RVec3 closest_point = JPH::RVec3::sZero();
 
 	bool found_point = false;
 
@@ -483,16 +483,16 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 		);
 
 		const JPH::Quat& shape_rotation = shape_transformed.mShapeRotation;
-		const JPH::Vec3& shape_pos_com = shape_transformed.mShapePositionCOM;
-		const JPH::Mat44 shape_3x3 = JPH::RMat44::sRotation(shape_rotation);
+		const JPH::RVec3& shape_pos_com = shape_transformed.mShapePositionCOM;
+		const JPH::RMat44 shape_3x3 = JPH::RMat44::sRotation(shape_rotation);
 		const JPH::Vec3 shape_com_local = shape.GetCenterOfMass();
 		const JPH::Vec3 shape_com = shape_3x3.Multiply3x3(shape_com_local);
-		const JPH::Vec3 shape_pos = shape_pos_com - shape_com;
-		const JPH::Mat44 shape_4x4 = shape_3x3.PostTranslated(shape_pos);
-		const JPH::Mat44 shape_4x4_inv = shape_4x4.InversedRotationTranslation();
+		const JPH::RVec3 shape_pos = shape_pos_com - JPH::RVec3(shape_com);
+		const JPH::RMat44 shape_4x4 = shape_3x3.PostTranslated(shape_pos);
+		const JPH::RMat44 shape_4x4_inv = shape_4x4.InversedRotationTranslation();
 
 		JPH::PointConvexSupport point_support = {};
-		point_support.mPoint = shape_4x4_inv * point;
+		point_support.mPoint = JPH::Vec3(shape_4x4_inv * point);
 
 		JPH::Vec3 separating_axis = JPH::Vec3::sAxisX();
 		JPH::Vec3 point_on_a = JPH::Vec3::sZero();
@@ -568,7 +568,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		collided = _body_motion_collide(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),
-			p_motion.length(),
+			(float)p_motion.length(),
 			p_margin,
 			p_max_collisions,
 			p_result
@@ -621,13 +621,13 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 		"Shape-casting with non-convex shapes is not supported by Godot Jolt."
 	);
 
-	const float motion_length = p_motion.length();
+	const auto motion_length = (float)p_motion.length();
 
 	if (p_ignore_overlaps && motion_length == 0.0f) {
 		return false;
 	}
 
-	const JPH::Mat44 transform_com = to_jolt(p_transform_com);
+	const JPH::RMat44 transform_com = to_jolt_r(p_transform_com);
 	const JPH::Vec3 scale = to_jolt(p_scale);
 	const JPH::Vec3 motion = to_jolt(p_motion);
 	const JPH::Vec3 motion_local = transform_com.Multiply3x3Transposed(motion);
@@ -646,7 +646,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 		return false;
 	}
 
-	const JPH::Vec3 base_offset = transform_com.GetTranslation();
+	const JPH::RVec3 base_offset = transform_com.GetTranslation();
 
 	JoltCustomMotionShape motion_shape(static_cast<const JPH::ConvexShape&>(p_jolt_shape));
 
@@ -769,9 +769,9 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 		space->get_narrow_phase_query().CollideShape(
 			jolt_shape,
 			JPH::Vec3::sReplicate(1.0f),
-			to_jolt(transform_com),
+			to_jolt_r(transform_com),
 			settings,
-			to_jolt(base_offset),
+			to_jolt_r(base_offset),
 			collector,
 			motion_filter,
 			motion_filter,
@@ -797,7 +797,10 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 			combined_priority += other_body->get_collision_priority();
 		}
 
-		const float average_priority = MAX(combined_priority / (float)hit_count, CMP_EPSILON);
+		const float average_priority = MAX(
+			combined_priority / (float)hit_count,
+			(float)CMP_EPSILON
+		);
 
 		recovered = true;
 
@@ -812,8 +815,8 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 			const Vector3 point_on_1 = base_offset + to_godot(hit.mContactPointOn1) + margin_offset;
 			const Vector3 point_on_2 = base_offset + to_godot(hit.mContactPointOn2);
 
-			const float distance_to_1 = penetration_axis.dot(point_on_1 + recovery);
-			const float distance_to_2 = penetration_axis.dot(point_on_2);
+			const float distance_to_1 = (float)penetration_axis.dot(point_on_1 + recovery);
+			const auto distance_to_2 = (float)penetration_axis.dot(point_on_2);
 
 			const float penetration_depth = distance_to_1 - distance_to_2;
 
@@ -941,9 +944,9 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	space->get_narrow_phase_query().CollideShape(
 		jolt_shape,
 		JPH::Vec3::sReplicate(1.0f),
-		to_jolt(transform_com),
+		to_jolt_r(transform_com),
 		settings,
-		to_jolt(base_offset),
+		to_jolt_r(base_offset),
 		collector,
 		motion_filter,
 		motion_filter,

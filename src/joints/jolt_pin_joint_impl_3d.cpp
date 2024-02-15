@@ -147,8 +147,8 @@ JPH::Constraint* JoltPinJointImpl3D::_build_pin(
 ) {
 	JPH::PointConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPoint1 = to_jolt(p_shifted_ref_a.origin);
-	constraint_settings.mPoint2 = to_jolt(p_shifted_ref_b.origin);
+	constraint_settings.mPoint1 = to_jolt_r(p_shifted_ref_a.origin);
+	constraint_settings.mPoint2 = to_jolt_r(p_shifted_ref_b.origin);
 
 	if (p_jolt_body_a == nullptr) {
 		return constraint_settings.Create(JPH::Body::sFixedToWorld, *p_jolt_body_b);

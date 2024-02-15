@@ -218,7 +218,7 @@ float JoltConeTwistJointImpl3D::get_applied_torque() const {
 		constraint->GetTotalLambdaSwingZ()
 	);
 
-	return rotation_lambda.length() / last_step;
+	return float(rotation_lambda.length() / last_step);
 }
 
 void JoltConeTwistJointImpl3D::rebuild() {
@@ -303,10 +303,10 @@ JPH::Constraint* JoltConeTwistJointImpl3D::_build_swing_twist(
 	}
 
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPosition1 = to_jolt(p_shifted_ref_a.origin);
+	constraint_settings.mPosition1 = to_jolt_r(p_shifted_ref_a.origin);
 	constraint_settings.mTwistAxis1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPlaneAxis1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_Z));
-	constraint_settings.mPosition2 = to_jolt(p_shifted_ref_b.origin);
+	constraint_settings.mPosition2 = to_jolt_r(p_shifted_ref_b.origin);
 	constraint_settings.mTwistAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mPlaneAxis2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Z));
 	constraint_settings.mSwingType = JPH::ESwingType::Pyramid;

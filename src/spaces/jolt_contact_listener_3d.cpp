@@ -133,9 +133,9 @@ bool JoltContactListener3D::_try_apply_surface_velocities(
 	const JPH::Vec3 linear_velocity2 = to_jolt(body2->get_linear_surface_velocity());
 	const JPH::Vec3 angular_velocity2 = to_jolt(body2->get_angular_surface_velocity());
 
-	const JPH::Vec3 com1 = p_jolt_body1.GetCenterOfMassPosition();
-	const JPH::Vec3 com2 = p_jolt_body2.GetCenterOfMassPosition();
-	const JPH::Vec3 rel_com2 = com2 - com1;
+	const JPH::RVec3 com1 = p_jolt_body1.GetCenterOfMassPosition();
+	const JPH::RVec3 com2 = p_jolt_body2.GetCenterOfMassPosition();
+	const auto rel_com2 = JPH::Vec3(com2 - com1);
 
 	const JPH::Vec3 angular_linear_velocity2 = rel_com2.Cross(angular_velocity2);
 	const JPH::Vec3 total_linear_velocity2 = linear_velocity2 + angular_linear_velocity2;
@@ -195,11 +195,11 @@ bool JoltContactListener3D::_try_add_contacts(
 		Contact& contact1 = manifold.contacts1.emplace_back();
 		Contact& contact2 = manifold.contacts2.emplace_back();
 
-		const JPH::Vec3& relative_point1 = p_manifold.mRelativeContactPointsOn1[i];
-		const JPH::Vec3& relative_point2 = p_manifold.mRelativeContactPointsOn2[i];
+		const auto relative_point1 = JPH::RVec3(p_manifold.mRelativeContactPointsOn1[i]);
+		const auto relative_point2 = JPH::RVec3(p_manifold.mRelativeContactPointsOn2[i]);
 
-		const JPH::Vec3 world_point1 = p_manifold.mBaseOffset + relative_point1;
-		const JPH::Vec3 world_point2 = p_manifold.mBaseOffset + relative_point2;
+		const JPH::RVec3 world_point1 = p_manifold.mBaseOffset + relative_point1;
+		const JPH::RVec3 world_point2 = p_manifold.mBaseOffset + relative_point2;
 
 		const JPH::Vec3 velocity1 = p_body1.GetPointVelocity(world_point1);
 		const JPH::Vec3 velocity2 = p_body2.GetPointVelocity(world_point2);
@@ -355,8 +355,8 @@ bool JoltContactListener3D::_try_add_debug_contacts(
 	for (int32_t i = 0; i < additional_pairs; ++i) {
 		const int32_t pair_index = current_count + i * 2;
 
-		const JPH::Vec3 point_on_1 = p_manifold.GetWorldSpaceContactPointOn1((JPH::uint)i);
-		const JPH::Vec3 point_on_2 = p_manifold.GetWorldSpaceContactPointOn2((JPH::uint)i);
+		const JPH::RVec3 point_on_1 = p_manifold.GetWorldSpaceContactPointOn1((JPH::uint)i);
+		const JPH::RVec3 point_on_2 = p_manifold.GetWorldSpaceContactPointOn2((JPH::uint)i);
 
 		debug_contacts[pair_index + 0] = to_godot(point_on_1);
 		debug_contacts[pair_index + 1] = to_godot(point_on_2);

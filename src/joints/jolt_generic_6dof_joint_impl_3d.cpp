@@ -506,10 +506,10 @@ JPH::Constraint* JoltGeneric6DOFJointImpl3D::_build_6dof(
 	}
 
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
-	constraint_settings.mPosition1 = to_jolt(p_shifted_ref_a.origin);
+	constraint_settings.mPosition1 = to_jolt_r(p_shifted_ref_a.origin);
 	constraint_settings.mAxisX1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mAxisY1 = to_jolt(p_shifted_ref_a.basis.get_column(Vector3::AXIS_Y));
-	constraint_settings.mPosition2 = to_jolt(p_shifted_ref_b.origin);
+	constraint_settings.mPosition2 = to_jolt_r(p_shifted_ref_b.origin);
 	constraint_settings.mAxisX2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_X));
 	constraint_settings.mAxisY2 = to_jolt(p_shifted_ref_b.basis.get_column(Vector3::AXIS_Y));
 	constraint_settings.mSwingType = JPH::ESwingType::Pyramid;

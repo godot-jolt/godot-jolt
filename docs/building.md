@@ -11,6 +11,7 @@ This document contains instructions for how to build Godot Jolt from source.
 - [Building for macOS](#building-for-macos)
 - [Building for iOS](#building-for-ios)
 - [Building for Android](#building-for-android)
+- [Building for double-precision](#building-for-double-precision)
 
 ## Building for Windows
 
@@ -227,3 +228,23 @@ cmake --install build/windows-android-x86 --config EditorDistribution --prefix /
 [hck]: hacking.md
 [ccl]: https://learn.microsoft.com/en-us/cpp/build/clang-support-msbuild
 [cmd]: https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line
+
+## Building for double-precision
+
+Building for double-precision builds of Godot involves the same steps as what's shown above, but
+with the only difference that you add the `-DGDJ_DOUBLE_PRECISION=TRUE` argument when generating the
+build directory.
+
+So instead of doing this:
+
+```sh
+# Generate the build directory
+cmake --preset windows-msvc-x64
+```
+
+You would instead do this:
+
+```sh
+# Generate the build directory with double-precision enabled
+cmake --preset windows-msvc-x64 -DGDJ_DOUBLE_PRECISION=TRUE
+```

@@ -76,9 +76,9 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build() const {
 		const Vector3* v2 = vertex + 2;
 
 		jolt_faces.emplace_back(
-			JPH::Float3(v2->x, v2->y, v2->z),
-			JPH::Float3(v1->x, v1->y, v1->z),
-			JPH::Float3(v0->x, v0->y, v0->z)
+			JPH::Float3((float)v2->x, (float)v2->y, (float)v2->z),
+			JPH::Float3((float)v1->x, (float)v1->y, (float)v1->z),
+			JPH::Float3((float)v0->x, (float)v0->y, (float)v0->z)
 		);
 	}
 
