@@ -815,10 +815,10 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 			const Vector3 point_on_1 = base_offset + to_godot(hit.mContactPointOn1) + margin_offset;
 			const Vector3 point_on_2 = base_offset + to_godot(hit.mContactPointOn2);
 
-			const float distance_to_1 = (float)penetration_axis.dot(point_on_1 + recovery);
-			const auto distance_to_2 = (float)penetration_axis.dot(point_on_2);
+			const real_t distance_to_1 = penetration_axis.dot(point_on_1 + recovery);
+			const real_t distance_to_2 = penetration_axis.dot(point_on_2);
 
-			const float penetration_depth = distance_to_1 - distance_to_2;
+			const auto penetration_depth = float(distance_to_1 - distance_to_2);
 
 			if (penetration_depth <= 0.0f) {
 				continue;
