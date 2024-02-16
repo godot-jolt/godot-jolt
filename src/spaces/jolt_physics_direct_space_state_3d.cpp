@@ -230,6 +230,13 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	float* p_closest_unsafe,
 	PhysicsServer3DExtensionShapeRestInfo* p_info
 ) {
+	// HACK(mihe): These two fractions are unfortunately bound with `real_t` from the Godot side of
+	// things, which means that they get emitted as `float` in `extension_api.json` but will then be
+	// passed in as `double` in double-precision builds of Godot, which means we have to reinterpret
+	// them to their correct type first.
+	auto* p_closest_safe_r = reinterpret_cast<real_t*>(p_closest_safe);
+	auto* p_closest_unsafe_r = reinterpret_cast<real_t*>(p_closest_unsafe);
+
 	// HACK(mihe): This rest info parameter doesn't seem to be used anywhere within Godot, and isn't
 	// exposed in the bindings, so this will be unsupported until anyone actually needs it.
 	ERR_FAIL_COND_D_MSG(
@@ -271,8 +278,8 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		query_filter,
 		query_filter,
 		JPH::ShapeFilter(),
-		*p_closest_safe,
-		*p_closest_unsafe
+		*p_closest_safe_r,
+		*p_closest_unsafe_r
 	);
 
 	return true;
@@ -549,8 +556,8 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 
 	transform.origin += recovery;
 
-	float safe_fraction = 1.0f;
-	float unsafe_fraction = 1.0f;
+	real_t safe_fraction = 1.0;
+	real_t unsafe_fraction = 1.0;
 
 	const bool hit = _body_motion_cast(
 		p_body,
@@ -610,8 +617,8 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 	const JPH::ObjectLayerFilter& p_object_layer_filter,
 	const JPH::BodyFilter& p_body_filter,
 	const JPH::ShapeFilter& p_shape_filter,
-	float& p_closest_safe,
-	float& p_closest_unsafe
+	real_t& p_closest_safe,
+	real_t& p_closest_unsafe
 ) const {
 	p_closest_safe = 1.0f;
 	p_closest_unsafe = 1.0f;
@@ -853,8 +860,8 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 	const Vector3& p_scale,
 	const Vector3& p_motion,
 	bool p_collide_separation_ray,
-	float& p_safe_fraction,
-	float& p_unsafe_fraction
+	real_t& p_safe_fraction,
+	real_t& p_unsafe_fraction
 ) const {
 	const Transform3D body_transform = p_transform.scaled_local(p_scale);
 
@@ -890,8 +897,8 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 		const Transform3D transform_com = body_transform * transform_com_local;
 		const Transform3D transform_com_unscaled = Math::decomposed(transform_com, scale);
 
-		float shape_safe_fraction = 1.0f;
-		float shape_unsafe_fraction = 1.0f;
+		real_t shape_safe_fraction = 1.0;
+		real_t shape_unsafe_fraction = 1.0;
 
 		collided |= _cast_motion_impl(
 			*jolt_shape,

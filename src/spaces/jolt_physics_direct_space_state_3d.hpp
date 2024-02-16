@@ -113,8 +113,8 @@ private:
 		const JPH::ObjectLayerFilter& p_object_layer_filter,
 		const JPH::BodyFilter& p_body_filter,
 		const JPH::ShapeFilter& p_shape_filter,
-		float& p_closest_safe,
-		float& p_closest_unsafe
+		real_t& p_closest_safe,
+		real_t& p_closest_unsafe
 	) const;
 
 	bool _body_motion_recover(
@@ -130,8 +130,8 @@ private:
 		const Vector3& p_scale,
 		const Vector3& p_motion,
 		bool p_collide_separation_ray,
-		float& p_safe_fraction,
-		float& p_unsafe_fraction
+		real_t& p_safe_fraction,
+		real_t& p_unsafe_fraction
 	) const;
 
 	bool _body_motion_collide(
