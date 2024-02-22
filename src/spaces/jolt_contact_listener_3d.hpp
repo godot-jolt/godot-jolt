@@ -3,7 +3,9 @@
 class JoltShapedObjectImpl3D;
 class JoltSpace3D;
 
-class JoltContactListener3D final : public JPH::ContactListener {
+class JoltContactListener3D final
+	: public JPH::ContactListener
+	, public JPH::SoftBodyContactListener {
 	using Mutex = std::mutex;
 
 	using MutexLock = std::unique_lock<Mutex>;
@@ -91,12 +93,31 @@ private:
 
 	void OnContactRemoved(const JPH::SubShapeIDPair& p_shape_pair) override;
 
+	JPH::SoftBodyValidateResult OnSoftBodyContactValidate(
+		const JPH::Body& p_soft_body,
+		const JPH::Body& p_other_body,
+		JPH::SoftBodyContactSettings& p_settings
+	) override;
+
+#ifdef GDJ_CONFIG_EDITOR
+	void OnSoftBodyContactAdded(
+		const JPH::Body& p_soft_body,
+		const JPH::SoftBodyManifold& p_manifold
+	) override;
+#endif // GDJ_CONFIG_EDITOR
+
 	bool _is_listening_for(const JPH::Body& p_body) const;
 
 	bool _try_override_collision_response(
 		const JPH::Body& p_jolt_body1,
 		const JPH::Body& p_jolt_body2,
 		JPH::ContactSettings& p_settings
+	);
+
+	bool _try_override_collision_response(
+		const JPH::Body& p_jolt_soft_body,
+		const JPH::Body& p_jolt_other_body,
+		JPH::SoftBodyContactSettings& p_settings
 	);
 
 	bool _try_apply_surface_velocities(
@@ -127,6 +148,11 @@ private:
 		const JPH::Body& p_body1,
 		const JPH::Body& p_body2,
 		const JPH::ContactManifold& p_manifold
+	);
+
+	bool _try_add_debug_contacts(
+		const JPH::Body& p_soft_body,
+		const JPH::SoftBodyManifold& p_manifold
 	);
 #endif // GDJ_CONFIG_EDITOR
 

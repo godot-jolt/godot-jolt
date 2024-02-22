@@ -56,6 +56,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	physics_system->SetPhysicsSettings(settings);
 	physics_system->SetGravity(JPH::Vec3::sZero());
 	physics_system->SetContactListener(contact_listener);
+	physics_system->SetSoftBodyContactListener(contact_listener);
 
 	physics_system->SetCombineFriction(
 		[](const JPH::Body& p_body1,

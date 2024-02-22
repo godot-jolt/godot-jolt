@@ -45,9 +45,7 @@ should not be relied upon if determinism is a hard requirement.
 - The physics server is not thread-safe (yet)
 - Memory usage is not reflected in Godot's performance monitors (yet)
 - Ray-casts do not support `face_index`
-- Soft bodies do not support asymmetrical/one-way collisions (yet)
-- Soft bodies do not support the wind properties of `Area3D`
-- Soft bodies do not support the gravity/damping overrides of `Area3D`
+- `SoftBody3D` does not support any interactions with `Area3D`
 
 ## What else is different?
 

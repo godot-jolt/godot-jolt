@@ -2,6 +2,7 @@
 
 #include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_body_impl_3d.hpp"
+#include "objects/jolt_soft_body_impl_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
@@ -62,6 +63,27 @@ void JoltContactListener3D::OnContactRemoved(const JPH::SubShapeIDPair& p_shape_
 	}
 }
 
+JPH::SoftBodyValidateResult JoltContactListener3D::OnSoftBodyContactValidate(
+	const JPH::Body& p_soft_body,
+	const JPH::Body& p_other_body,
+	JPH::SoftBodyContactSettings& p_settings
+) {
+	_try_override_collision_response(p_soft_body, p_other_body, p_settings);
+
+	return JPH::SoftBodyValidateResult::AcceptContact;
+}
+
+#ifdef GDJ_CONFIG_EDITOR
+
+void JoltContactListener3D::OnSoftBodyContactAdded(
+	const JPH::Body& p_soft_body,
+	const JPH::SoftBodyManifold& p_manifold
+) {
+	_try_add_debug_contacts(p_soft_body, p_manifold);
+}
+
+#endif // GDJ_CONFIG_EDITOR
+
 bool JoltContactListener3D::_is_listening_for(const JPH::Body& p_body) const {
 	return listening_for.has(p_body.GetID());
 }
@@ -91,6 +113,38 @@ bool JoltContactListener3D::_try_override_collision_response(
 	} else if (can_collide2 && !can_collide1) {
 		p_settings.mInvMassScale1 = 0.0f;
 		p_settings.mInvInertiaScale1 = 0.0f;
+	}
+
+	return true;
+}
+
+bool JoltContactListener3D::_try_override_collision_response(
+	const JPH::Body& p_jolt_soft_body,
+	const JPH::Body& p_jolt_other_body,
+	JPH::SoftBodyContactSettings& p_settings
+) {
+	if (p_jolt_other_body.IsSensor()) {
+		return false;
+	}
+
+	const auto* soft_body = reinterpret_cast<JoltSoftBodyImpl3D*>(p_jolt_soft_body.GetUserData());
+	const auto* other_body = reinterpret_cast<JoltBodyImpl3D*>(p_jolt_other_body.GetUserData());
+
+	const bool can_collide1 = soft_body->can_collide_with(*other_body);
+	const bool can_collide2 = other_body->can_collide_with(*soft_body);
+
+	if (can_collide1 && !can_collide2) {
+		p_settings.mInvMassScale2 = 0.0f;
+		p_settings.mInvInertiaScale2 = 0.0f;
+	} else if (can_collide2 && !can_collide1) {
+		if (p_jolt_other_body.IsStatic() || p_jolt_other_body.IsKinematic()) {
+			// HACK(mihe): Using an inverse mass scale of 0 when colliding with static/kinematic
+			// bodies doesn't have the expected effect of just passing through it, so we rely on the
+			// ability to emulate a sensor for these cases.
+			p_settings.mIsSensor = true;
+		} else {
+			p_settings.mInvMassScale1 = 0.0f;
+		}
 	}
 
 	return true;
@@ -360,6 +414,54 @@ bool JoltContactListener3D::_try_add_debug_contacts(
 
 		debug_contacts[pair_index + 0] = to_godot(point_on_1);
 		debug_contacts[pair_index + 1] = to_godot(point_on_2);
+	}
+
+	return true;
+}
+
+bool JoltContactListener3D::_try_add_debug_contacts(
+	const JPH::Body& p_soft_body,
+	const JPH::SoftBodyManifold& p_manifold
+) {
+	const int64_t max_count = debug_contacts.size();
+
+	if (max_count == 0) {
+		return false;
+	}
+
+	int32_t additional_contacts = 0;
+
+	for (const JPH::SoftBodyVertex& vertex : p_manifold.GetVertices()) {
+		if (p_manifold.HasContact(vertex)) {
+			additional_contacts += 1;
+		}
+	}
+
+	int32_t current_count = debug_contact_count;
+	bool exchanged = false;
+
+	do {
+		const int32_t new_count = current_count + additional_contacts;
+
+		if (new_count > max_count) {
+			return false;
+		}
+
+		exchanged = debug_contact_count.compare_exchange_weak(current_count, new_count);
+	} while (!exchanged);
+
+	int32_t contact_index = current_count;
+
+	for (const JPH::SoftBodyVertex& vertex : p_manifold.GetVertices()) {
+		if (!p_manifold.HasContact(vertex)) {
+			continue;
+		}
+
+		const JPH::RMat44 body_com_transform = p_soft_body.GetCenterOfMassTransform();
+		const JPH::Vec3 local_contact_point = p_manifold.GetLocalContactPoint(vertex);
+		const JPH::RVec3 contact_point = body_com_transform * local_contact_point;
+
+		debug_contacts[contact_index++] = to_godot(contact_point);
 	}
 
 	return true;
