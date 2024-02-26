@@ -56,8 +56,8 @@ public:
 		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
-		float* p_closest_safe,
-		float* p_closest_unsafe,
+		real_t* p_closest_safe,
+		real_t* p_closest_unsafe,
 		PhysicsServer3DExtensionShapeRestInfo* p_info
 	) override;
 

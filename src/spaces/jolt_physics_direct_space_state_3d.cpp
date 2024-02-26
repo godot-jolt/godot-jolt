@@ -226,17 +226,10 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	uint32_t p_collision_mask,
 	bool p_collide_with_bodies,
 	bool p_collide_with_areas,
-	float* p_closest_safe,
-	float* p_closest_unsafe,
+	real_t* p_closest_safe,
+	real_t* p_closest_unsafe,
 	PhysicsServer3DExtensionShapeRestInfo* p_info
 ) {
-	// HACK(mihe): These two fractions are unfortunately bound with `real_t` from the Godot side of
-	// things, which means that they get emitted as `float` in `extension_api.json` but will then be
-	// passed in as `double` in double-precision builds of Godot, which means we have to reinterpret
-	// them to their correct type first.
-	auto* p_closest_safe_r = reinterpret_cast<real_t*>(p_closest_safe);
-	auto* p_closest_unsafe_r = reinterpret_cast<real_t*>(p_closest_unsafe);
-
 	// HACK(mihe): This rest info parameter doesn't seem to be used anywhere within Godot, and isn't
 	// exposed in the bindings, so this will be unsupported until anyone actually needs it.
 	ERR_FAIL_COND_D_MSG(
@@ -278,8 +271,8 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		query_filter,
 		query_filter,
 		JPH::ShapeFilter(),
-		*p_closest_safe_r,
-		*p_closest_unsafe_r
+		*p_closest_safe,
+		*p_closest_unsafe
 	);
 
 	return true;
