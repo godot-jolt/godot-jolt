@@ -326,7 +326,9 @@ Vector3 JoltBodyImpl3D::get_inverse_inertia() const {
 	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
-	return to_godot(body->GetMotionPropertiesUnchecked()->GetInverseInertiaDiagonal());
+	const JPH::MotionProperties& motion_properties = *body->GetMotionPropertiesUnchecked();
+
+	return to_godot(motion_properties.GetLocalSpaceInverseInertia().GetDiagonal3());
 }
 
 Basis JoltBodyImpl3D::get_inverse_inertia_tensor() const {
@@ -1310,8 +1312,17 @@ JPH::MassProperties JoltBodyImpl3D::_calculate_mass_properties(const JPH::Shape&
 		mass_properties.ScaleToMass(mass);
 	} else {
 		mass_properties.mMass = mass;
+	}
+
+	if (inertia.x > 0) {
 		mass_properties.mInertia(0, 0) = (float)inertia.x;
+	}
+
+	if (inertia.y > 0) {
 		mass_properties.mInertia(1, 1) = (float)inertia.y;
+	}
+
+	if (inertia.z > 0) {
 		mass_properties.mInertia(2, 2) = (float)inertia.z;
 	}
 

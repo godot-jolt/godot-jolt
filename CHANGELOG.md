@@ -22,11 +22,15 @@ Breaking changes are denoted with ⚠️.
   collisions with internal edges of `ConcavePolygonShape3D` and `HeightMapShape3D` shapes, also
   known as ghost collisions. This setting is enabled by default and may change the behavior of
   character controllers relying things like `move_and_slide`.
+- Added support for partial custom inertia, where leaving one or two components at zero will use the
+  automatically calculated values for those specific components.
 
 ### Fixed
 
 - Fixed issue with not being able to pass a physics space `RID` to `area_get_param`,
   `area_attach_object_instance_id` and `area_get_object_instance_id`.
+- Fixed issue where the `inverse_inertia` property of `PhysicsDirectBodyState3D` would have some of
+  its components swapped.
 
 ## [0.12.0] - 2024-01-07
 
