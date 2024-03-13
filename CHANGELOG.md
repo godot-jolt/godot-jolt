@@ -27,6 +27,8 @@ Breaking changes are denoted with ⚠️.
 
 - Fixed issue with not being able to pass a physics space `RID` to `area_get_param`,
   `area_attach_object_instance_id` and `area_get_object_instance_id`.
+- Fixed issue where the `inverse_inertia` property of `PhysicsDirectBodyState3D` would have some of
+  its components swapped.
 
 ## [0.12.0] - 2024-01-07
 

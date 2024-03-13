@@ -326,7 +326,9 @@ Vector3 JoltBodyImpl3D::get_inverse_inertia() const {
 	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
-	return to_godot(body->GetMotionPropertiesUnchecked()->GetInverseInertiaDiagonal());
+	const JPH::MotionProperties& motion_properties = *body->GetMotionPropertiesUnchecked();
+
+	return to_godot(motion_properties.GetLocalSpaceInverseInertia().GetDiagonal3());
 }
 
 Basis JoltBodyImpl3D::get_inverse_inertia_tensor() const {
