@@ -1312,8 +1312,17 @@ JPH::MassProperties JoltBodyImpl3D::_calculate_mass_properties(const JPH::Shape&
 		mass_properties.ScaleToMass(mass);
 	} else {
 		mass_properties.mMass = mass;
+	}
+
+	if (inertia.x > 0) {
 		mass_properties.mInertia(0, 0) = (float)inertia.x;
+	}
+
+	if (inertia.y > 0) {
 		mass_properties.mInertia(1, 1) = (float)inertia.y;
+	}
+
+	if (inertia.z > 0) {
 		mass_properties.mInertia(2, 2) = (float)inertia.z;
 	}
 

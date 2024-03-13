@@ -22,6 +22,8 @@ Breaking changes are denoted with ⚠️.
   collisions with internal edges of `ConcavePolygonShape3D` and `HeightMapShape3D` shapes, also
   known as ghost collisions. This setting is enabled by default and may change the behavior of
   character controllers relying things like `move_and_slide`.
+- Added support for partial custom inertia, where leaving one or two components at zero will use the
+  automatically calculated values for those specific components.
 
 ### Fixed
 
