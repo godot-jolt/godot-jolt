@@ -64,9 +64,9 @@ should not be relied upon if determinism is a hard requirement.
 
 Also consider this note from Jolt's [documentation][jdc]:
 
-> In order for the simulation to be accurate, dynamic objects should be in the order of 0.1 to 10
-> meters long and have speeds in the order of 0 to 500 meters per second. Static object should be in
-> the order of 0.1 to 2000 meters long.
+> In order for the simulation to be accurate, dynamic objects should be in the order of 0.1 to 10 m
+> long, have speeds in the order of 0 to 500 m/s and have gravity in the order of 0 to 10 m/s^2.
+> Static object should be in the order of 0.1 to 2000 m long.
 
 ## What versions of Godot are supported?
 
