@@ -42,6 +42,14 @@ public:
 
 	void set_pickable(bool p_enabled) { pickable = p_enabled; }
 
+	bool is_sleeping() const;
+
+	void set_is_sleeping(bool p_enabled);
+
+	void put_to_sleep() { set_is_sleeping(true); }
+
+	void wake_up() { set_is_sleeping(false); }
+
 	int32_t get_simulation_precision() const { return simulation_precision; }
 
 	void set_simulation_precision(int32_t p_precision);
@@ -120,6 +128,8 @@ private:
 	void _try_rebuild();
 
 	void _mesh_changed();
+
+	void _pressure_changed();
 
 	void _damping_changed();
 

@@ -73,6 +73,31 @@ void JoltSoftBodyImpl3D::set_mesh(const RID& p_mesh) {
 	_mesh_changed();
 }
 
+bool JoltSoftBodyImpl3D::is_sleeping() const {
+	if (space == nullptr) {
+		return false;
+	}
+
+	const JoltReadableBody3D body = space->read_body(jolt_id);
+	ERR_FAIL_COND_D(body.is_invalid());
+
+	return !body->IsActive();
+}
+
+void JoltSoftBodyImpl3D::set_is_sleeping(bool p_enabled) {
+	if (space == nullptr) {
+		return;
+	}
+
+	JPH::BodyInterface& body_iface = space->get_body_iface();
+
+	if (p_enabled) {
+		body_iface.DeactivateBody(jolt_id);
+	} else {
+		body_iface.ActivateBody(jolt_id);
+	}
+}
+
 void JoltSoftBodyImpl3D::set_simulation_precision(int32_t p_precision) {
 	QUIET_FAIL_COND(simulation_precision == p_precision);
 
@@ -102,7 +127,7 @@ void JoltSoftBodyImpl3D::set_pressure(float p_pressure) {
 
 	pressure = MAX(p_pressure, 0.0f);
 
-	_update_pressure();
+	_pressure_changed();
 }
 
 void JoltSoftBodyImpl3D::set_linear_damping(float p_damping) {
@@ -709,12 +734,19 @@ void JoltSoftBodyImpl3D::_mesh_changed() {
 	_try_rebuild();
 }
 
+void JoltSoftBodyImpl3D::_pressure_changed() {
+	_update_pressure();
+	wake_up();
+}
+
 void JoltSoftBodyImpl3D::_damping_changed() {
 	_update_damping();
+	wake_up();
 }
 
 void JoltSoftBodyImpl3D::_pins_changed() {
 	_update_mass();
+	wake_up();
 }
 
 void JoltSoftBodyImpl3D::_exceptions_changed() {
