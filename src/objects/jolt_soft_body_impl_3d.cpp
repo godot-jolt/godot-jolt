@@ -581,6 +581,12 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 			);
 		}
 
+		// HACK(mihe): Since Godot's stiffness is input as a coefficient between 0 and 1, and Jolt
+		// uses actual stiffness for its edge constraints, we crudely map one to the other with an
+		// arbitrary constant.
+		const float stiffness = MAX(Math::pow(stiffness_coefficient, 3.0f) * 1000000.0f, 0.000001f);
+		const float inverse_stiffness = 1.0f / stiffness;
+
 		SymmetricBitTable marked_edges((int32_t)physics_vertices.size());
 
 		auto try_add_edge = [&](int32_t p_physics_index_a, int32_t p_physics_index_b) {
@@ -588,7 +594,7 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 				physics_edges.emplace_back(
 					(JPH::uint32)p_physics_index_a,
 					(JPH::uint32)p_physics_index_b,
-					stiffness_coefficient
+					inverse_stiffness
 				);
 
 				marked_edges.set(p_physics_index_a, p_physics_index_b);
