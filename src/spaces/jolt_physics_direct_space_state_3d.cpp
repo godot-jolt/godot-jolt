@@ -1086,8 +1086,11 @@ void JoltPhysicsDirectSpaceState3D::_generate_manifold(
 		JPH::PruneContactPoints(
 			p_hit.mPenetrationAxis,
 			p_contact_points1,
-			p_contact_points2,
+			p_contact_points2
+#ifdef JPH_DEBUG_RENDERER
+			,
 			p_center_of_mass
+#endif // JPH_DEBUG_RENDERER
 		);
 	}
 }
