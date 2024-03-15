@@ -27,6 +27,10 @@ Breaking changes are denoted with ⚠️.
 
 ### Fixed
 
+- ⚠️ Fixed issue with shape queries not returning the full contact manifold. This applies to the
+  `collide_shape` method of `PhysicsDirectSpaceState3D` as well as the `body_test_motion` method of
+  `PhysicsServer3D`, which subsequently affects the `test_move` and `move_and_collide` methods of
+  `PhysicsBody3D` as well as the `move_and_slide` method of `CharacterBody3D`.
 - Fixed issue with not being able to pass a physics space `RID` to `area_get_param`,
   `area_attach_object_instance_id` and `area_get_object_instance_id`.
 - Fixed issue where the `inverse_inertia` property of `PhysicsDirectBodyState3D` would have some of
