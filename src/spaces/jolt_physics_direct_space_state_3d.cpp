@@ -310,8 +310,8 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
-	settings.mMaxSeparationDistance = (float)p_margin;
 	settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
+	settings.mMaxSeparationDistance = (float)p_margin;
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -348,7 +348,8 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 		const Vector3 penetration_axis = to_godot(hit.mPenetrationAxis.Normalized());
 		const Vector3 margin_offset = penetration_axis * (float)p_margin;
 
-		JPH::ContactPoints contact_points1, contact_points2;
+		JPH::ContactPoints contact_points1;
+		JPH::ContactPoints contact_points2;
 
 		_generate_manifold(
 			hit,
@@ -952,8 +953,8 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const Transform3D transform_com = p_transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
-	settings.mMaxSeparationDistance = p_margin;
 	settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
+	settings.mMaxSeparationDistance = p_margin;
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -993,7 +994,8 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	for (int32_t i = 0; i < collector.get_hit_count(); ++i) {
 		const JPH::CollideShapeResult& hit = collector.get_hit(i);
 
-		JPH::ContactPoints contact_points1, contact_points2;
+		JPH::ContactPoints contact_points1;
+		JPH::ContactPoints contact_points2;
 
 		if (p_max_collisions > 1) {
 			_generate_manifold(
