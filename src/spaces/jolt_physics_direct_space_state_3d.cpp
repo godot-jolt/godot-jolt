@@ -352,7 +352,6 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 
 		_generate_manifold(
 			hit,
-			settings,
 			contact_points1,
 			contact_points2
 #ifdef JPH_DEBUG_RENDERER
@@ -999,7 +998,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		if (p_max_collisions > 1) {
 			_generate_manifold(
 				hit,
-				settings,
 				contact_points1,
 				contact_points2
 #ifdef JPH_DEBUG_RENDERER
@@ -1059,19 +1057,21 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 
 void JoltPhysicsDirectSpaceState3D::_generate_manifold(
 	const JPH::CollideShapeResult& p_hit,
-	const JPH::CollideShapeSettings& p_settings,
 	JPH::ContactPoints& p_contact_points1,
 	JPH::ContactPoints& p_contact_points2
 #ifdef JPH_DEBUG_RENDERER
 	,
 	JPH::RVec3Arg p_center_of_mass
 #endif // JPH_DEBUG_RENDERER
-) {
+) const {
+	const JPH::PhysicsSystem& physics_system = space->get_physics_system();
+	const JPH::PhysicsSettings& physics_settings = physics_system.GetPhysicsSettings();
+
 	JPH::ManifoldBetweenTwoFaces(
 		p_hit.mContactPointOn1,
 		p_hit.mContactPointOn2,
 		p_hit.mPenetrationAxis,
-		p_settings.mMaxSeparationDistance,
+		physics_settings.mManifoldToleranceSq,
 		p_hit.mShape1Face,
 		p_hit.mShape2Face,
 		p_contact_points1,
