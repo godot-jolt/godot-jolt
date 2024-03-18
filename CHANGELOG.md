@@ -24,6 +24,7 @@ Breaking changes are denoted with ⚠️.
   character controllers relying things like `move_and_slide`.
 - Added support for partial custom inertia, where leaving one or two components at zero will use the
   automatically calculated values for those specific components.
+- Added error-handling for catching zero-scaled bodies/shapes, among other things.
 
 ### Fixed
 

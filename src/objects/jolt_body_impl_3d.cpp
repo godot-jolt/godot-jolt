@@ -49,6 +49,18 @@ JoltBodyImpl3D::~JoltBodyImpl3D() {
 }
 
 void JoltBodyImpl3D::set_transform(const Transform3D& p_transform) {
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_MSG(
+		p_transform.basis.determinant() == 0.0f,
+		vformat(
+			"Failed to set transform for body '%s'. "
+			"The basis was found to be singular, which is not supported by Godot Jolt. "
+			"This is likely caused by one or more axes having a scale of zero.",
+			to_string()
+		)
+	);
+#endif // DEBUG_ENABLED
+
 	Vector3 new_scale;
 	const Transform3D new_transform = Math::decomposed(p_transform, new_scale);
 
