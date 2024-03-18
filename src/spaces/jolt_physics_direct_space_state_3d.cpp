@@ -153,6 +153,15 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 		return 0;
 	}
 
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		p_transform.basis.determinant() == 0.0f,
+		"intersect_shape failed due to being passed an invalid transform. "
+		"The basis was found to be singular, which is not supported by Godot Jolt. "
+		"This is likely caused by one or more axes having a scale of zero."
+	);
+#endif // DEBUG_ENABLED
+
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
 	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
@@ -237,6 +246,15 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		"Providing rest info as part of a shape-cast is not supported by Godot Jolt."
 	);
 
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		p_transform.basis.determinant() == 0.0f,
+		"cast_motion failed due to being passed an invalid transform. "
+		"The basis was found to be singular, which is not supported by Godot Jolt. "
+		"This is likely caused by one or more axes having a scale of zero."
+	);
+#endif // DEBUG_ENABLED
+
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
 	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
@@ -295,6 +313,15 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	if (p_max_results == 0) {
 		return false;
 	}
+
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		p_transform.basis.determinant() == 0.0f,
+		"collide_shape failed due to being passed an invalid transform. "
+		"The basis was found to be singular, which is not supported by Godot Jolt. "
+		"This is likely caused by one or more axes having a scale of zero."
+	);
+#endif // DEBUG_ENABLED
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
@@ -390,6 +417,15 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	bool p_collide_with_areas,
 	PhysicsServer3DExtensionShapeRestInfo* p_info
 ) {
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		p_transform.basis.determinant() == 0.0f,
+		"rest_info failed due to being passed an invalid transform. "
+		"The basis was found to be singular, which is not supported by Godot Jolt. "
+		"This is likely caused by one or more axes having a scale of zero."
+	);
+#endif // DEBUG_ENABLED
+
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
 	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
@@ -564,6 +600,15 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 ) const {
 	p_margin = MAX(p_margin, 0.0001f);
 	p_max_collisions = MIN(p_max_collisions, 32);
+
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		p_transform.basis.determinant() == 0.0f,
+		"body_test_motion failed due to being passed an invalid transform. "
+		"The basis was found to be singular, which is not supported by Godot Jolt. "
+		"This is likely caused by one or more axes having a scale of zero."
+	);
+#endif // DEBUG_ENABLED
 
 	Vector3 scale;
 	Transform3D transform = Math::decomposed(p_transform, scale);
