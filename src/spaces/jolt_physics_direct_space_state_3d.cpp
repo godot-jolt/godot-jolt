@@ -310,11 +310,8 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
+	settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 	settings.mMaxSeparationDistance = (float)p_margin;
-
-	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
-	}
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -339,19 +336,46 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 		return false;
 	}
 
-	auto* results = static_cast<Vector3*>(p_results);
+	auto* points = static_cast<Vector3*>(p_results);
 
-	*p_result_count = collector.get_hit_count();
+	const int32_t max_points = p_max_results * 2;
 
-	for (int32_t i = 0; i < *p_result_count; ++i) {
+	int32_t point_count = 0;
+
+	for (int32_t i = 0; i < collector.get_hit_count(); ++i) {
 		const JPH::CollideShapeResult& hit = collector.get_hit(i);
 
 		const Vector3 penetration_axis = to_godot(hit.mPenetrationAxis.Normalized());
 		const Vector3 margin_offset = penetration_axis * (float)p_margin;
 
-		*results++ = base_offset + to_godot(hit.mContactPointOn1) + margin_offset;
-		*results++ = base_offset + to_godot(hit.mContactPointOn2);
+		JPH::ContactPoints contact_points1;
+		JPH::ContactPoints contact_points2;
+
+		_generate_manifold(
+			hit,
+			contact_points1,
+			contact_points2
+#ifdef JPH_DEBUG_RENDERER
+			,
+			to_jolt_r(base_offset)
+#endif // JPH_DEBUG_RENDERER
+		);
+
+		for (JPH::uint j = 0; j < contact_points1.size(); ++j) {
+			points[point_count++] = base_offset + to_godot(contact_points1[j]) + margin_offset;
+			points[point_count++] = base_offset + to_godot(contact_points2[j]);
+
+			if (point_count >= max_points) {
+				break;
+			}
+		}
+
+		if (point_count >= max_points) {
+			break;
+		}
 	}
+
+	*p_result_count = point_count / 2;
 
 	return true;
 }
@@ -929,11 +953,8 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const Transform3D transform_com = p_transform.translated_local(com_scaled);
 
 	JPH::CollideShapeSettings settings;
+	settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 	settings.mMaxSeparationDistance = p_margin;
-
-	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
-	}
 
 	const Vector3& base_offset = transform_com.origin;
 
@@ -973,6 +994,23 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	for (int32_t i = 0; i < collector.get_hit_count(); ++i) {
 		const JPH::CollideShapeResult& hit = collector.get_hit(i);
 
+		JPH::ContactPoints contact_points1;
+		JPH::ContactPoints contact_points2;
+
+		if (p_max_collisions > 1) {
+			_generate_manifold(
+				hit,
+				contact_points1,
+				contact_points2
+#ifdef JPH_DEBUG_RENDERER
+				,
+				to_jolt_r(base_offset)
+#endif // JPH_DEBUG_RENDERER
+			);
+		} else {
+			contact_points2.push_back(hit.mContactPointOn2);
+		}
+
 		const float penetration_depth = hit.mPenetrationDepth + p_margin - min_contact_depth;
 
 		if (penetration_depth <= 0.0f) {
@@ -983,28 +1021,78 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		const JoltShapedObjectImpl3D* collider = collider_jolt_body.as_shaped();
 		ERR_FAIL_NULL_D(collider);
 
-		const Vector3 position = base_offset + to_godot(hit.mContactPointOn2);
-
 		const int32_t local_shape = p_body.find_shape_index(hit.mSubShapeID1);
 		ERR_FAIL_COND_D(local_shape == -1);
 
 		const int32_t collider_shape = collider->find_shape_index(hit.mSubShapeID2);
 		ERR_FAIL_COND_D(collider_shape == -1);
 
-		PhysicsServer3DExtensionMotionCollision& collision = p_result->collisions[count++];
+		for (JPH::Vec3 contact_point : contact_points2) {
+			const Vector3 position = base_offset + to_godot(contact_point);
 
-		collision.position = position;
-		collision.normal = to_godot(-hit.mPenetrationAxis.Normalized());
-		collision.collider_velocity = collider->get_velocity_at_position(position);
-		collision.collider_angular_velocity = collider->get_angular_velocity();
-		collision.depth = penetration_depth;
-		collision.local_shape = local_shape;
-		collision.collider_id = collider->get_instance_id();
-		collision.collider = collider->get_rid();
-		collision.collider_shape = collider_shape;
+			PhysicsServer3DExtensionMotionCollision& collision = p_result->collisions[count++];
+
+			collision.position = position;
+			collision.normal = to_godot(-hit.mPenetrationAxis.Normalized());
+			collision.collider_velocity = collider->get_velocity_at_position(position);
+			collision.collider_angular_velocity = collider->get_angular_velocity();
+			collision.depth = penetration_depth;
+			collision.local_shape = local_shape;
+			collision.collider_id = collider->get_instance_id();
+			collision.collider = collider->get_rid();
+			collision.collider_shape = collider_shape;
+
+			if (count == p_max_collisions) {
+				break;
+			}
+		}
+
+		if (count == p_max_collisions) {
+			break;
+		}
 	}
 
 	p_result->collision_count = count;
 
 	return count > 0;
+}
+
+void JoltPhysicsDirectSpaceState3D::_generate_manifold(
+	const JPH::CollideShapeResult& p_hit,
+	JPH::ContactPoints& p_contact_points1,
+	JPH::ContactPoints& p_contact_points2
+#ifdef JPH_DEBUG_RENDERER
+	,
+	JPH::RVec3Arg p_center_of_mass
+#endif // JPH_DEBUG_RENDERER
+) const {
+	const JPH::PhysicsSystem& physics_system = space->get_physics_system();
+	const JPH::PhysicsSettings& physics_settings = physics_system.GetPhysicsSettings();
+
+	JPH::ManifoldBetweenTwoFaces(
+		p_hit.mContactPointOn1,
+		p_hit.mContactPointOn2,
+		p_hit.mPenetrationAxis,
+		physics_settings.mManifoldToleranceSq,
+		p_hit.mShape1Face,
+		p_hit.mShape2Face,
+		p_contact_points1,
+		p_contact_points2
+#ifdef JPH_DEBUG_RENDERER
+		,
+		p_center_of_mass
+#endif // JPH_DEBUG_RENDERER
+	);
+
+	if (p_contact_points1.size() > 4) {
+		JPH::PruneContactPoints(
+			p_hit.mPenetrationAxis,
+			p_contact_points1,
+			p_contact_points2
+#ifdef JPH_DEBUG_RENDERER
+			,
+			p_center_of_mass
+#endif // JPH_DEBUG_RENDERER
+		);
+	}
 }

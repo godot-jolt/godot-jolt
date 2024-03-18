@@ -143,5 +143,15 @@ private:
 		PhysicsServer3DExtensionMotionResult* p_result
 	) const;
 
+	void _generate_manifold(
+		const JPH::CollideShapeResult& p_hit,
+		JPH::ContactPoints& p_contact_points1,
+		JPH::ContactPoints& p_contact_points2
+#ifdef JPH_DEBUG_RENDERER
+		,
+		JPH::RVec3Arg p_center_of_mass
+#endif // JPH_DEBUG_RENDERER
+	) const;
+
 	JoltSpace3D* space = nullptr;
 };
