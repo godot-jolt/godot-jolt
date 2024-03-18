@@ -133,4 +133,6 @@ public:
 	Stats GetStats() const override { return {sizeof(*this), 0}; }
 
 	float GetVolume() const override { return 0.0f; }
+
+	bool IsValidScale([[maybe_unused]] JPH::Vec3Arg p_scale) const override { return true; }
 };

@@ -172,6 +172,18 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 
 	Vector3 scale;
 	const Transform3D transform = Math::decomposed(p_transform, scale);
+
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		!jolt_shape->IsValidScale(to_jolt(scale)),
+		vformat(
+			"intersect_shape failed due to being passed an invalid transform. "
+			"A scale of %v is not supported by Godot Jolt for this shape type.",
+			scale
+		)
+	);
+#endif // DEBUG_ENABLED
+
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
@@ -265,6 +277,18 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	Vector3 scale;
 	const Transform3D transform = Math::decomposed(p_transform, scale);
+
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		!jolt_shape->IsValidScale(to_jolt(scale)),
+		vformat(
+			"cast_motion failed due to being passed an invalid transform. "
+			"A scale of %v is not supported by Godot Jolt for this shape type.",
+			scale
+		)
+	);
+#endif // DEBUG_ENABLED
+
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	Transform3D transform_com = transform.translated_local(com_scaled);
 
@@ -333,6 +357,18 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 
 	Vector3 scale;
 	const Transform3D transform = Math::decomposed(p_transform, scale);
+
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		!jolt_shape->IsValidScale(to_jolt(scale)),
+		vformat(
+			"collide_shape failed due to being passed an invalid transform. "
+			"A scale of %v is not supported by Godot Jolt for this shape type.",
+			scale
+		)
+	);
+#endif // DEBUG_ENABLED
+
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
@@ -420,7 +456,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 #ifdef DEBUG_ENABLED
 	ERR_FAIL_COND_D_MSG(
 		p_transform.basis.determinant() == 0.0f,
-		"rest_info failed due to being passed an invalid transform. "
+		"get_rest_info failed due to being passed an invalid transform. "
 		"The basis was found to be singular, which is not supported by Godot Jolt. "
 		"This is likely caused by one or more axes having a scale of zero."
 	);
@@ -436,6 +472,18 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 
 	Vector3 scale;
 	const Transform3D transform = Math::decomposed(p_transform, scale);
+
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		!jolt_shape->IsValidScale(to_jolt(scale)),
+		vformat(
+			"get_rest_info failed due to being passed an invalid transform. "
+			"A scale of %v is not supported by Godot Jolt for this shape type.",
+			scale
+		)
+	);
+#endif // DEBUG_ENABLED
+
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);
 
@@ -612,6 +660,17 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 
 	Vector3 scale;
 	Transform3D transform = Math::decomposed(p_transform, scale);
+
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_D_MSG(
+		!p_body.get_jolt_shape()->IsValidScale(to_jolt(scale)),
+		vformat(
+			"body_test_motion failed due to being passed an invalid transform. "
+			"A scale of %v is not supported by Godot Jolt for this body.",
+			scale
+		)
+	);
+#endif // DEBUG_ENABLED
 
 	Vector3 recovery;
 	const bool recovered = _body_motion_recover(p_body, transform, p_margin, recovery);
@@ -949,7 +1008,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 		}
 
 		const JPH::ShapeRefC jolt_shape = shape->try_build();
-		ERR_FAIL_NULL_D(jolt_shape);
+		QUIET_FAIL_NULL_D(jolt_shape);
 
 		Vector3 scale;
 
@@ -958,6 +1017,12 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 		const Transform3D transform_com_local = transform_local.translated_local(com_scaled);
 		const Transform3D transform_com = body_transform * transform_com_local;
 		const Transform3D transform_com_unscaled = Math::decomposed(transform_com, scale);
+
+#ifdef DEBUG_ENABLED
+		if (!jolt_shape->IsValidScale(to_jolt(scale))) {
+			continue;
+		}
+#endif // DEBUG_ENABLED
 
 		real_t shape_safe_fraction = 1.0;
 		real_t shape_unsafe_fraction = 1.0;

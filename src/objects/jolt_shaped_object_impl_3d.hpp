@@ -81,6 +81,10 @@ protected:
 
 	virtual JPH::EMotionType _get_motion_type() const = 0;
 
+	JPH::ShapeRefC _try_build_single_shape();
+
+	JPH::ShapeRefC _try_build_compound_shape();
+
 	virtual void _shapes_changed();
 
 	virtual void _shapes_built() { }

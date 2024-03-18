@@ -109,55 +109,40 @@ Vector3 JoltShapedObjectImpl3D::get_angular_velocity() const {
 }
 
 JPH::ShapeRefC JoltShapedObjectImpl3D::try_build_shape() {
-	int32_t built_shape_count = 0;
-	const JoltShapeInstance3D* last_built_shape = nullptr;
+	int32_t built_shapes = 0;
 
 	for (JoltShapeInstance3D& shape : shapes) {
 		if (shape.is_enabled() && shape.try_build()) {
-			built_shape_count += 1;
-			last_built_shape = &shape;
+			built_shapes += 1;
 		}
 	}
 
-	if (built_shape_count == 0) {
-		return {};
-	}
+	QUIET_FAIL_COND_D(built_shapes == 0);
 
-	JPH::ShapeRefC result;
+	JPH::ShapeRefC result = built_shapes == 1
+		? _try_build_single_shape()
+		: _try_build_compound_shape();
 
-	if (built_shape_count == 1) {
-		result = JoltShapeImpl3D::with_transform(
-			last_built_shape->get_jolt_ref(),
-			last_built_shape->get_transform_unscaled(),
-			last_built_shape->get_scale()
-		);
-	} else {
-		int32_t shape_index = 0;
-
-		result = JoltShapeImpl3D::as_compound([&](auto&& p_add_shape) {
-			if (shape_index >= shapes.size()) {
-				return false;
-			}
-
-			const JoltShapeInstance3D& shape = shapes[shape_index++];
-
-			if (shape.is_enabled() && shape.is_built()) {
-				p_add_shape(
-					shape.get_jolt_ref(),
-					shape.get_transform_unscaled(),
-					shape.get_scale()
-				);
-			}
-
-			return true;
-		});
-	}
+	QUIET_FAIL_NULL_D(result);
 
 	if (has_custom_center_of_mass()) {
 		result = JoltShapeImpl3D::with_center_of_mass(result, get_center_of_mass_custom());
 	}
 
 	if (scale != Vector3(1.0f, 1.0f, 1.0f)) {
+#ifdef DEBUG_ENABLED
+		ERR_FAIL_COND_D_MSG(
+			!result->IsValidScale(to_jolt(scale)),
+			vformat(
+				"Godot Jolt failed to scale body '%s'. "
+				"%v is not a valid scale for the types of shapes in this body. "
+				"This body will effectively have all its shapes disabled.",
+				to_string(),
+				scale
+			)
+		);
+#endif // DEBUG_ENABLED
+
 		result = JoltShapeImpl3D::with_scale(result, scale);
 	}
 
@@ -343,6 +328,108 @@ void JoltShapedObjectImpl3D::post_step(float p_step, JPH::Body& p_jolt_body) {
 	JoltObjectImpl3D::post_step(p_step, p_jolt_body);
 
 	previous_jolt_shape = nullptr;
+}
+
+JPH::ShapeRefC JoltShapedObjectImpl3D::_try_build_single_shape() {
+	// NOLINTNEXTLINE(modernize-loop-convert)
+	for (int32_t i = 0; i < shapes.size(); ++i) {
+		const JoltShapeInstance3D& sub_shape = shapes[i];
+
+		if (!sub_shape.is_enabled() || !sub_shape.is_built()) {
+			continue;
+		}
+
+		JPH::ShapeRefC jolt_sub_shape = sub_shape.get_jolt_ref();
+
+		const Vector3 sub_shape_scale = sub_shape.get_scale();
+		const Transform3D sub_shape_transform = sub_shape.get_transform_unscaled();
+
+		if (sub_shape_scale != Vector3(1.0f, 1.0f, 1.0f)) {
+#ifdef DEBUG_ENABLED
+			ERR_FAIL_COND_D_MSG(
+				!jolt_sub_shape->IsValidScale(to_jolt(sub_shape_scale)),
+				vformat(
+					"Godot Jolt failed to scale shape at index %d for body '%s'. "
+					"%v is not a valid scale for this shape type. "
+					"This shape will effectively be disabled.",
+					i,
+					to_string(),
+					sub_shape_scale
+				)
+			);
+#endif // DEBUG_ENABLED
+
+			jolt_sub_shape = JoltShapeImpl3D::with_scale(jolt_sub_shape, sub_shape_scale);
+		}
+
+		if (sub_shape_transform != Transform3D()) {
+			jolt_sub_shape = JoltShapeImpl3D::with_basis_origin(
+				jolt_sub_shape,
+				sub_shape_transform.basis,
+				sub_shape_transform.origin
+			);
+		}
+
+		return jolt_sub_shape;
+	}
+
+	return {};
+}
+
+JPH::ShapeRefC JoltShapedObjectImpl3D::_try_build_compound_shape() {
+	JPH::StaticCompoundShapeSettings compound_shape_settings;
+
+	// NOLINTNEXTLINE(modernize-loop-convert)
+	for (int32_t i = 0; i < shapes.size(); ++i) {
+		const JoltShapeInstance3D& sub_shape = shapes[i];
+
+		if (!sub_shape.is_enabled() || !sub_shape.is_built()) {
+			continue;
+		}
+
+		JPH::ShapeRefC jolt_sub_shape = sub_shape.get_jolt_ref();
+
+		const Vector3 sub_shape_scale = sub_shape.get_scale();
+		const Transform3D sub_shape_transform = sub_shape.get_transform_unscaled();
+
+		if (sub_shape_scale != Vector3(1.0f, 1.0f, 1.0f)) {
+#ifdef DEBUG_ENABLED
+			ERR_CONTINUE_MSG(
+				!jolt_sub_shape->IsValidScale(to_jolt(sub_shape_scale)),
+				vformat(
+					"Godot Jolt failed to scale shape at index %d for body '%s'. "
+					"%v is not a valid scale for this shape type. "
+					"This shape will effectively be disabled.",
+					i,
+					to_string(),
+					sub_shape_scale
+				)
+			);
+#endif // DEBUG_ENABLED
+
+			jolt_sub_shape = JoltShapeImpl3D::with_scale(jolt_sub_shape, sub_shape_scale);
+		}
+
+		compound_shape_settings.AddShape(
+			to_jolt(sub_shape_transform.origin),
+			to_jolt(sub_shape_transform.basis),
+			jolt_sub_shape
+		);
+	}
+
+	const JPH::ShapeSettings::ShapeResult shape_result = compound_shape_settings.Create();
+
+	ERR_FAIL_COND_D_MSG(
+		shape_result.HasError(),
+		vformat(
+			"Failed to create compound shape with sub-shape count '%d'. "
+			"It returned the following error: '%s'.",
+			(int32_t)compound_shape_settings.mSubShapes.size(),
+			to_godot(shape_result.GetError())
+		)
+	);
+
+	return shape_result.Get();
 }
 
 void JoltShapedObjectImpl3D::_shapes_changed() {
