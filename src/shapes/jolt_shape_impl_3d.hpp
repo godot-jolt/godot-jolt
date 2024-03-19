@@ -48,12 +48,6 @@ public:
 		const Vector3& p_origin
 	);
 
-	static JPH::ShapeRefC with_transform(
-		const JPH::Shape* p_shape,
-		const Transform3D& p_transform,
-		const Vector3& p_scale
-	);
-
 	static JPH::ShapeRefC with_center_of_mass_offset(
 		const JPH::Shape* p_shape,
 		const Vector3& p_offset
@@ -68,9 +62,6 @@ public:
 
 	static JPH::ShapeRefC without_custom_shapes(const JPH::Shape* p_shape);
 
-	template<typename TCallable>
-	static JPH::ShapeRefC as_compound(TCallable&& p_callable);
-
 protected:
 	virtual JPH::ShapeRefC _build() const = 0;
 
@@ -84,5 +75,3 @@ protected:
 
 	JPH::ShapeRefC jolt_ref;
 };
-
-#include "jolt_shape_impl_3d.inl"

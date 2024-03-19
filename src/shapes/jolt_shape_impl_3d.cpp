@@ -102,26 +102,6 @@ JPH::ShapeRefC JoltShapeImpl3D::with_basis_origin(
 	return shape_result.Get();
 }
 
-JPH::ShapeRefC JoltShapeImpl3D::with_transform(
-	const JPH::Shape* p_shape,
-	const Transform3D& p_transform,
-	const Vector3& p_scale
-) {
-	ERR_FAIL_NULL_D(p_shape);
-
-	JPH::ShapeRefC shape = p_shape;
-
-	if (p_scale != Vector3(1.0f, 1.0f, 1.0f)) {
-		shape = with_scale(shape, p_scale);
-	}
-
-	if (p_transform != Transform3D()) {
-		shape = with_basis_origin(shape, p_transform.basis, p_transform.origin);
-	}
-
-	return shape;
-}
-
 JPH::ShapeRefC JoltShapeImpl3D::with_center_of_mass_offset(
 	const JPH::Shape* p_shape,
 	const Vector3& p_offset
