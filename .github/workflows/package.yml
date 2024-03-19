@@ -376,7 +376,7 @@ jobs:
           path: ./dist
 
       - name: Delete temporary artifacts
-        uses: geekyeggo/delete-artifact@v4
+        uses: geekyeggo/delete-artifact@v5
         with:
           token: ${{ github.token }}
           name: |
