@@ -1,5 +1,5 @@
 ---
-# Requires LLVM 15.0
+# Requires LLVM 16.0
 
 # The checks are split it into 4 groups:
 #
@@ -70,6 +70,7 @@ Checks: >
   bugprone-suspicious-memory-comparison,
   bugprone-suspicious-memset-usage,
   bugprone-suspicious-missing-comma,
+  bugprone-suspicious-realloc-usage,
   bugprone-suspicious-semicolon,
   bugprone-suspicious-string-compare,
   bugprone-swapped-arguments,
@@ -85,8 +86,11 @@ Checks: >
   -clang-diagnostic-pragma-once-outside-header,
   concurrency-mt-unsafe,
   -concurrency-thread-canceltype-asynchronous,
+  -cppcoreguidelines-avoid-const-or-ref-data-members,
+  -cppcoreguidelines-avoid-do-while,
   cppcoreguidelines-avoid-goto,
   -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-avoid-reference-coroutine-parameters
   cppcoreguidelines-init-variables,
   cppcoreguidelines-interfaces-global-init,
   -cppcoreguidelines-macro-usage,
@@ -127,6 +131,7 @@ Checks: >
   misc-unused-alias-decls,
   misc-unused-parameters,
   misc-unused-using-decls,
+  misc-use-anonymous-namespace,
   modernize-concat-nested-namespaces,
   modernize-deprecated-headers,
   modernize-loop-convert,
@@ -196,6 +201,7 @@ Checks: >
   bugprone-inaccurate-erase,
   -bugprone-shared-ptr-array-mismatch,
   bugprone-sizeof-container,
+  -bugprone-standalone-empty,
   bugprone-string-constructor,
   bugprone-string-integer-assignment,
   -bugprone-stringview-nullptr,
