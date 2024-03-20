@@ -1,12 +1,13 @@
 ---
-# Requires LLVM 15.0
+# Requires LLVM 16.0
 
 # General
 Language: Cpp
 Standard: c++17
 TabWidth: 4
 UseTab: Always
-UseCRLF: false
+LineEnding: LF
+InsertNewlineAtEOF: true
 
 # Braces
 BreakBeforeBraces: Custom
@@ -48,6 +49,7 @@ IndentWrappedFunctionNames: false
 LambdaBodyIndentation: Signature
 NamespaceIndentation: None
 PPIndentWidth: -1
+RequiresExpressionIndentation: OuterScope
 
 # Spaces
 BitFieldColonSpacing: Both
@@ -94,8 +96,10 @@ AlwaysBreakBeforeMultilineStrings: true
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
+BreakAfterAttributes: Always
 BreakBeforeBinaryOperators: None
 BreakBeforeConceptDeclarations: Always
+BreakBeforeInlineASMColon: OnlyMultiline
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: BeforeComma
 BreakInheritanceList: BeforeComma
@@ -153,7 +157,8 @@ AlignConsecutiveDeclarations: None
 AlignConsecutiveMacros: None
 AlignEscapedNewlines: Left
 AlignOperands: DontAlign
-AlignTrailingComments: false
+AlignTrailingComments:
+  Kind: Never
 
 # Macros
 AttributeMacros: []
@@ -168,12 +173,18 @@ WhitespaceSensitiveMacros: []
 # Miscellaneous
 FixNamespaceComments: true
 InsertTrailingCommas: None
+IntegerLiteralSeparator:
+  Binary: 0
+  Decimal: 0
+  Hex: 0
 QualifierAlignment: Left
 RawStringFormats: []
+RemoveSemicolon: false
 SortUsingDeclarations: false
 
 # BasedOnStyle
 # BreakAfterJavaFieldAnnotations
+# BreakArrays
 # DisableFormat
 # IncludeIsMainRegex
 # IncludeIsMainSourceRegex
