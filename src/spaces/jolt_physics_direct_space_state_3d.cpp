@@ -752,7 +752,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		collided = _body_motion_collide(
 			p_body,
 			transform.translated(p_motion * unsafe_fraction),
-			(float)p_motion.length(),
+			p_motion,
 			p_margin,
 			p_max_collisions,
 			p_result
@@ -1108,11 +1108,15 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
-	float p_distance,
+	const Vector3& p_motion,
 	float p_margin,
 	int32_t p_max_collisions,
 	PhysicsServer3DExtensionMotionResult* p_result
 ) const {
+	if (p_max_collisions == 0) {
+		return false;
+	}
+
 	const JPH::Shape* jolt_shape = p_body.get_jolt_shape();
 
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
@@ -1147,18 +1151,26 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		return collided;
 	}
 
-	// HACK(mihe): Without this minimum contact depth we can sometimes end up with very shallow
-	// contacts that end up affecting the outcome of things like `floor_block_on_wall`, where after
-	// one of the recovery iterations (in Godot, not here) we can still find ourselves penetrating a
-	// wall ever so slightly, which `move_and_slide` will interpret as being trapped in a corner and
-	// stop the character altogether. We still need distances smaller than this (like none at all)
-	// to actually emit contacts though, so we clamp it by the distance moved.
-	const float min_contact_depth = MIN(0.0001f, p_distance);
-
 	int32_t count = 0;
 
 	for (int32_t i = 0; i < collector.get_hit_count(); ++i) {
 		const JPH::CollideShapeResult& hit = collector.get_hit(i);
+
+		const float penetration_depth = hit.mPenetrationDepth + p_margin;
+
+		if (penetration_depth <= 0.0f) {
+			continue;
+		}
+
+		const Vector3 normal = to_godot(-hit.mPenetrationAxis.Normalized());
+
+		if (p_motion.length_squared() > 0) {
+			const Vector3 direction = p_motion.normalized();
+
+			if (direction.dot(normal) >= -CMP_EPSILON) {
+				continue;
+			}
+		}
 
 		JPH::ContactPoints contact_points1;
 		JPH::ContactPoints contact_points2;
@@ -1177,12 +1189,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 			contact_points2.push_back(hit.mContactPointOn2);
 		}
 
-		const float penetration_depth = hit.mPenetrationDepth + p_margin - min_contact_depth;
-
-		if (penetration_depth <= 0.0f) {
-			continue;
-		}
-
 		const JoltReadableBody3D collider_jolt_body = space->read_body(hit.mBodyID2);
 		const JoltShapedObjectImpl3D* collider = collider_jolt_body.as_shaped();
 		ERR_FAIL_NULL_D(collider);
@@ -1199,7 +1205,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 			PhysicsServer3DExtensionMotionCollision& collision = p_result->collisions[count++];
 
 			collision.position = position;
-			collision.normal = to_godot(-hit.mPenetrationAxis.Normalized());
+			collision.normal = normal;
 			collision.collider_velocity = collider->get_velocity_at_position(position);
 			collision.collider_angular_velocity = collider->get_angular_velocity();
 			collision.depth = penetration_depth;

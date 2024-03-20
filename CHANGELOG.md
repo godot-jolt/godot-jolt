@@ -11,6 +11,10 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
+- ⚠️ Changed the way that the `body_test_motion` method of `PhysicsServer3D` discards contacts,
+  which should fix issues related to jitter/ping-ponging. Note that this can also result in *more*
+  ghost collisions under certain conditions. This affects `move_and_slide`, `move_and_collide` and
+  `test_move`.
 - ⚠️ Changed the inertia of shapeless bodies to be `(1, 1, 1)`, to match Godot Physics.
 - Changed `SeparationRayShape3D` to not treat other convex shapes as solid, meaning it will now only
   ever collide with the hull of other convex shapes, which better matches Godot Physics.
