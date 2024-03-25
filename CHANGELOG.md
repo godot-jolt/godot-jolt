@@ -32,6 +32,8 @@ Breaking changes are denoted with ⚠️.
   `collide_shape` method of `PhysicsDirectSpaceState3D` as well as the `body_test_motion` method of
   `PhysicsServer3D`, which subsequently affects the `test_move` and `move_and_collide` methods of
   `PhysicsBody3D` as well as the `move_and_slide` method of `CharacterBody3D`.
+- ⚠️ Fixed issue with the `body_get_direct_state` method of `PhysicsServer3D` returning a non-null
+  reference when the body has no space.
 - Fixed issue with not being able to pass a physics space `RID` to `area_get_param`,
   `area_attach_object_instance_id` and `area_get_object_instance_id`.
 - Fixed issue where the `inverse_inertia` property of `PhysicsDirectBodyState3D` would have some of
