@@ -6,7 +6,12 @@ class JoltCustomEmptyShapeSettings final : public JPH::ShapeSettings {
 public:
 	JoltCustomEmptyShapeSettings() = default;
 
+	explicit JoltCustomEmptyShapeSettings(JPH::Vec3Arg p_center_of_mass)
+		: center_of_mass(p_center_of_mass) { }
+
 	ShapeResult Create() const override;
+
+	JPH::Vec3 center_of_mass = JPH::Vec3::sZero();
 };
 
 class JoltCustomEmptyShape final : public JPH::Shape {
@@ -16,12 +21,19 @@ public:
 	JoltCustomEmptyShape()
 		: Shape(JoltCustomShapeType::EMPTY, JoltCustomShapeSubType::EMPTY) { }
 
+	explicit JoltCustomEmptyShape(JPH::Vec3Arg p_center_of_mass)
+		: Shape(JoltCustomShapeType::EMPTY, JoltCustomShapeSubType::EMPTY)
+		, center_of_mass(p_center_of_mass) { }
+
 	JoltCustomEmptyShape(const JoltCustomEmptyShapeSettings& p_settings, ShapeResult& p_result)
-		: Shape(JoltCustomShapeType::EMPTY, JoltCustomShapeSubType::EMPTY, p_settings, p_result) {
+		: Shape(JoltCustomShapeType::EMPTY, JoltCustomShapeSubType::EMPTY, p_settings, p_result)
+		, center_of_mass(p_settings.center_of_mass) {
 		if (!p_result.HasError()) {
 			p_result.Set(this);
 		}
 	}
+
+	JPH::Vec3 GetCenterOfMass() const override;
 
 	JPH::AABox GetLocalBounds() const override { return {JPH::Vec3::sZero(), JPH::Vec3::sZero()}; }
 
@@ -29,13 +41,7 @@ public:
 
 	float GetInnerRadius() const override { return 0.0f; }
 
-	JPH::MassProperties GetMassProperties() const override {
-		// HACK(mihe): We need to give the shape a mass, otherwise we'll get an assert when we use
-		// this in dynamic or kinematic bodies.
-		JPH::MassProperties mass_properties;
-		mass_properties.mMass = 1.0f;
-		return mass_properties;
-	}
+	JPH::MassProperties GetMassProperties() const override;
 
 	const JPH::PhysicsMaterial* GetMaterial([[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id
 	) const override {
@@ -135,4 +141,7 @@ public:
 	float GetVolume() const override { return 0.0f; }
 
 	bool IsValidScale([[maybe_unused]] JPH::Vec3Arg p_scale) const override { return true; }
+
+private:
+	JPH::Vec3 center_of_mass = JPH::Vec3::sZero();
 };

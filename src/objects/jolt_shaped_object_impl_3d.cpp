@@ -153,7 +153,11 @@ JPH::ShapeRefC JoltShapedObjectImpl3D::build_shape() {
 	JPH::ShapeRefC new_shape = try_build_shape();
 
 	if (new_shape == nullptr) {
-		new_shape = new JoltCustomEmptyShape();
+		if (has_custom_center_of_mass()) {
+			new_shape = new JoltCustomEmptyShape(to_jolt(get_center_of_mass_custom()));
+		} else {
+			new_shape = new JoltCustomEmptyShape();
+		}
 	}
 
 	return new_shape;

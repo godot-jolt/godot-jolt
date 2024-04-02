@@ -11,6 +11,7 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
+- ⚠️ Changed the inertia of shapeless bodies to be `(1, 1, 1)`, to match Godot Physics.
 - Changed `SeparationRayShape3D` to not treat other convex shapes as solid, meaning it will now only
   ever collide with the hull of other convex shapes, which better matches Godot Physics.
 
@@ -38,6 +39,7 @@ Breaking changes are denoted with ⚠️.
   `area_attach_object_instance_id` and `area_get_object_instance_id`.
 - Fixed issue where the `inverse_inertia` property of `PhysicsDirectBodyState3D` would have some of
   its components swapped.
+- Fixed issue where shapeless bodies wouldn't have custom center-of-mass applied to them.
 
 ## [0.12.0] - 2024-01-07
 

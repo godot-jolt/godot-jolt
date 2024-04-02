@@ -74,3 +74,22 @@ void JoltCustomEmptyShape::register_type() {
 		);
 	}
 }
+
+JPH::Vec3 JoltCustomEmptyShape::GetCenterOfMass() const {
+	// HACK(mihe): In Godot Physics you're able to provide a custom center-of-mass to a shapeless
+	// body without affecting its inertia. We can't emulate this behavior while relying on Jolt's
+	// `OffsetCenterOfMassShape` due to it translating its inner mass properties (and thus our
+	// inertia) by the center of mass provided to it. So instead we have this shape provide its own.
+	return center_of_mass;
+}
+
+JPH::MassProperties JoltCustomEmptyShape::GetMassProperties() const {
+	JPH::MassProperties mass_properties;
+
+	// HACK(mihe): Since this shape has no volume we can't really give it a correct set of mass
+	// properties, so instead we just give it some random/arbitrary ones.
+	mass_properties.mMass = 1.0f;
+	mass_properties.mInertia = JPH::Mat44::sIdentity();
+
+	return mass_properties;
+}
