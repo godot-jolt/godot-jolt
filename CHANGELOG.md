@@ -40,6 +40,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where the `inverse_inertia` property of `PhysicsDirectBodyState3D` would have some of
   its components swapped.
 - Fixed issue where shapeless bodies wouldn't have custom center-of-mass applied to them.
+- Fixed issue with high (>1) damping values producing different results across different update
+  frequencies.
 
 ## [0.12.0] - 2024-01-07
 
