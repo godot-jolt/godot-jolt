@@ -228,16 +228,6 @@ void JoltBodyImpl3D::set_custom_integrator(bool p_enabled) {
 
 	body->ResetForce();
 	body->ResetTorque();
-
-	JPH::MotionProperties& motion_properties = *body->GetMotionPropertiesUnchecked();
-
-	if (custom_integrator) {
-		motion_properties.SetLinearDamping(0.0f);
-		motion_properties.SetAngularDamping(0.0f);
-	} else {
-		motion_properties.SetLinearDamping(total_linear_damp);
-		motion_properties.SetAngularDamping(total_angular_damp);
-	}
 }
 
 bool JoltBodyImpl3D::is_sleeping() const {
@@ -1183,6 +1173,8 @@ void JoltBodyImpl3D::_add_to_space() {
 	jolt_settings->mAllowDynamicOrKinematic = true;
 	jolt_settings->mCollideKinematicVsNonDynamic = reports_all_kinematic_contacts();
 	jolt_settings->mUseManifoldReduction = !reports_contacts();
+	jolt_settings->mLinearDamping = 0.0f;
+	jolt_settings->mAngularDamping = 0.0f;
 	jolt_settings->mMaxLinearVelocity = JoltProjectSettings::get_max_linear_velocity();
 	jolt_settings->mMaxAngularVelocity = JoltProjectSettings::get_max_angular_velocity();
 
@@ -1229,13 +1221,24 @@ void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 	_update_gravity(p_jolt_body);
 
 	if (!custom_integrator) {
+		// HACK(mihe): Jolt applies damping differently from Godot Physics, where Godot Physics
+		// applies damping before integrating forces whereas Jolt does it after integrating forces.
+		// The way Godot Physics does it seems to yield more consistent results across different
+		// update frequencies when using high (>1) damping values, so we apply the damping ourselves
+		// instead, before any force integration happens.
+
 		JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
 
-		motion_properties.SetLinearVelocityClamped(
-			motion_properties.GetLinearVelocity() + to_jolt(gravity) * p_step
-		);
+		const JPH::Vec3 linear_velocity = motion_properties.GetLinearVelocity();
+		const JPH::Vec3 angular_velocity = motion_properties.GetAngularVelocity();
 
-		p_jolt_body.AddForce(to_jolt(constant_force));
+		const float linear_damp_factor = MAX(0.0f, 1.0f - total_linear_damp * p_step);
+		const float angular_damp_factor = MAX(0.0f, 1.0f - total_angular_damp * p_step);
+
+		motion_properties.SetLinearVelocityClamped(linear_velocity * linear_damp_factor);
+		motion_properties.SetAngularVelocityClamped(angular_velocity * angular_damp_factor);
+
+		p_jolt_body.AddForce(to_jolt(constant_force + gravity));
 		p_jolt_body.AddTorque(to_jolt(constant_torque));
 	}
 
@@ -1440,16 +1443,6 @@ void JoltBodyImpl3D::_update_damp() {
 		case PhysicsServer3D::BODY_DAMP_MODE_REPLACE: {
 			total_angular_damp = angular_damp;
 		} break;
-	}
-
-	const JoltWritableBody3D jolt_body = space->write_body(jolt_id);
-	ERR_FAIL_COND(jolt_body.is_invalid());
-
-	if (!custom_integrator) {
-		JPH::MotionProperties& motion_properties = *jolt_body->GetMotionPropertiesUnchecked();
-
-		motion_properties.SetLinearDamping(total_linear_damp);
-		motion_properties.SetAngularDamping(total_angular_damp);
 	}
 
 	_motion_changed();
