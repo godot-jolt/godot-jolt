@@ -492,7 +492,6 @@ void JoltSoftBodyImpl3D::_add_to_space() {
 bool JoltSoftBodyImpl3D::_ref_shared_data() {
 	using SoftBodyVertex = JPH::SoftBodySharedSettings::Vertex;
 	using SoftBodyFace = JPH::SoftBodySharedSettings::Face;
-	using SoftBodyEdge = JPH::SoftBodySharedSettings::Edge;
 
 	auto iter_shared_data = mesh_to_shared.find(mesh);
 
@@ -517,7 +516,6 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 
 		JPH::Array<SoftBodyVertex>& physics_vertices = settings.mVertices;
 		JPH::Array<SoftBodyFace>& physics_faces = settings.mFaces;
-		JPH::Array<SoftBodyEdge>& physics_edges = settings.mEdgeConstraints;
 
 		HashMap<Vector3, int32_t> vertex_to_physics;
 
@@ -581,33 +579,27 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 			);
 		}
 
+		// Pin the static vertices, this is used during the Optimize call to order the constraints.
+		// Note that it is ok if the pinned vertices change later, this will reduce the
+		// effectiveness of the constraints a bit.
+		for (int32_t pin_mesh_index : pinned_vertices) {
+			ERR_FAIL_INDEX_V(pin_mesh_index, mesh_to_physics.size(), false);
+			const int32_t pin_physics_index = mesh_to_physics[pin_mesh_index];
+			ERR_FAIL_INDEX_V(pin_physics_index, (int32_t)physics_vertices.size(), false);
+
+			physics_vertices[(size_t)pin_physics_index].mInvMass = 0.0f;
+		}
+
 		// HACK(mihe): Since Godot's stiffness is input as a coefficient between 0 and 1, and Jolt
 		// uses actual stiffness for its edge constraints, we crudely map one to the other with an
 		// arbitrary constant.
-		const float stiffness = MAX(Math::pow(stiffness_coefficient, 3.0f) * 1000000.0f, 0.000001f);
+		const float stiffness = MAX(Math::pow(stiffness_coefficient, 3.0f) * 100000.0f, 0.000001f);
 		const float inverse_stiffness = 1.0f / stiffness;
 
-		SymmetricBitTable marked_edges((int32_t)physics_vertices.size());
+		JPH::SoftBodySharedSettings::VertexAttributes vertex_attrib;
+		vertex_attrib.mCompliance = vertex_attrib.mShearCompliance = inverse_stiffness;
 
-		auto try_add_edge = [&](int32_t p_physics_index_a, int32_t p_physics_index_b) {
-			if (!marked_edges.has(p_physics_index_a, p_physics_index_b)) {
-				physics_edges.emplace_back(
-					(JPH::uint32)p_physics_index_a,
-					(JPH::uint32)p_physics_index_b,
-					inverse_stiffness
-				);
-
-				marked_edges.set(p_physics_index_a, p_physics_index_b);
-			}
-		};
-
-		for (SoftBodyFace& face : physics_faces) {
-			try_add_edge((int32_t)face.mVertex[0], (int32_t)face.mVertex[1]);
-			try_add_edge((int32_t)face.mVertex[1], (int32_t)face.mVertex[2]);
-			try_add_edge((int32_t)face.mVertex[2], (int32_t)face.mVertex[0]);
-		}
-
-		settings.CalculateEdgeLengths();
+		settings.CreateConstraints(&vertex_attrib, 1, JPH::SoftBodySharedSettings::EBendType::None);
 		settings.Optimize();
 	} else {
 		iter_shared_data->second.ref_count++;
