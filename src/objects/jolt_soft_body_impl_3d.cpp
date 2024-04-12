@@ -595,11 +595,11 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 		// arbitrary constant.
 		const float stiffness = MAX(Math::pow(stiffness_coefficient, 3.0f) * 100000.0f, 0.000001f);
 		const float inverse_stiffness = 1.0f / stiffness;
-		JPH::SoftBodySharedSettings::VertexAttributes vertex_attributes;
-		vertex_attributes.mCompliance = vertex_attributes.mShearCompliance = inverse_stiffness;
 
-		settings
-			.CreateConstraints(&vertex_attributes, 1, JPH::SoftBodySharedSettings::EBendType::None);
+		JPH::SoftBodySharedSettings::VertexAttributes vertex_attrib;
+		vertex_attrib.mCompliance = vertex_attrib.mShearCompliance = inverse_stiffness;
+
+		settings.CreateConstraints(&vertex_attrib, 1, JPH::SoftBodySharedSettings::EBendType::None);
 		settings.Optimize();
 	} else {
 		iter_shared_data->second.ref_count++;
