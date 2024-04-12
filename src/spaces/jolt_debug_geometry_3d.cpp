@@ -413,6 +413,8 @@ void JoltDebugGeometry3D::set_material_depth_test([[maybe_unused]] bool p_enable
 #endif // JPH_DEBUG_RENDERER
 }
 
+#ifdef JPH_DEBUG_RENDERER
+
 static_assert(
 	(int32_t)JoltDebugGeometry3D::COLOR_SCHEME_INSTANCE ==
 	(int32_t)JPH::BodyManager::EShapeColor::InstanceColor
@@ -437,3 +439,5 @@ static_assert(
 	(int32_t)JoltDebugGeometry3D::COLOR_SCHEME_ISLAND ==
 	(int32_t)JPH::BodyManager::EShapeColor::IslandColor
 );
+
+#endif // JPH_DEBUG_RENDERER
