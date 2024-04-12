@@ -160,7 +160,6 @@ using namespace godot;
 #include "containers/inline_vector.hpp"
 #include "containers/local_vector.hpp"
 #include "containers/rid_owner.hpp"
-#include "containers/symmetric_bit_table.hpp"
 #include "misc/bind_macros.hpp"
 #include "misc/error_macros.hpp"
 #include "misc/gdclass_macros.hpp"
