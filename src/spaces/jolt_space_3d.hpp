@@ -9,7 +9,7 @@ class JoltLayerMapper;
 class JoltObjectImpl3D;
 class JoltPhysicsDirectSpaceState3D;
 
-class JoltSpace3D final {
+class JoltSpace3D {
 public:
 	explicit JoltSpace3D(JPH::JobSystem* p_job_system);
 
@@ -22,6 +22,10 @@ public:
 	RID get_rid() const { return rid; }
 
 	void set_rid(const RID& p_rid) { rid = p_rid; }
+
+	bool is_active() const { return active; }
+
+	void set_active(bool p_active) { active = p_active; }
 
 	double get_param(PhysicsServer3D::SpaceParameter p_param) const;
 
@@ -72,6 +76,20 @@ public:
 
 	float get_last_step() const { return last_step; }
 
+	JPH::BodyID add_rigid_body(
+		const JoltObjectImpl3D& p_object,
+		const JPH::BodyCreationSettings& p_settings
+	);
+
+	JPH::BodyID add_soft_body(
+		const JoltObjectImpl3D& p_object,
+		const JPH::SoftBodyCreationSettings& p_settings
+	);
+
+	void remove_body(const JPH::BodyID& p_body_id);
+
+	void try_optimize();
+
 	void add_joint(JPH::Constraint* p_jolt_ref);
 
 	void add_joint(JoltJointImpl3D* p_joint);
@@ -116,6 +134,10 @@ private:
 	JoltAreaImpl3D* default_area = nullptr;
 
 	float last_step = 0.0f;
+
+	int32_t bodies_added_since_optimizing = 0;
+
+	bool active = false;
 
 	bool has_stepped = false;
 };

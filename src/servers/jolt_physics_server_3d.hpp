@@ -616,6 +616,8 @@ public:
 
 	int32_t _get_process_info(PhysicsServer3D::ProcessInfo p_process_info) override;
 
+	bool is_active() const { return active; }
+
 	void free_space(JoltSpace3D* p_space);
 
 	void free_area(JoltAreaImpl3D* p_area);

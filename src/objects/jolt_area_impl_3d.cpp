@@ -415,23 +415,10 @@ void JoltAreaImpl3D::_add_to_space() {
 
 	jolt_settings->SetShape(build_shape());
 
-	JPH::BodyInterface& body_iface = space->get_body_iface();
-	JPH::Body* body = body_iface.CreateBody(*jolt_settings);
+	const JPH::BodyID new_jolt_id = space->add_rigid_body(*this, *jolt_settings);
+	QUIET_FAIL_COND(new_jolt_id.IsInvalid());
 
-	ERR_FAIL_NULL_MSG(
-		body,
-		vformat(
-			"Failed to create underlying Jolt body for '%s'. "
-			"Consider increasing maximum number of bodies in project settings. "
-			"Maximum number of bodies is currently set to %d.",
-			to_string(),
-			JoltProjectSettings::get_max_bodies()
-		)
-	);
-
-	jolt_id = body->GetID();
-
-	body_iface.AddBody(jolt_id, JPH::EActivation::Activate);
+	jolt_id = new_jolt_id;
 }
 
 void JoltAreaImpl3D::_add_shape_pair(
