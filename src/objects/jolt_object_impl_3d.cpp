@@ -71,8 +71,7 @@ void JoltObjectImpl3D::set_collision_mask(uint32_t p_mask) {
 void JoltObjectImpl3D::_remove_from_space() {
 	QUIET_FAIL_COND(jolt_id.IsInvalid());
 
-	space->get_body_iface().RemoveBody(jolt_id);
-	space->get_body_iface().DestroyBody(jolt_id);
+	space->remove_body(jolt_id);
 
 	jolt_id = {};
 }

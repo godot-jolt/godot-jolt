@@ -42,6 +42,9 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where shapeless bodies wouldn't have custom center-of-mass applied to them.
 - Fixed issue with high (>1) damping values producing different results across different update
   frequencies.
+- Fixed issue where physics queries performed within the editor (e.g. editor plugins or tool
+  scripts) would end up ignoring potentially large swathes of bodies in scenes with many physics
+  bodies.
 
 ## [0.12.0] - 2024-01-07
 

@@ -1191,26 +1191,10 @@ void JoltBodyImpl3D::_add_to_space() {
 
 	jolt_settings->SetShape(jolt_shape);
 
-	JPH::BodyInterface& body_iface = space->get_body_iface();
-	JPH::Body* body = body_iface.CreateBody(*jolt_settings);
+	const JPH::BodyID new_jolt_id = space->add_rigid_body(*this, *jolt_settings);
+	QUIET_FAIL_COND(new_jolt_id.IsInvalid());
 
-	ERR_FAIL_NULL_MSG(
-		body,
-		vformat(
-			"Failed to create underlying Jolt body for '%s'. "
-			"Consider increasing maximum number of bodies in project settings. "
-			"Maximum number of bodies is currently set to %d.",
-			to_string(),
-			JoltProjectSettings::get_max_bodies()
-		)
-	);
-
-	jolt_id = body->GetID();
-
-	// HACK(mihe): Since `BODY_STATE_TRANSFORM` will be set right after creation it's more or less
-	// impossible to have a body be sleeping when created, so we default to always starting out as
-	// awake/active.
-	body_iface.AddBody(jolt_id, JPH::EActivation::Activate);
+	jolt_id = new_jolt_id;
 }
 
 void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {

@@ -26,6 +26,8 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	bool p_pick_ray,
 	PhysicsServer3DExtensionRayResult* p_result
 ) {
+	space->try_optimize();
+
 	const JoltQueryFilter3D query_filter(
 		*this,
 		p_collision_mask,
@@ -104,6 +106,8 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
 		return 0;
 	}
 
+	space->try_optimize();
+
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
@@ -161,6 +165,8 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 		"This is likely caused by one or more axes having a scale of zero."
 	);
 #endif // DEBUG_ENABLED
+
+	space->try_optimize();
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
@@ -267,6 +273,8 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	);
 #endif // DEBUG_ENABLED
 
+	space->try_optimize();
+
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
 	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
@@ -346,6 +354,8 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 		"This is likely caused by one or more axes having a scale of zero."
 	);
 #endif // DEBUG_ENABLED
+
+	space->try_optimize();
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
@@ -462,6 +472,8 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	);
 #endif // DEBUG_ENABLED
 
+	space->try_optimize();
+
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
 	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
@@ -545,6 +557,8 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 	const RID& p_object,
 	const Vector3& p_point
 ) const {
+	space->try_optimize();
+
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
 
 	JoltObjectImpl3D* object = physics_server->get_area(p_object);
@@ -671,6 +685,8 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 		)
 	);
 #endif // DEBUG_ENABLED
+
+	space->try_optimize();
 
 	Vector3 recovery;
 	const bool recovered = _body_motion_recover(p_body, transform, p_margin, recovery);

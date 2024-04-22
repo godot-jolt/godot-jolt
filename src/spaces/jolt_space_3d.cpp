@@ -3,6 +3,7 @@
 #include "joints/jolt_joint_impl_3d.hpp"
 #include "objects/jolt_area_impl_3d.hpp"
 #include "objects/jolt_body_impl_3d.hpp"
+#include "servers/jolt_physics_server_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "shapes/jolt_custom_shape_type.hpp"
 #include "shapes/jolt_shape_impl_3d.hpp"
@@ -141,6 +142,7 @@ void JoltSpace3D::step(float p_step) {
 	_post_step(p_step);
 
 	has_stepped = true;
+	bodies_added_since_optimizing = 0;
 }
 
 void JoltSpace3D::call_queries() {
@@ -361,6 +363,84 @@ void JoltSpace3D::set_default_area(JoltAreaImpl3D* p_area) {
 	if (default_area != nullptr) {
 		default_area->set_default_area(true);
 	}
+}
+
+JPH::BodyID JoltSpace3D::add_rigid_body(
+	const JoltObjectImpl3D& p_object,
+	const JPH::BodyCreationSettings& p_settings
+) {
+	const JPH::BodyID body_id = get_body_iface().CreateAndAddBody(
+		p_settings,
+		// HACK(mihe): Since `BODY_STATE_TRANSFORM` will be set right after creation it's more or
+		// less impossible to have a body be sleeping when created, so we default to always starting
+		// out as awake/active.
+		JPH::EActivation::Activate
+	);
+
+	ERR_FAIL_COND_D_MSG(
+		body_id.IsInvalid(),
+		vformat(
+			"Failed to create underlying Jolt body for '%s'. "
+			"Consider increasing maximum number of bodies in project settings. "
+			"Maximum number of bodies is currently set to %d.",
+			p_object.to_string(),
+			JoltProjectSettings::get_max_bodies()
+		)
+	);
+
+	bodies_added_since_optimizing += 1;
+
+	return body_id;
+}
+
+JPH::BodyID JoltSpace3D::add_soft_body(
+	const JoltObjectImpl3D& p_object,
+	const JPH::SoftBodyCreationSettings& p_settings
+) {
+	const JPH::BodyID body_id = get_body_iface().CreateAndAddSoftBody(
+		p_settings,
+		JPH::EActivation::Activate
+	);
+
+	ERR_FAIL_COND_D_MSG(
+		body_id.IsInvalid(),
+		vformat(
+			"Failed to create underlying Jolt body for '%s'. "
+			"Consider increasing maximum number of bodies in project settings. "
+			"Maximum number of bodies is currently set to %d.",
+			p_object.to_string(),
+			JoltProjectSettings::get_max_bodies()
+		)
+	);
+
+	bodies_added_since_optimizing += 1;
+
+	return body_id;
+}
+
+void JoltSpace3D::remove_body(const JPH::BodyID& p_body_id) {
+	JPH::BodyInterface& body_iface = get_body_iface();
+
+	body_iface.RemoveBody(p_body_id);
+	body_iface.DestroyBody(p_body_id);
+}
+
+void JoltSpace3D::try_optimize() {
+	// HACK(mihe): This makes assumptions about the underlying acceleration structure of Jolt's
+	// broad-phase, which currently uses a quadtree, and which gets walked with a fixed-size node
+	// stack of 128. This means that when the quadtree is completely unbalanced, as is the case if
+	// we add bodies one-by-one without ever stepping the simulation, like in the editor viewport,
+	// we would exceed this stack size (resulting in an incomplete search) as soon as we perform a
+	// physics query after having added somewhere in the order of 128 * 3 bodies. We leave a hefty
+	// margin just in case.
+
+	if (likely(bodies_added_since_optimizing < 128)) {
+		return;
+	}
+
+	physics_system->OptimizeBroadPhase();
+
+	bodies_added_since_optimizing = 0;
 }
 
 void JoltSpace3D::add_joint(JPH::Constraint* p_jolt_ref) {

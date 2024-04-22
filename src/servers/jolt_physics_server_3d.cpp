@@ -273,8 +273,10 @@ void JoltPhysicsServer3D::_space_set_active(const RID& p_space, bool p_active) {
 	ERR_FAIL_NULL(space);
 
 	if (p_active) {
+		space->set_active(true);
 		active_spaces.insert(space);
 	} else {
+		space->set_active(false);
 		active_spaces.erase(space);
 	}
 }

@@ -469,24 +469,10 @@ void JoltSoftBodyImpl3D::_add_to_space() {
 	jolt_settings->mCollisionGroup = JPH::CollisionGroup(nullptr, group_id, sub_group_id);
 	jolt_settings->mMaxLinearVelocity = JoltProjectSettings::get_max_linear_velocity();
 
-	JPH::BodyInterface& body_iface = space->get_body_iface();
+	const JPH::BodyID new_jolt_id = space->add_soft_body(*this, *jolt_settings);
+	QUIET_FAIL_COND(new_jolt_id.IsInvalid());
 
-	JPH::Body* body = body_iface.CreateSoftBody(*jolt_settings);
-
-	ERR_FAIL_NULL_MSG(
-		body,
-		vformat(
-			"Failed to create Jolt body for '%s'. "
-			"Consider increasing maximum number of bodies in project settings. "
-			"Maximum number of bodies is currently set to %d.",
-			to_string(),
-			JoltProjectSettings::get_max_bodies()
-		)
-	);
-
-	jolt_id = body->GetID();
-
-	body_iface.AddBody(jolt_id, JPH::EActivation::Activate);
+	jolt_id = new_jolt_id;
 }
 
 bool JoltSoftBodyImpl3D::_ref_shared_data() {
