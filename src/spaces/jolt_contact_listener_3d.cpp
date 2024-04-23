@@ -137,14 +137,7 @@ bool JoltContactListener3D::_try_override_collision_response(
 		p_settings.mInvMassScale2 = 0.0f;
 		p_settings.mInvInertiaScale2 = 0.0f;
 	} else if (can_collide2 && !can_collide1) {
-		if (p_jolt_other_body.IsStatic() || p_jolt_other_body.IsKinematic()) {
-			// HACK(mihe): Using an inverse mass scale of 0 when colliding with static/kinematic
-			// bodies doesn't have the expected effect of just passing through it, so we rely on the
-			// ability to emulate a sensor for these cases.
-			p_settings.mIsSensor = true;
-		} else {
-			p_settings.mInvMassScale1 = 0.0f;
-		}
+		p_settings.mInvMassScale1 = 0.0f;
 	}
 
 	return true;
