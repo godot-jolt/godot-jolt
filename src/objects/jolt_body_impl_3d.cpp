@@ -301,10 +301,7 @@ Basis JoltBodyImpl3D::get_principal_inertia_axes() const {
 	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
 
-	return to_godot(JPH::Mat44::sRotation(
-						body->GetRotation() * body->GetMotionProperties()->GetInertiaRotation()
-					))
-		.basis;
+	return to_godot(body->GetRotation() * body->GetMotionProperties()->GetInertiaRotation());
 }
 
 Vector3 JoltBodyImpl3D::get_inverse_inertia() const {
