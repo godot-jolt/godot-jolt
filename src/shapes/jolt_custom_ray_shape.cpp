@@ -50,8 +50,6 @@ void collide_ray_vs_shape(
 	const float ray_length = shape1->length;
 	const float ray_length_padded = ray_length + margin;
 
-	// TODO(mihe): This transform scale/inverse feels unnecessary and should be optimized
-
 	const JPH::Mat44 transform1 = p_center_of_mass_transform1 * JPH::Mat44::sScale(p_scale1);
 	const JPH::Mat44 transform2 = p_center_of_mass_transform2 * JPH::Mat44::sScale(p_scale2);
 	const JPH::Mat44 transform_inv2 = transform2.Inversed();
@@ -108,7 +106,7 @@ void collide_ray_vs_shape(
 
 	const JPH::Vec3 hit_normal = transform2.Multiply3x3(hit_normal2);
 
-	const JPH::CollideShapeResult result(
+	JPH::CollideShapeResult result(
 		hit_point_on_1,
 		hit_point_on_2,
 		-hit_normal,
@@ -118,7 +116,15 @@ void collide_ray_vs_shape(
 		JPH::TransformedShape::sGetBodyID(p_collector.GetContext())
 	);
 
-	// TODO(mihe): Implement face collecting
+	if (p_collide_shape_settings.mCollectFacesMode == JPH::ECollectFacesMode::CollectFaces) {
+		p_shape2->GetSupportingFace(
+			hit.mSubShapeID2,
+			ray_direction2,
+			p_scale2,
+			p_center_of_mass_transform2,
+			result.mShape2Face
+		);
+	}
 
 	p_collector.AddHit(result);
 }
