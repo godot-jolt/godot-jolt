@@ -14,6 +14,10 @@ void* jolt_alloc(size_t p_size) {
 	return mi_malloc(p_size);
 }
 
+void* jolt_realloc(void* p_mem, size_t p_size) {
+	return mi_realloc(p_mem, p_size);
+}
+
 void jolt_free(void* p_mem) {
 	mi_free(p_mem);
 }
@@ -57,6 +61,7 @@ bool jolt_assert(const char* p_expr, const char* p_msg, const char* p_file, uint
 void jolt_initialize() {
 #ifdef GDJ_USE_MIMALLOC
 	JPH::Allocate = &jolt_alloc;
+	JPH::Reallocate = &jolt_realloc;
 	JPH::Free = &jolt_free;
 	JPH::AlignedAllocate = &jolt_aligned_alloc;
 	JPH::AlignedFree = &jolt_aligned_free;

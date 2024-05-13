@@ -35,7 +35,7 @@ endif()
 
 gdj_add_external_library(jolt "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/jolt.git
-	GIT_COMMIT 3e13b2c097905c8ca77d98813389b56cc200932e
+	GIT_COMMIT 3ae9520be65c60d0524692be01c0b35d7648d150
 	LANGUAGE CXX
 	SOURCE_SUBDIR Build
 	OUTPUT_NAME Jolt
