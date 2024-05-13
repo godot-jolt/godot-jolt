@@ -48,21 +48,23 @@ JoltBodyImpl3D::~JoltBodyImpl3D() {
 	memdelete_safely(direct_state);
 }
 
-void JoltBodyImpl3D::set_transform(const Transform3D& p_transform) {
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_MSG(
-		p_transform.basis.determinant() == 0.0f,
-		vformat(
+void JoltBodyImpl3D::set_transform(Transform3D p_transform) {
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(p_transform.basis.determinant() == 0.0f)) {
+		ERR_PRINT(vformat(
 			"Failed to set transform for body '%s'. "
-			"The basis was found to be singular, which is not supported by Godot Jolt. "
-			"This is likely caused by one or more axes having a scale of zero.",
+			"Its basis was found to be singular, which is not supported by Godot Jolt. "
+			"This is likely caused by one or more axes having a scale of zero. "
+			"Its basis (and thus its scale) will be treated as identity.",
 			to_string()
-		)
-	);
-#endif // DEBUG_ENABLED
+		));
+
+		p_transform.basis = Basis();
+	}
+#endif // GDJ_CONFIG_EDITOR
 
 	Vector3 new_scale;
-	const Transform3D new_transform = Math::decomposed(p_transform, new_scale);
+	Math::decompose(p_transform, new_scale);
 
 	if (!scale.is_equal_approx(new_scale)) {
 		scale = new_scale;
@@ -70,15 +72,15 @@ void JoltBodyImpl3D::set_transform(const Transform3D& p_transform) {
 	}
 
 	if (space == nullptr) {
-		jolt_settings->mPosition = to_jolt_r(new_transform.origin);
-		jolt_settings->mRotation = to_jolt(new_transform.basis);
+		jolt_settings->mPosition = to_jolt_r(p_transform.origin);
+		jolt_settings->mRotation = to_jolt(p_transform.basis);
 	} else if (is_kinematic()) {
 		kinematic_transform = p_transform;
 	} else {
 		space->get_body_iface().SetPositionAndRotation(
 			jolt_id,
-			to_jolt_r(new_transform.origin),
-			to_jolt(new_transform.basis),
+			to_jolt_r(p_transform.origin),
+			to_jolt(p_transform.basis),
 			JPH::EActivation::DontActivate
 		);
 	}
