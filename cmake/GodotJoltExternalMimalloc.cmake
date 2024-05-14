@@ -25,9 +25,11 @@ else()
 	set(cflags "${cflags} -w")
 endif()
 
+set(use_ipo $<NOT:$<CXX_COMPILER_ID:GNU>>)
+
 gdj_add_external_library(mimalloc "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/mimalloc.git
-	GIT_COMMIT 43ce4bd7fd34bcc730c1c7471c99995597415488
+	GIT_COMMIT a1b284de0aecc0ea0e8846656fd01043253b84bb
 	LANGUAGE C
 	OUTPUT_NAME ${output_name}
 	INCLUDE_DIRECTORIES
@@ -35,7 +37,7 @@ gdj_add_external_library(mimalloc "${configurations}"
 	ENVIRONMENT
 		CFLAGS=${cflags}
 	CMAKE_CACHE_ARGS
-		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO=${GDJ_INTERPROCEDURAL_OPTIMIZATION}
+		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO=${use_ipo}
 		-DMI_OVERRIDE=FALSE
 		-DMI_USE_CXX=FALSE
 		-DMI_OSX_INTERPOSE=FALSE
