@@ -21,12 +21,11 @@ would use normally, like `RigidBody3D` or `CharacterBody3D`.
 - [How do I get started?](#how-do-i-get-started)
 - [What settings are there?](#what-settings-are-there)
 - [How do I build from source?](#how-do-i-build-from-source)
-- [What do the versions mean?](#what-do-the-versions-mean)
 - [What's the license?](#whats-the-license)
 
 ## What features are there?
 
-Better performance, mainly, but also just having different characteristics compared to Godot
+Better performance, mainly, but also generally having a more stable simulation compared to Godot
 Physics.
 
 There are also (completely optional) substitute nodes available for all the joints, which line up
@@ -102,21 +101,6 @@ See [`docs/settings.md`][set] for information about the project settings availab
 
 See [`docs/building.md`][bld] for information about how to build Godot Jolt from source.
 
-## What do the versions mean?
-
-Godot Jolt adheres to [Semantic Versioning][smv], formatted as `<major>.<minor>.<patch>`. The major
-version will be incremented when backwards-incompatible API changes are made, the minor version will
-be incremented when backwards-compatible API changes are made and the patch version will be
-incremented when changes are made that don't affect the API.
-
-"API", in this case, refers to any user-facing parts of the extension, such as nodes, properties,
-methods, parameters or project settings.
-
-Note that major version `0.x.y` carries a special meaning in semantic versioning, where even minor
-versions may contain backwards-incompatible changes.
-
-See [`CHANGELOG.md`][chl] for details about what notable changes were included in each version.
-
 ## What's the license?
 
 Godot Jolt is distributed under the MIT license. See [`LICENSE.txt`][lic] for more details and
@@ -130,7 +114,5 @@ Godot Jolt is distributed under the MIT license. See [`LICENSE.txt`][lic] for mo
 [ast]: https://godotengine.org/asset-library/asset/1918
 [set]: docs/settings.md
 [bld]: docs/building.md
-[smv]: https://semver.org/spec/v2.0.0.html
-[chl]: CHANGELOG.md
 [lic]: LICENSE.txt
 [trd]: THIRDPARTY.txt
