@@ -129,19 +129,20 @@ JPH::ShapeRefC JoltShapedObjectImpl3D::try_build_shape() {
 		result = JoltShapeImpl3D::with_center_of_mass(result, get_center_of_mass_custom());
 	}
 
-	if (scale != Vector3(1.0f, 1.0f, 1.0f)) {
-#ifdef DEBUG_ENABLED
-		ERR_FAIL_COND_D_MSG(
-			!result->IsValidScale(to_jolt(scale)),
-			vformat(
+	if (scale != Vector3(1, 1, 1)) {
+#ifdef GDJ_CONFIG_EDITOR
+		if (unlikely(!result->IsValidScale(to_jolt(scale)))) {
+			ERR_PRINT(vformat(
 				"Godot Jolt failed to scale body '%s'. "
 				"%v is not a valid scale for the types of shapes in this body. "
-				"This body will effectively have all its shapes disabled.",
+				"Its scale will instead be treated as (1, 1, 1).",
 				to_string(),
 				scale
-			)
-		);
-#endif // DEBUG_ENABLED
+			));
+
+			scale = Vector3(1, 1, 1);
+		}
+#endif // GDJ_CONFIG_EDITOR
 
 		result = JoltShapeImpl3D::with_scale(result, scale);
 	}
@@ -189,6 +190,21 @@ void JoltShapedObjectImpl3D::add_shape(
 	Transform3D p_transform,
 	bool p_disabled
 ) {
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(p_transform.basis.determinant() == 0.0f)) {
+		ERR_PRINT(vformat(
+			"Failed to set transform for shape at index %d of body '%s'. "
+			"Its basis was found to be singular, which is not supported by Godot Jolt. "
+			"This is likely caused by one or more axes having a scale of zero. "
+			"Its basis (and thus its scale) will be treated as identity.",
+			shapes.size(),
+			to_string()
+		));
+
+		p_transform.basis = Basis();
+	}
+#endif // GDJ_CONFIG_EDITOR
+
 	Vector3 shape_scale;
 	Math::decompose(p_transform, shape_scale);
 
@@ -276,18 +292,20 @@ Vector3 JoltShapedObjectImpl3D::get_shape_scale(int32_t p_index) const {
 void JoltShapedObjectImpl3D::set_shape_transform(int32_t p_index, Transform3D p_transform) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_MSG(
-		p_transform.basis.determinant() == 0.0f,
-		vformat(
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(p_transform.basis.determinant() == 0.0f)) {
+		ERR_PRINT(vformat(
 			"Failed to set transform for shape at index %d of body '%s'. "
-			"The basis was found to be singular, which is not supported by Godot Jolt. "
-			"This is likely caused by one or more axes having a scale of zero.",
+			"Its basis was found to be singular, which is not supported by Godot Jolt. "
+			"This is likely caused by one or more axes having a scale of zero. "
+			"Its basis (and thus its scale) will be treated as identity.",
 			p_index,
 			to_string()
-		)
-	);
-#endif // DEBUG_ENABLED
+		));
+
+		p_transform.basis = Basis();
+	}
+#endif // GDJ_CONFIG_EDITOR
 
 	Vector3 new_scale;
 	Math::decompose(p_transform, new_scale);
@@ -345,23 +363,24 @@ JPH::ShapeRefC JoltShapedObjectImpl3D::_try_build_single_shape() {
 
 		JPH::ShapeRefC jolt_sub_shape = sub_shape.get_jolt_ref();
 
-		const Vector3 sub_shape_scale = sub_shape.get_scale();
+		Vector3 sub_shape_scale = sub_shape.get_scale();
 		const Transform3D sub_shape_transform = sub_shape.get_transform_unscaled();
 
-		if (sub_shape_scale != Vector3(1.0f, 1.0f, 1.0f)) {
-#ifdef DEBUG_ENABLED
-			ERR_FAIL_COND_D_MSG(
-				!jolt_sub_shape->IsValidScale(to_jolt(sub_shape_scale)),
-				vformat(
+		if (sub_shape_scale != Vector3(1, 1, 1)) {
+#ifdef GDJ_CONFIG_EDITOR
+			if (unlikely(!jolt_sub_shape->IsValidScale(to_jolt(sub_shape_scale)))) {
+				ERR_PRINT(vformat(
 					"Godot Jolt failed to scale shape at index %d for body '%s'. "
 					"%v is not a valid scale for this shape type. "
-					"This shape will effectively be disabled.",
+					"Its scale will instead be treated as (1, 1, 1).",
 					i,
 					to_string(),
 					sub_shape_scale
-				)
-			);
-#endif // DEBUG_ENABLED
+				));
+
+				sub_shape_scale = Vector3(1, 1, 1);
+			}
+#endif // GDJ_CONFIG_EDITOR
 
 			jolt_sub_shape = JoltShapeImpl3D::with_scale(jolt_sub_shape, sub_shape_scale);
 		}
@@ -393,23 +412,24 @@ JPH::ShapeRefC JoltShapedObjectImpl3D::_try_build_compound_shape() {
 
 		JPH::ShapeRefC jolt_sub_shape = sub_shape.get_jolt_ref();
 
-		const Vector3 sub_shape_scale = sub_shape.get_scale();
+		Vector3 sub_shape_scale = sub_shape.get_scale();
 		const Transform3D sub_shape_transform = sub_shape.get_transform_unscaled();
 
-		if (sub_shape_scale != Vector3(1.0f, 1.0f, 1.0f)) {
-#ifdef DEBUG_ENABLED
-			ERR_CONTINUE_MSG(
-				!jolt_sub_shape->IsValidScale(to_jolt(sub_shape_scale)),
-				vformat(
+		if (sub_shape_scale != Vector3(1, 1, 1)) {
+#ifdef GDJ_CONFIG_EDITOR
+			if (unlikely(!jolt_sub_shape->IsValidScale(to_jolt(sub_shape_scale)))) {
+				ERR_PRINT(vformat(
 					"Godot Jolt failed to scale shape at index %d for body '%s'. "
 					"%v is not a valid scale for this shape type. "
-					"This shape will effectively be disabled.",
+					"Its scale will instead be treated as (1, 1, 1).",
 					i,
 					to_string(),
 					sub_shape_scale
-				)
-			);
-#endif // DEBUG_ENABLED
+				));
+
+				sub_shape_scale = Vector3(1, 1, 1);
+			}
+#endif // GDJ_CONFIG_EDITOR
 
 			jolt_sub_shape = JoltShapeImpl3D::with_scale(jolt_sub_shape, sub_shape_scale);
 		}

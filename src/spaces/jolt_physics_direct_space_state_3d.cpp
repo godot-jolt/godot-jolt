@@ -157,15 +157,6 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 		return 0;
 	}
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		p_transform.basis.determinant() == 0.0f,
-		"intersect_shape failed due to being passed an invalid transform. "
-		"The basis was found to be singular, which is not supported by Godot Jolt. "
-		"This is likely caused by one or more axes having a scale of zero."
-	);
-#endif // DEBUG_ENABLED
-
 	space->try_optimize();
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
@@ -176,19 +167,36 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
 	ERR_FAIL_NULL_D(jolt_shape);
 
-	Vector3 scale;
-	const Transform3D transform = Math::decomposed(p_transform, scale);
+	Transform3D transform = p_transform;
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		!jolt_shape->IsValidScale(to_jolt(scale)),
-		vformat(
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(transform.basis.determinant() == 0.0f)) {
+		ERR_PRINT(vformat(
 			"intersect_shape failed due to being passed an invalid transform. "
-			"A scale of %v is not supported by Godot Jolt for this shape type.",
+			"Its basis was found to be singular, which is not supported by Godot Jolt. "
+			"This is likely caused by one or more axes having a scale of zero. "
+			"Its basis (and thus its scale) will be treated as identity."
+		));
+
+		transform.basis = Basis();
+	}
+#endif // GDJ_CONFIG_EDITOR
+
+	Vector3 scale;
+	Math::decompose(transform, scale);
+
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(!jolt_shape->IsValidScale(to_jolt(scale)))) {
+		ERR_PRINT(vformat(
+			"intersect_shape failed due to being passed an invalid transform. "
+			"A scale of %v is not supported by Godot Jolt for this shape type. "
+			"Its scale will instead be treated as (1, 1, 1).",
 			scale
-		)
-	);
-#endif // DEBUG_ENABLED
+		));
+
+		scale = Vector3(1, 1, 1);
+	}
+#endif // GDJ_CONFIG_EDITOR
 
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);
@@ -264,15 +272,6 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		"Providing rest info as part of a shape-cast is not supported by Godot Jolt."
 	);
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		p_transform.basis.determinant() == 0.0f,
-		"cast_motion failed due to being passed an invalid transform. "
-		"The basis was found to be singular, which is not supported by Godot Jolt. "
-		"This is likely caused by one or more axes having a scale of zero."
-	);
-#endif // DEBUG_ENABLED
-
 	space->try_optimize();
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
@@ -283,19 +282,36 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
 	ERR_FAIL_NULL_D(jolt_shape);
 
-	Vector3 scale;
-	const Transform3D transform = Math::decomposed(p_transform, scale);
+	Transform3D transform = p_transform;
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		!jolt_shape->IsValidScale(to_jolt(scale)),
-		vformat(
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(transform.basis.determinant() == 0.0f)) {
+		ERR_PRINT(vformat(
 			"cast_motion failed due to being passed an invalid transform. "
-			"A scale of %v is not supported by Godot Jolt for this shape type.",
+			"Its basis was found to be singular, which is not supported by Godot Jolt. "
+			"This is likely caused by one or more axes having a scale of zero. "
+			"Its basis (and thus its scale) will be treated as identity."
+		));
+
+		transform.basis = Basis();
+	}
+#endif // GDJ_CONFIG_EDITOR
+
+	Vector3 scale;
+	Math::decompose(transform, scale);
+
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(!jolt_shape->IsValidScale(to_jolt(scale)))) {
+		ERR_PRINT(vformat(
+			"cast_motion failed due to being passed an invalid transform. "
+			"A scale of %v is not supported by Godot Jolt for this shape type. "
+			"Its scale will instead be treated as (1, 1, 1).",
 			scale
-		)
-	);
-#endif // DEBUG_ENABLED
+		));
+
+		scale = Vector3(1, 1, 1);
+	}
+#endif // GDJ_CONFIG_EDITOR
 
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	Transform3D transform_com = transform.translated_local(com_scaled);
@@ -346,15 +362,6 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 		return false;
 	}
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		p_transform.basis.determinant() == 0.0f,
-		"collide_shape failed due to being passed an invalid transform. "
-		"The basis was found to be singular, which is not supported by Godot Jolt. "
-		"This is likely caused by one or more axes having a scale of zero."
-	);
-#endif // DEBUG_ENABLED
-
 	space->try_optimize();
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
@@ -365,19 +372,36 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
 	ERR_FAIL_NULL_D(jolt_shape);
 
-	Vector3 scale;
-	const Transform3D transform = Math::decomposed(p_transform, scale);
+	Transform3D transform = p_transform;
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		!jolt_shape->IsValidScale(to_jolt(scale)),
-		vformat(
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(transform.basis.determinant() == 0.0f)) {
+		ERR_PRINT(vformat(
 			"collide_shape failed due to being passed an invalid transform. "
-			"A scale of %v is not supported by Godot Jolt for this shape type.",
+			"Its basis was found to be singular, which is not supported by Godot Jolt. "
+			"This is likely caused by one or more axes having a scale of zero. "
+			"Its basis (and thus its scale) will be treated as identity."
+		));
+
+		transform.basis = Basis();
+	}
+#endif // GDJ_CONFIG_EDITOR
+
+	Vector3 scale;
+	Math::decompose(transform, scale);
+
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(!jolt_shape->IsValidScale(to_jolt(scale)))) {
+		ERR_PRINT(vformat(
+			"collide_shape failed due to being passed an invalid transform. "
+			"A scale of %v is not supported by Godot Jolt for this shape type. "
+			"Its scale will instead be treated as (1, 1, 1).",
 			scale
-		)
-	);
-#endif // DEBUG_ENABLED
+		));
+
+		scale = Vector3(1, 1, 1);
+	}
+#endif // GDJ_CONFIG_EDITOR
 
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);
@@ -463,15 +487,6 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	bool p_collide_with_areas,
 	PhysicsServer3DExtensionShapeRestInfo* p_info
 ) {
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		p_transform.basis.determinant() == 0.0f,
-		"get_rest_info failed due to being passed an invalid transform. "
-		"The basis was found to be singular, which is not supported by Godot Jolt. "
-		"This is likely caused by one or more axes having a scale of zero."
-	);
-#endif // DEBUG_ENABLED
-
 	space->try_optimize();
 
 	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
@@ -482,19 +497,36 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
 	ERR_FAIL_NULL_D(jolt_shape);
 
-	Vector3 scale;
-	const Transform3D transform = Math::decomposed(p_transform, scale);
+	Transform3D transform = p_transform;
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		!jolt_shape->IsValidScale(to_jolt(scale)),
-		vformat(
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(transform.basis.determinant() == 0.0f)) {
+		ERR_PRINT(vformat(
 			"get_rest_info failed due to being passed an invalid transform. "
-			"A scale of %v is not supported by Godot Jolt for this shape type.",
+			"Its basis was found to be singular, which is not supported by Godot Jolt. "
+			"This is likely caused by one or more axes having a scale of zero. "
+			"Its basis (and thus its scale) will be treated as identity."
+		));
+
+		transform.basis = Basis();
+	}
+#endif // GDJ_CONFIG_EDITOR
+
+	Vector3 scale;
+	Math::decompose(transform, scale);
+
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(!jolt_shape->IsValidScale(to_jolt(scale)))) {
+		ERR_PRINT(vformat(
+			"get_rest_info failed due to being passed an invalid transform. "
+			"A scale of %v is not supported by Godot Jolt for this shape type. "
+			"Its scale will instead be treated as (1, 1, 1).",
 			scale
-		)
-	);
-#endif // DEBUG_ENABLED
+		));
+
+		scale = Vector3(1, 1, 1);
+	}
+#endif // GDJ_CONFIG_EDITOR
 
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);
@@ -663,28 +695,36 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	p_margin = MAX(p_margin, 0.0001f);
 	p_max_collisions = MIN(p_max_collisions, 32);
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		p_transform.basis.determinant() == 0.0f,
-		"body_test_motion failed due to being passed an invalid transform. "
-		"The basis was found to be singular, which is not supported by Godot Jolt. "
-		"This is likely caused by one or more axes having a scale of zero."
-	);
-#endif // DEBUG_ENABLED
+	Transform3D transform = p_transform;
+
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(transform.basis.determinant() == 0.0f)) {
+		ERR_PRINT(vformat(
+			"body_test_motion failed due to being passed an invalid transform. "
+			"Its basis was found to be singular, which is not supported by Godot Jolt. "
+			"This is likely caused by one or more axes having a scale of zero. "
+			"Its basis (and thus its scale) will be treated as identity."
+		));
+
+		transform.basis = Basis();
+	}
+#endif // GDJ_CONFIG_EDITOR
 
 	Vector3 scale;
-	Transform3D transform = Math::decomposed(p_transform, scale);
+	Math::decompose(transform, scale);
 
-#ifdef DEBUG_ENABLED
-	ERR_FAIL_COND_D_MSG(
-		!p_body.get_jolt_shape()->IsValidScale(to_jolt(scale)),
-		vformat(
+#ifdef GDJ_CONFIG_EDITOR
+	if (unlikely(!p_body.get_jolt_shape()->IsValidScale(to_jolt(scale)))) {
+		ERR_PRINT(vformat(
 			"body_test_motion failed due to being passed an invalid transform. "
-			"A scale of %v is not supported by Godot Jolt for this body.",
+			"A scale of %v is not supported by Godot Jolt for this shape type. "
+			"Its scale will instead be treated as (1, 1, 1).",
 			scale
-		)
-	);
-#endif // DEBUG_ENABLED
+		));
+
+		scale = Vector3(1, 1, 1);
+	}
+#endif // GDJ_CONFIG_EDITOR
 
 	space->try_optimize();
 
@@ -1034,11 +1074,11 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 		const Transform3D transform_com = body_transform * transform_com_local;
 		const Transform3D transform_com_unscaled = Math::decomposed(transform_com, scale);
 
-#ifdef DEBUG_ENABLED
+#ifdef GDJ_CONFIG_EDITOR
 		if (!jolt_shape->IsValidScale(to_jolt(scale))) {
 			continue;
 		}
-#endif // DEBUG_ENABLED
+#endif // GDJ_CONFIG_EDITOR
 
 		real_t shape_safe_fraction = 1.0;
 		real_t shape_unsafe_fraction = 1.0;

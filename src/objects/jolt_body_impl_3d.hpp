@@ -39,7 +39,7 @@ public:
 
 	~JoltBodyImpl3D() override;
 
-	void set_transform(const Transform3D& p_transform);
+	void set_transform(Transform3D p_transform);
 
 	Variant get_state(PhysicsServer3D::BodyState p_state) const;
 
