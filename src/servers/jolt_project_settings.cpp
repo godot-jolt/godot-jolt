@@ -158,8 +158,8 @@ void JoltProjectSettings::register_settings() {
 	register_setting_ranged(POSITION_CORRECTION, 20.0f, U"0,100,0.1,suffix:%");
 	register_setting_ranged(ACTIVE_EDGE_THRESHOLD, Math::deg_to_rad(50.0f), U"0,90,0.01,radians");
 	register_setting_hinted(BOUNCE_VELOCITY_THRESHOLD, 1.0f, U"suffix:m/s");
-	register_setting_ranged(CONTACT_DISTANCE, 0.02f, U"0,1,0.001,or_greater,suffix:m");
-	register_setting_ranged(CONTACT_PENETRATION, 0.02f, U"0,1,0.001,or_greater,suffix:m");
+	register_setting_ranged(CONTACT_DISTANCE, 0.02f, U"0,1,0.00001,or_greater,suffix:m");
+	register_setting_ranged(CONTACT_PENETRATION, 0.02f, U"0,1,0.00001,or_greater,suffix:m");
 
 	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, U"0,500,0.01,or_greater,suffix:m/s");
 	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,0.01,or_greater,suffix:°/s");
