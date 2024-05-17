@@ -42,18 +42,23 @@ void on_initialize(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
 			JoltProjectSettings::register_settings();
 
-			ClassDB::register_class<JoltDebugGeometry3D>();
 			ClassDB::register_class<JoltJoint3D>(true);
 			ClassDB::register_class<JoltPinJoint3D>();
 			ClassDB::register_class<JoltHingeJoint3D>();
 			ClassDB::register_class<JoltSliderJoint3D>();
 			ClassDB::register_class<JoltConeTwistJoint3D>();
 			ClassDB::register_class<JoltGeneric6DOFJoint3D>();
+
+#ifdef GDJ_CONFIG_DISTRIBUTION
+			ClassDB::register_internal_class<JoltDebugGeometry3D>();
+#else // GDJ_CONFIG_DISTRIBUTION
+			ClassDB::register_class<JoltDebugGeometry3D>();
+#endif // GDJ_CONFIG_DISTRIBUTION
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 #ifdef GDJ_CONFIG_EDITOR
-			ClassDB::register_class<JoltJointGizmoPlugin3D>();
-			ClassDB::register_class<JoltEditorPlugin>();
+			ClassDB::register_internal_class<JoltJointGizmoPlugin3D>();
+			ClassDB::register_internal_class<JoltEditorPlugin>();
 			EditorPlugins::add_by_type<JoltEditorPlugin>();
 #endif // GDJ_CONFIG_EDITOR
 		} break;
