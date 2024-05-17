@@ -21,8 +21,6 @@ void JoltJoint3D::_bind_methods() {
 	BIND_METHOD(JoltJoint3D, get_solver_position_iterations);
 	BIND_METHOD(JoltJoint3D, set_solver_position_iterations, "iterations");
 
-	BIND_METHOD(JoltJoint3D, body_exiting_tree);
-
 	BIND_PROPERTY_HINTED(
 		"node_a",
 		Variant::NODE_PATH,
@@ -126,10 +124,6 @@ void JoltJoint3D::set_solver_position_iterations(int32_t p_iterations) {
 	_position_iterations_changed();
 }
 
-void JoltJoint3D::body_exiting_tree() {
-	_destroy();
-}
-
 PackedStringArray JoltJoint3D::_get_configuration_warnings() const {
 	PackedStringArray warnings = Node3D::_get_configuration_warnings();
 
@@ -184,13 +178,17 @@ void JoltJoint3D::_notification(int32_t p_what) {
 	}
 }
 
+void JoltJoint3D::_body_exiting_tree() {
+	_destroy();
+}
+
 void JoltJoint3D::_connect_bodies() {
 	PhysicsBody3D* body_a = get_body_a();
 	PhysicsBody3D* body_b = get_body_b();
 
 	static const StringName exit_signal("tree_exiting");
 
-	const Callable exit_callable(this, "body_exiting_tree");
+	const Callable exit_callable = callable_mp(this, &JoltJoint3D::_body_exiting_tree);
 
 	if (body_a != nullptr) {
 		body_a->connect(exit_signal, exit_callable);
@@ -207,7 +205,7 @@ void JoltJoint3D::_disconnect_bodies() {
 
 	static const StringName exit_signal("tree_exiting");
 
-	const Callable exit_callable(this, "body_exiting_tree");
+	const Callable exit_callable = callable_mp(this, &JoltJoint3D::_body_exiting_tree);
 
 	if (body_a != nullptr && body_a->is_connected(exit_signal, exit_callable)) {
 		body_a->disconnect(exit_signal, exit_callable);

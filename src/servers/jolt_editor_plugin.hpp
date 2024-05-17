@@ -8,7 +8,7 @@ class JoltEditorPlugin final : public EditorPlugin {
 	GDCLASS_NO_WARN(JoltEditorPlugin, EditorPlugin)
 
 private:
-	static void _bind_methods();
+	static void _bind_methods() { }
 
 public:
 	void _enter_tree() override;
