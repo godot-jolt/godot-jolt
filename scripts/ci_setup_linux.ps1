@@ -40,7 +40,7 @@ function Set-DefaultCommand($Name, $Path) {
 
 Write-Output "Adding the ubuntu-toolchain-r repository..."
 
-add-apt-repository --yes --update ppa:ubuntu-toolchain-r/ppa
+add-apt-repository --yes --update ppa:ubuntu-toolchain-r/test
 
 Write-Output "Updating package lists..."
 
