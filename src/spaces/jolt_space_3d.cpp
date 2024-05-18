@@ -490,8 +490,18 @@ void JoltSpace3D::dump_debug_snapshot(const String& p_dir) {
 	JPH::PhysicsScene physics_scene;
 	physics_scene.FromPhysicsSystem(physics_system);
 
-	for (JPH::BodyCreationSettings& body : physics_scene.GetBodies()) {
-		body.SetShape(JoltShapeImpl3D::without_custom_shapes(body.GetShape()));
+	for (JPH::BodyCreationSettings& settings : physics_scene.GetBodies()) {
+		const auto* object = reinterpret_cast<const JoltObjectImpl3D*>(settings.mUserData);
+
+		if (const JoltBodyImpl3D* body = object->as_body()) {
+			// HACK(mihe): Since we do our own integration of gravity and damping, while leaving
+			// Jolt's own values at zero, we need to transfer over the correct values.
+			settings.mGravityFactor = body->get_gravity_scale();
+			settings.mLinearDamping = body->get_total_linear_damp();
+			settings.mAngularDamping = body->get_total_angular_damp();
+		}
+
+		settings.SetShape(JoltShapeImpl3D::without_custom_shapes(settings.GetShape()));
 	}
 
 	JoltStreamOutWrapper output_stream(file_access);
