@@ -1240,11 +1240,12 @@ void JoltPhysicsDirectSpaceState3D::_generate_manifold(
 ) const {
 	const JPH::PhysicsSystem& physics_system = space->get_physics_system();
 	const JPH::PhysicsSettings& physics_settings = physics_system.GetPhysicsSettings();
+	const JPH::Vec3 penetration_axis = p_hit.mPenetrationAxis.Normalized();
 
 	JPH::ManifoldBetweenTwoFaces(
 		p_hit.mContactPointOn1,
 		p_hit.mContactPointOn2,
-		p_hit.mPenetrationAxis,
+		penetration_axis,
 		physics_settings.mManifoldToleranceSq,
 		p_hit.mShape1Face,
 		p_hit.mShape2Face,
@@ -1258,7 +1259,7 @@ void JoltPhysicsDirectSpaceState3D::_generate_manifold(
 
 	if (p_contact_points1.size() > 4) {
 		JPH::PruneContactPoints(
-			p_hit.mPenetrationAxis,
+			penetration_axis,
 			p_contact_points1,
 			p_contact_points2
 #ifdef JPH_DEBUG_RENDERER
