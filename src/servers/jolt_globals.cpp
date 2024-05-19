@@ -71,7 +71,7 @@ void jolt_initialize() {
 
 #ifdef JPH_ENABLE_ASSERTS
 	JPH::Trace = &jolt_trace;
-	JPH::AssertFailed = jolt_assert;
+	JPH::AssertFailed = &jolt_assert;
 #endif // JPH_ENABLE_ASSERTS
 
 	JPH::Factory::sInstance = new JPH::Factory();
