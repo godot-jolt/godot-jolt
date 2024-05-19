@@ -11,12 +11,6 @@ Variant JoltConcavePolygonShapeImpl3D::get_data() const {
 }
 
 void JoltConcavePolygonShapeImpl3D::set_data(const Variant& p_data) {
-	ON_SCOPE_EXIT {
-		_invalidated();
-	};
-
-	destroy();
-
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
 	const Dictionary data = p_data;
@@ -29,6 +23,8 @@ void JoltConcavePolygonShapeImpl3D::set_data(const Variant& p_data) {
 
 	faces = maybe_faces;
 	backface_collision = maybe_backface_collision;
+
+	destroy();
 }
 
 String JoltConcavePolygonShapeImpl3D::to_string() const {

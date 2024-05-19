@@ -5,15 +5,14 @@ Variant JoltWorldBoundaryShapeImpl3D::get_data() const {
 }
 
 void JoltWorldBoundaryShapeImpl3D::set_data(const Variant& p_data) {
-	ON_SCOPE_EXIT {
-		_invalidated();
-	};
-
-	destroy();
-
 	ERR_FAIL_COND(p_data.get_type() != Variant::PLANE);
 
+	const Plane new_plane = p_data;
+	QUIET_FAIL_COND(new_plane == plane);
+
 	plane = p_data;
+
+	destroy();
 }
 
 JPH::ShapeRefC JoltWorldBoundaryShapeImpl3D::_build() const {

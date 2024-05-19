@@ -13,25 +13,23 @@ Variant JoltBoxShapeImpl3D::get_data() const {
 }
 
 void JoltBoxShapeImpl3D::set_data(const Variant& p_data) {
-	ON_SCOPE_EXIT {
-		_invalidated();
-	};
-
-	destroy();
-
 	ERR_FAIL_COND(p_data.get_type() != Variant::VECTOR3);
 
-	half_extents = p_data;
+	const Vector3 new_half_extents = p_data;
+	QUIET_FAIL_COND(new_half_extents == half_extents);
+
+	half_extents = new_half_extents;
+
+	destroy();
 }
 
 void JoltBoxShapeImpl3D::set_margin(float p_margin) {
-	ON_SCOPE_EXIT {
-		_invalidated();
-	};
-
-	destroy();
+	QUIET_FAIL_COND(margin == p_margin);
+	QUIET_FAIL_COND(!JoltProjectSettings::use_shape_margins());
 
 	margin = p_margin;
+
+	destroy();
 }
 
 String JoltBoxShapeImpl3D::to_string() const {
