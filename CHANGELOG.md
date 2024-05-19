@@ -18,6 +18,8 @@ Breaking changes are denoted with ⚠️.
 - ⚠️ Changed the inertia of shapeless bodies to be `(1, 1, 1)`, to match Godot Physics.
 - Changed `SeparationRayShape3D` to not treat other convex shapes as solid, meaning it will now only
   ever collide with the hull of other convex shapes, which better matches Godot Physics.
+- Mirrored the way in which angular limits are visualized for `JoltHingeJoint3D`,
+  `JoltConeTwistJoint3D` and `JoltGeneric6DOFJoint`.
 
 ### Added
 
