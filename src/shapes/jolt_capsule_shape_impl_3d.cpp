@@ -8,12 +8,6 @@ Variant JoltCapsuleShapeImpl3D::get_data() const {
 }
 
 void JoltCapsuleShapeImpl3D::set_data(const Variant& p_data) {
-	ON_SCOPE_EXIT {
-		_invalidated();
-	};
-
-	destroy();
-
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
 	const Dictionary data = p_data;
@@ -24,8 +18,15 @@ void JoltCapsuleShapeImpl3D::set_data(const Variant& p_data) {
 	const Variant maybe_radius = data.get("radius", {});
 	ERR_FAIL_COND(maybe_radius.get_type() != Variant::FLOAT);
 
-	height = maybe_height;
-	radius = maybe_radius;
+	const float new_height = maybe_height;
+	const float new_radius = maybe_radius;
+
+	QUIET_FAIL_COND(new_height == height && new_radius == radius);
+
+	height = new_height;
+	radius = new_radius;
+
+	destroy();
 }
 
 String JoltCapsuleShapeImpl3D::to_string() const {

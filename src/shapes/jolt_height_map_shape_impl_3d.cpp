@@ -12,12 +12,6 @@ Variant JoltHeightMapShapeImpl3D::get_data() const {
 }
 
 void JoltHeightMapShapeImpl3D::set_data(const Variant& p_data) {
-	ON_SCOPE_EXIT {
-		_invalidated();
-	};
-
-	destroy();
-
 	ERR_FAIL_COND(p_data.get_type() != Variant::DICTIONARY);
 
 	const Dictionary data = p_data;
@@ -39,6 +33,8 @@ void JoltHeightMapShapeImpl3D::set_data(const Variant& p_data) {
 	heights = maybe_heights;
 	width = maybe_width;
 	depth = maybe_depth;
+
+	destroy();
 }
 
 String JoltHeightMapShapeImpl3D::to_string() const {

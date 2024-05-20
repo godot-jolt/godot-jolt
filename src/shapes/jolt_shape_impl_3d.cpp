@@ -54,6 +54,14 @@ JPH::ShapeRefC JoltShapeImpl3D::try_build() {
 	return jolt_ref;
 }
 
+void JoltShapeImpl3D::destroy() {
+	jolt_ref = nullptr;
+
+	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
+		owner->_shapes_changed();
+	}
+}
+
 JPH::ShapeRefC JoltShapeImpl3D::with_scale(const JPH::Shape* p_shape, const Vector3& p_scale) {
 	ERR_FAIL_NULL_D(p_shape);
 
@@ -277,12 +285,6 @@ JPH::ShapeRefC JoltShapeImpl3D::without_custom_shapes(const JPH::Shape* p_shape)
 		default: {
 			return p_shape;
 		}
-	}
-}
-
-void JoltShapeImpl3D::_invalidated() {
-	for (const auto& [owner, ref_count] : ref_counts_by_owner) {
-		owner->_shapes_changed();
 	}
 }
 

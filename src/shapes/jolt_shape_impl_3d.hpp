@@ -36,7 +36,7 @@ public:
 
 	JPH::ShapeRefC try_build();
 
-	void destroy() { jolt_ref = nullptr; }
+	void destroy();
 
 	const JPH::Shape* get_jolt_ref() const { return jolt_ref; }
 
@@ -64,8 +64,6 @@ public:
 
 protected:
 	virtual JPH::ShapeRefC _build() const = 0;
-
-	virtual void _invalidated();
 
 	String _owners_to_string() const;
 
