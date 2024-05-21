@@ -33,6 +33,9 @@ constexpr char ACTIVE_EDGE_THRESHOLD[] = "physics/jolt_3d/solver/active_edge_thr
 constexpr char BOUNCE_VELOCITY_THRESHOLD[] = "physics/jolt_3d/solver/bounce_velocity_threshold";
 constexpr char CONTACT_DISTANCE[] = "physics/jolt_3d/solver/contact_speculative_distance";
 constexpr char CONTACT_PENETRATION[] = "physics/jolt_3d/solver/contact_allowed_penetration";
+constexpr char PAIR_CACHE_ENABLED[] = "physics/jolt_3d/solver/body_pair_cache_enabled";
+constexpr char PAIR_CACHE_DISTANCE[] = "physics/jolt_3d/solver/body_pair_cache_distance_threshold";
+constexpr char PAIR_CACHE_ANGLE[] = "physics/jolt_3d/solver/body_pair_cache_angle_threshold";
 
 constexpr char MAX_LINEAR_VELOCITY[] = "physics/jolt_3d/limits/max_linear_velocity";
 constexpr char MAX_ANGULAR_VELOCITY[] = "physics/jolt_3d/limits/max_angular_velocity";
@@ -160,6 +163,9 @@ void JoltProjectSettings::register_settings() {
 	register_setting_hinted(BOUNCE_VELOCITY_THRESHOLD, 1.0f, U"suffix:m/s");
 	register_setting_ranged(CONTACT_DISTANCE, 0.02f, U"0,1,0.00001,or_greater,suffix:m");
 	register_setting_ranged(CONTACT_PENETRATION, 0.02f, U"0,1,0.00001,or_greater,suffix:m");
+	register_setting_plain(PAIR_CACHE_ENABLED, true);
+	register_setting_ranged(PAIR_CACHE_DISTANCE, 0.001f, U"0,0.01,0.00001,or_greater,suffix:m");
+	register_setting_ranged(PAIR_CACHE_ANGLE, Math::deg_to_rad(2.0f), U"0,180,0.01,radians");
 
 	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, U"0,500,0.01,or_greater,suffix:m/s");
 	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,0.01,or_greater,suffix:°/s");
@@ -272,6 +278,21 @@ float JoltProjectSettings::get_contact_penetration() {
 	return value;
 }
 
+bool JoltProjectSettings::is_pair_cache_enabled() {
+	static const auto value = get_setting<bool>(PAIR_CACHE_ENABLED);
+	return value;
+}
+
+float JoltProjectSettings::get_pair_cache_distance() {
+	static const auto value = Math::square(get_setting<float>(PAIR_CACHE_DISTANCE));
+	return value;
+}
+
+float JoltProjectSettings::get_pair_cache_angle() {
+	static const auto value = Math::cos(get_setting<float>(PAIR_CACHE_ANGLE) / 2.0f);
+	return value;
+}
+
 float JoltProjectSettings::get_max_linear_velocity() {
 	static const auto value = get_setting<float>(MAX_LINEAR_VELOCITY);
 	return value;
@@ -287,7 +308,7 @@ int32_t JoltProjectSettings::get_max_bodies() {
 	return value;
 }
 
-int32_t JoltProjectSettings::get_max_body_pairs() {
+int32_t JoltProjectSettings::get_max_pairs() {
 	static const auto value = get_setting<int32_t>(MAX_PAIRS);
 	return value;
 }
