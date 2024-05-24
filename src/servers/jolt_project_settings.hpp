@@ -44,13 +44,19 @@ public:
 
 	static float get_contact_penetration();
 
+	static bool is_pair_cache_enabled();
+
+	static float get_pair_cache_distance();
+
+	static float get_pair_cache_angle();
+
 	static float get_max_linear_velocity();
 
 	static float get_max_angular_velocity();
 
 	static int32_t get_max_bodies();
 
-	static int32_t get_max_body_pairs();
+	static int32_t get_max_pairs();
 
 	static int32_t get_max_contact_constraints();
 

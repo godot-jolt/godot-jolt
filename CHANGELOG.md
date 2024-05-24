@@ -32,6 +32,9 @@ Breaking changes are denoted with ⚠️.
 - Added support for partial custom inertia, where leaving one or two components at zero will use the
   automatically calculated values for those specific components.
 - Added error-handling for invalid scaling of bodies/shapes.
+- Added project settings "Body Pair Cache Enabled", "Body Pair Cache Distance Threshold" and "Body
+  Pair Cache Angle Threshold" to allow fine-tuning the scale by which collision results are reused
+  inbetween physics ticks.
 
 ### Fixed
 

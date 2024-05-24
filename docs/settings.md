@@ -372,6 +372,33 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       <td>-</td>
     </tr>
     <tr>
+      <td>Solver</td>
+      <td>Body Pair Cache Enabled</td>
+      <td>
+        Whether the body pair cache is enabled, which removes the need for potentially expensive
+        collision detection when the relative orientation between two bodies didn't change.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Solver</td>
+      <td>Body Pair Cache Distance Threshold</td>
+      <td>
+        The maximum relative distance by which a body pair can move and still reuse the collision
+        results from the previous physics tick.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Solver</td>
+      <td>Body Pair Cache Angle Threshold</td>
+      <td>
+        The maximum relative angle by which a body pair can move and still reuse the collision
+        results from the previous physics tick.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
       <td>Limits</td>
       <td>Max Linear Velocity</td>
       <td>The maximum linear velocity that a body can reach.</td>

@@ -54,4 +54,8 @@ _FORCE_INLINE_ Transform3D decomposed(Transform3D p_transform, Vector3& p_scale)
 	return p_transform;
 }
 
+_FORCE_INLINE_ float square(float p_value) {
+	return p_value * p_value;
+}
+
 } // namespace godot::Math
