@@ -454,9 +454,8 @@ void JoltBodyImpl3D::set_center_of_mass_custom(const Vector3& p_center_of_mass) 
 }
 
 void JoltBodyImpl3D::set_max_contacts_reported(int32_t p_count) {
-	if (contacts.size() == p_count) {
-		return;
-	}
+	ERR_FAIL_COND(p_count < 0);
+	QUIET_FAIL_COND(contacts.size() == p_count);
 
 	ON_SCOPE_EXIT {
 		_contact_reporting_changed();
