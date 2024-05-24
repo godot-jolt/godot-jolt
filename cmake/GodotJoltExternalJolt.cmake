@@ -35,7 +35,7 @@ endif()
 
 gdj_add_external_library(jolt "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/jolt.git
-	GIT_COMMIT 3ae9520be65c60d0524692be01c0b35d7648d150
+	GIT_COMMIT deeb4bca047308ddd48345c2d906ed1c9ae487ca
 	LANGUAGE CXX
 	SOURCE_SUBDIR Build
 	OUTPUT_NAME Jolt
@@ -58,6 +58,7 @@ gdj_add_external_library(jolt "${configurations}"
 		${dev_definitions}
 	CMAKE_CACHE_ARGS
 		-DENABLE_ALL_WARNINGS=FALSE
+		-DENABLE_OBJECT_STREAM=FALSE
 		-DTARGET_HELLO_WORLD=FALSE
 		-DTARGET_PERFORMANCE_TEST=FALSE
 		-DTARGET_SAMPLES=FALSE
