@@ -73,11 +73,17 @@ public:
 
 	_FORCE_INLINE_ int32_t get_capacity() const { return (int32_t)impl.capacity(); }
 
-	_FORCE_INLINE_ void reserve(int32_t p_capacity) { impl.reserve((size_t)p_capacity); }
+	_FORCE_INLINE_ void reserve(int32_t p_capacity) {
+		ERR_FAIL_COND(p_capacity < 0);
+		impl.reserve((size_t)p_capacity);
+	}
 
 	_FORCE_INLINE_ int32_t size() const { return (int32_t)impl.size(); }
 
-	_FORCE_INLINE_ void resize(int32_t p_size) { impl.resize((size_t)p_size); }
+	_FORCE_INLINE_ void resize(int32_t p_size) {
+		ERR_FAIL_COND(p_size < 0);
+		impl.resize((size_t)p_size);
+	}
 
 	_FORCE_INLINE_ void insert(int32_t p_index, const TElement& p_value) {
 		emplace(p_index, p_value);
