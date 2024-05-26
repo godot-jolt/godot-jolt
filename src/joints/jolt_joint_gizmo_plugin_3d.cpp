@@ -78,9 +78,10 @@ void draw_angular_limits(
 	const float limit_span = limit_valid ? p_limit_upper - p_limit_lower : Mathf_TAU;
 	const bool limit_bounded = limit_valid && limit_span < (Mathf_TAU - 0.0001f);
 	const float angle_step = limit_span / line_count;
+	const float angle_offset = (p_axis == Vector3::AXIS_X) ? - Mathf_PI / 2.0f : p_axis == Vector3::AXIS_Z ? + Mathf_PI / 2.0f : 0;
 
 	auto calculate_point = [&](int32_t p_index) {
-		const float angle = p_limit_lower + angle_step * (float)p_index;
+		const float angle = p_limit_lower + angle_step * (float)p_index + angle_offset;
 
 		const float x = GIZMO_RADIUS * cosf(-angle);
 		const float y = GIZMO_RADIUS * sinf(-angle);
