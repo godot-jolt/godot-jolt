@@ -1178,12 +1178,8 @@ void JoltBodyImpl3D::_add_to_space() {
 		jolt_settings->mEnhancedInternalEdgeRemoval = true;
 	}
 
-	// HACK(mihe): We need to defer the setting of mass properties, to allow for modifying the
-	// inverse inertia for the axis-locking, which we can't do until the body is created, so we set
-	// it to some random values and calculate it properly once the body is created instead.
 	jolt_settings->mOverrideMassProperties = JPH::EOverrideMassProperties::MassAndInertiaProvided;
-	jolt_settings->mMassPropertiesOverride.mMass = 1.0f;
-	jolt_settings->mMassPropertiesOverride.mInertia = JPH::Mat44::sIdentity();
+	jolt_settings->mMassPropertiesOverride = _calculate_mass_properties();
 
 	jolt_settings->SetShape(jolt_shape);
 
@@ -1500,7 +1496,6 @@ void JoltBodyImpl3D::_space_changed() {
 	JoltShapedObjectImpl3D::_space_changed();
 
 	_update_kinematic_transform();
-	_update_mass_properties();
 	_update_group_filter();
 	_update_joint_constraints();
 	_areas_changed();
