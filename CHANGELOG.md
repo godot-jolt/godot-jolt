@@ -54,6 +54,9 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where physics queries performed within the editor (e.g. editor plugins or tool
   scripts) would end up ignoring potentially large swathes of bodies in scenes with many physics
   bodies.
+- Fixed crash when setting a negative `max_contacts_reported` on `RigidBody3D`.
+- Fixed issue with certain `generic_6dof_joint_*` methods on `JoltPhysicsServer3D` not having the
+  correct parameter names.
 
 ## [0.12.0] - 2024-01-07
 
