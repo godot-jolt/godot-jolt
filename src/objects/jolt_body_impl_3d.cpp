@@ -259,7 +259,6 @@ void JoltBodyImpl3D::set_is_sleeping(bool p_enabled) {
 		body_iface.DeactivateBody(jolt_id);
 	} else {
 		body_iface.ActivateBody(jolt_id);
-		body_iface.ResetSleepTimer(jolt_id);
 	}
 }
 
