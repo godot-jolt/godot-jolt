@@ -252,10 +252,6 @@ void draw_g6dof_joint(const JoltGeneric6DOFJoint3D& p_joint, PackedVector3Array&
 
 } // namespace
 
-void JoltJointGizmoPlugin3D::_bind_methods() {
-	BIND_METHOD(JoltJointGizmoPlugin3D, redraw_gizmos);
-}
-
 JoltJointGizmoPlugin3D::JoltJointGizmoPlugin3D(EditorInterface* p_editor_interface)
 	: editor_interface(p_editor_interface) { }
 
@@ -309,17 +305,6 @@ void JoltJointGizmoPlugin3D::_redraw(const Ref<EditorNode3DGizmo>& p_gizmo) {
 	p_gizmo->add_lines(points, get_material(MATERIAL_NAME, p_gizmo));
 }
 
-void JoltJointGizmoPlugin3D::redraw_gizmos() {
-	gizmos.erase_if([&](const Ref<EditorNode3DGizmo>& p_gizmo) {
-		if (p_gizmo->get_reference_count() > 1) {
-			_redraw(p_gizmo);
-			return false;
-		} else {
-			return true;
-		}
-	});
-}
-
 void JoltJointGizmoPlugin3D::_create_materials() {
 	// HACK(mihe): Ideally we would do all this in the constructor, but the documentation generation
 	// will instantiate this class too early in the program's flow, leading to a bunch of errors
@@ -357,10 +342,21 @@ void JoltJointGizmoPlugin3D::_create_redraw_timer(const Ref<EditorNode3DGizmo>& 
 	Timer* timer = memnew(Timer);
 	timer->set_name("JoltJointGizmoRedrawTimer");
 	timer->set_wait_time(1.0 / 120.0);
-	timer->connect("timeout", Callable(this, "redraw_gizmos"));
+	timer->connect("timeout", callable_mp(this, &JoltJointGizmoPlugin3D::_redraw_gizmos));
 	timer->set_autostart(true);
 
 	editor_node->call_deferred("add_child", timer);
+}
+
+void JoltJointGizmoPlugin3D::_redraw_gizmos() {
+	gizmos.erase_if([&](const Ref<EditorNode3DGizmo>& p_gizmo) {
+		if (p_gizmo->get_reference_count() > 1) {
+			_redraw(p_gizmo);
+			return false;
+		} else {
+			return true;
+		}
+	});
 }
 
 #endif // GDJ_CONFIG_EDITOR

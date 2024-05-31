@@ -63,6 +63,8 @@ protected:
 
 	void _notification(int32_t p_what);
 
+	void _body_exiting_tree();
+
 	void _connect_bodies();
 
 	void _disconnect_bodies();
