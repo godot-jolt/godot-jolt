@@ -345,6 +345,8 @@ else() # ANDROID/UNIX
 	set(debug_symbols ${debug_file})
 endif()
 
+gdj_generate_gdextension_file(gdextension_file)
+
 set(addon_dir addons/godot-jolt)
 
 string(CONCAT addon_platform_dir
@@ -358,7 +360,7 @@ string(CONCAT addon_platform_dir
 
 install(
 	FILES
-		godot-jolt.gdextension
+		${gdextension_file}
 		LICENSE.txt
 		THIRDPARTY.txt
 	DESTINATION ${addon_dir}

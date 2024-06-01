@@ -30,6 +30,9 @@ Breaking changes are denoted with ⚠️.
 
 - Added support for `SoftBody3D`.
 - Added support for double-precision.
+- Added `compatibility_maximum` to `godot-jolt.gdextension` for controlling the maximum allowed
+  Godot version. Note that changing this may expose you to subtle (or not so subtle)
+  incompatibilities in the extension API. Change at your own risk.
 - ⚠️ Added new project setting, "Use Enhanced Internal Edge Detection", which can help alleviate
   collisions with internal edges of `ConcavePolygonShape3D` and `HeightMapShape3D` shapes, also
   known as ghost collisions. This setting is enabled by default and may change the behavior of
@@ -40,6 +43,9 @@ Breaking changes are denoted with ⚠️.
 - Added project settings "Body Pair Cache Enabled", "Body Pair Cache Distance Threshold" and "Body
   Pair Cache Angle Threshold" to allow fine-tuning the scale by which collision results are reused
   inbetween physics ticks.
+- Added the appropriate floating-point precision feature tag to `godot-jolt.gdextension` to prevent
+  accidentally loading a single-precision build of Godot Jolt in a double-precision build of Godot
+  and vice versa.
 
 ### Fixed
 

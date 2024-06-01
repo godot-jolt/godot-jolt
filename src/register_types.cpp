@@ -12,9 +12,6 @@
 #include "spaces/jolt_debug_geometry_3d.hpp"
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
 
-#define ERR_PRINT_EARLY(m_msg) \
-	internal::gdextension_interface_print_error(m_msg, __FUNCTION__, __FILE__, __LINE__, false)
-
 namespace {
 
 JoltPhysicsServer3D* create_jolt_physics_server() {
@@ -97,37 +94,7 @@ GDExtensionBool GDE_EXPORT godot_jolt_main(
 
 	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SERVERS);
 
-	GDExtensionBool success = init_obj.init();
-
-	if (success == 0) {
-		return success;
-	}
-
-	if (internal::godot_version.major != GDJ_GODOT_VERSION_MAJOR ||
-		internal::godot_version.minor != GDJ_GODOT_VERSION_MINOR)
-	{
-		char error_message[4096] = {'\0'};
-
-		snprintf(
-			error_message,
-			(size_t)count_of(error_message),
-			"Godot Jolt failed to load due to not supporting Godot %d.%d. "
-			"This version of Godot Jolt (%d.%d.%d) only supports Godot %d.%d.",
-			internal::godot_version.major,
-			internal::godot_version.minor,
-			GDJ_VERSION_MAJOR,
-			GDJ_VERSION_MINOR,
-			GDJ_VERSION_PATCH,
-			GDJ_GODOT_VERSION_MAJOR,
-			GDJ_GODOT_VERSION_MINOR
-		);
-
-		ERR_PRINT_EARLY(error_message);
-
-		success = 0;
-	}
-
-	return success;
+	return init_obj.init();
 }
 
 } // extern "C"
