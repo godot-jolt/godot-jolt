@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Removed
+
+- ⚠️ Removed any `JoltPhysicsServer3D.G6DOF_*` enums that were previously (i.e. before Godot 4.3)
+  not exposed by Godot itself. These can now be found as `PhysicsServer3D.G6DOF_*` instead.
+
 ### Changed
 
 - ⚠️ Changed the way that the `body_test_motion` method of `PhysicsServer3D` discards contacts,
