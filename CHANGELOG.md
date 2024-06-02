@@ -17,9 +17,8 @@ Breaking changes are denoted with ⚠️.
 ### Changed
 
 - ⚠️ Changed the way that the `body_test_motion` method of `PhysicsServer3D` discards contacts,
-  which should fix issues related to jitter/ping-ponging. Note that this can also result in *more*
-  ghost collisions under certain conditions. This affects `move_and_slide`, `move_and_collide` and
-  `test_move`.
+  which should fix issues related to jitter/ping-ponging. This affects `move_and_slide`,
+  `move_and_collide` and `test_move`.
 - ⚠️ Changed the inertia of shapeless bodies to be `(1, 1, 1)`, to match Godot Physics.
 - Changed `SeparationRayShape3D` to not treat other convex shapes as solid, meaning it will now only
   ever collide with the hull of other convex shapes, which better matches Godot Physics.
@@ -36,7 +35,7 @@ Breaking changes are denoted with ⚠️.
 - ⚠️ Added new project setting, "Use Enhanced Internal Edge Detection", which can help alleviate
   collisions with internal edges of `ConcavePolygonShape3D` and `HeightMapShape3D` shapes, also
   known as ghost collisions. This setting is enabled by default and may change the behavior of
-  character controllers relying things like `move_and_slide`.
+  character controllers relying things like `move_and_slide` or `move_and_collide`.
 - Added support for partial custom inertia, where leaving one or two components at zero will use the
   automatically calculated values for those specific components.
 - Added error-handling for invalid scaling of bodies/shapes.
@@ -68,6 +67,7 @@ Breaking changes are denoted with ⚠️.
 - Fixed crash when setting a negative `max_contacts_reported` on `RigidBody3D`.
 - Fixed issue with certain `generic_6dof_joint_*` methods on `JoltPhysicsServer3D` not having the
   correct parameter names.
+- Fixed issue where sleep timer would not reset when applying force/torque to a `RigidBody3D`.
 
 ## [0.12.0] - 2024-01-07
 
