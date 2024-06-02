@@ -173,8 +173,6 @@ public:
 
 	void pre_step(float p_step, JPH::Body& p_jolt_body) override;
 
-	void move_kinematic(float p_step, JPH::Body& p_jolt_body);
-
 	JoltPhysicsDirectBodyState3D* get_direct_state();
 
 	PhysicsServer3D::BodyMode get_mode() const { return mode; }
@@ -263,6 +261,8 @@ private:
 	void _add_to_space() override;
 
 	void _integrate_forces(float p_step, JPH::Body& p_jolt_body);
+
+	void _move_kinematic(float p_step, JPH::Body& p_jolt_body);
 
 	void _pre_step_static(float p_step, JPH::Body& p_jolt_body);
 
