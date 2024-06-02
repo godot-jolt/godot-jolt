@@ -3,7 +3,7 @@
 #ifdef GDJ_CONFIG_EDITOR
 
 class JoltJointGizmoPlugin3D final : public EditorNode3DGizmoPlugin {
-	GDCLASS_NO_WARN(JoltJointGizmoPlugin3D, EditorNode3DGizmoPlugin)
+	GDCLASS_QUIET(JoltJointGizmoPlugin3D, EditorNode3DGizmoPlugin)
 
 private:
 	static void _bind_methods() { }

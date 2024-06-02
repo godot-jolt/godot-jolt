@@ -4,7 +4,7 @@
 #include "servers/jolt_physics_server_3d.hpp"
 
 class JoltSliderJoint3D final : public JoltJoint3D {
-	GDCLASS_NO_WARN(JoltSliderJoint3D, JoltJoint3D)
+	GDCLASS_QUIET(JoltSliderJoint3D, JoltJoint3D)
 
 public:
 	enum Param {

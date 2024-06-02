@@ -3,7 +3,7 @@
 class JoltBodyImpl3D;
 
 class JoltPhysicsDirectBodyState3D final : public PhysicsDirectBodyState3DExtension {
-	GDCLASS_NO_WARN(JoltPhysicsDirectBodyState3D, PhysicsDirectBodyState3DExtension)
+	GDCLASS_QUIET(JoltPhysicsDirectBodyState3D, PhysicsDirectBodyState3DExtension)
 
 private:
 	static void _bind_methods() { }

@@ -9,7 +9,7 @@ class JoltSoftBodyImpl3D;
 class JoltSpace3D;
 
 class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
-	GDCLASS_NO_WARN(JoltPhysicsServer3D, PhysicsServer3DExtension)
+	GDCLASS_QUIET(JoltPhysicsServer3D, PhysicsServer3DExtension)
 
 public:
 	enum HingeJointParamJolt {
