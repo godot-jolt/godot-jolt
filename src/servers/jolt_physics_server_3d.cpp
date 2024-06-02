@@ -135,6 +135,11 @@ JoltPhysicsServer3D::~JoltPhysicsServer3D() {
 	Engine::get_singleton()->unregister_singleton(PHYSICS_SERVER_NAME);
 }
 
+JoltPhysicsServer3D* JoltPhysicsServer3D::get_singleton() {
+	static auto* instance = dynamic_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+	return instance;
+}
+
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {
 	JoltShapeImpl3D* shape = memnew(JoltWorldBoundaryShapeImpl3D);
 	RID rid = shape_owner.make_rid(shape);

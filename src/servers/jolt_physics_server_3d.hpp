@@ -71,6 +71,8 @@ public:
 
 	~JoltPhysicsServer3D() override;
 
+	static JoltPhysicsServer3D* get_singleton();
+
 	RID _world_boundary_shape_create() override;
 
 	RID _separation_ray_shape_create() override;

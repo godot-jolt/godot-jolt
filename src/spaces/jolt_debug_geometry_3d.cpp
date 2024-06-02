@@ -137,7 +137,7 @@ JoltDebugGeometry3D::~JoltDebugGeometry3D() = default;
 
 void JoltDebugGeometry3D::_process([[maybe_unused]] double p_delta) {
 #ifdef JPH_DEBUG_RENDERER
-	auto* physics_server = dynamic_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+	JoltPhysicsServer3D* physics_server = JoltPhysicsServer3D::get_singleton();
 
 	if (physics_server == nullptr) {
 		ERR_PRINT_ONCE(

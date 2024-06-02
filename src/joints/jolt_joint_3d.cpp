@@ -139,7 +139,7 @@ PhysicsServer3D* JoltJoint3D::_get_physics_server() {
 }
 
 JoltPhysicsServer3D* JoltJoint3D::_get_jolt_physics_server() {
-	static auto* physics_server = dynamic_cast<JoltPhysicsServer3D*>(_get_physics_server());
+	JoltPhysicsServer3D* physics_server = JoltPhysicsServer3D::get_singleton();
 
 	if (unlikely(physics_server == nullptr)) {
 		ERR_PRINT_ONCE(
