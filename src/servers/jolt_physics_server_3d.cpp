@@ -22,6 +22,12 @@
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
+namespace {
+
+constexpr char PHYSICS_SERVER_NAME[] = "JoltPhysicsServer3D";
+
+} // namespace
+
 void JoltPhysicsServer3D::_bind_methods() {
 	// clang-format off
 
@@ -116,19 +122,22 @@ void JoltPhysicsServer3D::_bind_methods() {
 }
 
 JoltPhysicsServer3D::JoltPhysicsServer3D() {
-	const StringName server_name = NAMEOF(JoltPhysicsServer3D);
-
 	Engine* engine = Engine::get_singleton();
 
-	if (engine->has_singleton(server_name)) {
-		engine->unregister_singleton(server_name);
+	if (engine->has_singleton(PHYSICS_SERVER_NAME)) {
+		engine->unregister_singleton(PHYSICS_SERVER_NAME);
 	}
 
-	engine->register_singleton(server_name, this);
+	engine->register_singleton(PHYSICS_SERVER_NAME, this);
 }
 
 JoltPhysicsServer3D::~JoltPhysicsServer3D() {
-	Engine::get_singleton()->unregister_singleton(NAMEOF(JoltPhysicsServer3D));
+	Engine::get_singleton()->unregister_singleton(PHYSICS_SERVER_NAME);
+}
+
+JoltPhysicsServer3D* JoltPhysicsServer3D::get_singleton() {
+	static auto* instance = dynamic_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
+	return instance;
 }
 
 RID JoltPhysicsServer3D::_world_boundary_shape_create() {

@@ -842,7 +842,7 @@ void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
 		}
 	}
 
-	if (body_state_callback.is_valid()) {
+	if (state_sync_callback.is_valid()) {
 		static thread_local Array arguments = []() {
 			Array array;
 			array.resize(1);
@@ -851,7 +851,7 @@ void JoltBodyImpl3D::call_queries([[maybe_unused]] JPH::Body& p_jolt_body) {
 
 		arguments[0] = get_direct_state();
 
-		body_state_callback.callv(arguments);
+		state_sync_callback.callv(arguments);
 	}
 
 	sync_state = false;
@@ -874,25 +874,6 @@ void JoltBodyImpl3D::pre_step(float p_step, JPH::Body& p_jolt_body) {
 	}
 
 	contact_count = 0;
-}
-
-void JoltBodyImpl3D::move_kinematic(float p_step, JPH::Body& p_jolt_body) {
-	p_jolt_body.SetLinearVelocity(JPH::Vec3::sZero());
-	p_jolt_body.SetAngularVelocity(JPH::Vec3::sZero());
-
-	const JPH::RVec3 current_position = p_jolt_body.GetPosition();
-	const JPH::Quat current_rotation = p_jolt_body.GetRotation();
-
-	const JPH::RVec3 new_position = to_jolt_r(kinematic_transform.origin);
-	const JPH::Quat new_rotation = to_jolt(kinematic_transform.basis);
-
-	if (new_position == current_position && new_rotation == current_rotation) {
-		return;
-	}
-
-	p_jolt_body.MoveKinematic(new_position, new_rotation, p_step);
-
-	sync_state = true;
 }
 
 JoltPhysicsDirectBodyState3D* JoltBodyImpl3D::get_direct_state() {
@@ -1222,6 +1203,25 @@ void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 	sync_state = true;
 }
 
+void JoltBodyImpl3D::_move_kinematic(float p_step, JPH::Body& p_jolt_body) {
+	p_jolt_body.SetLinearVelocity(JPH::Vec3::sZero());
+	p_jolt_body.SetAngularVelocity(JPH::Vec3::sZero());
+
+	const JPH::RVec3 current_position = p_jolt_body.GetPosition();
+	const JPH::Quat current_rotation = p_jolt_body.GetRotation();
+
+	const JPH::RVec3 new_position = to_jolt_r(kinematic_transform.origin);
+	const JPH::Quat new_rotation = to_jolt(kinematic_transform.basis);
+
+	if (new_position == current_position && new_rotation == current_rotation) {
+		return;
+	}
+
+	p_jolt_body.MoveKinematic(new_position, new_rotation, p_step);
+
+	sync_state = true;
+}
+
 void JoltBodyImpl3D::_pre_step_static(
 	[[maybe_unused]] float p_step,
 	[[maybe_unused]] JPH::Body& p_jolt_body
@@ -1236,7 +1236,7 @@ void JoltBodyImpl3D::_pre_step_rigid(float p_step, JPH::Body& p_jolt_body) {
 void JoltBodyImpl3D::_pre_step_kinematic(float p_step, JPH::Body& p_jolt_body) {
 	_update_gravity(p_jolt_body);
 
-	move_kinematic(p_step, p_jolt_body);
+	_move_kinematic(p_step, p_jolt_body);
 
 	if (reports_contacts()) {
 		// HACK(mihe): This seems to emulate the behavior of Godot Physics, where kinematic bodies

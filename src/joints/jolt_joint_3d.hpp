@@ -3,7 +3,7 @@
 class JoltPhysicsServer3D;
 
 class JoltJoint3D : public Node3D {
-	GDCLASS_NO_WARN(JoltJoint3D, Node3D)
+	GDCLASS_QUIET(JoltJoint3D, Node3D)
 
 private:
 	static void _bind_methods();

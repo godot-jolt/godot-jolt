@@ -3,7 +3,7 @@
 #include "servers/jolt_project_settings.hpp"
 
 template<typename TBase, int32_t TInlineCapacity>
-class JoltQueryCollectorAll : public TBase {
+class JoltQueryCollectorAll final : public TBase {
 public:
 	using Hit = typename TBase::ResultType;
 

@@ -159,9 +159,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 
 	space->try_optimize();
 
-	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-
-	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = JoltPhysicsServer3D::get_singleton()->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -274,9 +272,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	space->try_optimize();
 
-	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-
-	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = JoltPhysicsServer3D::get_singleton()->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -364,9 +360,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 
 	space->try_optimize();
 
-	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-
-	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = JoltPhysicsServer3D::get_singleton()->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -489,9 +483,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 ) {
 	space->try_optimize();
 
-	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-
-	JoltShapeImpl3D* shape = physics_server->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = JoltPhysicsServer3D::get_singleton()->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -591,8 +583,7 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 ) const {
 	space->try_optimize();
 
-	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-
+	JoltPhysicsServer3D* physics_server = JoltPhysicsServer3D::get_singleton();
 	JoltObjectImpl3D* object = physics_server->get_area(p_object);
 
 	if (object == nullptr) {
@@ -885,7 +876,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 		float hi = 1.0f;
 		float coeff = 0.5f;
 
-		for (int j = 0; j < step_count; ++j) {
+		for (int32_t j = 0; j < step_count; ++j) {
 			const float fraction = lo + (hi - lo) * coeff;
 
 			if (collides(*other_jolt_body, fraction)) {
@@ -971,7 +962,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 
 		float combined_priority = 0.0;
 
-		for (int j = 0; j < hit_count; j++) {
+		for (int32_t j = 0; j < hit_count; j++) {
 			const JPH::CollideShapeResult& hit = collector.get_hit(j);
 
 			const JoltReadableBody3D other_jolt_body = space->read_body(hit.mBodyID2);

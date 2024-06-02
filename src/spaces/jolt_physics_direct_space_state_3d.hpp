@@ -5,7 +5,7 @@ class JoltShapeImpl3D;
 class JoltSpace3D;
 
 class JoltPhysicsDirectSpaceState3D final : public PhysicsDirectSpaceState3DExtension {
-	GDCLASS_NO_WARN(JoltPhysicsDirectSpaceState3D, PhysicsDirectSpaceState3DExtension)
+	GDCLASS_QUIET(JoltPhysicsDirectSpaceState3D, PhysicsDirectSpaceState3DExtension)
 
 private:
 	static void _bind_methods() { }

@@ -4,7 +4,7 @@
 #include "servers/jolt_physics_server_3d.hpp"
 
 class JoltGeneric6DOFJoint3D final : public JoltJoint3D {
-	GDCLASS_NO_WARN(JoltGeneric6DOFJoint3D, JoltJoint3D)
+	GDCLASS_QUIET(JoltGeneric6DOFJoint3D, JoltJoint3D)
 
 public:
 	// clang-format off

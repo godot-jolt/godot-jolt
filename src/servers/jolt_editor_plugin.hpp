@@ -5,7 +5,7 @@
 #include "joints/jolt_joint_gizmo_plugin_3d.hpp"
 
 class JoltEditorPlugin final : public EditorPlugin {
-	GDCLASS_NO_WARN(JoltEditorPlugin, EditorPlugin)
+	GDCLASS_QUIET(JoltEditorPlugin, EditorPlugin)
 
 private:
 	static void _bind_methods() { }

@@ -55,8 +55,7 @@ void JoltEditorPlugin::_tool_menu_pressed(int32_t p_index) {
 }
 
 void JoltEditorPlugin::_snapshots_dir_selected(const String& p_dir) {
-	auto* physics_server = static_cast<JoltPhysicsServer3D*>(PhysicsServer3D::get_singleton());
-	physics_server->dump_debug_snapshots(p_dir);
+	JoltPhysicsServer3D::get_singleton()->dump_debug_snapshots(p_dir);
 }
 
 void JoltEditorPlugin::_dump_debug_snapshots() {
