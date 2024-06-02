@@ -876,7 +876,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 		float hi = 1.0f;
 		float coeff = 0.5f;
 
-		for (int j = 0; j < step_count; ++j) {
+		for (int32_t j = 0; j < step_count; ++j) {
 			const float fraction = lo + (hi - lo) * coeff;
 
 			if (collides(*other_jolt_body, fraction)) {
@@ -962,7 +962,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 
 		float combined_priority = 0.0;
 
-		for (int j = 0; j < hit_count; j++) {
+		for (int32_t j = 0; j < hit_count; j++) {
 			const JPH::CollideShapeResult& hit = collector.get_hit(j);
 
 			const JoltReadableBody3D other_jolt_body = space->read_body(hit.mBodyID2);
