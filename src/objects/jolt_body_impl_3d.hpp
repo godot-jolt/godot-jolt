@@ -49,9 +49,9 @@ public:
 
 	void set_param(PhysicsServer3D::BodyParameter p_param, const Variant& p_value);
 
-	bool has_state_sync_callback() const { return body_state_callback.is_valid(); }
+	bool has_state_sync_callback() const { return state_sync_callback.is_valid(); }
 
-	void set_state_sync_callback(const Callable& p_callback) { body_state_callback = p_callback; }
+	void set_state_sync_callback(const Callable& p_callback) { state_sync_callback = p_callback; }
 
 	bool has_custom_integration_callback() const { return custom_integration_callback.is_valid(); }
 
@@ -340,7 +340,7 @@ private:
 
 	Vector3 gravity;
 
-	Callable body_state_callback;
+	Callable state_sync_callback;
 
 	Callable custom_integration_callback;
 
