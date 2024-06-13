@@ -68,6 +68,7 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue with certain `generic_6dof_joint_*` methods on `JoltPhysicsServer3D` not having the
   correct parameter names.
 - Fixed issue where sleep timer would not reset when applying force/torque to a `RigidBody3D`.
+- Fixed issue where `Area3D` would fail to report overlap with certain `ConcavePolygonShape3D`.
 
 ## [0.12.0] - 2024-01-07
 
