@@ -41,6 +41,12 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
 	list(APPEND sources ${info_file})
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
+	# This is a hack to workaround the lack of support for shared libraries in the toolchain file shipped with Emscripten
+	# Once this PR (or similar) lands (https://github.com/emscripten-core/emscripten/pull/16281) we can remove this
+	set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
+endif()
+
 add_library(godot-jolt SHARED ${sources} ${headers})
 add_library(godot-jolt::godot-jolt ALIAS godot-jolt)
 
@@ -58,6 +64,7 @@ set(is_linux $<STREQUAL:${CMAKE_SYSTEM_NAME},Linux>)
 set(is_macos $<STREQUAL:${CMAKE_SYSTEM_NAME},Darwin>)
 set(is_ios $<STREQUAL:${CMAKE_SYSTEM_NAME},iOS>)
 set(is_android $<STREQUAL:${CMAKE_SYSTEM_NAME},Android>)
+set(is_wasm $<STREQUAL:${CMAKE_SYSTEM_NAME},Emscripten>)
 
 set(is_editor_config $<CONFIG:EditorDebug,EditorDevelopment,EditorDistribution>)
 set(is_debug_config $<CONFIG:Debug,EditorDebug>)
@@ -79,6 +86,11 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL iOS)
 	set(suffix_platform _ios)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Android)
 	set(suffix_platform _android)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
+	set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS "-sSIDE_MODULE=1")
+	set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "-sSIDE_MODULE=1")
+	set(CMAKE_SHARED_LIBRARY_SUFFIX ".wasm")
+	set(suffix_platform _web)
 else()
 	message(FATAL_ERROR "Unhandled system name: '${CMAKE_SYSTEM_NAME}'.")
 endif()
@@ -93,6 +105,8 @@ elseif(GDJ_TARGET_ARCHITECTURES STREQUAL arm64)
 	set(suffix_arch -arm64)
 elseif(GDJ_TARGET_ARCHITECTURES STREQUAL arm32)
 	set(suffix_arch -arm32)
+elseif(GDJ_TARGET_ARCHITECTURES STREQUAL wasm)
+	set(suffix_arch -wasm)
 else()
 	message(FATAL_ERROR "Unhandled architecture: '${GDJ_TARGET_ARCHITECTURES}'.")
 endif()
@@ -122,6 +136,7 @@ set(is_llvm_clang $<CXX_COMPILER_ID:Clang>)
 set(is_apple_clang $<CXX_COMPILER_ID:AppleClang>)
 set(is_gcc $<CXX_COMPILER_ID:GNU>)
 set(is_clang_cl $<AND:${is_msvc_like},${is_llvm_clang}>)
+set(use_pthread $<NOT:${is_wasm}>)
 
 set_target_properties(godot-jolt PROPERTIES
 	OUTPUT_NAME ${prefix}godot-jolt${suffix}
@@ -242,7 +257,7 @@ else()
 		PRIVATE -Wshadow # Enable variable/type shadowing warnings
 		PRIVATE -Wundef # Enable warnings about undefined identifiers in `#if` directives
 		PRIVATE -Wno-gnu-zero-variadic-macro-arguments # Disable zero variadic macro args warning
-		PRIVATE -pthread # Use POSIX threads
+		PRIVATE $<${use_pthread}:-pthread> # Use POSIX threads
 		PRIVATE -fno-exceptions # Disable support for exception-handling
 		PRIVATE $<${use_sse2}:-msse2> # Enable SSE2 instructions
 		PRIVATE $<${use_sse4_2}:-msse4.2> # Enable SSE4.2 instructions
@@ -327,7 +342,11 @@ else() # ANDROID/UNIX
 	endif()
 
 	set(so_file $<TARGET_FILE:godot-jolt>)
-	set(debug_file ${so_file}.debug)
+	if(EMSCRIPTEN)
+		set(debug_file ${so_file}.dwp)
+	else()
+		set(debug_file ${so_file}.debug)
+	endif()
 
 	set(cmd_copy_symbols ${OBJCOPY_EXECUTABLE} --only-keep-debug ${so_file} ${debug_file})
 	set(cmd_strip_symbols ${OBJCOPY_EXECUTABLE} --strip-debug --strip-unneeded ${so_file})
@@ -337,10 +356,18 @@ else() # ANDROID/UNIX
 		TARGET godot-jolt POST_BUILD
 		COMMAND "$<${is_distribution_config}:${cmd_copy_symbols}>"
 		COMMAND "$<${is_distribution_config}:${cmd_strip_symbols}>"
-		COMMAND "$<${is_distribution_config}:${cmd_link_symbols}>"
 		COMMAND_EXPAND_LISTS
 		VERBATIM
 	)
+
+	if(NOT EMSCRIPTEN)
+		add_custom_command(
+			TARGET godot-jolt POST_BUILD
+			COMMAND "$<${is_distribution_config}:${cmd_link_symbols}>"
+			COMMAND_EXPAND_LISTS
+			VERBATIM
+		)
+	endif()
 
 	set(debug_symbols ${debug_file})
 endif()
@@ -356,6 +383,7 @@ string(CONCAT addon_platform_dir
 		$<${is_macos}:macos>
 		$<${is_android}:android>
 		$<${is_ios}:ios>
+		$<${is_wasm}:web>
 )
 
 install(

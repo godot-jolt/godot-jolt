@@ -250,6 +250,18 @@
       }
     },
     {
+      "name": "emscripten-base",
+      "inherits": ["linux-base"],
+      "hidden": true,
+      "environment": {
+        "CXXFLAGS": "$penv{CXXFLAGS} -msimd128 -msse4.2",
+        "LDFLAGS": "$penv{LDFLAGS} -msimd128 -msse4.2 -sALLOW_MEMORY_GROWTH=1 -sALLOW_TABLE_GROWTH=1"
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$penv{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+      }
+    },
+    {
       "name": "windows-msvc-x64",
       "displayName": "MSVC, x64",
       "inherits": ["windows-base", "msvc-base", "msvc-x64-base"]
@@ -363,6 +375,12 @@
       "name": "macos-android-x86",
       "displayName": "Android, x86",
       "inherits": ["macos-base", "android-base", "android-x86-base"]
+    },
+    {
+      "name": "web-wasm32",
+      "inherits": ["emscripten-base","dev-base"],
+      "displayName": "Web wasm32",
+      "cacheVariables": {"GDJ_TARGET_ARCHITECTURES": "wasm"}
     }
   ],
   "buildPresets": [
@@ -396,6 +414,48 @@
     {
       "name": "install-base",
       "hidden": true,
+      "targets": ["install"]
+    },
+    {
+      "name": "web-debug",
+      "configurePreset": "web-wasm32",
+      "configuration": "Debug",
+      "displayName": "Debug",
+      "targets": ["install"]
+    },
+    {
+      "name": "web-development",
+      "configurePreset": "web-wasm32",
+      "configuration": "Development",
+      "displayName": "Development",
+      "targets": ["install"]
+    },
+    {
+      "name": "web-distribution",
+      "configurePreset": "web-wasm32",
+      "configuration": "Distribution",
+      "displayName": "Distribution",
+      "targets": ["install"]
+    },
+    {
+      "name": "web-editor-debug",
+      "configurePreset": "web-wasm32",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug",
+      "targets": ["install"]
+    },
+    {
+      "name": "web-editor-development",
+      "configurePreset": "web-wasm32",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment",
+      "targets": ["install"]
+    },
+    {
+      "name": "web-editor-distribution",
+      "configurePreset": "web-wasm32",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution",
       "targets": ["install"]
     },
     {

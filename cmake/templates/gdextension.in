@@ -35,3 +35,6 @@ android.debug.${GDJ_PRECISION}.x86_64 = "android/libgodot-jolt_android-x64_edito
 
 android.release.${GDJ_PRECISION}.x86_32 = "android/libgodot-jolt_android-x86.so"
 android.debug.${GDJ_PRECISION}.x86_32 = "android/libgodot-jolt_android-x86_editor.so"
+
+web.release.${GDJ_PRECISION} = "web/godot-jolt_web-wasm.wasm"
+web.debug.${GDJ_PRECISION} = "web/godot-jolt_web-wasm_editor.wasm"

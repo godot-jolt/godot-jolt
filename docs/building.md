@@ -11,6 +11,7 @@ This document contains instructions for how to build Godot Jolt from source.
 - [Building for macOS](#building-for-macos)
 - [Building for iOS](#building-for-ios)
 - [Building for Android](#building-for-android)
+- [Building for Web](#building-for-web)
 - [Building for double-precision](#building-for-double-precision)
 
 ## Building for Windows
@@ -228,6 +229,51 @@ cmake --install build/windows-android-x86 --config EditorDistribution --prefix /
 [hck]: hacking.md
 [ccl]: https://learn.microsoft.com/en-us/cpp/build/clang-support-msbuild
 [cmd]: https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line
+
+## Building for Web
+
+Prerequisites:
+
+- Emscripten 3.1.39. (No other version will work at this time. See [this issue](dlink) for more information.)
+- Git 2.25 or newer
+- CMake 3.22 or newer
+- Python 3.8 or newer
+- The tools to build Godot from source. (See the [Godot documentation][cfw] for details.)
+  - You can't use the official web export templates at the moment, as they are built with a newer, broken Emscripten.
+
+```sh
+# Generate the build directory
+cmake --preset web-wasm32
+
+# Build non-editor binaries and install them into the examples project
+cmake --build --preset web-distribution
+
+# Build editor binaries and install them into the examples project
+cmake --build --preset web-editor-distribution
+
+# Install non-editor binaries into your project, under `addons/godot-jolt`
+cmake --install build/web-wasm32 --config Distribution --prefix /path/to/project
+
+# Install editor binaries into your project, under `addons/godot-jolt`
+cmake --install build/web-wasm32 --config EditorDistribution --prefix /path/to/project
+```
+
+You will then need to rebuild the Godot export templates with dlink:
+
+```sh
+scons platform=web dlink_enabled=yes threads=no target=template_debug
+scons platform=web dlink_enabled=yes threads=no target=template_release
+```
+
+Finally, copy the zip files in bin/ to wherever export templates end up on your platform (example is for Linux) and rename.
+
+```sh
+cp bin/godot.web.template_debug.wasm32.dlink.zip ~/.local/share/godot/export_templates/GODOT_VERSION/web_dlink_debug.zip
+cp bin/godot.web.template_release.wasm32.dlink.zip ~/.local/share/godot/export_templates/GODOT_VERSION/web_dlink_release.zip
+```
+
+[dlink]: https://github.com/godotengine/godot/issues/82865
+[cfw]: https://docs.godotengine.org/en/latest/contributing/development/compiling/compiling_for_web.html
 
 ## Building for double-precision
 
