@@ -417,42 +417,42 @@
       "targets": ["install"]
     },
     {
-      "name": "web-debug",
+      "name": "web-wasm32-debug",
       "configurePreset": "web-wasm32",
       "configuration": "Debug",
       "displayName": "Debug",
       "targets": ["install"]
     },
     {
-      "name": "web-development",
+      "name": "web-wasm32-development",
       "configurePreset": "web-wasm32",
       "configuration": "Development",
       "displayName": "Development",
       "targets": ["install"]
     },
     {
-      "name": "web-distribution",
+      "name": "web-wasm32-distribution",
       "configurePreset": "web-wasm32",
       "configuration": "Distribution",
       "displayName": "Distribution",
       "targets": ["install"]
     },
     {
-      "name": "web-editor-debug",
+      "name": "web-wasm32-editor-debug",
       "configurePreset": "web-wasm32",
       "configuration": "EditorDebug",
       "displayName": "EditorDebug",
       "targets": ["install"]
     },
     {
-      "name": "web-editor-development",
+      "name": "web-wasm32-editor-development",
       "configurePreset": "web-wasm32",
       "configuration": "EditorDevelopment",
       "displayName": "EditorDevelopment",
       "targets": ["install"]
     },
     {
-      "name": "web-editor-distribution",
+      "name": "web-wasm32-editor-distribution",
       "configurePreset": "web-wasm32",
       "configuration": "EditorDistribution",
       "displayName": "EditorDistribution",
