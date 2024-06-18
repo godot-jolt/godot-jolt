@@ -246,10 +246,10 @@ Prerequisites:
 cmake --preset web-wasm32
 
 # Build non-editor binaries and install them into the examples project
-cmake --build --preset web-distribution
+cmake --build --preset web-wasm32-distribution
 
 # Build editor binaries and install them into the examples project
-cmake --build --preset web-editor-distribution
+cmake --build --preset web-wasm32-editor-distribution
 
 # Install non-editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/web-wasm32 --config Distribution --prefix /path/to/project
