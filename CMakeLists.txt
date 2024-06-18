@@ -41,12 +41,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
 	list(APPEND sources ${info_file})
 endif()
 
-if(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
-	# This is a hack to workaround the lack of support for shared libraries in the toolchain file shipped with Emscripten
-	# Once this PR (or similar) lands (https://github.com/emscripten-core/emscripten/pull/16281) we can remove this
-	set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
-endif()
-
 add_library(godot-jolt SHARED ${sources} ${headers})
 add_library(godot-jolt::godot-jolt ALIAS godot-jolt)
 
@@ -87,8 +81,14 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL iOS)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Android)
 	set(suffix_platform _android)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
+	# The toolchain file shipped with Emscripten doesn't support shared libraries yet, so we need to tell CMake how to build them.
+	# This instructs Emscripten to build a "side module," which is a shared library consumed by
+	# a "main module," which is Godot in this case. More info here: https://emscripten.org/docs/compiling/Dynamic-Linking.html
+	# Once this PR (or similar) lands (https://github.com/emscripten-core/emscripten/pull/16281) we can likely remove this.
 	set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS "-sSIDE_MODULE=1")
 	set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "-sSIDE_MODULE=1")
+	# The default shared library suffix is ".so", but at least Chromium completely refuses to load them,
+	# so we use .wasm instead. Godot also uses .wasm for side modules.
 	set(CMAKE_SHARED_LIBRARY_SUFFIX ".wasm")
 	set(suffix_platform _web)
 else()
@@ -333,24 +333,12 @@ elseif(APPLE)
 	)
 
 	set(debug_symbols ${dsym_dir})
-else() # ANDROID/UNIX
-	if(DEFINED CMAKE_OBJCOPY)
-		set(OBJCOPY_EXECUTABLE ${CMAKE_OBJCOPY})
-	else()
-		find_program(OBJCOPY_EXECUTABLE objcopy REQUIRED)
-		mark_as_advanced(OBJCOPY_EXECUTABLE)
-	endif()
-
+elseif(EMSCRIPTEN)
 	set(so_file $<TARGET_FILE:godot-jolt>)
-	if(EMSCRIPTEN)
-		set(debug_file ${so_file}.dwp)
-	else()
-		set(debug_file ${so_file}.debug)
-	endif()
+	set(debug_file ${so_file}.dwp)
 
-	set(cmd_copy_symbols ${OBJCOPY_EXECUTABLE} --only-keep-debug ${so_file} ${debug_file})
-	set(cmd_strip_symbols ${OBJCOPY_EXECUTABLE} --strip-debug --strip-unneeded ${so_file})
-	set(cmd_link_symbols ${OBJCOPY_EXECUTABLE} --add-gnu-debuglink=${debug_file} ${so_file})
+	set(cmd_copy_symbols ${CMAKE_OBJCOPY} --only-keep-debug ${so_file} ${debug_file})
+	set(cmd_strip_symbols ${CMAKE_OBJCOPY} --strip-debug --strip-unneeded ${so_file})
 
 	add_custom_command(
 		TARGET godot-jolt POST_BUILD
@@ -360,14 +348,30 @@ else() # ANDROID/UNIX
 		VERBATIM
 	)
 
-	if(NOT EMSCRIPTEN)
-		add_custom_command(
-			TARGET godot-jolt POST_BUILD
-			COMMAND "$<${is_distribution_config}:${cmd_link_symbols}>"
-			COMMAND_EXPAND_LISTS
-			VERBATIM
-		)
+	set(debug_symbols ${debug_file})
+else() # ANDROID/UNIX
+	if(DEFINED CMAKE_OBJCOPY)
+		set(OBJCOPY_EXECUTABLE ${CMAKE_OBJCOPY})
+	else()
+		find_program(OBJCOPY_EXECUTABLE objcopy REQUIRED)
+		mark_as_advanced(OBJCOPY_EXECUTABLE)
 	endif()
+
+	set(so_file $<TARGET_FILE:godot-jolt>)
+	set(debug_file ${so_file}.debug)
+
+	set(cmd_copy_symbols ${OBJCOPY_EXECUTABLE} --only-keep-debug ${so_file} ${debug_file})
+	set(cmd_strip_symbols ${OBJCOPY_EXECUTABLE} --strip-debug --strip-unneeded ${so_file})
+	set(cmd_link_symbols ${OBJCOPY_EXECUTABLE} --add-gnu-debuglink=${debug_file} ${so_file})
+
+	add_custom_command(
+		TARGET godot-jolt POST_BUILD
+		COMMAND "$<${is_distribution_config}:${cmd_copy_symbols}>"
+		COMMAND "$<${is_distribution_config}:${cmd_strip_symbols}>"
+		COMMAND "$<${is_distribution_config}:${cmd_link_symbols}>"
+		COMMAND_EXPAND_LISTS
+		VERBATIM
+	)
 
 	set(debug_symbols ${debug_file})
 endif()
