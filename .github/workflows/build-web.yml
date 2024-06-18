@@ -36,9 +36,9 @@ jobs:
       fail-fast: true
       matrix:
         platform: [web-wasm32]
-        double: [false] #, true]
-        editor: [false] #, true]
-        config: [debug] #, development, distribution]
+        double: [false, true]
+        editor: [false, true]
+        config: [debug, development, distribution]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
