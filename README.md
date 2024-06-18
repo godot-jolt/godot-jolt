@@ -76,6 +76,7 @@ Currently the **only** supported version is **Godot 4.3** (including 4.3.x).
 - macOS (x86-64 + Apple Silicon)
 - iOS
 - Android (ARM64, ARM32, x86-64, x86)
+- Web (wasm32)
 
 Note that Linux support is limited to glibc 2.31 or newer, which for Ubuntu means 20.04 (Focal
 Fossa) or newer.
