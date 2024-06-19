@@ -334,11 +334,13 @@ elseif(APPLE)
 
 	set(debug_symbols ${dsym_dir})
 elseif(EMSCRIPTEN)
+	find_program(LLVM_OBJCOPY_EXECUTABLE llvm-objcopy PATHS $ENV{EMSDK}/upstream/bin REQUIRED)
+
 	set(so_file $<TARGET_FILE:godot-jolt>)
 	set(debug_file ${so_file}.dwp)
 
-	set(cmd_copy_symbols ${CMAKE_OBJCOPY} --only-keep-debug ${so_file} ${debug_file})
-	set(cmd_strip_symbols ${CMAKE_OBJCOPY} --strip-debug --strip-unneeded ${so_file})
+	set(cmd_copy_symbols ${LLVM_OBJCOPY_EXECUTABLE} --only-keep-debug ${so_file} ${debug_file})
+	set(cmd_strip_symbols ${LLVM_OBJCOPY_EXECUTABLE} --strip-debug --strip-unneeded ${so_file})
 
 	add_custom_command(
 		TARGET godot-jolt POST_BUILD
