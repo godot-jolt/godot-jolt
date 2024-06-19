@@ -23,7 +23,25 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  EMSCRIPTEN_VERSION: 3.1.39
+  EMSCRIPTEN_CACHE_FOLDER: emsdk-cache
+
 jobs:
+  setup_emscripten:
+    name: Pre-warm cache for emscripten
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Set up cache for emsdk
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.EMSCRIPTEN_CACHE_FOLDER }}
+          key: ${{ runner.os }}-emsdk-${{ env.EMSCRIPTEN_VERSION }}
+      - name: Set up emsdk
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: ${{ env.EMSCRIPTEN_VERSION }}
+          actions-cache-folder: ${{ env.EMSCRIPTEN_CACHE_FOLDER }}
   build:
     runs-on: ubuntu-20.04
     name: "\
@@ -43,11 +61,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.EMSCRIPTEN_CACHE_FOLDER }}
+          key: ${{ runner.os }}-emsdk-${{ env.EMSCRIPTEN_VERSION }}
+
       - name: Setup emsdk
         uses: mymindstorm/setup-emsdk@v14
         with:
-          version: 3.1.39
-          actions-cache-folder: 'emsdk-cache'
+          version: ${{ env.EMSCRIPTEN_VERSION }}
+          actions-cache-folder: ${{ env.EMSCRIPTEN_CACHE_FOLDER }}
+      - name: Verify emsdk
+        run: emcc -v
 
       - name: Configure
         uses: ./.github/actions/cmake-configure
