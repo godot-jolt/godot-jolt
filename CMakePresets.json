@@ -260,7 +260,6 @@
       },
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$penv{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
-        "EMSCRIPTEN_USE_PTHREADS": "FALSE",
         "EMSCRIPTEN_SYSTEM_PROCESSOR": "",
         "EMSCRIPTEN_ROOT_PATH": "",
         "CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES": "",
