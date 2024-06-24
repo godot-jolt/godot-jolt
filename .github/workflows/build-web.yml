@@ -32,11 +32,6 @@ jobs:
     name: Pre-warm cache for emscripten
     runs-on: ubuntu-20.04
     steps:
-      - name: Set up cache for emsdk
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.EMSCRIPTEN_CACHE_FOLDER }}
-          key: ${{ runner.os }}-emsdk-${{ env.EMSCRIPTEN_VERSION }}
       - name: Set up emsdk
         uses: mymindstorm/setup-emsdk@v14
         with:
@@ -60,12 +55,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Restore cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.EMSCRIPTEN_CACHE_FOLDER }}
-          key: ${{ runner.os }}-emsdk-${{ env.EMSCRIPTEN_VERSION }}
 
       - name: Setup emsdk
         uses: mymindstorm/setup-emsdk@v14
