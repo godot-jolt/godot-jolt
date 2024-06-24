@@ -416,15 +416,9 @@ void JoltBodyImpl3D::set_axis_velocity(const Vector3& p_axis_velocity) {
 }
 
 Vector3 JoltBodyImpl3D::get_velocity_at_position(const Vector3& p_position) const {
-	ERR_FAIL_NULL_D_MSG(
-		space,
-		vformat(
-			"Failed to retrieve point velocity for '%s'. "
-			"Doing so without a physics space is not supported by Godot Jolt. "
-			"If this relates to a node, try adding the node to a scene tree first.",
-			to_string()
-		)
-	);
+	if (space == nullptr) {
+		return {};
+	}
 
 	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
