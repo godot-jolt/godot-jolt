@@ -90,7 +90,11 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
 	# The default shared library suffix is ".so", but at least Chromium completely refuses to load them,
 	# so we use .wasm instead. Godot also uses .wasm for side modules.
 	set(CMAKE_SHARED_LIBRARY_SUFFIX ".wasm")
-	set(suffix_platform _web)
+	if (EMSCRIPTEN_USE_PTHREADS)
+		set(suffix_platform _web_threads)
+	else()
+		set(suffix_platform _web)
+	endif()
 else()
 	message(FATAL_ERROR "Unhandled system name: '${CMAKE_SYSTEM_NAME}'.")
 endif()
@@ -136,7 +140,7 @@ set(is_llvm_clang $<CXX_COMPILER_ID:Clang>)
 set(is_apple_clang $<CXX_COMPILER_ID:AppleClang>)
 set(is_gcc $<CXX_COMPILER_ID:GNU>)
 set(is_clang_cl $<AND:${is_msvc_like},${is_llvm_clang}>)
-set(use_pthread $<NOT:${is_wasm}>)
+set(use_pthread $<OR:$<NOT:${is_wasm}>,$<BOOL:${EMSCRIPTEN_USE_PTHREADS}>>)
 
 set_target_properties(godot-jolt PROPERTIES
 	OUTPUT_NAME ${prefix}godot-jolt${suffix}
