@@ -64,9 +64,3 @@ is_targeting(AVX512|AVX2 GDJ_USE_F16C)
 is_targeting(AVX512|AVX2|AVX GDJ_USE_AVX)
 is_targeting(AVX512|AVX2|AVX GDJ_USE_SSE4_2)
 is_targeting(AVX512|AVX2|AVX|SSE2 GDJ_USE_SSE2)
-
-if(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
-	# This is a hack to workaround the lack of support for shared libraries in the toolchain file shipped with Emscripten
-	# Once this PR (or similar) lands (https://github.com/emscripten-core/emscripten/pull/16281) we can remove this
-	set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
-endif()

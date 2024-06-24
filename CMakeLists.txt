@@ -81,15 +81,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL iOS)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Android)
 	set(suffix_platform _android)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
-	# The toolchain file shipped with Emscripten doesn't support shared libraries yet, so we need to tell CMake how to build them.
-	# This instructs Emscripten to build a "side module," which is a shared library consumed by
-	# a "main module," which is Godot in this case. More info here: https://emscripten.org/docs/compiling/Dynamic-Linking.html
-	# Once this PR (or similar) lands (https://github.com/emscripten-core/emscripten/pull/16281) we can likely remove this.
-	set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS "-sSIDE_MODULE=1")
-	set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "-sSIDE_MODULE=1")
-	# The default shared library suffix is ".so", but at least Chromium completely refuses to load them,
-	# so we use .wasm instead. Godot also uses .wasm for side modules.
-	set(CMAKE_SHARED_LIBRARY_SUFFIX ".wasm")
 	set(suffix_platform _web)
 else()
 	message(FATAL_ERROR "Unhandled system name: '${CMAKE_SYSTEM_NAME}'.")
