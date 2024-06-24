@@ -70,3 +70,5 @@ if(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
 	# Once this PR (or similar) lands (https://github.com/emscripten-core/emscripten/pull/16281) we can remove this
 	set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
 endif()
+
+set(EMSCRIPTEN_USE_PTHREADS FALSE)
