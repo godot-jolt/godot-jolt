@@ -254,11 +254,16 @@
       "inherits": ["linux-base"],
       "hidden": true,
       "environment": {
+        "CFLAGS": "$penv{CFLAGS}",
         "CXXFLAGS": "$penv{CXXFLAGS} -msimd128 -msse4.2",
         "LDFLAGS": "$penv{LDFLAGS} -msimd128 -msse4.2 -Wno-limited-postlink-optimizations -sALLOW_MEMORY_GROWTH=1 -sALLOW_TABLE_GROWTH=1"
       },
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$penv{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+        "CMAKE_TOOLCHAIN_FILE": "$penv{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+        "EMSCRIPTEN_SYSTEM_PROCESSOR": "",
+        "EMSCRIPTEN_ROOT_PATH": "",
+        "CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES": "",
+        "CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES": ""
       }
     },
     {
