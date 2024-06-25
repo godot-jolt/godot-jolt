@@ -25,18 +25,8 @@ concurrency:
 
 env:
   EMSCRIPTEN_VERSION: 3.1.39
-  EMSCRIPTEN_CACHE_FOLDER: emsdk-cache
 
 jobs:
-  setup_emscripten:
-    name: Pre-warm cache for emscripten
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Set up emsdk
-        uses: mymindstorm/setup-emsdk@v14
-        with:
-          version: ${{ env.EMSCRIPTEN_VERSION }}
-          actions-cache-folder: ${{ env.EMSCRIPTEN_CACHE_FOLDER }}
   build:
     runs-on: ubuntu-20.04
     name: "\
@@ -60,13 +50,13 @@ jobs:
         uses: mymindstorm/setup-emsdk@v14
         with:
           version: ${{ env.EMSCRIPTEN_VERSION }}
-          actions-cache-folder: ${{ env.EMSCRIPTEN_CACHE_FOLDER }}
       - name: Verify emsdk
         run: emcc -v
 
       - name: Configure
         uses: ./.github/actions/cmake-configure
         with:
+          strict: true
           platform: ${{ matrix.platform }}
           double: ${{ matrix.double }}
         env:
