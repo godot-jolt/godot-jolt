@@ -69,6 +69,8 @@ Breaking changes are denoted with ⚠️.
   correct parameter names.
 - Fixed issue where sleep timer would not reset when applying force/torque to a `RigidBody3D`.
 - Fixed issue where `Area3D` would fail to report overlap with certain `ConcavePolygonShape3D`.
+- Fixed crash when re-enabling the node processing of a disabled body that's connected to a two-body
+  joint.
 
 ## [0.12.0] - 2024-01-07
 
