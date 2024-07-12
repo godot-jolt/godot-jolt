@@ -255,8 +255,8 @@
       "hidden": true,
       "environment": {
         "CFLAGS": "$penv{CFLAGS}",
-        "CXXFLAGS": "$penv{CXXFLAGS} -msimd128 -msse4.2",
-        "LDFLAGS": "$penv{LDFLAGS} -msimd128 -msse4.2 -Wno-limited-postlink-optimizations -sALLOW_MEMORY_GROWTH=1 -sALLOW_TABLE_GROWTH=1"
+        "CXXFLAGS": "$penv{CXXFLAGS} -msimd128 -msse4.2 -Wno-c++20-extensions",
+        "LDFLAGS": "$penv{LDFLAGS} -msimd128 -msse4.2 -Wno-limited-postlink-optimizations -sALLOW_MEMORY_GROWTH=1"
       },
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$penv{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
@@ -268,8 +268,8 @@
       "hidden": true,
       "environment": {
         "CFLAGS": "$penv{CFLAGS} -sUSE_PTHREADS=1",
-        "CXXFLAGS": "$penv{CXXFLAGS} -msimd128 -msse4.2 -sUSE_PTHREADS=1",
-        "LDFLAGS": "$penv{LDFLAGS} -msimd128 -msse4.2 -Wno-limited-postlink-optimizations --sINITIAL_MEMORY=67108864 -sUSE_PTHREADS=1 -Wno-experimental"
+        "CXXFLAGS": "$penv{CXXFLAGS} -msimd128 -msse4.2 -Wno-c++20-extensions -sUSE_PTHREADS=1",
+        "LDFLAGS": "$penv{LDFLAGS} -msimd128 -msse4.2 -Wno-limited-postlink-optimizations -sINITIAL_MEMORY=67108864 -sUSE_PTHREADS=1 -Wno-experimental"
       },
       "cacheVariables": {
         "EMSCRIPTEN_USE_PTHREADS": "TRUE"
