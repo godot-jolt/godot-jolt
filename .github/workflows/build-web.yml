@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  EMSCRIPTEN_VERSION: 3.1.39
+  EMSCRIPTEN_VERSION: 3.1.62
 
 jobs:
   build:

@@ -234,12 +234,10 @@ cmake --install build/windows-android-x86 --config EditorDistribution --prefix /
 
 Prerequisites:
 
-- Emscripten 3.1.39. (No other version will work at this time. See [this issue](dlink) for more information.)
+- Emscripten 3.1.62.
 - Git 2.25 or newer
 - CMake 3.22 or newer
 - Python 3.8 or newer
-- The tools to build Godot from source. (See the [Godot documentation][cfw] for details.)
-  - You can't use the official web export templates at the moment, as they are built with a newer, broken Emscripten.
 
 ```sh
 # Generate the build directory
@@ -257,23 +255,6 @@ cmake --install build/web-wasm32 --config Distribution --prefix /path/to/project
 # Install editor binaries into your project, under `addons/godot-jolt`
 cmake --install build/web-wasm32 --config EditorDistribution --prefix /path/to/project
 ```
-
-You will then need to rebuild the Godot export templates with dlink:
-
-```sh
-scons platform=web dlink_enabled=yes threads=no target=template_debug
-scons platform=web dlink_enabled=yes threads=no target=template_release
-```
-
-Finally, copy the zip files in bin/ to wherever export templates end up on your platform (example is for Linux) and rename.
-
-```sh
-cp bin/godot.web.template_debug.wasm32.dlink.zip ~/.local/share/godot/export_templates/GODOT_VERSION/web_dlink_debug.zip
-cp bin/godot.web.template_release.wasm32.dlink.zip ~/.local/share/godot/export_templates/GODOT_VERSION/web_dlink_release.zip
-```
-
-[dlink]: https://github.com/godotengine/godot/issues/82865
-[cfw]: https://docs.godotengine.org/en/latest/contributing/development/compiling/compiling_for_web.html
 
 ## Building for double-precision
 
