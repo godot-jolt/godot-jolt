@@ -15,7 +15,6 @@ set(use_fma3 $<BOOL:${GDJ_USE_FMA3}>)
 set(use_f16c $<BOOL:${GDJ_USE_F16C}>)
 set(use_avx $<BOOL:${GDJ_USE_AVX}>)
 set(use_sse4_2 $<BOOL:${GDJ_USE_SSE4_2}>)
-set(use_sse4_2 $<BOOL:${GDJ_USE_SSE4_2}>)
 
 set(is_double_precision $<BOOL:${GDJ_DOUBLE_PRECISION}>)
 
