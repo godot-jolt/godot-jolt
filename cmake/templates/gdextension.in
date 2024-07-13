@@ -36,8 +36,8 @@ android.debug.${GDJ_PRECISION}.x86_64 = "android/libgodot-jolt_android-x64_edito
 android.release.${GDJ_PRECISION}.x86_32 = "android/libgodot-jolt_android-x86.so"
 android.debug.${GDJ_PRECISION}.x86_32 = "android/libgodot-jolt_android-x86_editor.so"
 
-web.release.threads.${GDJ_PRECISION} = "web/godot-jolt_web_threads-wasm.wasm"
-web.debug.threads.${GDJ_PRECISION} = "web/godot-jolt_web_threads-wasm_editor.wasm"
+web.release.threads.${GDJ_PRECISION} = "web/godot-jolt_web_threads-wasm32.wasm"
+web.debug.threads.${GDJ_PRECISION} = "web/godot-jolt_web_threads-wasm32_editor.wasm"
 
-web.release.${GDJ_PRECISION} = "web/godot-jolt_web-wasm.wasm"
-web.debug.${GDJ_PRECISION} = "web/godot-jolt_web-wasm_editor.wasm"
+web.release.nothreads.${GDJ_PRECISION} = "web/godot-jolt_web_nothreads-wasm32.wasm"
+web.debug.nothreads.${GDJ_PRECISION} = "web/godot-jolt_web_nothreads-wasm32_editor.wasm"

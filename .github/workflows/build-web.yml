@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        platform: [web-wasm32, web-wasm32-threads]
+        platform: [linux-web-wasm32]
         double: [false, true]
         editor: [false, true]
         config: [debug, development, distribution]
