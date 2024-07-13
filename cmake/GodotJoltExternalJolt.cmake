@@ -15,7 +15,6 @@ set(use_fma3 $<BOOL:${GDJ_USE_FMA3}>)
 set(use_f16c $<BOOL:${GDJ_USE_F16C}>)
 set(use_avx $<BOOL:${GDJ_USE_AVX}>)
 set(use_sse4_2 $<BOOL:${GDJ_USE_SSE4_2}>)
-set(use_sse4_2 $<BOOL:${GDJ_USE_SSE4_2}>)
 
 set(is_double_precision $<BOOL:${GDJ_DOUBLE_PRECISION}>)
 
@@ -34,8 +33,8 @@ else()
 endif()
 
 gdj_add_external_library(jolt "${configurations}"
-	GIT_REPOSITORY https://github.com/godot-jolt/jolt.git
-	GIT_COMMIT fda5b4aa5a9f6651efc8bc1fda5be9e927a14e92
+	GIT_REPOSITORY https://github.com/jrouwe/JoltPhysics.git
+	GIT_COMMIT 256a61aeeab86ec248f597c31edb2d0ecb2080d4
 	LANGUAGE CXX
 	SOURCE_SUBDIR Build
 	OUTPUT_NAME Jolt
