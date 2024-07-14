@@ -1451,6 +1451,14 @@ void JoltBodyImpl3D::_destroy_joint_constraints() {
 	}
 }
 
+void JoltBodyImpl3D::_exit_all_areas() {
+	for (JoltAreaImpl3D* area : areas) {
+		area->body_exited(jolt_id, false);
+	}
+
+	areas.clear();
+}
+
 void JoltBodyImpl3D::_update_group_filter() {
 	JPH::GroupFilter* group_filter = !exceptions.is_empty() ? JoltGroupFilter::instance : nullptr;
 
@@ -1484,6 +1492,7 @@ void JoltBodyImpl3D::_space_changing() {
 	JoltShapedObjectImpl3D::_space_changing();
 
 	_destroy_joint_constraints();
+	_exit_all_areas();
 }
 
 void JoltBodyImpl3D::_space_changed() {

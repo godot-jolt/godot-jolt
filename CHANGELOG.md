@@ -71,6 +71,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where `Area3D` would fail to report overlap with certain `ConcavePolygonShape3D`.
 - Fixed crash when re-enabling the node processing of a disabled body that's connected to a two-body
   joint.
+- Fixed issue where re-adding previously used physics bodies to the scene tree could result in many
+  "Unhandled override mode" errors in the Output log.
 
 ## [0.12.0] - 2024-01-07
 
