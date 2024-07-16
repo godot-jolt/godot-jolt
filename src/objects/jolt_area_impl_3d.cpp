@@ -394,6 +394,7 @@ void JoltAreaImpl3D::body_exited(const JPH::BodyID& p_body_id, bool p_notify) {
 void JoltAreaImpl3D::area_exited(const JPH::BodyID& p_body_id) {
 	Overlap* overlap = areas_by_id.getptr(p_body_id);
 	QUIET_FAIL_NULL(overlap);
+	QUIET_FAIL_COND(overlap->shape_pairs.is_empty());
 
 	for (const auto& [id_pair, index_pair] : overlap->shape_pairs) {
 		overlap->pending_removed.push_back(index_pair);
