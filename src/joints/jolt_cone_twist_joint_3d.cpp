@@ -239,7 +239,7 @@ void JoltConeTwistJoint3D::_update_param(Param p_param) {
 			value = &twist_limit_span;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled parameter: '%d'", p_param));
+			ERR_FAIL_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
 		} break;
 	}
 
@@ -271,7 +271,7 @@ void JoltConeTwistJoint3D::_update_jolt_param(Param p_param) {
 			value = &twist_motor_max_torque;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled parameter: '%d'", p_param));
+			ERR_FAIL_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
 		} break;
 	}
 
@@ -300,7 +300,7 @@ void JoltConeTwistJoint3D::_update_jolt_flag(Flag p_flag) {
 			value = &twist_motor_enabled;
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled flag: '%d'", p_flag));
+			ERR_FAIL_REPORT(vformat("Unhandled flag: '%d'.", p_flag));
 		} break;
 	}
 
@@ -321,7 +321,7 @@ void JoltConeTwistJoint3D::_param_changed(Param p_param) {
 			_update_jolt_param(p_param);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled parameter: '%d'", p_param));
+			ERR_FAIL_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
 		} break;
 	}
 }
@@ -335,7 +335,7 @@ void JoltConeTwistJoint3D::_flag_changed(Flag p_flag) {
 			_update_jolt_flag(p_flag);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled flag: '%d'", p_flag));
+			ERR_FAIL_REPORT(vformat("Unhandled flag: '%d'.", p_flag));
 		} break;
 	}
 }

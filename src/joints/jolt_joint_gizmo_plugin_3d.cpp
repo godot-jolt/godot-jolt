@@ -331,12 +331,10 @@ void JoltJointGizmoPlugin3D::_create_redraw_timer(const Ref<EditorNode3DGizmo>& 
 
 	Node* editor_node = ancestor;
 
-	ERR_FAIL_NULL_MSG(
+	ERR_FAIL_NULL_REPORT(
 		editor_node,
 		"JoltJointGizmoPlugin3D was unable to find EditorNode. "
-		"Gizmos for Jolt joints won't be visible in any editor viewport. "
-		"This should not happen under normal circumstances. "
-		"Consider reporting this issue."
+		"Gizmos for Jolt joints won't be visible in any editor viewport."
 	);
 
 	Timer* timer = memnew(Timer);

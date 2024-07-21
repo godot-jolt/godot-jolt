@@ -110,13 +110,11 @@ JPH::ObjectLayer JoltLayerMapper::to_object_layer(
 	} else {
 		constexpr uint16_t object_layer_count = 1U << 13U;
 
-		ERR_FAIL_COND_D_MSG(
+		ERR_FAIL_COND_D_REPORT(
 			next_object_layer == object_layer_count,
 			vformat(
 				"Maximum number of object layers (%d) reached. "
-				"This means there are %d combinations of collision layers and masks. "
-				"This should not happen under normal circumstances. "
-				"Consider reporting this issue.",
+				"This means there are %d combinations of collision layers and masks.",
 				object_layer_count,
 				object_layer_count
 			)
