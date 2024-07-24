@@ -41,8 +41,6 @@ public:
 
 	void set_solver_position_iterations(int32_t p_iterations);
 
-	void body_exiting_tree();
-
 	PackedStringArray _get_configuration_warnings() const override;
 
 protected:
