@@ -307,6 +307,20 @@ JPH::ShapeRefC JoltShapeImpl3D::without_custom_shapes(const JPH::Shape* p_shape)
 	}
 }
 
+Vector3 JoltShapeImpl3D::make_scale_valid(const JPH::Shape* p_shape, const Vector3& p_scale) {
+	return to_godot(p_shape->MakeScaleValid(to_jolt(p_scale)));
+}
+
+bool JoltShapeImpl3D::is_scale_valid(
+	const Vector3& p_scale,
+	const Vector3& p_valid_scale,
+	real_t p_tolerance
+) {
+	return Math::is_equal_approx(p_scale.x, p_valid_scale.x, p_tolerance) &&
+		Math::is_equal_approx(p_scale.y, p_valid_scale.y, p_tolerance) &&
+		Math::is_equal_approx(p_scale.z, p_valid_scale.z, p_tolerance);
+}
+
 String JoltShapeImpl3D::_owners_to_string() const {
 	const int32_t owner_count = ref_counts_by_owner.size();
 
