@@ -11,6 +11,7 @@ This document contains instructions for how to build Godot Jolt from source.
 - [Building for macOS](#building-for-macos)
 - [Building for iOS](#building-for-ios)
 - [Building for Android](#building-for-android)
+- [Building for Web](#building-for-web)
 - [Building for double-precision](#building-for-double-precision)
 
 ## Building for Windows
@@ -228,6 +229,32 @@ cmake --install build/windows-android-x86 --config EditorDistribution --prefix /
 [hck]: hacking.md
 [ccl]: https://learn.microsoft.com/en-us/cpp/build/clang-support-msbuild
 [cmd]: https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line
+
+## Building for Web
+
+Prerequisites:
+
+- Emscripten 3.1.62.
+- Git 2.25 or newer
+- CMake 3.22 or newer
+- Python 3.8 or newer
+
+```sh
+# Generate the build directory
+cmake --preset web-wasm32
+
+# Build non-editor binaries and install them into the examples project
+cmake --build --preset web-wasm32-distribution
+
+# Build editor binaries and install them into the examples project
+cmake --build --preset web-wasm32-editor-distribution
+
+# Install non-editor binaries into your project, under `addons/godot-jolt`
+cmake --install build/web-wasm32 --config Distribution --prefix /path/to/project
+
+# Install editor binaries into your project, under `addons/godot-jolt`
+cmake --install build/web-wasm32 --config EditorDistribution --prefix /path/to/project
+```
 
 ## Building for double-precision
 

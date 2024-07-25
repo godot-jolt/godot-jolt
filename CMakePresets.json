@@ -158,6 +158,13 @@
       }
     },
     {
+      "name": "wasm32-base",
+      "hidden": true,
+      "cacheVariables": {
+        "GDJ_TARGET_ARCHITECTURES": "wasm32"
+      }
+    },
+    {
       "name": "msvc-x64-base",
       "inherits": ["x64-base"],
       "hidden": true,
@@ -247,6 +254,19 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/android/x86.cmake"
+      }
+    },
+    {
+      "name": "web-wasm32-base",
+      "inherits": ["wasm32-base"],
+      "hidden": true,
+      "environment": {
+        "CFLAGS": "$penv{CFLAGS}",
+        "CXXFLAGS": "$penv{CXXFLAGS} -msimd128 -msse4.2 -Wno-c++20-extensions",
+        "LDFLAGS": "$penv{LDFLAGS} -msimd128 -msse4.2 -Wno-limited-postlink-optimizations -Wno-experimental"
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$penv{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
       }
     },
     {
@@ -363,6 +383,21 @@
       "name": "macos-android-x86",
       "displayName": "Android, x86",
       "inherits": ["macos-base", "android-base", "android-x86-base"]
+    },
+    {
+      "name": "linux-web-wasm32",
+      "inherits": ["linux-base", "web-wasm32-base"],
+      "displayName": "Web, wasm32"
+    },
+    {
+      "name": "macos-web-wasm32",
+      "inherits": ["macos-base", "web-wasm32-base"],
+      "displayName": "Web, wasm32"
+    },
+    {
+      "name": "windows-web-wasm32",
+      "inherits": ["windows-base", "web-wasm32-base"],
+      "displayName": "Web, wasm32"
     }
   ],
   "buildPresets": [
@@ -396,6 +431,132 @@
     {
       "name": "install-base",
       "hidden": true,
+      "targets": ["install"]
+    },
+    {
+      "name": "linux-web-wasm32-debug",
+      "configurePreset": "linux-web-wasm32",
+      "configuration": "Debug",
+      "displayName": "Debug",
+      "targets": ["install"]
+    },
+    {
+      "name": "linux-web-wasm32-development",
+      "configurePreset": "linux-web-wasm32",
+      "configuration": "Development",
+      "displayName": "Development",
+      "targets": ["install"]
+    },
+    {
+      "name": "linux-web-wasm32-distribution",
+      "configurePreset": "linux-web-wasm32",
+      "configuration": "Distribution",
+      "displayName": "Distribution",
+      "targets": ["install"]
+    },
+    {
+      "name": "linux-web-wasm32-editor-debug",
+      "configurePreset": "linux-web-wasm32",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug",
+      "targets": ["install"]
+    },
+    {
+      "name": "linux-web-wasm32-editor-development",
+      "configurePreset": "linux-web-wasm32",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment",
+      "targets": ["install"]
+    },
+    {
+      "name": "linux-web-wasm32-editor-distribution",
+      "configurePreset": "linux-web-wasm32",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution",
+      "targets": ["install"]
+    },
+    {
+      "name": "macos-web-wasm32-debug",
+      "configurePreset": "macos-web-wasm32",
+      "configuration": "Debug",
+      "displayName": "Debug",
+      "targets": ["install"]
+    },
+    {
+      "name": "macos-web-wasm32-development",
+      "configurePreset": "macos-web-wasm32",
+      "configuration": "Development",
+      "displayName": "Development",
+      "targets": ["install"]
+    },
+    {
+      "name": "macos-web-wasm32-distribution",
+      "configurePreset": "macos-web-wasm32",
+      "configuration": "Distribution",
+      "displayName": "Distribution",
+      "targets": ["install"]
+    },
+    {
+      "name": "macos-web-wasm32-editor-debug",
+      "configurePreset": "macos-web-wasm32",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug",
+      "targets": ["install"]
+    },
+    {
+      "name": "macos-web-wasm32-editor-development",
+      "configurePreset": "macos-web-wasm32",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment",
+      "targets": ["install"]
+    },
+    {
+      "name": "macos-web-wasm32-editor-distribution",
+      "configurePreset": "macos-web-wasm32",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution",
+      "targets": ["install"]
+    },
+    {
+      "name": "windows-web-wasm32-debug",
+      "configurePreset": "windows-web-wasm32",
+      "configuration": "Debug",
+      "displayName": "Debug",
+      "targets": ["install"]
+    },
+    {
+      "name": "windows-web-wasm32-development",
+      "configurePreset": "windows-web-wasm32",
+      "configuration": "Development",
+      "displayName": "Development",
+      "targets": ["install"]
+    },
+    {
+      "name": "windows-web-wasm32-distribution",
+      "configurePreset": "windows-web-wasm32",
+      "configuration": "Distribution",
+      "displayName": "Distribution",
+      "targets": ["install"]
+    },
+    {
+      "name": "windows-web-wasm32-editor-debug",
+      "configurePreset": "windows-web-wasm32",
+      "configuration": "EditorDebug",
+      "displayName": "EditorDebug",
+      "targets": ["install"]
+    },
+    {
+      "name": "windows-web-wasm32-editor-development",
+      "configurePreset": "windows-web-wasm32",
+      "configuration": "EditorDevelopment",
+      "displayName": "EditorDevelopment",
+      "targets": ["install"]
+    },
+    {
+      "name": "windows-web-wasm32-editor-distribution",
+      "configurePreset": "windows-web-wasm32",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution",
       "targets": ["install"]
     },
     {
