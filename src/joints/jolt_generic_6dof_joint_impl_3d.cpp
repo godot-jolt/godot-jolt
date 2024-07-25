@@ -100,7 +100,7 @@ double JoltGeneric6DOFJointImpl3D::get_param(Axis p_axis, Param p_param) const {
 			return spring_equilibrium[axis_ang];
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled parameter: '%d'", p_param));
+			ERR_FAIL_D_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
 		}
 	}
 }
@@ -247,7 +247,7 @@ void JoltGeneric6DOFJointImpl3D::set_param(Axis p_axis, Param p_param, double p_
 			_spring_equilibrium_changed(axis_ang);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled parameter: '%d'", p_param));
+			ERR_FAIL_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
 		} break;
 	}
 }
@@ -276,7 +276,7 @@ bool JoltGeneric6DOFJointImpl3D::get_flag(Axis p_axis, Flag p_flag) const {
 			return motor_enabled[axis_lin];
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled flag: '%d'", p_flag));
+			ERR_FAIL_D_REPORT(vformat("Unhandled flag: '%d'.", p_flag));
 		}
 	}
 }
@@ -311,7 +311,7 @@ void JoltGeneric6DOFJointImpl3D::set_flag(Axis p_axis, Flag p_flag, bool p_enabl
 			_motor_state_changed(axis_lin);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled flag: '%d'", p_flag));
+			ERR_FAIL_REPORT(vformat("Unhandled flag: '%d'.", p_flag));
 		} break;
 	}
 }
@@ -334,7 +334,7 @@ double JoltGeneric6DOFJointImpl3D::get_jolt_param(Axis p_axis, JoltParam p_param
 			return spring_frequency[axis_ang];
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled parameter: '%d'", p_param));
+			ERR_FAIL_D_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
 		}
 	}
 }
@@ -361,7 +361,7 @@ void JoltGeneric6DOFJointImpl3D::set_jolt_param(Axis p_axis, JoltParam p_param, 
 			_spring_parameters_changed(axis_ang);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled parameter: '%d'", p_param));
+			ERR_FAIL_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
 		} break;
 	}
 }
@@ -381,7 +381,7 @@ bool JoltGeneric6DOFJointImpl3D::get_jolt_flag(Axis p_axis, JoltFlag p_flag) con
 			return spring_use_frequency[axis_ang];
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled flag: '%d'", p_flag));
+			ERR_FAIL_D_REPORT(vformat("Unhandled flag: '%d'.", p_flag));
 		}
 	}
 }
@@ -404,7 +404,7 @@ void JoltGeneric6DOFJointImpl3D::set_jolt_flag(Axis p_axis, JoltFlag p_flag, boo
 			_spring_parameters_changed(axis_ang);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled flag: '%d'", p_flag));
+			ERR_FAIL_REPORT(vformat("Unhandled flag: '%d'.", p_flag));
 		} break;
 	}
 }

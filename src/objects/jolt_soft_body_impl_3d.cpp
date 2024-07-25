@@ -165,7 +165,7 @@ Variant JoltSoftBodyImpl3D::get_state(PhysicsServer3D::BodyState p_state) const 
 			ERR_FAIL_D_NOT_IMPL();
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled body state: '%d'", p_state));
+			ERR_FAIL_D_REPORT(vformat("Unhandled body state: '%d'.", p_state));
 		}
 	}
 }
@@ -188,7 +188,7 @@ void JoltSoftBodyImpl3D::set_state(PhysicsServer3D::BodyState p_state, const Var
 			ERR_FAIL_NOT_IMPL();
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body state: '%d'", p_state));
+			ERR_FAIL_REPORT(vformat("Unhandled body state: '%d'.", p_state));
 		} break;
 	}
 }

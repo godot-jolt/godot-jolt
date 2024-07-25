@@ -97,7 +97,7 @@ Variant JoltAreaImpl3D::get_param(PhysicsServer3D::AreaParameter p_param) const 
 			return DEFAULT_WIND_ATTENUATION_FACTOR;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled area parameter: '%d'", p_param));
+			ERR_FAIL_D_REPORT(vformat("Unhandled area parameter: '%d'.", p_param));
 		}
 	}
 }
@@ -175,7 +175,7 @@ void JoltAreaImpl3D::set_param(PhysicsServer3D::AreaParameter p_param, const Var
 			}
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled area parameter: '%d'", p_param));
+			ERR_FAIL_REPORT(vformat("Unhandled area parameter: '%d'.", p_param));
 		} break;
 	}
 }

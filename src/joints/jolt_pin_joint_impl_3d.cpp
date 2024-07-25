@@ -50,7 +50,7 @@ double JoltPinJointImpl3D::get_param(PhysicsServer3D::PinJointParam p_param) con
 			return DEFAULT_IMPULSE_CLAMP;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled pin joint parameter: '%d'", p_param));
+			ERR_FAIL_D_REPORT(vformat("Unhandled pin joint parameter: '%d'.", p_param));
 		}
 	}
 }
@@ -88,7 +88,7 @@ void JoltPinJointImpl3D::set_param(PhysicsServer3D::PinJointParam p_param, doubl
 			}
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled pin joint parameter: '%d'", p_param));
+			ERR_FAIL_REPORT(vformat("Unhandled pin joint parameter: '%d'.", p_param));
 		} break;
 	}
 }

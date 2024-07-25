@@ -34,7 +34,7 @@ bool integrate(TValue& p_value, PhysicsServer3D::AreaSpaceOverrideMode p_mode, T
 			return false;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled override mode: '%d'", p_mode));
+			ERR_FAIL_D_REPORT(vformat("Unhandled override mode: '%d'.", p_mode));
 		}
 	}
 }
@@ -106,7 +106,7 @@ Variant JoltBodyImpl3D::get_state(PhysicsServer3D::BodyState p_state) const {
 			return can_sleep();
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled body state: '%d'", p_state));
+			ERR_FAIL_D_REPORT(vformat("Unhandled body state: '%d'.", p_state));
 		}
 	}
 }
@@ -129,7 +129,7 @@ void JoltBodyImpl3D::set_state(PhysicsServer3D::BodyState p_state, const Variant
 			set_can_sleep(p_value);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body state: '%d'", p_state));
+			ERR_FAIL_REPORT(vformat("Unhandled body state: '%d'.", p_state));
 		} break;
 	}
 }
@@ -167,7 +167,7 @@ Variant JoltBodyImpl3D::get_param(PhysicsServer3D::BodyParameter p_param) const 
 			return get_angular_damp();
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled body parameter: '%d'", p_param));
+			ERR_FAIL_D_REPORT(vformat("Unhandled body parameter: '%d'.", p_param));
 		}
 	}
 }
@@ -205,7 +205,7 @@ void JoltBodyImpl3D::set_param(PhysicsServer3D::BodyParameter p_param, const Var
 			set_angular_damp(p_value);
 		} break;
 		default: {
-			ERR_FAIL_MSG(vformat("Unhandled body parameter: '%d'", p_param));
+			ERR_FAIL_REPORT(vformat("Unhandled body parameter: '%d'.", p_param));
 		} break;
 	}
 }
@@ -1096,7 +1096,7 @@ JPH::BroadPhaseLayer JoltBodyImpl3D::_get_broad_phase_layer() const {
 			return JoltBroadPhaseLayer::BODY_DYNAMIC;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled body mode: '%d'", mode));
+			ERR_FAIL_D_REPORT(vformat("Unhandled body mode: '%d'.", mode));
 		}
 	}
 }
@@ -1120,7 +1120,7 @@ JPH::EMotionType JoltBodyImpl3D::_get_motion_type() const {
 			return JPH::EMotionType::Dynamic;
 		}
 		default: {
-			ERR_FAIL_D_MSG(vformat("Unhandled body mode: '%d'", mode));
+			ERR_FAIL_D_REPORT(vformat("Unhandled body mode: '%d'.", mode));
 		}
 	}
 }
