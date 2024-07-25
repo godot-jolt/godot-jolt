@@ -14,8 +14,8 @@ void* jolt_alloc(size_t p_size) {
 	return mi_malloc(p_size);
 }
 
-void* jolt_realloc(void* p_mem, size_t p_size) {
-	return mi_realloc(p_mem, p_size);
+void* jolt_realloc(void* p_mem, [[maybe_unused]] size_t p_old_size, size_t p_new_size) {
+	return mi_realloc(p_mem, p_new_size);
 }
 
 void jolt_free(void* p_mem) {
