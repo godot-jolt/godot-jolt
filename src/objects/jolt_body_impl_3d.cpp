@@ -49,19 +49,10 @@ JoltBodyImpl3D::~JoltBodyImpl3D() {
 }
 
 void JoltBodyImpl3D::set_transform(Transform3D p_transform) {
-#ifdef GDJ_CONFIG_EDITOR
-	if (unlikely(p_transform.basis.determinant() == 0.0f)) {
-		ERR_PRINT(vformat(
-			"Failed to set transform for body '%s'. "
-			"Its basis was found to be singular, which is not supported by Godot Jolt. "
-			"This is likely caused by one or more axes having a scale of zero. "
-			"Its basis (and thus its scale) will be treated as identity.",
-			to_string()
-		));
-
-		p_transform.basis = Basis();
-	}
-#endif // GDJ_CONFIG_EDITOR
+	ENSURE_SCALE_NOT_ZERO(
+		p_transform,
+		vformat("An invalid transform was passed to physics body '%s'.", to_string())
+	);
 
 	Vector3 new_scale;
 	Math::decompose(p_transform, new_scale);
