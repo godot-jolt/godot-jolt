@@ -73,6 +73,8 @@ Breaking changes are denoted with ⚠️.
   joint.
 - Fixed issue where re-adding previously used physics bodies to the scene tree could result in many
   "Unhandled override mode" errors in the Output log.
+- Fixed memory leak when changing the data/properties of `CapsuleShape3D`, `CylinderShape3D`,
+  `SeparationRayShape3D`, `ConcavePolygonShape3D`, and `HeightMapShape3D`.
 
 ## [0.12.0] - 2024-01-07
 
