@@ -301,7 +301,7 @@
     },
     {
       "name": "macos-ios-simulator",
-      "displayName": "iOS",
+      "displayName": "iOS Simulator",
       "inherits": ["macos-base", "ios-base", "ios-simulator-base"]
     },
     {
