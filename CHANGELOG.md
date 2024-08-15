@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.13.0] - 2024-08-15
+
 ### Removed
 
 - ⚠️ Removed any `JoltPhysicsServer3D.G6DOF_*` enums that were previously (i.e. before Godot 4.3)
@@ -423,7 +425,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.12.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.13.0-stable...HEAD
+[0.13.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.12.0-stable...v0.13.0-stable
 [0.12.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.11.0-stable...v0.12.0-stable
 [0.11.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.10.0-stable...v0.11.0-stable
 [0.10.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.9.0-stable...v0.10.0-stable
