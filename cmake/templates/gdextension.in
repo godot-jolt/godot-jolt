@@ -1,6 +1,6 @@
 [configuration]
 
-entry_symbol = "godot_jolt_main"
+entry_symbol = "${GDJ_ENTRY_POINT}"
 compatibility_minimum = "${GDJ_GODOT_VERSION_MAJOR}.${GDJ_GODOT_VERSION_MINOR}"
 compatibility_maximum = "${GDJ_GODOT_VERSION_MAJOR}.${GDJ_GODOT_VERSION_MINOR}"
 
