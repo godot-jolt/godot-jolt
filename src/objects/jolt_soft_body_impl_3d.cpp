@@ -103,7 +103,7 @@ void JoltSoftBodyImpl3D::set_simulation_precision(int32_t p_precision) {
 
 	simulation_precision = MAX(p_precision, 0);
 
-	_update_simulation_precision();
+	_simulation_precision_changed();
 }
 
 void JoltSoftBodyImpl3D::set_mass(float p_mass) {
@@ -111,7 +111,7 @@ void JoltSoftBodyImpl3D::set_mass(float p_mass) {
 
 	mass = MAX(p_mass, 0.0f);
 
-	_update_mass();
+	_mass_changed();
 }
 
 float JoltSoftBodyImpl3D::get_stiffness_coefficient() const {
@@ -135,7 +135,7 @@ void JoltSoftBodyImpl3D::set_linear_damping(float p_damping) {
 
 	linear_damping = MAX(p_damping, 0.0f);
 
-	_update_damping();
+	_damping_changed();
 }
 
 float JoltSoftBodyImpl3D::get_drag() const {
@@ -376,6 +376,8 @@ void JoltSoftBodyImpl3D::set_vertex_position(int32_t p_index, const Vector3& p_p
 	const JPH::Vec3 velocity = displacement / last_step;
 
 	physics_vertex.mVelocity = velocity;
+
+	_vertices_changed();
 }
 
 void JoltSoftBodyImpl3D::pin_vertex(int32_t p_index) {
@@ -724,6 +726,14 @@ void JoltSoftBodyImpl3D::_mesh_changed() {
 	_try_rebuild();
 }
 
+void JoltSoftBodyImpl3D::_simulation_precision_changed() {
+	wake_up();
+}
+
+void JoltSoftBodyImpl3D::_mass_changed() {
+	wake_up();
+}
+
 void JoltSoftBodyImpl3D::_pressure_changed() {
 	_update_pressure();
 	wake_up();
@@ -736,6 +746,10 @@ void JoltSoftBodyImpl3D::_damping_changed() {
 
 void JoltSoftBodyImpl3D::_pins_changed() {
 	_update_mass();
+	wake_up();
+}
+
+void JoltSoftBodyImpl3D::_vertices_changed() {
 	wake_up();
 }
 

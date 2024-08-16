@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue with `SoftBody3D` not waking up when doing things like changing its `total_mass`,
+  `damping_coefficient`, `simulation_precision`, or when moving any of its pinned points.
+
 ## [0.13.0] - 2024-08-15
 
 ### Removed
