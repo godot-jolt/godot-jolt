@@ -62,7 +62,7 @@ void JoltBodyImpl3D::set_transform(Transform3D p_transform) {
 		_shapes_changed();
 	}
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mPosition = to_jolt_r(p_transform.origin);
 		jolt_settings->mRotation = to_jolt(p_transform.basis);
 	} else if (is_kinematic()) {
@@ -212,7 +212,7 @@ void JoltBodyImpl3D::set_custom_integrator(bool p_enabled) {
 
 	custom_integrator = p_enabled;
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		return;
 	}
 
@@ -224,7 +224,7 @@ void JoltBodyImpl3D::set_custom_integrator(bool p_enabled) {
 }
 
 bool JoltBodyImpl3D::is_sleeping() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		// HACK(mihe): Since `BODY_STATE_TRANSFORM` will be set right after creation it's more or
 		// less impossible to have a body be sleeping when created, so we simply report this as not
 		// sleeping.
@@ -238,7 +238,7 @@ bool JoltBodyImpl3D::is_sleeping() const {
 }
 
 void JoltBodyImpl3D::set_is_sleeping(bool p_enabled) {
-	if (space == nullptr) {
+	if (!in_space()) {
 		// HACK(mihe): Since `BODY_STATE_TRANSFORM` will be set right after creation it's more or
 		// less impossible to have a body be sleeping when created, so we don't bother storing this.
 		return;
@@ -254,7 +254,7 @@ void JoltBodyImpl3D::set_is_sleeping(bool p_enabled) {
 }
 
 bool JoltBodyImpl3D::can_sleep() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return jolt_settings->mAllowSleeping;
 	}
 
@@ -265,7 +265,7 @@ bool JoltBodyImpl3D::can_sleep() const {
 }
 
 void JoltBodyImpl3D::set_can_sleep(bool p_enabled) {
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mAllowSleeping = p_enabled;
 		return;
 	}
@@ -351,7 +351,7 @@ void JoltBodyImpl3D::set_linear_velocity(const Vector3& p_velocity) {
 		return;
 	}
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mLinearVelocity = to_jolt(p_velocity);
 		return;
 	}
@@ -372,7 +372,7 @@ void JoltBodyImpl3D::set_angular_velocity(const Vector3& p_velocity) {
 		return;
 	}
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mAngularVelocity = to_jolt(p_velocity);
 		return;
 	}
@@ -390,7 +390,7 @@ void JoltBodyImpl3D::set_axis_velocity(const Vector3& p_axis_velocity) {
 
 	const Vector3 axis = p_axis_velocity.normalized();
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		Vector3 linear_velocity = to_godot(jolt_settings->mLinearVelocity);
 		linear_velocity -= axis * axis.dot(linear_velocity);
 		linear_velocity += p_axis_velocity;
@@ -407,7 +407,7 @@ void JoltBodyImpl3D::set_axis_velocity(const Vector3& p_axis_velocity) {
 }
 
 Vector3 JoltBodyImpl3D::get_velocity_at_position(const Vector3& p_position) const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return {};
 	}
 
@@ -451,7 +451,7 @@ void JoltBodyImpl3D::set_max_contacts_reported(int32_t p_count) {
 
 	const bool use_manifold_reduction = !reports_contacts();
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mUseManifoldReduction = use_manifold_reduction;
 		return;
 	}
@@ -880,7 +880,7 @@ void JoltBodyImpl3D::set_mode(PhysicsServer3D::BodyMode p_mode) {
 
 	mode = p_mode;
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		return;
 	}
 
@@ -909,7 +909,7 @@ void JoltBodyImpl3D::set_mode(PhysicsServer3D::BodyMode p_mode) {
 }
 
 bool JoltBodyImpl3D::is_ccd_enabled() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return jolt_settings->mMotionQuality == JPH::EMotionQuality::LinearCast;
 	}
 
@@ -923,7 +923,7 @@ void JoltBodyImpl3D::set_ccd_enabled(bool p_enabled) {
 		? JPH::EMotionQuality::LinearCast
 		: JPH::EMotionQuality::Discrete;
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mMotionQuality = motion_quality;
 		return;
 	}
@@ -948,7 +948,7 @@ void JoltBodyImpl3D::set_inertia(const Vector3& p_inertia) {
 }
 
 float JoltBodyImpl3D::get_bounce() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return jolt_settings->mRestitution;
 	}
 
@@ -959,7 +959,7 @@ float JoltBodyImpl3D::get_bounce() const {
 }
 
 void JoltBodyImpl3D::set_bounce(float p_bounce) {
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mRestitution = p_bounce;
 		return;
 	}
@@ -971,7 +971,7 @@ void JoltBodyImpl3D::set_bounce(float p_bounce) {
 }
 
 float JoltBodyImpl3D::get_friction() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return jolt_settings->mFriction;
 	}
 
@@ -982,7 +982,7 @@ float JoltBodyImpl3D::get_friction() const {
 }
 
 void JoltBodyImpl3D::set_friction(float p_friction) {
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mFriction = p_friction;
 		return;
 	}
@@ -1314,7 +1314,7 @@ JPH::MassProperties JoltBodyImpl3D::_calculate_mass_properties() const {
 }
 
 void JoltBodyImpl3D::_update_mass_properties() {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return;
 	}
 
@@ -1352,7 +1352,7 @@ void JoltBodyImpl3D::_update_gravity(JPH::Body& p_jolt_body) {
 }
 
 void JoltBodyImpl3D::_update_damp() {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return;
 	}
 
@@ -1426,7 +1426,7 @@ void JoltBodyImpl3D::_update_joint_constraints() {
 void JoltBodyImpl3D::_update_possible_kinematic_contacts() {
 	const bool value = reports_all_kinematic_contacts();
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mCollideKinematicVsNonDynamic = value;
 	} else {
 		const JoltWritableBody3D body = space->write_body(jolt_id);
@@ -1453,7 +1453,7 @@ void JoltBodyImpl3D::_exit_all_areas() {
 void JoltBodyImpl3D::_update_group_filter() {
 	JPH::GroupFilter* group_filter = !exceptions.is_empty() ? JoltGroupFilter::instance : nullptr;
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mCollisionGroup.SetGroupFilter(group_filter);
 		return;
 	}

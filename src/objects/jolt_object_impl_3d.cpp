@@ -117,7 +117,7 @@ String JoltObjectImpl3D::to_string() const {
 }
 
 void JoltObjectImpl3D::_update_object_layer() {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return;
 	}
 

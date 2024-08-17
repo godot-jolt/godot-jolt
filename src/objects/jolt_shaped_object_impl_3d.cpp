@@ -20,7 +20,7 @@ JoltShapedObjectImpl3D::~JoltShapedObjectImpl3D() {
 }
 
 Transform3D JoltShapedObjectImpl3D::get_transform_unscaled() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return {to_godot(jolt_settings->mRotation), to_godot(jolt_settings->mPosition)};
 	}
 
@@ -35,7 +35,7 @@ Transform3D JoltShapedObjectImpl3D::get_transform_scaled() const {
 }
 
 Basis JoltShapedObjectImpl3D::get_basis() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return to_godot(jolt_settings->mRotation);
 	}
 
@@ -46,7 +46,7 @@ Basis JoltShapedObjectImpl3D::get_basis() const {
 }
 
 Vector3 JoltShapedObjectImpl3D::get_position() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return to_godot(jolt_settings->mPosition);
 	}
 
@@ -88,7 +88,7 @@ Vector3 JoltShapedObjectImpl3D::get_center_of_mass_local() const {
 }
 
 Vector3 JoltShapedObjectImpl3D::get_linear_velocity() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return to_godot(jolt_settings->mLinearVelocity);
 	}
 
@@ -99,7 +99,7 @@ Vector3 JoltShapedObjectImpl3D::get_linear_velocity() const {
 }
 
 Vector3 JoltShapedObjectImpl3D::get_angular_velocity() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return to_godot(jolt_settings->mAngularVelocity);
 	}
 
@@ -164,7 +164,7 @@ JPH::ShapeRefC JoltShapedObjectImpl3D::build_shape() {
 }
 
 void JoltShapedObjectImpl3D::update_shape() {
-	if (space == nullptr) {
+	if (!in_space()) {
 		_shapes_built();
 		return;
 	}
