@@ -39,7 +39,7 @@ void JoltAreaImpl3D::set_transform(const Transform3D& p_transform) {
 		_shapes_changed();
 	}
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mPosition = to_jolt_r(new_transform.origin);
 		jolt_settings->mRotation = to_jolt(new_transform.basis);
 	} else {
@@ -613,7 +613,7 @@ void JoltAreaImpl3D::_force_areas_exited(bool p_remove) {
 }
 
 void JoltAreaImpl3D::_update_group_filter() {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return;
 	}
 

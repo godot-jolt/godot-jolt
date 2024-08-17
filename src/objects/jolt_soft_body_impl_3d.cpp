@@ -74,7 +74,7 @@ void JoltSoftBodyImpl3D::set_mesh(const RID& p_mesh) {
 }
 
 bool JoltSoftBodyImpl3D::is_sleeping() const {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return false;
 	}
 
@@ -85,7 +85,7 @@ bool JoltSoftBodyImpl3D::is_sleeping() const {
 }
 
 void JoltSoftBodyImpl3D::set_is_sleeping(bool p_enabled) {
-	if (space == nullptr) {
+	if (!in_space()) {
 		return;
 	}
 
@@ -646,7 +646,7 @@ void JoltSoftBodyImpl3D::_update_mass() {
 }
 
 void JoltSoftBodyImpl3D::_update_pressure() {
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mPressure = pressure;
 		return;
 	}
@@ -664,7 +664,7 @@ void JoltSoftBodyImpl3D::_update_pressure() {
 }
 
 void JoltSoftBodyImpl3D::_update_damping() {
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mLinearDamping = linear_damping;
 		return;
 	}
@@ -682,7 +682,7 @@ void JoltSoftBodyImpl3D::_update_damping() {
 }
 
 void JoltSoftBodyImpl3D::_update_simulation_precision() {
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mNumIterations = (JPH::uint32)simulation_precision;
 		return;
 	}
@@ -702,7 +702,7 @@ void JoltSoftBodyImpl3D::_update_simulation_precision() {
 void JoltSoftBodyImpl3D::_update_group_filter() {
 	JPH::GroupFilter* group_filter = !exceptions.is_empty() ? JoltGroupFilter::instance : nullptr;
 
-	if (space == nullptr) {
+	if (!in_space()) {
 		jolt_settings->mCollisionGroup.SetGroupFilter(group_filter);
 		return;
 	}
