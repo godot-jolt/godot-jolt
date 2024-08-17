@@ -33,6 +33,8 @@ void JoltHeightMapShapeImpl3D::set_data(const Variant& p_data) {
 	width = maybe_width;
 	depth = maybe_depth;
 
+	aabb = _calculate_aabb();
+
 	destroy();
 }
 
@@ -217,4 +219,32 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_mesh() const {
 	);
 
 	return shape_result.Get();
+}
+
+AABB JoltHeightMapShapeImpl3D::_calculate_aabb() const {
+	AABB result;
+
+	const int32_t quad_count_x = width - 1;
+	const int32_t quad_count_z = depth - 1;
+
+	const float offset_x = (float)-quad_count_x / 2.0f;
+	const float offset_z = (float)-quad_count_z / 2.0f;
+
+	for (int32_t z = 0; z < depth; ++z) {
+		for (int32_t x = 0; x < width; ++x) {
+			const Vector3 vertex(
+				offset_x + (float)x,
+				(float)heights[z * width + x],
+				offset_z + (float)z
+			);
+
+			if (x == 0 && z == 0) {
+				result.position = vertex;
+			} else {
+				result.expand_to(vertex);
+			}
+		}
+	}
+
+	return result;
 }

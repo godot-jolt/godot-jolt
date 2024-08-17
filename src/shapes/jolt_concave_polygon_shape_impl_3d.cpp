@@ -23,6 +23,8 @@ void JoltConcavePolygonShapeImpl3D::set_data(const Variant& p_data) {
 	faces = maybe_faces;
 	backface_collision = maybe_backface_collision;
 
+	aabb = _calculate_aabb();
+
 	destroy();
 }
 
@@ -101,4 +103,20 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build() const {
 	}
 
 	return shape;
+}
+
+AABB JoltConcavePolygonShapeImpl3D::_calculate_aabb() const {
+	AABB result;
+
+	for (int i = 0; i < faces.size(); ++i) {
+		const Vector3& vertex = faces[i];
+
+		if (i == 0) {
+			result.position = vertex;
+		} else {
+			result.expand_to(vertex);
+		}
+	}
+
+	return result;
 }

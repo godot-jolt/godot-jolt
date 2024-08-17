@@ -30,6 +30,8 @@ public:
 
 	virtual void set_margin(float p_margin) = 0;
 
+	virtual AABB get_aabb() const = 0;
+
 	float get_solver_bias() const;
 
 	void set_solver_bias(float p_bias);
