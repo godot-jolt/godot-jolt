@@ -73,6 +73,10 @@ Vector3 JoltShapedObjectImpl3D::get_center_of_mass() const {
 	return to_godot(body->GetCenterOfMassPosition());
 }
 
+Vector3 JoltShapedObjectImpl3D::get_center_of_mass_relative() const {
+	return get_center_of_mass() - get_position();
+}
+
 Vector3 JoltShapedObjectImpl3D::get_center_of_mass_local() const {
 	ERR_FAIL_NULL_D_MSG(
 		space,

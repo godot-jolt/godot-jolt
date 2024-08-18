@@ -697,12 +697,8 @@ void JoltBodyImpl3D::add_constant_force(const Vector3& p_force, const Vector3& p
 	const JoltWritableBody3D body = space->write_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
-	const Vector3 center_of_mass = get_center_of_mass();
-	const Vector3 body_position = get_position();
-	const Vector3 center_of_mass_relative = center_of_mass - body_position;
-
 	constant_force += p_force;
-	constant_torque += (p_position - center_of_mass_relative).cross(p_force);
+	constant_torque += (p_position - get_center_of_mass_relative()).cross(p_force);
 
 	_motion_changed();
 }

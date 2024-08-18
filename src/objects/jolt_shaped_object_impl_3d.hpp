@@ -20,6 +20,8 @@ public:
 
 	Vector3 get_center_of_mass() const;
 
+	Vector3 get_center_of_mass_relative() const;
+
 	Vector3 get_center_of_mass_local() const;
 
 	Vector3 get_linear_velocity() const;

@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- ⚠️ Changed the `center_of_mass` property of `PhysicsDirectBodyState3D` to be a relative global
+  position rather than an absolute global position, to match Godot Physics.
+
 ### Added
 
 - Added support for `WorldBoundaryShape3D`.
