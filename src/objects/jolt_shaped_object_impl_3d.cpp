@@ -366,7 +366,7 @@ void JoltShapedObjectImpl3D::post_step(float p_step, JPH::Body& p_jolt_body) {
 bool JoltShapedObjectImpl3D::_is_big() const {
 	// HACK(mihe): This number is completely arbitrary, and mostly just needs to capture any
 	// `WorldBoundaryShape3D`. There could be a better sweet spot to be found here.
-	return get_aabb().get_longest_axis_size() >= 900.0f;
+	return get_aabb().get_longest_axis_size() >= 1000.0f;
 }
 
 JPH::ShapeRefC JoltShapedObjectImpl3D::_try_build_single_shape() {

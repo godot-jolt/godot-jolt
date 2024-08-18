@@ -9,6 +9,10 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Added
+
+- Added support for `WorldBoundaryShape3D`.
+
 ### Fixed
 
 - Fixed issue with `SoftBody3D` not waking up when doing things like changing its `total_mass`,

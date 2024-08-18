@@ -38,6 +38,7 @@ constexpr char BOUNCE_VELOCITY_THRESHOLD[] = "physics/jolt_3d/solver/bounce_velo
 constexpr char CONTACT_DISTANCE[] = "physics/jolt_3d/solver/contact_speculative_distance";
 constexpr char CONTACT_PENETRATION[] = "physics/jolt_3d/solver/contact_allowed_penetration";
 
+constexpr char WORLD_BOUNDARY_SIZE[] = "physics/jolt_3d/limits/world_boundary_shape_size";
 constexpr char MAX_LINEAR_VELOCITY[] = "physics/jolt_3d/limits/max_linear_velocity";
 constexpr char MAX_ANGULAR_VELOCITY[] = "physics/jolt_3d/limits/max_angular_velocity";
 constexpr char MAX_BODIES[] = "physics/jolt_3d/limits/max_bodies";
@@ -170,6 +171,7 @@ void JoltProjectSettings::register_settings() {
 	register_setting_ranged(PAIR_CACHE_DISTANCE, 0.001f, U"0,0.01,0.00001,or_greater,suffix:m");
 	register_setting_ranged(PAIR_CACHE_ANGLE, Math::deg_to_rad(2.0f), U"0,180,0.01,radians");
 
+	register_setting_ranged(WORLD_BOUNDARY_SIZE, 2000.0f, U"2,2000,0.1,or_greater,suffix:m");
 	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, U"0,500,0.01,or_greater,suffix:m/s");
 	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,0.01,or_greater,suffix:°/s");
 	register_setting_ranged(MAX_BODIES, 10240, U"1,10240,or_greater", true);
@@ -293,6 +295,11 @@ float JoltProjectSettings::get_pair_cache_distance() {
 
 float JoltProjectSettings::get_pair_cache_angle() {
 	static const auto value = Math::cos(get_setting<float>(PAIR_CACHE_ANGLE) / 2.0f);
+	return value;
+}
+
+float JoltProjectSettings::get_world_boundary_shape_size() {
+	static const auto value = get_setting<float>(WORLD_BOUNDARY_SIZE);
 	return value;
 }
 

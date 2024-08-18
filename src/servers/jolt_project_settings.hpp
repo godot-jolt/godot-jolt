@@ -50,6 +50,8 @@ public:
 
 	static float get_pair_cache_angle();
 
+	static float get_world_boundary_shape_size();
+
 	static float get_max_linear_velocity();
 
 	static float get_max_angular_velocity();
