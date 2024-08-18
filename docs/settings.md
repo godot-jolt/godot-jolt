@@ -400,6 +400,12 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Limits</td>
+      <td>World Boundary Shape Size</td>
+      <td>How wide/high/deep a <code>WorldBoundaryShape3D</code> will be.</td>
+      <td>Note that only half of this value will be used for its height.</td>
+    </tr>
+    <tr>
+      <td>Limits</td>
       <td>Max Linear Velocity</td>
       <td>The maximum linear velocity that a body can reach.</td>
       <td>Meant to prevent the simulation from exploding if something goes wrong.</td>

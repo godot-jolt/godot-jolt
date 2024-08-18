@@ -40,7 +40,6 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What's not supported?
 
-- `WorldBoundaryShape3D` is not supported
 - The physics server is not thread-safe (yet)
 - Memory usage is not reflected in Godot's performance monitors (yet)
 - Ray-casts do not support `face_index`

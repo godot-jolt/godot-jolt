@@ -6,6 +6,7 @@
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 #include "objects/jolt_soft_body_impl_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
+#include "shapes/jolt_shape_impl_3d.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
