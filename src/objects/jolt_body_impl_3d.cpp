@@ -1079,7 +1079,9 @@ bool JoltBodyImpl3D::can_interact_with(const JoltAreaImpl3D& p_other) const {
 JPH::BroadPhaseLayer JoltBodyImpl3D::_get_broad_phase_layer() const {
 	switch (mode) {
 		case PhysicsServer3D::BODY_MODE_STATIC: {
-			return JoltBroadPhaseLayer::BODY_STATIC;
+			return _is_big()
+				? JoltBroadPhaseLayer::BODY_STATIC_BIG
+				: JoltBroadPhaseLayer::BODY_STATIC;
 		}
 		case PhysicsServer3D::BODY_MODE_KINEMATIC:
 		case PhysicsServer3D::BODY_MODE_RIGID:

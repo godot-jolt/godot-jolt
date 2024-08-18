@@ -15,24 +15,27 @@ public:
 		using namespace JoltBroadPhaseLayer;
 
 		allow_collision(BODY_STATIC, BODY_DYNAMIC);
-
+		allow_collision(BODY_STATIC_BIG, BODY_DYNAMIC);
 		allow_collision(BODY_DYNAMIC, BODY_STATIC);
+		allow_collision(BODY_DYNAMIC, BODY_STATIC_BIG);
 		allow_collision(BODY_DYNAMIC, BODY_DYNAMIC);
 		allow_collision(BODY_DYNAMIC, AREA_DETECTABLE);
 		allow_collision(BODY_DYNAMIC, AREA_UNDETECTABLE);
-
 		allow_collision(AREA_DETECTABLE, BODY_DYNAMIC);
 		allow_collision(AREA_DETECTABLE, AREA_DETECTABLE);
 		allow_collision(AREA_DETECTABLE, AREA_UNDETECTABLE);
-
 		allow_collision(AREA_UNDETECTABLE, BODY_DYNAMIC);
 		allow_collision(AREA_UNDETECTABLE, AREA_DETECTABLE);
 
 		if (JoltProjectSettings::areas_detect_static_bodies()) {
 			allow_collision(BODY_STATIC, AREA_DETECTABLE);
 			allow_collision(BODY_STATIC, AREA_UNDETECTABLE);
+			allow_collision(BODY_STATIC_BIG, AREA_DETECTABLE);
+			allow_collision(BODY_STATIC_BIG, AREA_UNDETECTABLE);
 			allow_collision(AREA_DETECTABLE, BODY_STATIC);
+			allow_collision(AREA_DETECTABLE, BODY_STATIC_BIG);
 			allow_collision(AREA_UNDETECTABLE, BODY_STATIC);
+			allow_collision(AREA_UNDETECTABLE, BODY_STATIC_BIG);
 		}
 	}
 
@@ -158,6 +161,9 @@ const char* JoltLayerMapper::GetBroadPhaseLayerName(JPH::BroadPhaseLayer p_layer
 	switch ((JPH::BroadPhaseLayer::Type)p_layer) {
 		case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::BODY_STATIC: {
 			return "BODY_STATIC";
+		}
+		case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::BODY_STATIC_BIG: {
+			return "BODY_STATIC_BIG";
 		}
 		case (JPH::BroadPhaseLayer::Type)JoltBroadPhaseLayer::BODY_DYNAMIC: {
 			return "BODY_DYNAMIC";

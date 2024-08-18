@@ -109,6 +109,24 @@ Vector3 JoltShapedObjectImpl3D::get_angular_velocity() const {
 	return to_godot(body->GetAngularVelocity());
 }
 
+AABB JoltShapedObjectImpl3D::get_aabb() const {
+	AABB result;
+
+	for (const JoltShapeInstance3D& shape : shapes) {
+		if (shape.is_disabled()) {
+			continue;
+		}
+
+		if (result == AABB()) {
+			result = shape.get_aabb();
+		} else {
+			result.merge_with(shape.get_aabb());
+		}
+	}
+
+	return get_transform_scaled().xform(result);
+}
+
 JPH::ShapeRefC JoltShapedObjectImpl3D::try_build_shape() {
 	int32_t built_shapes = 0;
 
@@ -345,6 +363,12 @@ void JoltShapedObjectImpl3D::post_step(float p_step, JPH::Body& p_jolt_body) {
 	previous_jolt_shape = nullptr;
 }
 
+bool JoltShapedObjectImpl3D::_is_big() const {
+	// HACK(mihe): This number is completely arbitrary, and mostly just needs to capture any
+	// `WorldBoundaryShape3D`. There could be a better sweet spot to be found here.
+	return get_aabb().get_longest_axis_size() >= 900.0f;
+}
+
 JPH::ShapeRefC JoltShapedObjectImpl3D::_try_build_single_shape() {
 	// NOLINTNEXTLINE(modernize-loop-convert)
 	for (int32_t shape_index = 0; shape_index < shapes.size(); ++shape_index) {
@@ -441,6 +465,7 @@ JPH::ShapeRefC JoltShapedObjectImpl3D::_try_build_compound_shape() {
 
 void JoltShapedObjectImpl3D::_shapes_changed() {
 	update_shape();
+	_update_object_layer();
 }
 
 void JoltShapedObjectImpl3D::_space_changing() {
