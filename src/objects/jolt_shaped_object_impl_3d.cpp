@@ -307,20 +307,10 @@ Vector3 JoltShapedObjectImpl3D::get_shape_scale(int32_t p_index) const {
 void JoltShapedObjectImpl3D::set_shape_transform(int32_t p_index, Transform3D p_transform) {
 	ERR_FAIL_INDEX(p_index, shapes.size());
 
-#ifdef GDJ_CONFIG_EDITOR
-	if (unlikely(p_transform.basis.determinant() == 0.0f)) {
-		ERR_PRINT(vformat(
-			"Failed to set transform for shape at index %d of body '%s'. "
-			"Its basis was found to be singular, which is not supported by Godot Jolt. "
-			"This is likely caused by one or more axes having a scale of zero. "
-			"Its basis (and thus its scale) will be treated as identity.",
-			p_index,
-			to_string()
-		));
-
-		p_transform.basis = Basis();
-	}
-#endif // GDJ_CONFIG_EDITOR
+	ENSURE_SCALE_NOT_ZERO(
+		p_transform,
+		"Failed to correctly set transform for shape at index %d in body '%s'."
+	);
 
 	Vector3 new_scale;
 	Math::decompose(p_transform, new_scale);
