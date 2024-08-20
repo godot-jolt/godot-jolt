@@ -17,11 +17,15 @@ Breaking changes are denoted with ⚠️.
 ### Added
 
 - Added support for `WorldBoundaryShape3D`.
+- Added project setting "World Boundary Shape Size", to allow changing the effective size of
+  `WorldBoundaryShape3D`.
 
 ### Fixed
 
 - Fixed issue with `SoftBody3D` not waking up when doing things like changing its `total_mass`,
   `damping_coefficient`, `simulation_precision`, or when moving any of its pinned points.
+- Fixed issue where bodies with multiple shapes could end up clipping through other bodies if the
+  "Use Enhanced Internal Edge Detection" setting was enabled (which it is by default).
 
 ## [0.13.0] - 2024-08-15
 
