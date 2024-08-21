@@ -30,6 +30,7 @@ Breaking changes are denoted with ⚠️.
   `damping_coefficient`, `simulation_precision`, or when moving any of its pinned points.
 - Fixed issue where bodies with multiple shapes could end up clipping through other bodies if the
   "Use Enhanced Internal Edge Detection" setting was enabled (which it is by default).
+- Fixed crash when changing the mesh of an in-tree `SoftBody3D` that has pinned vertices.
 
 ## [0.13.0] - 2024-08-15
 
