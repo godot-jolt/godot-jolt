@@ -17,8 +17,12 @@ Breaking changes are denoted with ⚠️.
 ### Added
 
 - Added support for `WorldBoundaryShape3D`.
+- Added support for `face_index` in ray-cast results.
 - Added project setting "World Boundary Shape Size", to allow changing the effective size of
   `WorldBoundaryShape3D`.
+- Added project setting "Enable Ray Cast Face Index", to allow opting in to the additional memory
+  needed to support `face_index`, which is roughly an additional 25% to every
+  `ConcavePolygonShape3D`.
 
 ### Fixed
 

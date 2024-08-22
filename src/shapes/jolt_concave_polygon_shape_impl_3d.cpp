@@ -66,6 +66,7 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build() const {
 
 	const Vector3* faces_begin = &faces[0];
 	const Vector3* faces_end = faces_begin + vertex_count;
+	JPH::uint32 triangle_index = 0;
 
 	for (const Vector3* vertex = faces_begin; vertex != faces_end; vertex += 3) {
 		const Vector3* v0 = vertex + 0;
@@ -75,12 +76,15 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build() const {
 		jolt_faces.emplace_back(
 			JPH::Float3((float)v2->x, (float)v2->y, (float)v2->z),
 			JPH::Float3((float)v1->x, (float)v1->y, (float)v1->z),
-			JPH::Float3((float)v0->x, (float)v0->y, (float)v0->z)
+			JPH::Float3((float)v0->x, (float)v0->y, (float)v0->z),
+			0,
+			triangle_index++
 		);
 	}
 
 	JPH::MeshShapeSettings shape_settings(jolt_faces);
 	shape_settings.mActiveEdgeCosThresholdAngle = JoltProjectSettings::get_active_edge_threshold();
+	shape_settings.mPerTriangleUserData = JoltProjectSettings::enable_ray_cast_face_index();
 
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
