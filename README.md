@@ -47,6 +47,7 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What else is different?
 
+- Scale is actually used for all bodies, shapes and shape queries, except for `SoftBody3D`
 - `Area3D` detecting static bodies is opt-in, at a potentially [heavy performance/memory cost][jst]
 - Joints only support soft limits through their substitutes (`JoltHingeJoint3D`, etc.)
 - Springs and linear motors are actually implemented in `Generic6DOFJoint3D`
