@@ -18,6 +18,8 @@ public:
 
 	~JoltSoftBodyImpl3D() override;
 
+	bool in_space() const;
+
 	void add_collision_exception(const RID& p_excepted_body);
 
 	void remove_collision_exception(const RID& p_excepted_body);
