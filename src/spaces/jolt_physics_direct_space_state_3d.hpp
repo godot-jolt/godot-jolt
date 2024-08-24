@@ -143,6 +143,8 @@ private:
 		PhysicsServer3DExtensionMotionResult* p_result
 	) const;
 
+	int _try_get_face_index(const JPH::Body& p_body, const JPH::SubShapeID& p_sub_shape_id);
+
 	void _generate_manifold(
 		const JPH::CollideShapeResult& p_hit,
 		JPH::ContactPoints& p_contact_points1,

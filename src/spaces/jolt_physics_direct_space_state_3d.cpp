@@ -89,6 +89,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 		const int32_t shape_index = shaped_object->find_shape_index(sub_shape_id);
 		ERR_FAIL_COND_D(shape_index == -1);
 		p_result->shape = shape_index;
+		p_result->face_index = _try_get_face_index(*body, sub_shape_id);
 	}
 
 	return true;
@@ -1122,6 +1123,26 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	p_result->collision_count = count;
 
 	return count > 0;
+}
+
+int JoltPhysicsDirectSpaceState3D::_try_get_face_index(
+	const JPH::Body& p_body,
+	const JPH::SubShapeID& p_sub_shape_id
+) {
+	if (!JoltProjectSettings::enable_ray_cast_face_index()) {
+		return -1;
+	}
+
+	const JPH::Shape* root_shape = p_body.GetShape();
+	JPH::SubShapeID sub_shape_id_remainder;
+	const JPH::Shape* leaf_shape = root_shape->GetLeafShape(p_sub_shape_id, sub_shape_id_remainder);
+
+	if (leaf_shape->GetType() != JPH::EShapeType::Mesh) {
+		return -1;
+	}
+
+	const auto* mesh_shape = static_cast<const JPH::MeshShape*>(leaf_shape);
+	return (int)mesh_shape->GetTriangleUserData(sub_shape_id_remainder);
 }
 
 void JoltPhysicsDirectSpaceState3D::_generate_manifold(
