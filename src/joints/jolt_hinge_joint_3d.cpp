@@ -45,8 +45,8 @@ void JoltHingeJoint3D::_bind_methods() {
 	ADD_GROUP("Limit", "limit_");
 
 	BIND_PROPERTY("limit_enabled", Variant::BOOL);
-	BIND_PROPERTY_RANGED("limit_upper", Variant::FLOAT, "-180,180,0.1,radians");
-	BIND_PROPERTY_RANGED("limit_lower", Variant::FLOAT, "-180,180,0.1,radians");
+	BIND_PROPERTY_RANGED("limit_upper", Variant::FLOAT, "-180,180,0.1,radians_as_degrees");
+	BIND_PROPERTY_RANGED("limit_lower", Variant::FLOAT, "-180,180,0.1,radians_as_degrees");
 
 	ADD_GROUP("Limit Spring", "limit_spring_");
 
@@ -57,7 +57,7 @@ void JoltHingeJoint3D::_bind_methods() {
 	ADD_GROUP("Motor", "motor_");
 
 	BIND_PROPERTY("motor_enabled", Variant::BOOL);
-	BIND_PROPERTY("motor_target_velocity", Variant::FLOAT, U"radians,suffix:°/s");
+	BIND_PROPERTY("motor_target_velocity", Variant::FLOAT, U"radians_as_degrees,suffix:°/s");
 	BIND_PROPERTY("motor_max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 }
 
