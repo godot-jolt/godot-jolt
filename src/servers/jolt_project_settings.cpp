@@ -30,6 +30,7 @@ constexpr char CCD_MAX_PENETRATION[] = "physics/jolt_3d/continuous_cd/max_penetr
 constexpr char RECOVERY_ITERATIONS[] = "physics/jolt_3d/kinematics/recovery_iterations";
 constexpr char RECOVERY_AMOUNT[] = "physics/jolt_3d/kinematics/recovery_amount";
 
+constexpr char LEGACY_RAY_CASTING[] = "physics/jolt_3d/queries/use_legacy_ray_casting";
 constexpr char RAY_FACE_INDEX[] = "physics/jolt_3d/queries/enable_ray_cast_face_index";
 
 constexpr char POSITION_ITERATIONS[] = "physics/jolt_3d/solver/position_iterations";
@@ -164,6 +165,7 @@ void JoltProjectSettings::register_settings() {
 	register_setting_ranged(RECOVERY_ITERATIONS, 4, U"1,8,or_greater");
 	register_setting_ranged(RECOVERY_AMOUNT, 40.0f, U"0,100,0.1,suffix:%");
 
+	register_setting_plain(LEGACY_RAY_CASTING, false, true);
 	register_setting_plain(RAY_FACE_INDEX, false);
 
 	register_setting_ranged(VELOCITY_ITERATIONS, 10, U"2,16,or_greater");
@@ -253,13 +255,18 @@ float JoltProjectSettings::get_kinematic_recovery_amount() {
 	return value;
 }
 
-int32_t JoltProjectSettings::get_velocity_iterations() {
-	static const auto value = get_setting<int32_t>(VELOCITY_ITERATIONS);
+bool JoltProjectSettings::use_legacy_ray_casting() {
+	static const auto value = get_setting<bool>(LEGACY_RAY_CASTING);
 	return value;
 }
 
 bool JoltProjectSettings::enable_ray_cast_face_index() {
 	static const auto value = get_setting<bool>(RAY_FACE_INDEX);
+	return value;
+}
+
+int32_t JoltProjectSettings::get_velocity_iterations() {
+	static const auto value = get_setting<int32_t>(VELOCITY_ITERATIONS);
 	return value;
 }
 

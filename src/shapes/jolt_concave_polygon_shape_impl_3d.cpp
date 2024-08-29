@@ -5,7 +5,7 @@
 Variant JoltConcavePolygonShapeImpl3D::get_data() const {
 	Dictionary data;
 	data["faces"] = faces;
-	data["backface_collision"] = backface_collision;
+	data["backface_collision"] = back_face_collision;
 	return data;
 }
 
@@ -17,11 +17,11 @@ void JoltConcavePolygonShapeImpl3D::set_data(const Variant& p_data) {
 	const Variant maybe_faces = data.get("faces", {});
 	ERR_FAIL_COND(maybe_faces.get_type() != Variant::PACKED_VECTOR3_ARRAY);
 
-	const Variant maybe_backface_collision = data.get("backface_collision", {});
-	ERR_FAIL_COND(maybe_backface_collision.get_type() != Variant::BOOL);
+	const Variant maybe_back_face_collision = data.get("backface_collision", {});
+	ERR_FAIL_COND(maybe_back_face_collision.get_type() != Variant::BOOL);
 
 	faces = maybe_faces;
-	backface_collision = maybe_backface_collision;
+	back_face_collision = maybe_back_face_collision;
 
 	aabb = _calculate_aabb();
 
@@ -100,13 +100,7 @@ JPH::ShapeRefC JoltConcavePolygonShapeImpl3D::_build() const {
 		)
 	);
 
-	JPH::ShapeRefC shape = shape_result.Get();
-
-	if (backface_collision) {
-		return JoltShapeImpl3D::with_double_sided(shape);
-	}
-
-	return shape;
+	return JoltShapeImpl3D::with_double_sided(shape_result.Get(), back_face_collision);
 }
 
 AABB JoltConcavePolygonShapeImpl3D::_calculate_aabb() const {

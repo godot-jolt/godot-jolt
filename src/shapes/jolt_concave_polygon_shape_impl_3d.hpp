@@ -29,5 +29,5 @@ private:
 
 	PackedVector3Array faces;
 
-	bool backface_collision = false;
+	bool back_face_collision = false;
 };
