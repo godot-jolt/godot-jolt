@@ -70,17 +70,17 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build() const {
 	);
 
 	if (width != depth) {
-		return JoltShapeImpl3D::with_double_sided(_build_mesh());
+		return JoltShapeImpl3D::with_double_sided(_build_mesh(), true);
 	}
 
 	const int32_t block_size = 2; // Default of JPH::HeightFieldShapeSettings::mBlockSize
 	const int32_t block_count = width / block_size;
 
 	if (block_count < 2) {
-		return JoltShapeImpl3D::with_double_sided(_build_mesh());
+		return JoltShapeImpl3D::with_double_sided(_build_mesh(), true);
 	}
 
-	return JoltShapeImpl3D::with_double_sided(_build_height_field());
+	return JoltShapeImpl3D::with_double_sided(_build_height_field(), true);
 }
 
 JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {

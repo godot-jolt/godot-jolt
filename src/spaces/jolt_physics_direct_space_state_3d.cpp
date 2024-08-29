@@ -41,12 +41,17 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const auto vector = JPH::Vec3(to - from);
 	const JPH::RRayCast ray(from, vector);
 
+	const JPH::EBackFaceMode back_face_mode = p_hit_back_faces
+		? JPH::EBackFaceMode::CollideWithBackFaces
+		: JPH::EBackFaceMode::IgnoreBackFaces;
+
 	JPH::RayCastSettings settings;
 	settings.mTreatConvexAsSolid = p_hit_from_inside;
-	settings.SetBackFaceMode(
-		p_hit_back_faces ? JPH::EBackFaceMode::CollideWithBackFaces
-						 : JPH::EBackFaceMode::IgnoreBackFaces
-	);
+	settings.mBackFaceModeTriangles = back_face_mode;
+
+	if (JoltProjectSettings::use_legacy_ray_casting()) {
+		settings.mBackFaceModeConvex = back_face_mode;
+	}
 
 	JoltQueryCollectorClosest<JPH::CastRayCollector> collector;
 

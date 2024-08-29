@@ -1,5 +1,7 @@
 #include "jolt_custom_double_sided_shape.hpp"
 
+#include "servers/jolt_project_settings.hpp"
+
 namespace {
 
 JPH::Shape* construct_double_sided() {
@@ -107,4 +109,26 @@ void JoltCustomDoubleSidedShape::register_type() {
 			collide_shape_vs_double_sided
 		);
 	}
+}
+
+void JoltCustomDoubleSidedShape::CastRay(
+	const JPH::RayCast& p_ray,
+	const JPH::RayCastSettings& p_ray_cast_settings,
+	const JPH::SubShapeIDCreator& p_sub_shape_id_creator,
+	JPH::CastRayCollector& p_collector,
+	const JPH::ShapeFilter& p_shape_filter
+) const {
+	JPH::RayCastSettings new_ray_cast_settings = p_ray_cast_settings;
+
+	if (!back_face_collision && !JoltProjectSettings::use_legacy_ray_casting()) {
+		new_ray_cast_settings.SetBackFaceMode(JPH::EBackFaceMode::IgnoreBackFaces);
+	}
+
+	return mInnerShape->CastRay(
+		p_ray,
+		new_ray_cast_settings,
+		p_sub_shape_id_creator,
+		p_collector,
+		p_shape_filter
+	);
 }
