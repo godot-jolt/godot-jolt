@@ -43,9 +43,10 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 
 	JPH::RayCastSettings settings;
 	settings.mTreatConvexAsSolid = p_hit_from_inside;
-	settings.mBackFaceMode = p_hit_back_faces
-		? JPH::EBackFaceMode::CollideWithBackFaces
-		: JPH::EBackFaceMode::IgnoreBackFaces;
+	settings.SetBackFaceMode(
+		p_hit_back_faces ? JPH::EBackFaceMode::CollideWithBackFaces
+						 : JPH::EBackFaceMode::IgnoreBackFaces
+	);
 
 	JoltQueryCollectorClosest<JPH::CastRayCollector> collector;
 
