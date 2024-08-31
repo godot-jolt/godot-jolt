@@ -263,7 +263,7 @@
       "environment": {
         "CFLAGS": "$penv{CFLAGS}",
         "CXXFLAGS": "$penv{CXXFLAGS} -msimd128 -msse4.2 -Wno-c++20-extensions",
-        "LDFLAGS": "$penv{LDFLAGS} -msimd128 -msse4.2 -Wno-limited-postlink-optimizations -Wno-experimental"
+        "LDFLAGS": "$penv{LDFLAGS} -msimd128 -msse4.2 -Wno-limited-postlink-optimizations"
       },
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$penv{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
