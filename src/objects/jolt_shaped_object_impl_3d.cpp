@@ -165,7 +165,7 @@ JPH::ShapeRefC JoltShapedObjectImpl3D::try_build_shape() {
 	}
 
 	if (is_area()) {
-		result = JoltShapeImpl3D::with_double_sided(result);
+		result = JoltShapeImpl3D::with_double_sided(result, true);
 	}
 
 	return result;

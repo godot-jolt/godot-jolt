@@ -301,47 +301,51 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 	ADD_GROUP("Angular Limit", "angular_limit_");
 
 	BIND_SUBPROPERTY("angular_limit_x", "enabled", Variant::BOOL);
-	BIND_SUBPROPERTY("angular_limit_x", "upper", Variant::FLOAT, "radians");
-	BIND_SUBPROPERTY("angular_limit_x", "lower", Variant::FLOAT, "radians");
+	BIND_SUBPROPERTY("angular_limit_x", "upper", Variant::FLOAT, "radians_as_degrees");
+	BIND_SUBPROPERTY("angular_limit_x", "lower", Variant::FLOAT, "radians_as_degrees");
 
 	BIND_SUBPROPERTY("angular_limit_y", "enabled", Variant::BOOL);
-	BIND_SUBPROPERTY("angular_limit_y", "upper", Variant::FLOAT, "radians");
-	BIND_SUBPROPERTY("angular_limit_y", "lower", Variant::FLOAT, "radians");
+	BIND_SUBPROPERTY("angular_limit_y", "upper", Variant::FLOAT, "radians_as_degrees");
+	BIND_SUBPROPERTY("angular_limit_y", "lower", Variant::FLOAT, "radians_as_degrees");
 
 	BIND_SUBPROPERTY("angular_limit_z", "enabled", Variant::BOOL);
-	BIND_SUBPROPERTY("angular_limit_z", "upper", Variant::FLOAT, "radians");
-	BIND_SUBPROPERTY("angular_limit_z", "lower", Variant::FLOAT, "radians");
+	BIND_SUBPROPERTY("angular_limit_z", "upper", Variant::FLOAT, "radians_as_degrees");
+	BIND_SUBPROPERTY("angular_limit_z", "lower", Variant::FLOAT, "radians_as_degrees");
+
+	// clang-format off
 
 	ADD_GROUP("Angular Motor", "angular_motor_");
 
 	BIND_SUBPROPERTY("angular_motor_x", "enabled", Variant::BOOL);
-	BIND_SUBPROPERTY("angular_motor_x", "target_velocity", Variant::FLOAT, U"radians,suffix:°/s");
+	BIND_SUBPROPERTY("angular_motor_x", "target_velocity", Variant::FLOAT, U"radians_as_degrees,suffix:°/s");
 	BIND_SUBPROPERTY("angular_motor_x", "max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 
 	BIND_SUBPROPERTY("angular_motor_y", "enabled", Variant::BOOL);
-	BIND_SUBPROPERTY("angular_motor_y", "target_velocity", Variant::FLOAT, U"radians,suffix:°/s");
+	BIND_SUBPROPERTY("angular_motor_y", "target_velocity", Variant::FLOAT, U"radians_as_degrees,suffix:°/s");
 	BIND_SUBPROPERTY("angular_motor_y", "max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 
 	BIND_SUBPROPERTY("angular_motor_z", "enabled", Variant::BOOL);
-	BIND_SUBPROPERTY("angular_motor_z", "target_velocity", Variant::FLOAT, U"radians,suffix:°/s");
+	BIND_SUBPROPERTY("angular_motor_z", "target_velocity", Variant::FLOAT, U"radians_as_degrees,suffix:°/s");
 	BIND_SUBPROPERTY("angular_motor_z", "max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
+
+	// clang-format on
 
 	ADD_GROUP("Angular Spring", "angular_spring_");
 
 	BIND_SUBPROPERTY("angular_spring_x", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("angular_spring_x", "frequency", Variant::FLOAT, "suffix:hz");
 	BIND_SUBPROPERTY("angular_spring_x", "damping", Variant::FLOAT);
-	BIND_SUBPROPERTY("angular_spring_x", "equilibrium_point", Variant::FLOAT, "radians");
+	BIND_SUBPROPERTY("angular_spring_x", "equilibrium_point", Variant::FLOAT, "radians_as_degrees");
 
 	BIND_SUBPROPERTY("angular_spring_y", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("angular_spring_y", "frequency", Variant::FLOAT, "suffix:hz");
 	BIND_SUBPROPERTY("angular_spring_y", "damping", Variant::FLOAT);
-	BIND_SUBPROPERTY("angular_spring_y", "equilibrium_point", Variant::FLOAT, "radians");
+	BIND_SUBPROPERTY("angular_spring_y", "equilibrium_point", Variant::FLOAT, "radians_as_degrees");
 
 	BIND_SUBPROPERTY("angular_spring_z", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("angular_spring_z", "frequency", Variant::FLOAT, "suffix:hz");
 	BIND_SUBPROPERTY("angular_spring_z", "damping", Variant::FLOAT);
-	BIND_SUBPROPERTY("angular_spring_z", "equilibrium_point", Variant::FLOAT, "radians");
+	BIND_SUBPROPERTY("angular_spring_z", "equilibrium_point", Variant::FLOAT, "radians_as_degrees");
 
 	BIND_ENUM_CONSTANT(PARAM_LINEAR_LIMIT_UPPER);
 	BIND_ENUM_CONSTANT(PARAM_LINEAR_LIMIT_LOWER);

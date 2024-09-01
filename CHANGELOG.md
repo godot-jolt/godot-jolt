@@ -13,6 +13,12 @@ Breaking changes are denoted with ⚠️.
 
 - ⚠️ Changed the `center_of_mass` property of `PhysicsDirectBodyState3D` to be a relative global
   position rather than an absolute global position, to match Godot Physics.
+- ⚠️ Changed the ray-cast parameter `hit_back_faces` to no longer hit the back/inside of convex
+  shapes, to better match Godot Physics. This means `hit_back_faces` will only have an effect on
+  `ConcavePolygonShape3D` and `HeightMapShape3D`.
+- ⚠️ Changed the ray-cast parameter `hit_back_faces` to only hit back-faces of a
+  `ConcavePolygonShape3D` if its `backface_collision` property is set to `true`, to better match
+  Godot Physics.
 
 ### Added
 
@@ -20,6 +26,8 @@ Breaking changes are denoted with ⚠️.
 - Added support for `face_index` in ray-cast results.
 - Added project setting "World Boundary Shape Size", to allow changing the effective size of
   `WorldBoundaryShape3D`.
+- Added project setting "Use Legacy Ray Casting", to allow reverting back to the (now legacy)
+  behavior of the `hit_back_faces` ray-cast parameter.
 - Added project setting "Enable Ray Cast Face Index", to allow opting in to the additional memory
   needed to support `face_index`, which is roughly an additional 25% to every
   `ConcavePolygonShape3D`.
@@ -31,6 +39,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where bodies with multiple shapes could end up clipping through other bodies if the
   "Use Enhanced Internal Edge Detection" setting was enabled (which it is by default).
 - Fixed crash when changing the mesh of an in-tree `SoftBody3D` that has pinned vertices.
+- Fixed issue where the joint substitute nodes (`JoltHingeJoint3D`, etc.) would not display their
+  angle properties in degrees when using a `DISABLE_DEPRECATED` build of Godot.
 
 ## [0.13.0] - 2024-08-15
 

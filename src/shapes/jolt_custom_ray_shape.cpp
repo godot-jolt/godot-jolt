@@ -66,8 +66,12 @@ void collide_ray_vs_shape(
 	const JPH::RayCast ray_cast(ray_start2, ray_vector_padded2);
 
 	JPH::RayCastSettings ray_cast_settings;
-	ray_cast_settings.mBackFaceMode = p_collide_shape_settings.mBackFaceMode;
 	ray_cast_settings.mTreatConvexAsSolid = false;
+	ray_cast_settings.mBackFaceModeTriangles = p_collide_shape_settings.mBackFaceMode;
+
+	if (JoltProjectSettings::use_legacy_ray_casting()) {
+		ray_cast_settings.mBackFaceModeConvex = p_collide_shape_settings.mBackFaceMode;
+	}
 
 	JoltQueryCollectorClosest<JPH::CastRayCollector> ray_collector;
 

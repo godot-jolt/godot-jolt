@@ -41,11 +41,17 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	const auto vector = JPH::Vec3(to - from);
 	const JPH::RRayCast ray(from, vector);
 
-	JPH::RayCastSettings settings;
-	settings.mTreatConvexAsSolid = p_hit_from_inside;
-	settings.mBackFaceMode = p_hit_back_faces
+	const JPH::EBackFaceMode back_face_mode = p_hit_back_faces
 		? JPH::EBackFaceMode::CollideWithBackFaces
 		: JPH::EBackFaceMode::IgnoreBackFaces;
+
+	JPH::RayCastSettings settings;
+	settings.mTreatConvexAsSolid = p_hit_from_inside;
+	settings.mBackFaceModeTriangles = back_face_mode;
+
+	if (JoltProjectSettings::use_legacy_ray_casting()) {
+		settings.mBackFaceModeConvex = back_face_mode;
+	}
 
 	JoltQueryCollectorClosest<JPH::CastRayCollector> collector;
 
@@ -260,12 +266,19 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	Transform3D transform = p_transform;
 
-	ENSURE_SCALE_NOT_ZERO(transform, "cast_motion was passed an invalid transform.");
+	ENSURE_SCALE_NOT_ZERO(
+		transform,
+		"cast_motion (maybe from ShapeCast3D?) was passed an invalid transform."
+	);
 
 	Vector3 scale;
 	Math::decompose(transform, scale);
 
-	ENSURE_SCALE_VALID(jolt_shape, scale, "cast_motion was passed an invalid transform.");
+	ENSURE_SCALE_VALID(
+		jolt_shape,
+		scale,
+		"cast_motion (maybe from ShapeCast3D?) was passed an invalid transform."
+	);
 
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	Transform3D transform_com = transform.translated_local(com_scaled);
@@ -428,12 +441,19 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 
 	Transform3D transform = p_transform;
 
-	ENSURE_SCALE_NOT_ZERO(transform, "get_rest_info was passed an invalid transform.");
+	ENSURE_SCALE_NOT_ZERO(
+		transform,
+		"get_rest_info (maybe from ShapeCast3D?) was passed an invalid transform."
+	);
 
 	Vector3 scale;
 	Math::decompose(transform, scale);
 
-	ENSURE_SCALE_VALID(jolt_shape, scale, "get_rest_info was passed an invalid transform.");
+	ENSURE_SCALE_VALID(
+		jolt_shape,
+		scale,
+		"get_rest_info (maybe from ShapeCast3D?) was passed an invalid transform."
+	);
 
 	const Vector3 com_scaled = to_godot(jolt_shape->GetCenterOfMass());
 	const Transform3D transform_com = transform.translated_local(com_scaled);

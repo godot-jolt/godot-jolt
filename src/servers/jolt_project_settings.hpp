@@ -30,6 +30,8 @@ public:
 
 	static float get_kinematic_recovery_amount();
 
+	static bool use_legacy_ray_casting();
+
 	static bool enable_ray_cast_face_index();
 
 	static int32_t get_velocity_iterations();

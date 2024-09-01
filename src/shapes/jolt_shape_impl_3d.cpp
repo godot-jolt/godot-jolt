@@ -167,10 +167,13 @@ JPH::ShapeRefC JoltShapeImpl3D::with_user_data(const JPH::Shape* p_shape, uint64
 	return shape_result.Get();
 }
 
-JPH::ShapeRefC JoltShapeImpl3D::with_double_sided(const JPH::Shape* p_shape) {
+JPH::ShapeRefC JoltShapeImpl3D::with_double_sided(
+	const JPH::Shape* p_shape,
+	bool p_back_face_collision
+) {
 	ERR_FAIL_NULL_D(p_shape);
 
-	const JoltCustomDoubleSidedShapeSettings shape_settings(p_shape);
+	const JoltCustomDoubleSidedShapeSettings shape_settings(p_shape, p_back_face_collision);
 	const JPH::ShapeSettings::ShapeResult shape_result = shape_settings.Create();
 
 	ERR_FAIL_COND_D_MSG(
