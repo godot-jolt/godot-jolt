@@ -2,7 +2,9 @@
 
 #ifdef GDJ_CONFIG_EDITOR
 
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "joints/jolt_cone_twist_joint_3d.hpp"
+#include "joints/jolt_distance_constraint_3d.hpp"
 #include "joints/jolt_generic_6dof_joint.hpp"
 #include "joints/jolt_hinge_joint_3d.hpp"
 #include "joints/jolt_pin_joint_3d.hpp"
@@ -100,6 +102,15 @@ void draw_angular_limits(
 	}
 
 	p_points.push_back(start);
+}
+
+void draw_cross(Vector3 center, PackedVector3Array& p_points) {
+	p_points.push_back(center + Vector3(GIZMO_RADIUS, 0, 0));
+	p_points.push_back(center - Vector3(GIZMO_RADIUS, 0, 0));
+	p_points.push_back(center + Vector3(0, GIZMO_RADIUS, 0));
+	p_points.push_back(center - Vector3(0, GIZMO_RADIUS, 0));
+	p_points.push_back(center + Vector3(0, 0, GIZMO_RADIUS));
+	p_points.push_back(center - Vector3(0, 0, GIZMO_RADIUS));
 }
 
 void draw_pin_joint([[maybe_unused]] const JoltPinJoint3D& p_joint, PackedVector3Array& p_points) {
@@ -250,6 +261,20 @@ void draw_g6dof_joint(const JoltGeneric6DOFJoint3D& p_joint, PackedVector3Array&
 	}
 }
 
+void draw_distance_constraint(
+	const JoltDistanceConstraint3D& p_joint,
+	PackedVector3Array& p_points
+) {
+	PhysicsBody3D* body_a = p_joint.get_body_a();
+	Vector3 global_point_a = body_a->to_global(p_joint.get_point_a());
+	PhysicsBody3D* body_b = p_joint.get_body_b();
+	Vector3 global_point_b = body_b->to_global(p_joint.get_point_b());
+	draw_cross(global_point_a, p_points);
+	draw_cross(global_point_b, p_points);
+	p_points.push_back(global_point_a);
+	p_points.push_back(global_point_b);
+}
+
 } // namespace
 
 JoltJointGizmoPlugin3D::JoltJointGizmoPlugin3D(EditorInterface* p_editor_interface)
@@ -299,6 +324,8 @@ void JoltJointGizmoPlugin3D::_redraw(const Ref<EditorNode3DGizmo>& p_gizmo) {
 		draw_cone_twist_joint(*cone_twist, points);
 	} else if (auto* g6dof = Object::cast_to<JoltGeneric6DOFJoint3D>(joint)) {
 		draw_g6dof_joint(*g6dof, points);
+	} else if (auto* distance_constraint = Object::cast_to<JoltDistanceConstraint3D>(joint)) {
+		draw_distance_constraint(*distance_constraint, points);
 	}
 
 	p_gizmo->add_collision_segments(points);

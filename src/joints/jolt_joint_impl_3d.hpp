@@ -5,6 +5,11 @@ class JoltSpace3D;
 
 class JoltJointImpl3D {
 public:
+	enum JoltOnlyJointType {
+		IN_GODOT_NATIVE,
+		DISTANCE_CONSTRAINT
+	};
+
 	JoltJointImpl3D() = default;
 
 	JoltJointImpl3D(
@@ -18,6 +23,12 @@ public:
 	virtual ~JoltJointImpl3D();
 
 	virtual PhysicsServer3D::JointType get_type() const { return PhysicsServer3D::JOINT_TYPE_MAX; }
+
+	virtual JoltOnlyJointType get_jolt_only_type() const {
+		return JoltOnlyJointType::IN_GODOT_NATIVE;
+	}
+
+	bool is_distance_constraint() const { return false; } // TODO(ewall198): Need a better way to check constraint type when Godot doesn't include something similar.
 
 	RID get_rid() const { return rid; }
 

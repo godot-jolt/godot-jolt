@@ -22,6 +22,7 @@ void JoltEditorPlugin::_enter_tree() {
 	temp_theme->set_icon("JoltSliderJoint3D", "EditorIcons", icon_slider);
 	temp_theme->set_icon("JoltConeTwistJoint3D", "EditorIcons", icon_cone_twist);
 	temp_theme->set_icon("JoltGeneric6DOFJoint3D", "EditorIcons", icon_6dof);
+	// TODO(ewall198) Add editor icon for distance constraint.
 
 	editor_theme->merge_with(temp_theme);
 

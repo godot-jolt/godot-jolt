@@ -8,6 +8,7 @@ class JoltShapeImpl3D;
 class JoltSoftBodyImpl3D;
 class JoltSpace3D;
 
+
 class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
 	GDCLASS_QUIET(JoltPhysicsServer3D, PhysicsServer3DExtension)
 
@@ -61,6 +62,13 @@ public:
 		G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT_SPRING = 100,
 		G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING_FREQUENCY,
 		G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING_FREQUENCY
+	};
+
+	enum DistanceConstraintParamJolt {
+		DISTANCE_CONSTRAINT_LIMITS_SPRING_FREQUENCY = 100,
+		DISTANCE_CONSTRAINT_LIMITS_SPRING_DAMPING,
+		DISTANCE_CONSTRAINT_DISTANCE_MIN,
+		DISTANCE_CONSTRAINT_DISTANCE_MAX,
 	};
 
 private:
@@ -731,6 +739,20 @@ public:
 
 	float generic_6dof_joint_get_applied_torque(const RID& p_joint);
 
+	void joint_make_distance_constraint(
+		const RID& p_joint,
+		const RID& p_body_a,
+		const Vector3& p_local_a,
+		const RID& p_body_b,
+		const Vector3& p_local_b
+	);
+
+	void distance_constraint_set_jolt_param(
+		const RID& p_joint,
+		DistanceConstraintParamJolt p_param,
+		double p_value
+	);
+
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
 
@@ -761,3 +783,4 @@ VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointParamJolt)
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointFlagJolt)
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisParamJolt)
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisFlagJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3D::DistanceConstraintParamJolt)

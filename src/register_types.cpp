@@ -4,6 +4,7 @@
 #include "joints/jolt_joint_gizmo_plugin_3d.hpp"
 #include "joints/jolt_pin_joint_3d.hpp"
 #include "joints/jolt_slider_joint_3d.hpp"
+#include "joints/jolt_distance_constraint_3d.hpp"
 #include "objects/jolt_physics_direct_body_state_3d.hpp"
 #include "servers/jolt_editor_plugin.hpp"
 #include "servers/jolt_globals.hpp"
@@ -43,6 +44,7 @@ void on_initialize(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<JoltSliderJoint3D>();
 			ClassDB::register_class<JoltConeTwistJoint3D>();
 			ClassDB::register_class<JoltGeneric6DOFJoint3D>();
+			ClassDB::register_class<JoltDistanceConstraint3D>();
 
 #ifdef GDJ_CONFIG_DISTRIBUTION
 			ClassDB::register_internal_class<JoltDebugGeometry3D>();

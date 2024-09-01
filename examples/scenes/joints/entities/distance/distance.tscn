@@ -1,0 +1,74 @@
+[gd_scene load_steps=8 format=3 uid="uid://cpj3mw7kpreca"]
+
+[ext_resource type="Environment" uid="uid://cgl5t5rlv6o6v" path="res://scenes/common/environments/default.tres" id="1_dtyjk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kkc2f"]
+size = Vector3(100, 100, 100)
+
+[sub_resource type="BoxMesh" id="BoxMesh_q4hwq"]
+size = Vector3(100, 100, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dluhb"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_xle4k"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ell36"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_8o7mq"]
+
+[node name="Distance" type="Node3D"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, -66.2631, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_kkc2f")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+visible = false
+mesh = SubResource("BoxMesh_q4hwq")
+skeleton = NodePath("../CollisionShape3D")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+transform = Transform3D(0.412834, -0.910806, 0, 0.910806, 0.412834, 0, 0, 0, 1, -2.89173, 3.32687, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_dluhb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+visible = false
+mesh = SubResource("BoxMesh_xle4k")
+skeleton = NodePath("../CollisionShape3D")
+
+[node name="RigidBody3D2" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.69229, 3.34943, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D2"]
+shape = SubResource("BoxShape3D_ell36")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D2"]
+visible = false
+mesh = SubResource("BoxMesh_8o7mq")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.990972, 0.134073, 0, -0.134073, 0.990972, 0, 8.5326, 21.0471)
+
+[node name="Environment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_dtyjk")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.825549, -0.544985, 0.146493, 0, 0.259587, 0.96572, -0.56433, 0.797249, -0.214302, 0, 0, 0)
+visible = false
+light_bake_mode = 0
+shadow_enabled = true
+
+[node name="JoltDebugGeometry3D" type="JoltDebugGeometry3D" parent="."]
+visible = false
+
+[node name="JoltDistanceConstraint3D" type="JoltDistanceConstraint3D" parent="."]
+distance_max = 15.0
+point_a = Vector3(0.5, 0.5, 0.5)
+point_b = Vector3(-0.5, -0.5, -0.5)
+node_a = NodePath("../RigidBody3D")
+node_b = NodePath("../RigidBody3D2")
+exclude_nodes_from_collision = false
