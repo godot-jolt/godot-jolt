@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
-set(bin_dir ${CMAKE_CURRENT_LIST_DIR}/bin)
 set(source_dir ${CMAKE_CURRENT_LIST_DIR}/src)
 set(cmake_dir ${CMAKE_CURRENT_LIST_DIR}/cmake)
 set(templates_dir ${cmake_dir}/templates)
@@ -363,6 +362,12 @@ install(
 		${gdextension_file}
 		LICENSE.txt
 		THIRDPARTY.txt
+	DESTINATION ${addon_dir}
+)
+
+install (
+	DIRECTORY
+		${CMAKE_CURRENT_LIST_DIR}/icons
 	DESTINATION ${addon_dir}
 )
 

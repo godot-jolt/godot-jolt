@@ -35,3 +35,7 @@ android.debug.${GDJ_PRECISION}.x86_64 = "android/libgodot-jolt_android-x64_edito
 
 android.release.${GDJ_PRECISION}.x86_32 = "android/libgodot-jolt_android-x86.so"
 android.debug.${GDJ_PRECISION}.x86_32 = "android/libgodot-jolt_android-x86_editor.so"
+
+[icons]
+
+JoltDistanceConstraint3D = "res://addons/godot-jolt/icons/JoltDistanceConstraint3D.svg"

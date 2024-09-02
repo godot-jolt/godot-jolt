@@ -2,7 +2,6 @@
 
 #ifdef GDJ_CONFIG_EDITOR
 
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "joints/jolt_cone_twist_joint_3d.hpp"
 #include "joints/jolt_distance_constraint_3d.hpp"
 #include "joints/jolt_generic_6dof_joint.hpp"
