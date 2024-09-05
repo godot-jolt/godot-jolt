@@ -56,6 +56,9 @@ void JoltDebugGeometry3D::_bind_methods() {
 	BIND_METHOD(JoltDebugGeometry3D, get_material_depth_test);
 	BIND_METHOD(JoltDebugGeometry3D, set_material_depth_test, "enabled");
 
+	BIND_METHOD(JoltDebugGeometry3D, get_draw_text);
+	BIND_METHOD(JoltDebugGeometry3D, set_draw_text, "enabled");
+
 	ADD_GROUP("Draw", "draw_");
 
 	BIND_PROPERTY("draw_bodies", Variant::BOOL);
@@ -92,6 +95,8 @@ void JoltDebugGeometry3D::_bind_methods() {
 		"draw_with_color_scheme",
 		"Instance,Shape Type,Motion Type,Sleep State,Island"
 	);
+
+	BIND_PROPERTY("draw_text", Variant::BOOL);
 
 	ADD_GROUP("Material", "material_");
 
@@ -410,6 +415,23 @@ void JoltDebugGeometry3D::set_material_depth_test([[maybe_unused]] bool p_enable
 #ifdef JPH_DEBUG_RENDERER
 	ERR_FAIL_NULL(default_material);
 	default_material->set_flag(StandardMaterial3D::FLAG_DISABLE_DEPTH_TEST, !p_enabled);
+#endif // JPH_DEBUG_RENDERER
+}
+
+bool JoltDebugGeometry3D::get_draw_text() const {
+#ifdef JPH_DEBUG_RENDERER
+	if (debug_renderer != nullptr) {
+		return debug_renderer->draw_text;
+	}
+#endif // JPH_DEBUG_RENDERER
+	return false;
+}
+
+void JoltDebugGeometry3D::set_draw_text(bool p_draw_text) {
+#ifdef JPH_DEBUG_RENDERER
+	if (debug_renderer != nullptr) {
+		debug_renderer->draw_text = p_draw_text;
+	}
 #endif // JPH_DEBUG_RENDERER
 }
 

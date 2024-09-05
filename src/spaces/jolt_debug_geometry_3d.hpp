@@ -92,6 +92,10 @@ public:
 
 	void set_material_depth_test(bool p_enabled);
 
+	bool get_draw_text() const;
+
+	void set_draw_text(bool p_draw_text);
+
 private:
 #ifdef JPH_DEBUG_RENDERER
 	JoltDebugRenderer3D::DrawSettings draw_settings;

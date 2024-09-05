@@ -46,6 +46,8 @@ public:
 
 	int32_t submit(const RID& p_mesh);
 
+	bool draw_text = false;
+
 private:
 	JoltDebugRenderer3D() { Initialize(); }
 
