@@ -427,7 +427,7 @@ bool JoltDebugGeometry3D::get_draw_text() const {
 	return false;
 }
 
-void JoltDebugGeometry3D::set_draw_text(bool p_draw_text) {
+void JoltDebugGeometry3D::set_draw_text([[maybe_unused]] bool p_draw_text) {
 #ifdef JPH_DEBUG_RENDERER
 	if (debug_renderer != nullptr) {
 		debug_renderer->draw_text = p_draw_text;
