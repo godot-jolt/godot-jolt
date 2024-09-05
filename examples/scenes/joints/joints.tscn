@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b5m5i0j4kfjaw"]
+[gd_scene load_steps=12 format=3 uid="uid://b5m5i0j4kfjaw"]
 
 [ext_resource type="Environment" uid="uid://cgl5t5rlv6o6v" path="res://scenes/common/environments/default.tres" id="1_aom0t"]
 [ext_resource type="Script" path="res://scenes/common/scripts/free_look_camera.gd" id="2_bxs0h"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://1qr0mfmdd78x" path="res://scenes/joints/entities/pin/pin.tscn" id="7_mihtv"]
 [ext_resource type="PackedScene" uid="uid://clbjmwhkbcqil" path="res://scenes/joints/entities/cone_twist/cone_twist.tscn" id="8_iy535"]
 [ext_resource type="PackedScene" uid="uid://byhekkfhi30nh" path="res://scenes/joints/entities/hinge/hinge.tscn" id="9_ro1qy"]
+[ext_resource type="PackedScene" uid="uid://cpj3mw7kpreca" path="res://scenes/joints/entities/distance/distance.tscn" id="10_65idf"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7618w"]
 size = Vector3(5, 1, 5)
@@ -79,6 +80,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 4, -0.6)
 
 [node name="Hinge" parent="." instance=ExtResource("9_ro1qy")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.5, 4, 0)
+
+[node name="Distance" parent="." instance=ExtResource("10_65idf")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -2.1601, 4.08632, -1.21951)
 
 [editable path="Spinner1"]
 [editable path="Spinner2"]
