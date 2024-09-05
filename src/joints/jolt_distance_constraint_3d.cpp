@@ -108,7 +108,8 @@ void JoltDistanceConstraint3D::set_point_b(Vector3 p_point) {
 Vector3 JoltDistanceConstraint3D::get_global_point_a() const {
 	PhysicsBody3D* body_a = get_body_a();
 	if (body_a == nullptr) {
-		return to_global(point_a);
+		JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+		return physics_server->distance_constraint_get_local_a(rid);
 	}
 	return body_a->to_global(point_a);
 }
@@ -116,7 +117,8 @@ Vector3 JoltDistanceConstraint3D::get_global_point_a() const {
 Vector3 JoltDistanceConstraint3D::get_global_point_b() const {
 	PhysicsBody3D* body_b = get_body_b();
 	if (body_b == nullptr) {
-		return to_global(point_b);
+		JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+		return physics_server->distance_constraint_get_local_b(rid);
 	}
 	return body_b->to_global(point_b);
 }
@@ -127,9 +129,7 @@ void JoltDistanceConstraint3D::_configure(PhysicsBody3D* p_body_a, PhysicsBody3D
 
 	const bool are_bodies_switched = get_body_a() == nullptr; // Bodies get switched in
 															  // JoltJoint3D::_configure.
-	const Vector3 global_position = are_bodies_switched
-		? get_global_point_a()
-		: get_global_point_b();
+	const Vector3 global_position = are_bodies_switched ? to_global(point_a) : to_global(point_b);
 	const Vector3 p_body_a_point = are_bodies_switched ? point_b : point_a;
 	const Vector3 p_body_b_point = are_bodies_switched ? point_a : point_b;
 

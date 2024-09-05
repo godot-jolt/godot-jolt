@@ -8,7 +8,6 @@ class JoltShapeImpl3D;
 class JoltSoftBodyImpl3D;
 class JoltSpace3D;
 
-
 class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
 	GDCLASS_QUIET(JoltPhysicsServer3D, PhysicsServer3DExtension)
 
@@ -752,6 +751,10 @@ public:
 		DistanceConstraintParamJolt p_param,
 		double p_value
 	);
+
+	Vector3 distance_constraint_get_local_a(const RID& p_joint) const;
+
+	Vector3 distance_constraint_get_local_b(const RID& p_joint) const;
 
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;
