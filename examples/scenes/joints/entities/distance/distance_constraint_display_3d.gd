@@ -29,10 +29,8 @@ func _ready() -> void:
 	csg_polygon.smooth_faces = true
 
 func _process(_delta: float) -> void:
-	var body_a: Node3D = distance_constraint.get_node(distance_constraint.node_a)
-	var global_point_a: Vector3 = body_a.to_global(distance_constraint.point_a)
-	var body_b: Node3D = distance_constraint.get_node(distance_constraint.node_b)
-	var global_point_b: Vector3 = body_b.to_global(distance_constraint.point_b)
+	var global_point_a: Vector3 = distance_constraint.get_global_point_a()
+	var global_point_b: Vector3 = distance_constraint.get_global_point_b()
 	
 	path.curve.clear_points()
 	path.curve.add_point(global_point_a)

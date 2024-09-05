@@ -23,8 +23,12 @@ void JoltDistanceConstraint3D::_bind_methods() {
 	BIND_METHOD(JoltDistanceConstraint3D, get_point_a);
 	BIND_METHOD(JoltDistanceConstraint3D, set_point_a, "value");
 
+	BIND_METHOD(JoltDistanceConstraint3D, get_global_point_a);
+
 	BIND_METHOD(JoltDistanceConstraint3D, get_point_b);
 	BIND_METHOD(JoltDistanceConstraint3D, set_point_b, "value");
+
+	BIND_METHOD(JoltDistanceConstraint3D, get_global_point_b);
 
 	ADD_GROUP("Distance", "distance_");
 
@@ -102,18 +106,40 @@ void JoltDistanceConstraint3D::set_point_b(Vector3 p_point) {
 	_points_changed();
 }
 
+Vector3 JoltDistanceConstraint3D::get_global_point_a() const {
+	PhysicsBody3D* body_a = get_body_a();
+	if (body_a == nullptr) {
+		return to_global(point_a);
+	}
+	return body_a->to_global(point_a);
+}
+
+Vector3 JoltDistanceConstraint3D::get_global_point_b() const {
+	PhysicsBody3D* body_b = get_body_b();
+	if (body_b == nullptr) {
+		return to_global(point_b);
+	}
+	return body_b->to_global(point_b);
+}
+
 void JoltDistanceConstraint3D::_configure(PhysicsBody3D* p_body_a, PhysicsBody3D* p_body_b) {
 	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
 	ERR_FAIL_NULL(physics_server);
 
-	const Vector3 global_position = get_global_position();
+	const bool are_bodies_switched = get_body_a() == nullptr; // Bodies get switched in
+															  // JoltJoint3D::_configure.
+	const Vector3 global_position = are_bodies_switched
+		? get_global_point_a()
+		: get_global_point_b();
+	const Vector3 p_body_a_point = are_bodies_switched ? point_b : point_a;
+	const Vector3 p_body_b_point = are_bodies_switched ? point_a : point_b;
 
 	physics_server->joint_make_distance_constraint(
 		rid,
 		p_body_a->get_rid(),
-		point_a,
+		p_body_a_point,
 		p_body_b != nullptr ? p_body_b->get_rid() : RID(),
-		p_body_b != nullptr ? point_b : global_position
+		p_body_b != nullptr ? p_body_b_point : global_position
 	);
 
 	_update_jolt_param(PARAM_LIMITS_SPRING_FREQUENCY);

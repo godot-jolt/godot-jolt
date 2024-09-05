@@ -44,6 +44,7 @@ point_b = Vector3(-0.25, 0, 0)
 node_a = NodePath("../StaticBody3D")
 node_b = NodePath("../RigidBody3D2")
 exclude_nodes_from_collision = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="DistanceConstraintDisplay3D" type="Node" parent="." node_paths=PackedStringArray("distance_constraint")]
 script = ExtResource("3_5ndwp")

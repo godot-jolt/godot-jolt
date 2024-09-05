@@ -264,18 +264,14 @@ void draw_distance_constraint(
 	const JoltDistanceConstraint3D& p_joint,
 	PackedVector3Array& p_points
 ) {
-	PhysicsBody3D* body_a = p_joint.get_body_a();
-	Vector3 global_point_a = body_a != nullptr
-		? body_a->to_global(p_joint.get_point_a())
-		: Vector3(0, 0, 0);
-	PhysicsBody3D* body_b = p_joint.get_body_b();
-	Vector3 global_point_b = body_b != nullptr
-		? body_b->to_global(p_joint.get_point_b())
-		: Vector3(0, 0, 0);
-	draw_cross(global_point_a, p_points);
-	draw_cross(global_point_b, p_points);
-	p_points.push_back(global_point_a);
-	p_points.push_back(global_point_b);
+	Transform3D joint_global_transform = p_joint.get_global_transform();
+	Vector3 point_a = joint_global_transform.xform_inv(p_joint.get_global_point_a());
+	Vector3 point_b = joint_global_transform.xform_inv(p_joint.get_global_point_b());
+
+	draw_cross(point_a, p_points);
+	draw_cross(point_b, p_points);
+	p_points.push_back(point_a);
+	p_points.push_back(point_b);
 }
 
 } // namespace

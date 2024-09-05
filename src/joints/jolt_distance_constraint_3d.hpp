@@ -8,8 +8,10 @@ class JoltDistanceConstraint3D final : public JoltJoint3D {
 
 public:
 	enum Param {
-		PARAM_LIMITS_SPRING_FREQUENCY = JoltPhysicsServer3D::DISTANCE_CONSTRAINT_LIMITS_SPRING_FREQUENCY,
-		PARAM_LIMITS_SPRING_DAMPING = JoltPhysicsServer3D::DISTANCE_CONSTRAINT_LIMITS_SPRING_DAMPING,
+		PARAM_LIMITS_SPRING_FREQUENCY = JoltPhysicsServer3D::
+			DISTANCE_CONSTRAINT_LIMITS_SPRING_FREQUENCY,
+		PARAM_LIMITS_SPRING_DAMPING = JoltPhysicsServer3D::
+			DISTANCE_CONSTRAINT_LIMITS_SPRING_DAMPING,
 		PARAM_DISTANCE_MIN = JoltPhysicsServer3D::DISTANCE_CONSTRAINT_DISTANCE_MIN,
 		PARAM_DISTANCE_MAX = JoltPhysicsServer3D::DISTANCE_CONSTRAINT_DISTANCE_MAX
 	};
@@ -36,9 +38,13 @@ public:
 
 	Vector3 get_point_a() const { return point_a; }
 
+	Vector3 get_global_point_a() const;
+
 	void set_point_a(Vector3 p_point);
 
 	Vector3 get_point_b() const { return point_b; }
+
+	Vector3 get_global_point_b() const;
 
 	void set_point_b(Vector3 p_point);
 
@@ -59,8 +65,7 @@ private:
 
 	double distance_max = INFINITY;
 
-	Vector3 point_a = Vector3(0, 0, 0);  // In local space for Node a.
+	Vector3 point_a = Vector3(0, 0, 0); // In local space for Node a.
 
-	Vector3 point_b = Vector3(0, 0, 0);  // In local space for Node b.
-
+	Vector3 point_b = Vector3(0, 0, 0); // In local space for Node b.
 };
