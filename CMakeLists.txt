@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
+set(bin_dir ${CMAKE_CURRENT_LIST_DIR}/bin)
+set(icons_dir ${CMAKE_CURRENT_LIST_DIR}/icons)
 set(source_dir ${CMAKE_CURRENT_LIST_DIR}/src)
 set(cmake_dir ${CMAKE_CURRENT_LIST_DIR}/cmake)
 set(templates_dir ${cmake_dir}/templates)
@@ -367,7 +369,7 @@ install(
 
 install (
 	DIRECTORY
-		${CMAKE_CURRENT_LIST_DIR}/icons
+		${icons_dir}
 	DESTINATION ${addon_dir}
 )
 

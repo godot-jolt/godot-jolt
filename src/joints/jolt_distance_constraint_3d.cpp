@@ -7,7 +7,6 @@ using ServerParamJolt = JoltPhysicsServer3D::DistanceConstraintParamJolt;
 } // namespace
 
 void JoltDistanceConstraint3D::_bind_methods() {
-	// TODO(ewall198): Make sure that the physics server is jolt before allowing any interactions.
 	BIND_METHOD(JoltDistanceConstraint3D, get_limit_spring_frequency);
 	BIND_METHOD(JoltDistanceConstraint3D, set_limit_spring_frequency, "value");
 
