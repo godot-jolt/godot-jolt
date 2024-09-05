@@ -38,7 +38,7 @@ private:
 		JPH::Body* p_jolt_body_b,
 		const Transform3D& p_shifted_ref_a,
 		const Transform3D& p_shifted_ref_b
-	);
+	) const;
 
 	void _limit_spring_changed();
 

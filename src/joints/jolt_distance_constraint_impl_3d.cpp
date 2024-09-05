@@ -75,7 +75,7 @@ void JoltDistanceConstraintImpl3D::rebuild() {
 
 	const JPH::BodyID body_ids[2] = {
 		body_a != nullptr ? body_a->get_jolt_id() : JPH::BodyID(),
-		body_b != nullptr ? body_b->get_jolt_id() : JPH::BodyID()
+		body_b != nullptr ? body_b->get_jolt_id() : JPH::BodyID(),
 	};
 
 	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, count_of(body_ids));
@@ -103,7 +103,7 @@ JPH::Constraint* JoltDistanceConstraintImpl3D::_build_constraint(
 	JPH::Body* p_jolt_body_b,
 	const Transform3D& p_shifted_ref_a,
 	const Transform3D& p_shifted_ref_b
-) {
+) const {
 	JPH::DistanceConstraintSettings constraint_settings;
 	constraint_settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
 	constraint_settings.mPoint1 = to_jolt_r(p_shifted_ref_a.origin);

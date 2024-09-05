@@ -2393,7 +2393,7 @@ Vector3 JoltPhysicsServer3D::distance_constraint_get_local_a(const RID& p_joint)
 		joint->get_jolt_only_type() != JoltOnlyJointType::DISTANCE_CONSTRAINT,
 		Vector3(0, 0, 0)
 	);
-	JoltDistanceConstraintImpl3D* joint_impl = dynamic_cast<JoltDistanceConstraintImpl3D*>(joint);
+	auto* joint_impl = dynamic_cast<JoltDistanceConstraintImpl3D*>(joint);
 	return joint_impl->get_local_a();
 }
 
@@ -2404,6 +2404,6 @@ Vector3 JoltPhysicsServer3D::distance_constraint_get_local_b(const RID& p_joint)
 		joint->get_jolt_only_type() != JoltOnlyJointType::DISTANCE_CONSTRAINT,
 		Vector3(0, 0, 0)
 	);
-	JoltDistanceConstraintImpl3D* joint_impl = dynamic_cast<JoltDistanceConstraintImpl3D*>(joint);
+	auto* joint_impl = dynamic_cast<JoltDistanceConstraintImpl3D*>(joint);
 	return joint_impl->get_local_b();
 }

@@ -103,13 +103,13 @@ void draw_angular_limits(
 	p_points.push_back(start);
 }
 
-void draw_cross(Vector3 center, PackedVector3Array& p_points) {
-	p_points.push_back(center + Vector3(GIZMO_RADIUS, 0, 0));
-	p_points.push_back(center - Vector3(GIZMO_RADIUS, 0, 0));
-	p_points.push_back(center + Vector3(0, GIZMO_RADIUS, 0));
-	p_points.push_back(center - Vector3(0, GIZMO_RADIUS, 0));
-	p_points.push_back(center + Vector3(0, 0, GIZMO_RADIUS));
-	p_points.push_back(center - Vector3(0, 0, GIZMO_RADIUS));
+void draw_cross(Vector3 p_center, PackedVector3Array& p_points) {
+	p_points.push_back(p_center + Vector3(GIZMO_RADIUS, 0, 0));
+	p_points.push_back(p_center - Vector3(GIZMO_RADIUS, 0, 0));
+	p_points.push_back(p_center + Vector3(0, GIZMO_RADIUS, 0));
+	p_points.push_back(p_center - Vector3(0, GIZMO_RADIUS, 0));
+	p_points.push_back(p_center + Vector3(0, 0, GIZMO_RADIUS));
+	p_points.push_back(p_center - Vector3(0, 0, GIZMO_RADIUS));
 }
 
 void draw_pin_joint([[maybe_unused]] const JoltPinJoint3D& p_joint, PackedVector3Array& p_points) {
