@@ -62,9 +62,6 @@ visible = false
 light_bake_mode = 0
 shadow_enabled = true
 
-[node name="JoltDebugGeometry3D" type="JoltDebugGeometry3D" parent="."]
-visible = false
-
 [node name="JoltDistanceConstraint3D" type="JoltDistanceConstraint3D" parent="."]
 distance_max = 15.0
 point_a = Vector3(0.5, 0.5, 0.5)
@@ -72,3 +69,5 @@ point_b = Vector3(-0.5, -0.5, -0.5)
 node_a = NodePath("../RigidBody3D")
 node_b = NodePath("../RigidBody3D2")
 exclude_nodes_from_collision = false
+
+[node name="JoltDebugGeometry3D" type="JoltDebugGeometry3D" parent="."]
