@@ -1,3 +1,7 @@
+[godot-jolt]
+version = "${PROJECT_VERSION_WITH_STATUS}"
+build = "${PROJECT_VERSION_BUILD}"
+
 [configuration]
 
 entry_symbol = "${GDJ_ENTRY_POINT}"
