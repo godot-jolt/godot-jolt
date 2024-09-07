@@ -41,6 +41,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed crash when changing the mesh of an in-tree `SoftBody3D` that has pinned vertices.
 - Fixed issue where the joint substitute nodes (`JoltHingeJoint3D`, etc.) would not display their
   angle properties in degrees when using a `DISABLE_DEPRECATED` build of Godot.
+- Fixed crash when a `SoftBody3D` collided with the border of a
+  `HeightMapShape3D` using non-power-of-two dimensions.
 
 ## [0.13.0] - 2024-08-15
 
