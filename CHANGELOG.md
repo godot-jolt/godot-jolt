@@ -31,6 +31,7 @@ Breaking changes are denoted with ⚠️.
 - Added project setting "Enable Ray Cast Face Index", to allow opting in to the additional memory
   needed to support `face_index`, which is roughly an additional 25% to every
   `ConcavePolygonShape3D`.
+- Added "Max Force"/"Max Torque" to the spring properties of `JoltGeneric6DOFJoint3D`.
 
 ### Fixed
 
