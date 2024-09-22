@@ -324,6 +324,9 @@ double JoltGeneric6DOFJointImpl3D::get_jolt_param(Axis p_axis, JoltParam p_param
 		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_FREQUENCY: {
 			return spring_frequency[axis_lin];
 		}
+		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_MAX_FORCE: {
+			return spring_limit[axis_lin];
+		}
 		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SPRING_FREQUENCY: {
 			return limit_spring_frequency[axis_lin];
 		}
@@ -332,6 +335,9 @@ double JoltGeneric6DOFJointImpl3D::get_jolt_param(Axis p_axis, JoltParam p_param
 		}
 		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_FREQUENCY: {
 			return spring_frequency[axis_ang];
+		}
+		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_MAX_TORQUE: {
+			return spring_limit[axis_ang];
 		}
 		default: {
 			ERR_FAIL_D_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
@@ -348,6 +354,10 @@ void JoltGeneric6DOFJointImpl3D::set_jolt_param(Axis p_axis, JoltParam p_param, 
 			spring_frequency[axis_lin] = p_value;
 			_spring_parameters_changed(axis_lin);
 		} break;
+		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_MAX_FORCE: {
+			spring_limit[axis_lin] = p_value;
+			_spring_limit_changed(axis_lin);
+		} break;
 		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SPRING_FREQUENCY: {
 			limit_spring_frequency[axis_lin] = p_value;
 			_limit_spring_parameters_changed(axis_lin);
@@ -359,6 +369,10 @@ void JoltGeneric6DOFJointImpl3D::set_jolt_param(Axis p_axis, JoltParam p_param, 
 		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_FREQUENCY: {
 			spring_frequency[axis_ang] = p_value;
 			_spring_parameters_changed(axis_ang);
+		} break;
+		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_MAX_TORQUE: {
+			spring_limit[axis_ang] = p_value;
+			_spring_limit_changed(axis_ang);
 		} break;
 		default: {
 			ERR_FAIL_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
@@ -580,9 +594,13 @@ void JoltGeneric6DOFJointImpl3D::_update_motor_limit(int32_t p_axis) {
 
 	JPH::MotorSettings& motor_settings = constraint->GetMotorSettings((JoltAxis)p_axis);
 
-	// NOTE(mihe): We only apply the motor limit if we're actually using a velocity motor, since it
-	// would otherwise affect a position motor as well.
-	const auto limit = motor_enabled[p_axis] ? (float)motor_limit[p_axis] : FLT_MAX;
+	float limit = FLT_MAX;
+
+	if (motor_enabled[p_axis]) {
+		limit = (float)motor_limit[p_axis];
+	} else if (spring_enabled[p_axis]) {
+		limit = (float)spring_limit[p_axis];
+	}
 
 	if (p_axis >= AXIS_LINEAR_X && p_axis <= AXIS_LINEAR_Z) {
 		motor_settings.SetForceLimit(limit);
@@ -671,5 +689,10 @@ void JoltGeneric6DOFJointImpl3D::_spring_parameters_changed(int32_t p_axis) {
 
 void JoltGeneric6DOFJointImpl3D::_spring_equilibrium_changed(int32_t p_axis) {
 	_update_spring_equilibrium(p_axis);
+	_wake_up_bodies();
+}
+
+void JoltGeneric6DOFJointImpl3D::_spring_limit_changed(int32_t p_axis) {
+	_update_motor_limit(p_axis);
 	_wake_up_bodies();
 }

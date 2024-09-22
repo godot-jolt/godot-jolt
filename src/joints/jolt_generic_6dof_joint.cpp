@@ -92,6 +92,9 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_linear_spring_x_equilibrium_point);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_linear_spring_x_equilibrium_point, "value");
 
+	BIND_METHOD(JoltGeneric6DOFJoint3D, get_linear_spring_x_max_force);
+	BIND_METHOD(JoltGeneric6DOFJoint3D, set_linear_spring_x_max_force, "value");
+
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_linear_spring_y_frequency);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_linear_spring_y_frequency, "value");
 
@@ -101,6 +104,9 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_linear_spring_y_equilibrium_point);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_linear_spring_y_equilibrium_point, "value");
 
+	BIND_METHOD(JoltGeneric6DOFJoint3D, get_linear_spring_y_max_force);
+	BIND_METHOD(JoltGeneric6DOFJoint3D, set_linear_spring_y_max_force, "value");
+
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_linear_spring_z_frequency);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_linear_spring_z_frequency, "value");
 
@@ -109,6 +115,9 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_linear_spring_z_equilibrium_point);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_linear_spring_z_equilibrium_point, "value");
+
+	BIND_METHOD(JoltGeneric6DOFJoint3D, get_linear_spring_z_max_force);
+	BIND_METHOD(JoltGeneric6DOFJoint3D, set_linear_spring_z_max_force, "value");
 
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_linear_limit_x_enabled);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_linear_limit_x_enabled, "enabled");
@@ -191,6 +200,9 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_angular_spring_x_equilibrium_point);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_angular_spring_x_equilibrium_point, "value");
 
+	BIND_METHOD(JoltGeneric6DOFJoint3D, get_angular_spring_x_max_torque);
+	BIND_METHOD(JoltGeneric6DOFJoint3D, set_angular_spring_x_max_torque, "value");
+
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_angular_spring_y_frequency);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_angular_spring_y_frequency, "value");
 
@@ -200,6 +212,9 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_angular_spring_y_equilibrium_point);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_angular_spring_y_equilibrium_point, "value");
 
+	BIND_METHOD(JoltGeneric6DOFJoint3D, get_angular_spring_y_max_torque);
+	BIND_METHOD(JoltGeneric6DOFJoint3D, set_angular_spring_y_max_torque, "value");
+
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_angular_spring_z_frequency);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_angular_spring_z_frequency, "value");
 
@@ -208,6 +223,9 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_angular_spring_z_equilibrium_point);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_angular_spring_z_equilibrium_point, "value");
+
+	BIND_METHOD(JoltGeneric6DOFJoint3D, get_angular_spring_z_max_torque);
+	BIND_METHOD(JoltGeneric6DOFJoint3D, set_angular_spring_z_max_torque, "value");
 
 	BIND_METHOD(JoltGeneric6DOFJoint3D, get_angular_limit_x_enabled);
 	BIND_METHOD(JoltGeneric6DOFJoint3D, set_angular_limit_x_enabled, "enabled");
@@ -287,16 +305,19 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 	BIND_SUBPROPERTY("linear_spring_x", "frequency", Variant::FLOAT, "suffix:hz");
 	BIND_SUBPROPERTY("linear_spring_x", "damping", Variant::FLOAT);
 	BIND_SUBPROPERTY("linear_spring_x", "equilibrium_point", Variant::FLOAT, "suffix:m");
+	BIND_SUBPROPERTY("linear_spring_x", "max_force", Variant::FLOAT, U"suffix:kg⋅m/s² (N)");
 
 	BIND_SUBPROPERTY("linear_spring_y", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("linear_spring_y", "frequency", Variant::FLOAT, "suffix:hz");
 	BIND_SUBPROPERTY("linear_spring_y", "damping", Variant::FLOAT);
 	BIND_SUBPROPERTY("linear_spring_y", "equilibrium_point", Variant::FLOAT, "suffix:m");
+	BIND_SUBPROPERTY("linear_spring_y", "max_force", Variant::FLOAT, U"suffix:kg⋅m/s² (N)");
 
 	BIND_SUBPROPERTY("linear_spring_z", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("linear_spring_z", "frequency", Variant::FLOAT, "suffix:hz");
 	BIND_SUBPROPERTY("linear_spring_z", "damping", Variant::FLOAT);
 	BIND_SUBPROPERTY("linear_spring_z", "equilibrium_point", Variant::FLOAT, "suffix:m");
+	BIND_SUBPROPERTY("linear_spring_z", "max_force", Variant::FLOAT, U"suffix:kg⋅m/s² (N)");
 
 	ADD_GROUP("Angular Limit", "angular_limit_");
 
@@ -336,16 +357,19 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 	BIND_SUBPROPERTY("angular_spring_x", "frequency", Variant::FLOAT, "suffix:hz");
 	BIND_SUBPROPERTY("angular_spring_x", "damping", Variant::FLOAT);
 	BIND_SUBPROPERTY("angular_spring_x", "equilibrium_point", Variant::FLOAT, "radians_as_degrees");
+	BIND_SUBPROPERTY("angular_spring_x", "max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 
 	BIND_SUBPROPERTY("angular_spring_y", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("angular_spring_y", "frequency", Variant::FLOAT, "suffix:hz");
 	BIND_SUBPROPERTY("angular_spring_y", "damping", Variant::FLOAT);
 	BIND_SUBPROPERTY("angular_spring_y", "equilibrium_point", Variant::FLOAT, "radians_as_degrees");
+	BIND_SUBPROPERTY("angular_spring_y", "max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 
 	BIND_SUBPROPERTY("angular_spring_z", "enabled", Variant::BOOL);
 	BIND_SUBPROPERTY("angular_spring_z", "frequency", Variant::FLOAT, "suffix:hz");
 	BIND_SUBPROPERTY("angular_spring_z", "damping", Variant::FLOAT);
 	BIND_SUBPROPERTY("angular_spring_z", "equilibrium_point", Variant::FLOAT, "radians_as_degrees");
+	BIND_SUBPROPERTY("angular_spring_z", "max_torque", Variant::FLOAT, U"suffix:kg⋅m²/s² (Nm)");
 
 	BIND_ENUM_CONSTANT(PARAM_LINEAR_LIMIT_UPPER);
 	BIND_ENUM_CONSTANT(PARAM_LINEAR_LIMIT_LOWER);
@@ -356,6 +380,7 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 	BIND_ENUM_CONSTANT(PARAM_LINEAR_SPRING_FREQUENCY);
 	BIND_ENUM_CONSTANT(PARAM_LINEAR_SPRING_DAMPING);
 	BIND_ENUM_CONSTANT(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT);
+	BIND_ENUM_CONSTANT(PARAM_LINEAR_SPRING_MAX_FORCE);
 	BIND_ENUM_CONSTANT(PARAM_ANGULAR_LIMIT_UPPER);
 	BIND_ENUM_CONSTANT(PARAM_ANGULAR_LIMIT_LOWER);
 	BIND_ENUM_CONSTANT(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY);
@@ -363,6 +388,7 @@ void JoltGeneric6DOFJoint3D::_bind_methods() {
 	BIND_ENUM_CONSTANT(PARAM_ANGULAR_SPRING_FREQUENCY);
 	BIND_ENUM_CONSTANT(PARAM_ANGULAR_SPRING_DAMPING);
 	BIND_ENUM_CONSTANT(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT);
+	BIND_ENUM_CONSTANT(PARAM_ANGULAR_SPRING_MAX_TORQUE);
 
 	BIND_ENUM_CONSTANT(FLAG_ENABLE_LINEAR_LIMIT);
 	BIND_ENUM_CONSTANT(FLAG_ENABLE_LINEAR_LIMIT_SPRING);
@@ -379,9 +405,11 @@ JoltGeneric6DOFJoint3D::JoltGeneric6DOFJoint3D() {
 	std::fill_n(linear_motor_max_force, AXIS_COUNT, INFINITY);
 	std::fill_n(linear_spring_frequency, AXIS_COUNT, 0.0);
 	std::fill_n(linear_spring_damping, AXIS_COUNT, 0.0);
+	std::fill_n(linear_spring_max_force, AXIS_COUNT, INFINITY);
 	std::fill_n(angular_motor_max_torque, AXIS_COUNT, INFINITY);
 	std::fill_n(angular_spring_frequency, AXIS_COUNT, 0.0);
 	std::fill_n(angular_spring_damping, AXIS_COUNT, 0.0);
+	std::fill_n(angular_spring_max_torque, AXIS_COUNT, INFINITY);
 	std::fill_n(linear_limit_enabled, AXIS_COUNT, true);
 	std::fill_n(angular_limit_enabled, AXIS_COUNT, true);
 }
@@ -472,7 +500,9 @@ void JoltGeneric6DOFJoint3D::_configure(PhysicsBody3D* p_body_a, PhysicsBody3D* 
 		_update_jolt_param(axis, PARAM_LINEAR_LIMIT_SPRING_FREQUENCY);
 		_update_jolt_param(axis, PARAM_LINEAR_LIMIT_SPRING_DAMPING);
 		_update_jolt_param(axis, PARAM_LINEAR_SPRING_FREQUENCY);
+		_update_jolt_param(axis, PARAM_LINEAR_SPRING_MAX_FORCE);
 		_update_jolt_param(axis, PARAM_ANGULAR_SPRING_FREQUENCY);
+		_update_jolt_param(axis, PARAM_ANGULAR_SPRING_MAX_TORQUE);
 
 		_update_flag(axis, FLAG_ENABLE_LINEAR_LIMIT);
 		_update_flag(axis, FLAG_ENABLE_LINEAR_MOTOR);
@@ -521,6 +551,9 @@ double* JoltGeneric6DOFJoint3D::_get_param_ptr(Axis p_axis, Param p_param) {
 		case PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT: {
 			return &linear_spring_equilibrium_point[p_axis];
 		}
+		case PARAM_LINEAR_SPRING_MAX_FORCE: {
+			return &linear_spring_max_force[p_axis];
+		}
 		case PARAM_ANGULAR_LIMIT_UPPER: {
 			return &angular_limit_upper[p_axis];
 		}
@@ -541,6 +574,9 @@ double* JoltGeneric6DOFJoint3D::_get_param_ptr(Axis p_axis, Param p_param) {
 		}
 		case PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT: {
 			return &angular_spring_equilibrium_point[p_axis];
+		}
+		case PARAM_ANGULAR_SPRING_MAX_TORQUE: {
+			return &angular_spring_max_torque[p_axis];
 		}
 		default: {
 			ERR_FAIL_D_REPORT(vformat("Unhandled parameter: '%d'.", p_param));
@@ -666,7 +702,9 @@ void JoltGeneric6DOFJoint3D::_param_changed(Axis p_axis, Param p_param) {
 		case PARAM_LINEAR_LIMIT_SPRING_FREQUENCY:
 		case PARAM_LINEAR_LIMIT_SPRING_DAMPING:
 		case PARAM_LINEAR_SPRING_FREQUENCY:
-		case PARAM_ANGULAR_SPRING_FREQUENCY: {
+		case PARAM_LINEAR_SPRING_MAX_FORCE:
+		case PARAM_ANGULAR_SPRING_FREQUENCY:
+		case PARAM_ANGULAR_SPRING_MAX_TORQUE: {
 			_update_jolt_param(p_axis, p_param);
 		} break;
 
