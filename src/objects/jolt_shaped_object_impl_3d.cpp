@@ -1,7 +1,6 @@
 #include "jolt_shaped_object_impl_3d.hpp"
 
 #include "shapes/jolt_custom_double_sided_shape.hpp"
-#include "shapes/jolt_custom_empty_shape.hpp"
 #include "shapes/jolt_shape_impl_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
@@ -176,9 +175,9 @@ JPH::ShapeRefC JoltShapedObjectImpl3D::build_shape() {
 
 	if (new_shape == nullptr) {
 		if (has_custom_center_of_mass()) {
-			new_shape = new JoltCustomEmptyShape(to_jolt(get_center_of_mass_custom()));
+			new_shape = new JPH::EmptyShape(to_jolt(get_center_of_mass_custom()));
 		} else {
-			new_shape = new JoltCustomEmptyShape();
+			new_shape = new JPH::EmptyShape();
 		}
 	}
 

@@ -190,7 +190,6 @@ JPH::ShapeRefC JoltShapeImpl3D::with_double_sided(
 
 JPH::ShapeRefC JoltShapeImpl3D::without_custom_shapes(const JPH::Shape* p_shape) {
 	switch (p_shape->GetSubType()) {
-		case JoltCustomShapeSubType::EMPTY:
 		case JoltCustomShapeSubType::RAY:
 		case JoltCustomShapeSubType::MOTION: {
 			// Replace unsupported shapes with a small sphere
