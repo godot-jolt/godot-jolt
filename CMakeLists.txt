@@ -115,7 +115,9 @@ set(target_avx512 $<STREQUAL:${GDJ_X86_INSTRUCTION_SET},AVX512>)
 set(target_avx2 $<STREQUAL:${GDJ_X86_INSTRUCTION_SET},AVX2>)
 set(target_avx $<STREQUAL:${GDJ_X86_INSTRUCTION_SET},AVX>)
 set(target_sse2 $<STREQUAL:${GDJ_X86_INSTRUCTION_SET},SSE2>)
-
+if(NOT GDJ_TARGET_ARCHITECTURES STREQUAL x64)
+        set(target_sse2 $<STREQUAL:${GDJ_TARGET_ARCHITECTURES},x64>)
+endif()
 set(is_msvc_like $<BOOL:${MSVC}>)
 set(is_msvc_cl $<CXX_COMPILER_ID:MSVC>)
 set(is_llvm_clang $<CXX_COMPILER_ID:Clang>)
@@ -223,6 +225,10 @@ if(MSVC)
 		PRIVATE $<${is_distribution_config}:/PDBALTPATH:${pdb_file_name}> # Strip PDB path
 	)
 else()
+	if(GDJ_TARGET_ARCHITECTURES STREQUAL arm64)
+                set(GDJ_USE_SSE4_2 FALSE)
+	        set(GDJ_USE_SSE2 FALSE)
+	endif()
 	set(use_avx512 $<BOOL:${GDJ_USE_AVX512}>)
 	set(use_avx2 $<BOOL:${GDJ_USE_AVX2}>)
 	set(use_bmi1 $<BOOL:${GDJ_USE_BMI1}>)
@@ -231,7 +237,6 @@ else()
 	set(use_avx $<BOOL:${GDJ_USE_AVX}>)
 	set(use_sse4_2 $<BOOL:${GDJ_USE_SSE4_2}>)
 	set(use_sse2 $<BOOL:${GDJ_USE_SSE2}>)
-
 	target_compile_options(godot-jolt
 		PRIVATE -Wall # Enable common warnings
 		PRIVATE -Wextra # Enable more common warnings

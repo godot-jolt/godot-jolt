@@ -17,7 +17,9 @@ set(editor_definitions
 	DEBUG_METHODS_ENABLED
 	TOOLS_ENABLED
 )
-
+if(NOT GDJ_TARGET_ARCHITECTURES STREQUAL x64)
+set(GDJ_X86_INSTRUCTION_SET "")
+endif()
 gdj_add_external_library(godot-cpp "${configurations}"
 	GIT_REPOSITORY https://github.com/godot-jolt/godot-cpp.git
 	GIT_COMMIT 8e99c4b79422265e123080a144a9c3bd814abe54
