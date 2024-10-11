@@ -252,7 +252,7 @@ float JoltHingeJointImpl3D::get_applied_torque() const {
 			constraint->GetTotalLambdaRotation()[1],
 			constraint->GetTotalLambdaRotationLimits() + constraint->GetTotalLambdaMotor()
 		);
-		return total_lambda.length() / last_step;
+		return float(total_lambda.length()) / last_step;
 	}
 }
 

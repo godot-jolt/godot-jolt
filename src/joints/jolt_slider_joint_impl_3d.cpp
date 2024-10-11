@@ -436,7 +436,7 @@ float JoltSliderJointImpl3D::get_applied_force() const {
 			constraint->GetTotalLambdaPosition()[1],
 			constraint->GetTotalLambdaPositionLimits() + constraint->GetTotalLambdaMotor()
 		);
-		return total_lambda.length() / last_step;
+		return float(total_lambda.length()) / last_step;
 	}
 }
 
