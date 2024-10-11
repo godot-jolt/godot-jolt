@@ -218,7 +218,12 @@ float JoltConeTwistJointImpl3D::get_applied_torque() const {
 		constraint->GetTotalLambdaSwingZ()
 	);
 
-	return float(rotation_lambda.length() / last_step);
+	// The motor lambda is in a different space than the swing twist lambda, and since the two
+	// forces can cancel each other it is technically incorrect to just add them. The bodies
+	// themselves have moved, so we can't transform one into the space of the other anymore.
+	const float total_lambda = float(rotation_lambda.length()) +
+		constraint->GetTotalLambdaMotor().Length();
+	return total_lambda / last_step;
 }
 
 void JoltConeTwistJointImpl3D::rebuild() {
