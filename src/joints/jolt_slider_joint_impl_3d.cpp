@@ -431,7 +431,14 @@ float JoltSliderJointImpl3D::get_applied_force() const {
 		return constraint->GetTotalLambdaPosition().Length() / last_step;
 	} else {
 		auto* constraint = static_cast<JPH::SliderConstraint*>(jolt_ref.GetPtr());
-		return constraint->GetTotalLambdaPosition().Length() / last_step;
+
+		const Vector3 total_lambda = Vector3(
+			constraint->GetTotalLambdaPosition()[0],
+			constraint->GetTotalLambdaPosition()[1],
+			constraint->GetTotalLambdaPositionLimits() + constraint->GetTotalLambdaMotor()
+		);
+
+		return float(total_lambda.length()) / last_step;
 	}
 }
 
