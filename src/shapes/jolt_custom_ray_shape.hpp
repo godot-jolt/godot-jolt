@@ -56,7 +56,7 @@ public:
 
 	JPH::AABox GetLocalBounds() const override;
 
-	float GetInnerRadius() const override { return 0.0f; }
+	float GetInnerRadius() const override;
 
 	JPH::MassProperties GetMassProperties() const override;
 

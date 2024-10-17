@@ -49,6 +49,10 @@ Breaking changes are denoted with ⚠️.
   `HeightMapShape3D` using non-power-of-two dimensions.
 - Fixed issue where CCD would have no effect against a `ConcavePolygonShape3D` that had
   `backface_collision` enabled.
+- Fixed crash when using a `SeparationRayShape3D` in a `RigidBody3D` that had CCD enabled.
+- Fixed issue where the behavior of the `body_test_motion` method of `PhysicsServer3D` (which powers
+  `move_and_collide` and `move_and_slide`) may have differed from Godot Physics when dealing with a
+  `SeparationRayShape3D` that had `slide_on_slope` enabled.
 
 ## [0.13.0] - 2024-08-15
 
