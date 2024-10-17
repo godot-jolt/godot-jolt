@@ -19,6 +19,9 @@ Breaking changes are denoted with ⚠️.
 - ⚠️ Changed the ray-cast parameter `hit_back_faces` to only hit back-faces of a
   `ConcavePolygonShape3D` if its `backface_collision` property is set to `true`, to better match
   Godot Physics.
+- ⚠️ Changed the `get_applied_force` and `get_applied_torque` methods of `JoltHingeJoint3D`,
+  `JoltSliderJoint3D`, `JoltConeTwistJoint3D` and `JoltGeneric6DOFJoint3D` to now also include
+  forces/torque applied by any enabled motor or spring as well.
 
 ### Added
 
