@@ -47,6 +47,8 @@ Breaking changes are denoted with ⚠️.
   angle properties in degrees when using a `DISABLE_DEPRECATED` build of Godot.
 - Fixed crash when a `SoftBody3D` collided with the border of a
   `HeightMapShape3D` using non-power-of-two dimensions.
+- Fixed issue where CCD would have no effect against a `ConcavePolygonShape3D` that had
+  `backface_collision` enabled.
 
 ## [0.13.0] - 2024-08-15
 
