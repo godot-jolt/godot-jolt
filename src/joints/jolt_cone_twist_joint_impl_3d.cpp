@@ -212,17 +212,18 @@ float JoltConeTwistJointImpl3D::get_applied_torque() const {
 	const float last_step = space->get_last_step();
 	QUIET_FAIL_COND_D(last_step == 0.0f);
 
-	const Vector3 rotation_lambda = Vector3(
+	const Vector3 swing_twist_lambda = Vector3(
 		constraint->GetTotalLambdaTwist(),
 		constraint->GetTotalLambdaSwingY(),
 		constraint->GetTotalLambdaSwingZ()
 	);
 
-	// The motor lambda is in a different space than the swing twist lambda, and since the two
-	// forces can cancel each other it is technically incorrect to just add them. The bodies
+	// Note that the motor lambda is in a different space than the swing twist lambda, and since the
+	// two forces can cancel each other it is technically incorrect to just add them. The bodies
 	// themselves have moved, so we can't transform one into the space of the other anymore.
-	const float total_lambda = float(rotation_lambda.length()) +
+	const float total_lambda = float(swing_twist_lambda.length()) +
 		constraint->GetTotalLambdaMotor().Length();
+
 	return total_lambda / last_step;
 }
 

@@ -247,11 +247,13 @@ float JoltHingeJointImpl3D::get_applied_torque() const {
 		return constraint->GetTotalLambdaRotation().Length() / last_step;
 	} else {
 		auto* constraint = static_cast<JPH::HingeConstraint*>(jolt_ref.GetPtr());
+
 		const Vector3 total_lambda = Vector3(
 			constraint->GetTotalLambdaRotation()[0],
 			constraint->GetTotalLambdaRotation()[1],
 			constraint->GetTotalLambdaRotationLimits() + constraint->GetTotalLambdaMotor()
 		);
+
 		return float(total_lambda.length()) / last_step;
 	}
 }

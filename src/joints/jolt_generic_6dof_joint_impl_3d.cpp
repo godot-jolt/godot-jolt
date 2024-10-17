@@ -448,9 +448,10 @@ float JoltGeneric6DOFJointImpl3D::get_applied_torque() const {
 	const float last_step = space->get_last_step();
 	QUIET_FAIL_COND_D(last_step == 0.0f);
 
-	const JPH::Vec3 lambda = constraint->GetTotalLambdaRotation() +
+	const JPH::Vec3 total_lambda = constraint->GetTotalLambdaRotation() +
 		constraint->GetTotalLambdaMotorRotation();
-	return lambda.Length() / last_step;
+
+	return total_lambda.Length() / last_step;
 }
 
 void JoltGeneric6DOFJointImpl3D::rebuild() {
