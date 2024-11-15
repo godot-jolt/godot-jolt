@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- ⚠️ Fixed issue where custom inertia wouldn't be applied correctly for bodies using
+  `ConvexPolygonShape3D` or offset shapes.
+
 ## [0.14.0] - 2024-11-03
 
 ### Changed
