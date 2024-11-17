@@ -40,8 +40,8 @@ should not be relied upon if determinism is a hard requirement.
 
 ## What's not supported?
 
-- The physics server is not thread-safe (yet)
-- Memory usage is not reflected in Godot's performance monitors (yet)
+- The physics server is not thread-safe
+- Memory usage is not reflected in Godot's performance monitors
 - `SoftBody3D` does not support any interactions with `Area3D`
 
 ## What else is different?
@@ -58,6 +58,7 @@ should not be relied upon if determinism is a hard requirement.
 - Contact impulses are estimations and won't be accurate when colliding with multiple bodies
 - Contact reporting for kinematic bodies is partially opt-in, at a potentially [heavy
   performance/memory cost][jst]
+- `ConvexPolygonShape3D` uses a more accurate center-of-mass and inertia
 
 Also consider this note from Jolt's [documentation][jdc]:
 
