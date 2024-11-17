@@ -1,5 +1,6 @@
 #include "jolt_custom_ray_shape.hpp"
 
+#include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_query_collectors.hpp"
 
 namespace {

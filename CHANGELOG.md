@@ -9,10 +9,31 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- ⚠️ Changed the "Use Enhanced Internal Edge Detection" project setting under the "Collisions"
+  category to only apply to the collision detection that happens for `RigidBody3D`. There are now
+  instead identically named settings under the "Kinematics" and "Queries" categories for controlling
+  those contexts. See below for more information.
+
+### Added
+
+- Added a new "Use Enhanced Internal Edge Detection" project setting under the "Kinematics" category
+  for controlling the use of Jolt's enhanced internal edge detection in the context of kinematic
+  movement methods, meaning the `body_test_motion` method of `PhysicsServer3D`, which is also what
+  powers `test_move`, `move_and_collide` and `move_and_slide`.
+- Added a new "Use Enhanced Internal Edge Detection" project setting under the "Queries" category
+  for controlling the use of Jolt's enhanced internal edge detection in the context of shape
+  queries, meaning `collide_shape`, `intersect_shape`, `get_rest_info` and `cast_motion`, which is
+  also what powers the `ShapeCast3D` node.
+
 ### Fixed
 
 - ⚠️ Fixed issue where custom inertia wouldn't be applied correctly for bodies using
   `ConvexPolygonShape3D` or offset shapes.
+- ⚠️ Fixed issue where shape queries (e.g. `collide_shape`) would not function correctly when
+  overlapping with multiple bodies and the "Use Enhanced Internal Edge Detection" project setting
+  was enabled.
 
 ## [0.14.0] - 2024-11-03
 

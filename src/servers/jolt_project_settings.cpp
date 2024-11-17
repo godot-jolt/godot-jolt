@@ -14,7 +14,7 @@ constexpr char SLEEP_VELOCITY_THRESHOLD[] = "physics/jolt_3d/sleep/velocity_thre
 constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_3d/sleep/time_threshold";
 
 constexpr char SHAPE_MARGINS[] = "physics/jolt_3d/collisions/use_shape_margins";
-constexpr char EDGE_REMOVAL[] = "physics/jolt_3d/collisions/use_enhanced_internal_edge_removal";
+constexpr char BODY_EDGE_REMOVAL[] = "physics/jolt_3d/collisions/use_enhanced_internal_edge_removal";
 constexpr char AREAS_DETECT_STATIC[] = "physics/jolt_3d/collisions/areas_detect_static_bodies";
 constexpr char KINEMATIC_CONTACTS[] = "physics/jolt_3d/collisions/report_all_kinematic_contacts";
 constexpr char SOFT_BODY_POINT_MARGIN[] = "physics/jolt_3d/collisions/soft_body_point_margin";
@@ -27,9 +27,11 @@ constexpr char JOINT_WORLD_NODE[] = "physics/jolt_3d/joints/world_node";
 constexpr char CCD_MOVEMENT_THRESHOLD[] = "physics/jolt_3d/continuous_cd/movement_threshold";
 constexpr char CCD_MAX_PENETRATION[] = "physics/jolt_3d/continuous_cd/max_penetration";
 
+constexpr char KINEMATIC_EDGE_REMOVAL[] = "physics/jolt_3d/kinematics/use_enhanced_internal_edge_removal";
 constexpr char RECOVERY_ITERATIONS[] = "physics/jolt_3d/kinematics/recovery_iterations";
 constexpr char RECOVERY_AMOUNT[] = "physics/jolt_3d/kinematics/recovery_amount";
 
+constexpr char QUERY_EDGE_REMOVAL[] = "physics/jolt_3d/queries/use_enhanced_internal_edge_removal";
 constexpr char LEGACY_RAY_CASTING[] = "physics/jolt_3d/queries/use_legacy_ray_casting";
 constexpr char RAY_FACE_INDEX[] = "physics/jolt_3d/queries/enable_ray_cast_face_index";
 
@@ -151,7 +153,7 @@ void JoltProjectSettings::register_settings() {
 	register_setting_ranged(SLEEP_TIME_THRESHOLD, 0.5f, U"0,5,0.01,or_greater,suffix:s");
 
 	register_setting_plain(SHAPE_MARGINS, true);
-	register_setting_plain(EDGE_REMOVAL, true);
+	register_setting_plain(BODY_EDGE_REMOVAL, true);
 	register_setting_plain(AREAS_DETECT_STATIC, false);
 	register_setting_plain(KINEMATIC_CONTACTS, false);
 
@@ -162,9 +164,11 @@ void JoltProjectSettings::register_settings() {
 	register_setting_ranged(CCD_MOVEMENT_THRESHOLD, 75.0f, U"0,100,0.1,suffix:%");
 	register_setting_ranged(CCD_MAX_PENETRATION, 25.0f, U"0,100,0.1,suffix:%");
 
+	register_setting_plain(KINEMATIC_EDGE_REMOVAL, true);
 	register_setting_ranged(RECOVERY_ITERATIONS, 4, U"1,8,or_greater");
 	register_setting_ranged(RECOVERY_AMOUNT, 40.0f, U"0,100,0.1,suffix:%");
 
+	register_setting_plain(QUERY_EDGE_REMOVAL, false);
 	register_setting_plain(LEGACY_RAY_CASTING, false, true);
 	register_setting_plain(RAY_FACE_INDEX, false);
 
@@ -220,8 +224,8 @@ bool JoltProjectSettings::report_all_kinematic_contacts() {
 	return value;
 }
 
-bool JoltProjectSettings::use_enhanced_edge_removal() {
-	static const auto value = get_setting<bool>(EDGE_REMOVAL);
+bool JoltProjectSettings::use_edge_removal_for_bodies() {
+	static const auto value = get_setting<bool>(BODY_EDGE_REMOVAL);
 	return value;
 }
 
@@ -245,6 +249,11 @@ float JoltProjectSettings::get_ccd_max_penetration() {
 	return value;
 }
 
+bool JoltProjectSettings::use_edge_removal_for_kinematics() {
+	static const auto value = get_setting<bool>(KINEMATIC_EDGE_REMOVAL);
+	return value;
+}
+
 int32_t JoltProjectSettings::get_kinematic_recovery_iterations() {
 	static const auto value = get_setting<int32_t>(RECOVERY_ITERATIONS);
 	return value;
@@ -252,6 +261,11 @@ int32_t JoltProjectSettings::get_kinematic_recovery_iterations() {
 
 float JoltProjectSettings::get_kinematic_recovery_amount() {
 	static const auto value = get_setting<float>(RECOVERY_AMOUNT) / 100.0f;
+	return value;
+}
+
+bool JoltProjectSettings::use_edge_removal_for_queries() {
+	static const auto value = get_setting<bool>(QUERY_EDGE_REMOVAL);
 	return value;
 }
 
@@ -281,10 +295,7 @@ float JoltProjectSettings::get_position_correction() {
 }
 
 float JoltProjectSettings::get_active_edge_threshold() {
-	static const auto value = use_enhanced_edge_removal()
-		? 0.996195f // Math::cos(5 degrees)
-		: Math::cos(get_setting<float>(ACTIVE_EDGE_THRESHOLD));
-
+	static const auto value = Math::cos(get_setting<float>(ACTIVE_EDGE_THRESHOLD));
 	return value;
 }
 

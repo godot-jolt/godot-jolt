@@ -1139,7 +1139,7 @@ void JoltBodyImpl3D::_add_to_space() {
 	jolt_settings->mMaxLinearVelocity = JoltProjectSettings::get_max_linear_velocity();
 	jolt_settings->mMaxAngularVelocity = JoltProjectSettings::get_max_angular_velocity();
 
-	if (JoltProjectSettings::use_enhanced_edge_removal()) {
+	if (JoltProjectSettings::use_edge_removal_for_bodies()) {
 		jolt_settings->mEnhancedInternalEdgeRemoval = true;
 	}
 

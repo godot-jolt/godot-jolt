@@ -187,17 +187,12 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = (float)p_margin;
 
-	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
-		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
-	}
-
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
-	JoltQueryCollectorAnyMultiNoEdges<32> collector(p_max_results);
+	JoltShapeQueryCollectorAnyMulti<32> collector(p_max_results);
 
-	space->get_narrow_phase_query().CollideShape(
+	_collide_shape_queries(
 		jolt_shape,
 		to_jolt(scale),
 		to_jolt_r(transform_com),
@@ -208,8 +203,6 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 		query_filter,
 		query_filter
 	);
-
-	collector.finish();
 
 	const int32_t hit_count = collector.get_hit_count();
 
@@ -286,11 +279,6 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = (float)p_margin;
 
-	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
-		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
-	}
-
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
@@ -299,6 +287,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 		transform_com,
 		scale,
 		p_motion,
+		JoltProjectSettings::use_edge_removal_for_queries(),
 		true,
 		settings,
 		query_filter,
@@ -359,9 +348,9 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
-	JoltQueryCollectorAnyMultiNoEdges<32> collector(p_max_results);
+	JoltShapeQueryCollectorAnyMulti<32> collector(p_max_results);
 
-	space->get_narrow_phase_query().CollideShape(
+	_collide_shape_queries(
 		jolt_shape,
 		to_jolt(scale),
 		to_jolt_r(transform_com),
@@ -373,7 +362,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 		query_filter
 	);
 
-	if (!collector.finish()) {
+	if (!collector.had_hit()) {
 		return false;
 	}
 
@@ -461,19 +450,14 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = (float)p_margin;
 
-	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
-		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
-	}
-
 	const Vector3& base_offset = transform_com.origin;
 
 	const JoltQueryFilter3D
 		query_filter(*this, p_collision_mask, p_collide_with_bodies, p_collide_with_areas);
 
-	JoltQueryCollectorClosestNoEdges collector;
+	JoltShapeQueryCollectorClosest collector;
 
-	space->get_narrow_phase_query().CollideShape(
+	_collide_shape_queries(
 		jolt_shape,
 		to_jolt(scale),
 		to_jolt_r(transform_com),
@@ -485,7 +469,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 		query_filter
 	);
 
-	if (!collector.finish()) {
+	if (!collector.had_hit()) {
 		return false;
 	}
 
@@ -697,6 +681,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 	const Transform3D& p_transform_com,
 	const Vector3& p_scale,
 	const Vector3& p_motion,
+	bool p_use_edge_removal,
 	bool p_ignore_overlaps,
 	const JPH::CollideShapeSettings& p_settings,
 	const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
@@ -748,19 +733,39 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 
 		const JPH::TransformedShape other_shape = p_other_body.GetTransformedShape();
 
-		JoltQueryCollectorAnyNoEdges collide_collector;
+		JoltShapeQueryCollectorAny collector;
 
-		other_shape.CollideShape(
-			&motion_shape,
-			scale,
-			transform_com,
-			p_settings,
-			base_offset,
-			collide_collector,
-			p_shape_filter
-		);
+		if (p_use_edge_removal) {
+			JPH::CollideShapeSettings eier_settings = p_settings;
+			eier_settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
+			eier_settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
 
-		return collide_collector.finish();
+			JPH::InternalEdgeRemovingCollector eier_collector(collector);
+
+			other_shape.CollideShape(
+				&motion_shape,
+				scale,
+				transform_com,
+				eier_settings,
+				base_offset,
+				eier_collector,
+				p_shape_filter
+			);
+
+			eier_collector.Flush();
+		} else {
+			other_shape.CollideShape(
+				&motion_shape,
+				scale,
+				transform_com,
+				p_settings,
+				base_offset,
+				collector,
+				p_shape_filter
+			);
+		}
+
+		return collector.had_hit();
 	};
 
 	// Figure out the number of steps we need in our binary search in order to achieve millimeter
@@ -844,23 +849,18 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = p_margin;
 
-	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
-		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
-	}
-
 	const Vector3& base_offset = transform_com.origin;
 
 	const JoltMotionFilter3D motion_filter(p_body);
 
-	JoltQueryCollectorAnyMultiNoEdges<32> collector;
+	JoltShapeQueryCollectorAnyMulti<32> collector;
 
 	bool recovered = false;
 
 	for (int32_t i = 0; i < recovery_iterations; ++i) {
 		collector.reset();
 
-		space->get_narrow_phase_query().CollideShape(
+		_collide_shape_kinematics(
 			jolt_shape,
 			JPH::Vec3::sReplicate(1.0f),
 			to_jolt_r(transform_com),
@@ -873,7 +873,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 			motion_filter
 		);
 
-		if (!collector.finish()) {
+		if (!collector.had_hit()) {
 			break;
 		}
 
@@ -954,11 +954,6 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 
 	JPH::CollideShapeSettings settings;
 
-	if (JoltProjectSettings::use_enhanced_edge_removal()) {
-		settings.mActiveEdgeMode = JPH::EActiveEdgeMode::CollideWithAll;
-		settings.mCollectFacesMode = JPH::ECollectFacesMode::CollectFaces;
-	}
-
 	const JoltMotionFilter3D motion_filter(p_body, p_collide_separation_ray);
 
 	bool collided = false;
@@ -1004,6 +999,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 			transform_com_unscaled,
 			scale,
 			p_motion,
+			JoltProjectSettings::use_edge_removal_for_kinematics(),
 			false,
 			settings,
 			motion_filter,
@@ -1046,9 +1042,9 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 
 	const JoltMotionFilter3D motion_filter(p_body);
 
-	JoltQueryCollectorClosestMultiNoEdges<32> collector(p_max_collisions);
+	JoltShapeQueryCollectorClosestMulti<32> collector(p_max_collisions);
 
-	space->get_narrow_phase_query().CollideShape(
+	_collide_shape_kinematics(
 		jolt_shape,
 		JPH::Vec3::sReplicate(1.0f),
 		to_jolt_r(transform_com),
@@ -1061,7 +1057,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 		motion_filter
 	);
 
-	const bool collided = collector.finish();
+	const bool collided = collector.had_hit();
 
 	if (!collided || p_result == nullptr) {
 		return collided;
@@ -1202,6 +1198,88 @@ void JoltPhysicsDirectSpaceState3D::_generate_manifold(
 			,
 			p_center_of_mass
 #endif // JPH_DEBUG_RENDERER
+		);
+	}
+}
+
+void JoltPhysicsDirectSpaceState3D::_collide_shape_queries(
+	const JPH::Shape* p_shape,
+	JPH::Vec3Arg p_scale,
+	JPH::RMat44Arg p_transform_com,
+	const JPH::CollideShapeSettings& p_settings,
+	JPH::RVec3Arg p_base_offset,
+	JPH::CollideShapeCollector& p_collector,
+	const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
+	const JPH::ObjectLayerFilter& p_object_layer_filter,
+	const JPH::BodyFilter& p_body_filter,
+	const JPH::ShapeFilter& p_shape_filter
+) const {
+	if (JoltProjectSettings::use_edge_removal_for_queries()) {
+		space->get_narrow_phase_query().CollideShapeWithInternalEdgeRemoval(
+			p_shape,
+			p_scale,
+			p_transform_com,
+			p_settings,
+			p_base_offset,
+			p_collector,
+			p_broad_phase_layer_filter,
+			p_object_layer_filter,
+			p_body_filter,
+			p_shape_filter
+		);
+	} else {
+		space->get_narrow_phase_query().CollideShape(
+			p_shape,
+			p_scale,
+			p_transform_com,
+			p_settings,
+			p_base_offset,
+			p_collector,
+			p_broad_phase_layer_filter,
+			p_object_layer_filter,
+			p_body_filter,
+			p_shape_filter
+		);
+	}
+}
+
+void JoltPhysicsDirectSpaceState3D::_collide_shape_kinematics(
+	const JPH::Shape* p_shape,
+	JPH::Vec3Arg p_scale,
+	JPH::RMat44Arg p_transform_com,
+	const JPH::CollideShapeSettings& p_settings,
+	JPH::RVec3Arg p_base_offset,
+	JPH::CollideShapeCollector& p_collector,
+	const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
+	const JPH::ObjectLayerFilter& p_object_layer_filter,
+	const JPH::BodyFilter& p_body_filter,
+	const JPH::ShapeFilter& p_shape_filter
+) const {
+	if (JoltProjectSettings::use_edge_removal_for_kinematics()) {
+		space->get_narrow_phase_query().CollideShapeWithInternalEdgeRemoval(
+			p_shape,
+			p_scale,
+			p_transform_com,
+			p_settings,
+			p_base_offset,
+			p_collector,
+			p_broad_phase_layer_filter,
+			p_object_layer_filter,
+			p_body_filter,
+			p_shape_filter
+		);
+	} else {
+		space->get_narrow_phase_query().CollideShape(
+			p_shape,
+			p_scale,
+			p_transform_com,
+			p_settings,
+			p_base_offset,
+			p_collector,
+			p_broad_phase_layer_filter,
+			p_object_layer_filter,
+			p_body_filter,
+			p_shape_filter
 		);
 	}
 }
