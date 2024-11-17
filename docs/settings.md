@@ -335,6 +335,21 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Queries</td>
+      <td>Use Legacy Ray Casting</td>
+      <td>
+        Whether to use the ray-casting behavior prior to version <code>0.14.0-stable</code>, where
+        ray-casts would hit the inside hull of any convex shapes if the <code>hit_back_faces</code>
+        ray-cast parameter was enabled, which it is by default.
+      </td>
+      <td>
+        With this project setting disabled you will instead get the same behavior as with
+        Godot Physics, where <code>hit_back_faces</code> only applies to concave shapes, and only if
+        the <code>backface_collision</code> property of <code>ConcavePolygonShape3D</code> is
+        enabled as well.
+      </td>
+    </tr>
+    <tr>
+      <td>Queries</td>
       <td>Enable Ray Cast Face Index</td>
       <td>
         Whether to actually populate the <code>face_index</code> field in the result
