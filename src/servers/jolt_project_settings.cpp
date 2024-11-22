@@ -183,7 +183,7 @@ void JoltProjectSettings::register_settings() {
 	register_setting_ranged(PAIR_CACHE_DISTANCE, 0.001f, U"0,0.01,0.00001,or_greater,suffix:m");
 	register_setting_ranged(PAIR_CACHE_ANGLE, Math::deg_to_rad(2.0f), U"0,180,0.01,radians_as_degrees");
 
-	register_setting_ranged(WORLD_BOUNDARY_SIZE, 2000.0f, U"2,2000,0.1,or_greater,suffix:m");
+	register_setting_ranged(WORLD_BOUNDARY_SIZE, 2000.0f, U"2,2000,0.1,or_greater,suffix:m", true);
 	register_setting_ranged(MAX_LINEAR_VELOCITY, 500.0f, U"0,500,0.01,or_greater,suffix:m/s");
 	register_setting_ranged(MAX_ANGULAR_VELOCITY, 2700.0f, U"0,2700,0.01,or_greater,suffix:°/s");
 	register_setting_ranged(MAX_BODIES, 10240, U"1,10240,or_greater", true);
