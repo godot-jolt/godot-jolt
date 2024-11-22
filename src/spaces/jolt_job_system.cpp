@@ -73,21 +73,31 @@ void JoltJobSystem::Job::push_completed(Job* p_job) {
 	Job* prev_head = nullptr;
 
 	do {
-		prev_head = completed_head;
+		prev_head = completed_head.load(std::memory_order_relaxed);
 		p_job->completed_next = prev_head;
-	} while (!completed_head.compare_exchange_weak(prev_head, p_job));
+	} while (!completed_head.compare_exchange_weak(
+		prev_head,
+		p_job,
+		std::memory_order_release,
+		std::memory_order_relaxed
+	));
 }
 
 JoltJobSystem::Job* JoltJobSystem::Job::pop_completed() {
 	Job* prev_head = nullptr;
 
 	do {
-		prev_head = completed_head;
+		prev_head = completed_head.load(std::memory_order_relaxed);
 
 		if (prev_head == nullptr) {
 			return nullptr;
 		}
-	} while (!completed_head.compare_exchange_weak(prev_head, prev_head->completed_next));
+	} while (!completed_head.compare_exchange_weak(
+		prev_head,
+		prev_head->completed_next,
+		std::memory_order_acquire,
+		std::memory_order_relaxed
+	));
 
 	return prev_head;
 }
