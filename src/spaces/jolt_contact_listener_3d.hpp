@@ -69,7 +69,9 @@ public:
 #ifdef GDJ_CONFIG_EDITOR
 	const PackedVector3Array& get_debug_contacts() const { return debug_contacts; }
 
-	int32_t get_debug_contact_count() const { return debug_contact_count; }
+	int32_t get_debug_contact_count() const {
+		return debug_contact_count.load(std::memory_order_acquire);
+	}
 
 	int32_t get_max_debug_contacts() const { return (int32_t)debug_contacts.size(); }
 

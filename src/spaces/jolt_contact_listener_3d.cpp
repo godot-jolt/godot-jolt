@@ -386,7 +386,7 @@ bool JoltContactListener3D::_try_add_debug_contacts(
 	const auto additional_pairs = (int32_t)p_manifold.mRelativeContactPointsOn1.size();
 	const int32_t additional_contacts = additional_pairs * 2;
 
-	int32_t current_count = debug_contact_count;
+	int32_t current_count = debug_contact_count.load(std::memory_order_relaxed);
 	bool exchanged = false;
 
 	do {
@@ -396,7 +396,12 @@ bool JoltContactListener3D::_try_add_debug_contacts(
 			return false;
 		}
 
-		exchanged = debug_contact_count.compare_exchange_weak(current_count, new_count);
+		exchanged = debug_contact_count.compare_exchange_weak(
+			current_count,
+			new_count,
+			std::memory_order_release,
+			std::memory_order_relaxed
+		);
 	} while (!exchanged);
 
 	for (int32_t i = 0; i < additional_pairs; ++i) {
@@ -430,7 +435,7 @@ bool JoltContactListener3D::_try_add_debug_contacts(
 		}
 	}
 
-	int32_t current_count = debug_contact_count;
+	int32_t current_count = debug_contact_count.load(std::memory_order_relaxed);
 	bool exchanged = false;
 
 	do {
@@ -440,7 +445,12 @@ bool JoltContactListener3D::_try_add_debug_contacts(
 			return false;
 		}
 
-		exchanged = debug_contact_count.compare_exchange_weak(current_count, new_count);
+		exchanged = debug_contact_count.compare_exchange_weak(
+			current_count,
+			new_count,
+			std::memory_order_release,
+			std::memory_order_relaxed
+		);
 	} while (!exchanged);
 
 	int32_t contact_index = current_count;
