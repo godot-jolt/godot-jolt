@@ -111,7 +111,7 @@ private:
 
 	double motor_speed[AXIS_COUNT] = {};
 
-	double motor_limit[AXIS_COUNT] = {};
+	double motor_limit[AXIS_COUNT] = {FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX};
 
 	double spring_stiffness[AXIS_COUNT] = {};
 
@@ -121,7 +121,7 @@ private:
 
 	double spring_equilibrium[AXIS_COUNT] = {};
 
-	double spring_limit[AXIS_COUNT] = {};
+	double spring_limit[AXIS_COUNT] = {FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX};
 
 	bool limit_enabled[AXIS_COUNT] = {};
 

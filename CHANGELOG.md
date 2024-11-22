@@ -34,6 +34,7 @@ Breaking changes are denoted with ⚠️.
 - ⚠️ Fixed issue where shape queries (e.g. `collide_shape`) would not function correctly when
   overlapping with multiple bodies and the "Use Enhanced Internal Edge Detection" project setting
   was enabled.
+- Fixed issue with spring stiffness not having any effect for `Generic6DOFJoint3D`.
 
 ## [0.14.0] - 2024-11-03
 

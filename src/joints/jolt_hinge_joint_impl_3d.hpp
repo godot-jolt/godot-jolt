@@ -93,7 +93,7 @@ private:
 
 	double motor_target_speed = 0.0f;
 
-	double motor_max_torque = 0.0;
+	double motor_max_torque = FLT_MAX;
 
 	bool limits_enabled = false;
 
