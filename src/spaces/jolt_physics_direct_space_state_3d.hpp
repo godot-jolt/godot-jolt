@@ -107,6 +107,7 @@ private:
 		const Transform3D& p_transform_com,
 		const Vector3& p_scale,
 		const Vector3& p_motion,
+		bool p_use_edge_removal,
 		bool p_ignore_overlaps,
 		const JPH::CollideShapeSettings& p_settings,
 		const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter,
@@ -153,6 +154,32 @@ private:
 		,
 		JPH::RVec3Arg p_center_of_mass
 #endif // JPH_DEBUG_RENDERER
+	) const;
+
+	void _collide_shape_queries(
+		const JPH::Shape* p_shape,
+		JPH::Vec3Arg p_scale,
+		JPH::RMat44Arg p_transform_com,
+		const JPH::CollideShapeSettings& p_settings,
+		JPH::RVec3Arg p_base_offset,
+		JPH::CollideShapeCollector& p_collector,
+		const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter = {},
+		const JPH::ObjectLayerFilter& p_object_layer_filter = {},
+		const JPH::BodyFilter& p_body_filter = {},
+		const JPH::ShapeFilter& p_shape_filter = {}
+	) const;
+
+	void _collide_shape_kinematics(
+		const JPH::Shape* p_shape,
+		JPH::Vec3Arg p_scale,
+		JPH::RMat44Arg p_transform_com,
+		const JPH::CollideShapeSettings& p_settings,
+		JPH::RVec3Arg p_base_offset,
+		JPH::CollideShapeCollector& p_collector,
+		const JPH::BroadPhaseLayerFilter& p_broad_phase_layer_filter = {},
+		const JPH::ObjectLayerFilter& p_object_layer_filter = {},
+		const JPH::BodyFilter& p_body_filter = {},
+		const JPH::ShapeFilter& p_shape_filter = {}
 	) const;
 
 	JoltSpace3D* space = nullptr;

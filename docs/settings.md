@@ -205,17 +205,12 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
       <td>Collisions</td>
       <td>Use Enhanced Internal Edge Removal</td>
       <td>
-        Whether or not to enable the enhanced internal edge removal, which means that extra effort
-        will be made to try to remove collisions with internal edges of
-        <code>ConcavePolygonShape3D</code> and <code>HeightMapShape3D</code>. This makes physics
-        bodies move smoother over such shapes, at the cost of performance.
+        Whether or not to enable the enhanced internal edge removal for <code>RigidBody3D</code>,
+        which means that extra effort will be made to try to remove collisions with internal edges
+        of another physics body. This makes physics bodies move smoother over certain shapes, at the
+        cost of performance.
       </td>
-      <td>
-        Note that this applies to <code>RigidBody3D</code> as well as queries like
-        <code>get_rest_info</code>, <code>move_and_collide</code> and <code>move_and_slide</code>.
-        <br><br>Also note that enabling this setting will leave the "Active Edge Threshold" setting
-        unused.
-      </td>
+      <td>-</td>
     </tr>
     <tr>
       <td>Collisions</td>
@@ -317,6 +312,18 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Kinematics</td>
+      <td>Use Enhanced Internal Edge Removal</td>
+      <td>
+        Whether or not to enable the enhanced internal edge removal for the kinematic movement
+        methods (<code>move_and_slide</code>, <code>move_and_collide</code>, <code>test_move</code>
+        and <code>body_test_motion</code>) which means that extra effort will be made to try to
+        remove hits with internal edges of whatever physics body they hit, which can help alleviate
+        odd collision normals and thus ghost collisions.
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Kinematics</td>
       <td>Recovery Iterations</td>
       <td>
         The number of iterations to run when resolving penetration during things like
@@ -332,6 +339,23 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
         <code>move_and_slide</code>.
       </td>
       <td>-</td>
+    </tr>
+    <tr>
+      <td>Queries</td>
+      <td>Use Enhanced Internal Edge Removal</td>
+      <td>
+        Whether or not to enable the enhanced internal edge removal for the shape query methods
+        (<code>collide_shape</code>, <code>intersect_shape</code>, <code>get_rest_info</code>
+        and <code>cast_motion</code>) which means that extra effort will be made to try to remove
+        hits with internal edges of whatever physics body they hit, which can help alleviate odd
+        collision normals.
+      </td>
+      <td>
+        Note that enabling this can result in hits against individual shapes of bodies that have
+        multiple shapes to not be reported at all, so it's generally only advisable to enable this
+        if you're using the shape queries for things like kinematic movement and you're willing to
+        accept this compromise.
+      </td>
     </tr>
     <tr>
       <td>Queries</td>
@@ -397,8 +421,8 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
         result in things like <code>RigidBody3D</code> sinking into triangle edges or
         <code>move_and_slide</code> behaving in weird ways when going over or pressing up against
         triangle edges.
-        <br><br>Note that this setting has no effect when using the "Use Enhanced Internal Edge
-        Removal" setting.
+        <br><br>Note that this setting has no effect when using any of the "Use Enhanced Internal
+        Edge Removal" settings.
       </td>
     </tr>
     <tr>

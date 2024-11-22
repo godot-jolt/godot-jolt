@@ -16,7 +16,7 @@ public:
 
 	static bool report_all_kinematic_contacts();
 
-	static bool use_enhanced_edge_removal();
+	static bool use_edge_removal_for_bodies();
 
 	static float get_soft_body_point_margin();
 
@@ -26,9 +26,13 @@ public:
 
 	static float get_ccd_max_penetration();
 
+	static bool use_edge_removal_for_kinematics();
+
 	static int32_t get_kinematic_recovery_iterations();
 
 	static float get_kinematic_recovery_amount();
+
+	static bool use_edge_removal_for_queries();
 
 	static bool use_legacy_ray_casting();
 

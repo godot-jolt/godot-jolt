@@ -1,6 +1,6 @@
 #pragma once
 
-#include "servers/jolt_project_settings.hpp"
+#include "spaces/jolt_space_3d.hpp"
 
 template<typename TBase, int32_t TInlineCapacity>
 class JoltQueryCollectorAll final : public TBase {
@@ -167,78 +167,16 @@ private:
 	int32_t max_hits = 0;
 };
 
-template<typename TInnerCollector>
-class JoltQueryCollectorNoEdges final : public JPH::InternalEdgeRemovingCollector {
-	using Base = JPH::InternalEdgeRemovingCollector;
-
-public:
-	using Hit = typename TInnerCollector::ResultType;
-
-	template<typename... TArgs>
-	explicit JoltQueryCollectorNoEdges(TArgs&&... p_args)
-		: Base(inner_collector)
-		, inner_collector(std::forward<TArgs>(p_args)...) { }
-
-	int32_t get_hit_count() const { return inner_collector.get_hit_count(); }
-
-	const Hit& get_hit() const { return inner_collector.get_hit(); }
-
-	const Hit& get_hit(int32_t p_index) const { return inner_collector.get_hit(p_index); }
-
-	bool finish() {
-		if (use_enhanced_edge_removal) {
-			Base::Flush();
-		}
-
-		return inner_collector.had_hit();
-	}
-
-	void reset() { Reset(); }
-
-	void OnBody(const JPH::Body& p_body) override {
-		if (use_enhanced_edge_removal) {
-			Base::OnBody(p_body);
-		} else {
-			inner_collector.OnBody(p_body);
-		}
-	}
-
-	void AddHit(const Hit& p_hit) override {
-		if (use_enhanced_edge_removal) {
-			Base::AddHit(p_hit);
-		} else {
-			inner_collector.AddHit(p_hit);
-		}
-	}
-
-	void Reset() override {
-		if (use_enhanced_edge_removal) {
-			Base::Reset();
-		} else {
-			inner_collector.Reset();
-		}
-	}
-
-private:
-	TInnerCollector inner_collector;
-
-	bool use_enhanced_edge_removal = JoltProjectSettings::use_enhanced_edge_removal();
-};
+using JoltShapeQueryCollectorAny = JoltQueryCollectorAny<JPH::CollideShapeCollector>;
 
 template<int32_t TInlineCapacity>
-using JoltQueryCollectorAllNoEdges = JoltQueryCollectorNoEdges<
-	JoltQueryCollectorAll<JPH::CollideShapeCollector, TInlineCapacity>>;
+using JoltShapeQueryCollectorAnyMulti = JoltQueryCollectorAnyMulti<
+	JPH::CollideShapeCollector,
+	TInlineCapacity>;
 
-using JoltQueryCollectorAnyNoEdges = JoltQueryCollectorNoEdges<
-	JoltQueryCollectorAny<JPH::CollideShapeCollector>>;
-
-template<int32_t TInlineCapacity>
-using JoltQueryCollectorAnyMultiNoEdges = JoltQueryCollectorNoEdges<
-	JoltQueryCollectorAnyMulti<JPH::CollideShapeCollector, TInlineCapacity>>;
-
-using JoltQueryCollectorClosestNoEdges = JoltQueryCollectorNoEdges<
-	JoltQueryCollectorClosest<JPH::CollideShapeCollector>>;
+using JoltShapeQueryCollectorClosest = JoltQueryCollectorClosest<JPH::CollideShapeCollector>;
 
 template<int32_t TInlineCapacity>
-using JoltQueryCollectorClosestMultiNoEdges = JoltQueryCollectorNoEdges<
-	JoltQueryCollectorClosestMulti<JPH::CollideShapeCollector, TInlineCapacity>>;
+using JoltShapeQueryCollectorClosestMulti = JoltQueryCollectorClosestMulti<
+	JPH::CollideShapeCollector,
+	TInlineCapacity>;
