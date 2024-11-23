@@ -57,6 +57,22 @@
       }
     },
     {
+      "name": "linux-arm64-base",
+      "inherits": ["platform-base"],
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "CMAKE_MAKE_PROGRAM": {
+          "type": "FILEPATH",
+          "value": "/usr/bin/ninja"
+        }
+      }
+    },
+    {
       "name": "macos-base",
       "inherits": ["platform-base"],
       "hidden": true,
@@ -283,6 +299,11 @@
       "name": "linux-gcc-x64",
       "displayName": "GCC, x64",
       "inherits": ["linux-base", "gcc-base", "gcc-x64-base"]
+    },
+    {
+      "name": "linux-gcc-arm64",
+      "displayName": "GCC, arm64",
+      "inherits": ["linux-arm64-base", "gcc-base", "arm64-base"]
     },
     {
       "name": "linux-gcc-x86",
@@ -658,6 +679,20 @@
       "configurePreset": "linux-gcc-x64",
       "configuration": "EditorDistribution",
       "displayName": "EditorDistribution",
+      "targets": ["install"]
+    },
+    {
+      "name": "linux-gcc-arm64-editor-distribution",
+      "configurePreset": "linux-gcc-arm64",
+      "configuration": "EditorDistribution",
+      "displayName": "EditorDistribution",
+      "targets": ["install"]
+    },
+    {
+      "name": "linux-gcc-arm64-distribution",
+      "configurePreset": "linux-gcc-arm64",
+      "configuration": "Distribution",
+      "displayName": "Distribution",
       "targets": ["install"]
     },
     {
