@@ -733,7 +733,7 @@ public:
 
 	float generic_6dof_joint_get_applied_torque(const RID& p_joint);
 
-	void body_wakeup_neighbors(const RID& p_body);
+	void body_wake_up_neighbors(const RID& p_body);
 
 private:
 	mutable RID_PtrOwner<JoltSpace3D> space_owner;

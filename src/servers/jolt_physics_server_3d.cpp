@@ -83,7 +83,7 @@ void JoltPhysicsServer3D::_bind_methods() {
 	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_get_applied_force, "joint");
 	BIND_METHOD(JoltPhysicsServer3D, generic_6dof_joint_get_applied_torque, "joint");
 	
-	BIND_METHOD(JoltPhysicsServer3D, body_wakeup_neighbors, "body_rid");
+	BIND_METHOD(JoltPhysicsServer3D, body_wake_up_neighbors, "body");
 
 	// clang-format on
 
@@ -2350,7 +2350,7 @@ float JoltPhysicsServer3D::generic_6dof_joint_get_applied_torque(const RID& p_jo
 	return g6dof_joint->get_applied_torque();
 }
 
-void JoltPhysicsServer3D::body_wakeup_neighbors(const RID& p_body) {
+void JoltPhysicsServer3D::body_wake_up_neighbors(const RID& p_body) {
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
