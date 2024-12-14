@@ -257,9 +257,7 @@ void JoltBodyImpl3D::set_is_sleeping(bool p_enabled) {
 }
 
 void JoltBodyImpl3D::wake_up_neighbors() {
-	JoltSpace3D* space = this->get_space();
-
-	const JoltReadableBody3D body = space->read_body(this->get_jolt_id());
+	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
 	JPH::AABox aabb = body->GetWorldSpaceBounds();
@@ -267,7 +265,7 @@ void JoltBodyImpl3D::wake_up_neighbors() {
 	JoltQueryCollectorAnyMulti<JPH::CollideShapeBodyCollector, 2048> aabb_collector;
 
 	const JoltQueryFilter3D
-		query_filter(*space->get_direct_state(), this->get_collision_mask(), true, false);
+		query_filter(*space->get_direct_state(), collision_mask, true, false);
 
 	space->get_broad_phase_query().CollideAABox(aabb, aabb_collector, query_filter, query_filter);
 
@@ -276,8 +274,8 @@ void JoltBodyImpl3D::wake_up_neighbors() {
 	for (int32_t i = 0; i < hit_count; ++i) {
 		const JPH::BodyID other_jolt_id = aabb_collector.get_hit(i);
 
-		const JoltReadableBody3D body = space->read_body(other_jolt_id);
-		body.as_body()->wake_up();
+		const JoltReadableBody3D other_jolt_body = space->read_body(other_jolt_id);
+		other_jolt_body.as_body()->wake_up();
 	}
 }
 
