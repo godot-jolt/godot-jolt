@@ -186,9 +186,11 @@ void JoltBodyImpl3D::set_param(PhysicsServer3D::BodyParameter p_param, const Var
 		} break;
 		case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP_MODE: {
 			set_linear_damp_mode((DampMode)(int32_t)p_value);
+			_update_damp();
 		} break;
 		case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP_MODE: {
 			set_angular_damp_mode((DampMode)(int32_t)p_value);
+			_update_damp();
 		} break;
 		case PhysicsServer3D::BODY_PARAM_LINEAR_DAMP: {
 			set_linear_damp(p_value);
