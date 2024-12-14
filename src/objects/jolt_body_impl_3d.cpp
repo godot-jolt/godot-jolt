@@ -8,6 +8,8 @@
 #include "servers/jolt_project_settings.hpp"
 #include "shapes/jolt_shape_impl_3d.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
+#include "spaces/jolt_query_collectors.hpp"
+#include "spaces/jolt_query_filter_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
 namespace {
@@ -251,6 +253,31 @@ void JoltBodyImpl3D::set_is_sleeping(bool p_enabled) {
 		body_iface.DeactivateBody(jolt_id);
 	} else {
 		body_iface.ActivateBody(jolt_id);
+	}
+}
+
+void JoltBodyImpl3D::wake_up_neighbors() {
+	JoltSpace3D* space = this->get_space();
+
+	const JoltReadableBody3D body = space->read_body(this->get_jolt_id());
+	ERR_FAIL_COND(body.is_invalid());
+
+	JPH::AABox aabb = body->GetWorldSpaceBounds();
+
+	JoltQueryCollectorAnyMulti<JPH::CollideShapeBodyCollector, 2048> aabb_collector;
+
+	const JoltQueryFilter3D
+		query_filter(*space->get_direct_state(), this->get_collision_mask(), true, false);
+
+	space->get_broad_phase_query().CollideAABox(aabb, aabb_collector, query_filter, query_filter);
+
+	const int32_t hit_count = aabb_collector.get_hit_count();
+
+	for (int32_t i = 0; i < hit_count; ++i) {
+		const JPH::BodyID other_jolt_id = aabb_collector.get_hit(i);
+
+		const JoltReadableBody3D body = space->read_body(other_jolt_id);
+		body.as_body()->wake_up();
 	}
 }
 

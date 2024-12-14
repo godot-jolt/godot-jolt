@@ -72,6 +72,8 @@ public:
 
 	void wake_up() { set_is_sleeping(false); }
 
+	void wake_up_neighbors();
+
 	bool can_sleep() const;
 
 	void set_can_sleep(bool p_enabled);
