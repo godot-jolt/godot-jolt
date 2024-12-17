@@ -10,6 +10,21 @@ physics engine][jlt] to power Godot's 3D physics.
 It functions as a drop-in replacement for Godot Physics, by implementing the same nodes that you
 would use normally, like `RigidBody3D` or `CharacterBody3D`.
 
+> [!IMPORTANT]
+>
+> This extension has now been merged into Godot itself in the form of an engine module, the pull
+> request for which you can find [here][mod]. As such, this extension will be considered to be in
+> maintenance mode going forward, where only bug fixes will be considered for merging.
+>
+> At the time of writing, the Godot engine module does not have full feature parity with this
+> extension, and is lacking things like the joint interface changes (`JoltHingeJoint3D`, etc.) that
+> this extension exposes. However, once the engine module does reach feature parity in some way, and
+> a new stable release of Godot is out with said feature parity, this extension will be considered
+> fully deprecated and this repository will likely be archived entirely.
+>
+> Until that time, new releases of this extension will continue to be published, which should be
+> able to co-exist with the Godot engine module in some form.
+
 ## Table of Contents
 
 - [What features are there?](#what-features-are-there)
@@ -107,6 +122,7 @@ Godot Jolt is distributed under the MIT license. See [`LICENSE.txt`][lic] for mo
 
 [god]: https://godotengine.org/
 [jlt]: https://github.com/jrouwe/JoltPhysics
+[mod]: https://github.com/godotengine/godot/pull/99895
 [jst]: docs/settings.md#jolt-3d
 [jdc]: https://jrouwe.github.io/JoltPhysics/
 [rls]: https://github.com/godot-jolt/godot-jolt/releases/latest
