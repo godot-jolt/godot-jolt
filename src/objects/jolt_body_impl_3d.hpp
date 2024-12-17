@@ -233,17 +233,11 @@ public:
 
 	DampMode get_linear_damp_mode() const { return linear_damp_mode; }
 
-	void set_linear_damp_mode(DampMode p_mode) {
-		linear_damp_mode = p_mode;
-		_update_damp();
-	}
+	void set_linear_damp_mode(DampMode p_mode);
 
 	DampMode get_angular_damp_mode() const { return angular_damp_mode; }
 
-	void set_angular_damp_mode(DampMode p_mode) {
-		angular_damp_mode = p_mode;
-		_update_damp();
-	}
+	void set_angular_damp_mode(DampMode p_mode);
 
 	bool is_axis_locked(PhysicsServer3D::BodyAxis p_axis) const;
 
