@@ -135,11 +135,11 @@ public:
 
 	OverrideMode get_linear_damp_mode() const { return linear_damp_mode; }
 
-	void set_linear_damp_mode(OverrideMode p_mode) { linear_damp_mode = p_mode; }
+	void set_linear_damp_mode(OverrideMode p_mode);
 
 	OverrideMode get_angular_damp_mode() const { return angular_damp_mode; }
 
-	void set_angular_damp_mode(OverrideMode p_mode) { angular_damp_mode = p_mode; }
+	void set_angular_damp_mode(OverrideMode p_mode);
 
 	Vector3 get_gravity_vector() const { return gravity_vector; }
 
@@ -235,6 +235,8 @@ private:
 	void _update_group_filter();
 
 	void _update_default_gravity();
+
+	void _update_overlapping_bodies_damping();
 
 	void _space_changing() override;
 
