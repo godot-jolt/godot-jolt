@@ -72,7 +72,7 @@ void JoltConeTwistJointImpl3D::set_param(
 			if (!Math::is_equal_approx(p_value, DEFAULT_SOFTNESS)) {
 				WARN_PRINT(vformat(
 					"Cone twist joint softness is not supported by Godot Jolt. "
-					"Any such value will be ignored. ",
+					"Any such value will be ignored. "
 					"This joint connects %s.",
 					_bodies_to_string()
 				));
