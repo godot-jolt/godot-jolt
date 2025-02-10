@@ -1178,7 +1178,7 @@ void JoltPhysicsDirectSpaceState3D::_generate_manifold(
 		p_hit.mContactPointOn1,
 		p_hit.mContactPointOn2,
 		penetration_axis,
-		physics_settings.mManifoldToleranceSq,
+		physics_settings.mManifoldTolerance,
 		p_hit.mShape1Face,
 		p_hit.mShape2Face,
 		p_contact_points1,
