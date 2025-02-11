@@ -3,6 +3,7 @@
 #include "objects/jolt_body_impl_3d.hpp"
 #include "objects/jolt_group_filter.hpp"
 #include "objects/jolt_soft_body_impl_3d.hpp"
+#include "servers/jolt_physics_server_3d.hpp"
 #include "servers/jolt_project_settings.hpp"
 #include "spaces/jolt_broad_phase_layer.hpp"
 #include "spaces/jolt_space_3d.hpp"
@@ -276,6 +277,37 @@ void JoltAreaImpl3D::set_gravity_mode(OverrideMode p_mode) {
 	gravity_mode = p_mode;
 
 	_gravity_changed();
+}
+
+void JoltAreaImpl3D::_update_overlapping_bodies_damping() {
+	JoltPhysicsServer3D* physics_server = JoltPhysicsServer3D::get_singleton();
+	QUIET_FAIL_NULL(physics_server);
+	for (auto& [_, overlap] : bodies_by_id) {
+		JoltBodyImpl3D* body = physics_server->get_body(overlap.rid);
+		if (body != nullptr) {
+			body->_update_damp();
+		}
+	}
+}
+
+void JoltAreaImpl3D::set_linear_damp_mode(OverrideMode p_mode) {
+	if (linear_damp_mode == p_mode) {
+		return;
+	}
+
+	linear_damp_mode = p_mode;
+
+	_update_overlapping_bodies_damping();
+}
+
+void JoltAreaImpl3D::set_angular_damp_mode(OverrideMode p_mode) {
+	if (linear_damp_mode == p_mode) {
+		return;
+	}
+
+	angular_damp_mode = p_mode;
+
+	_update_overlapping_bodies_damping();
 }
 
 void JoltAreaImpl3D::set_gravity_vector(const Vector3& p_vector) {

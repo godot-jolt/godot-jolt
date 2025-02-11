@@ -11,6 +11,8 @@ class JoltBodyImpl3D final : public JoltShapedObjectImpl3D {
 public:
 	using DampMode = PhysicsServer3D::BodyDampMode;
 
+	friend JoltAreaImpl3D;
+
 	struct Contact {
 		float depth = 0.0f;
 
