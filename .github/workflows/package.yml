@@ -68,7 +68,7 @@ jobs:
           retention-days: 1
 
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
@@ -249,7 +249,7 @@ jobs:
           retention-days: 1
 
   android:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
@@ -303,7 +303,7 @@ jobs:
           retention-days: 1
 
   upload:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false

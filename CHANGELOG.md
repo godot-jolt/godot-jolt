@@ -11,6 +11,8 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
+- ⚠️ Raised the minimum required glibc version for the Linux binaries from 2.31 to 2.35, which for
+  Ubuntu raises the minimum required version from Ubuntu 20.04 to Ubuntu 22.04.
 - ⚠️ Changed the "Use Enhanced Internal Edge Detection" project setting under the "Collisions"
   category to only apply to the collision detection that happens for `RigidBody3D`. There are now
   instead identically named settings under the "Kinematics" and "Queries" categories for controlling
