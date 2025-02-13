@@ -308,7 +308,11 @@ void JoltShapedObjectImpl3D::set_shape_transform(int32_t p_index, Transform3D p_
 
 	ENSURE_SCALE_NOT_ZERO(
 		p_transform,
-		"Failed to correctly set transform for shape at index %d in body '%s'."
+		vformat(
+			"Failed to correctly set transform for shape at index %d in body '%s'.",
+			p_index,
+			to_string()
+		)
 	);
 
 	Vector3 new_scale;
