@@ -15,9 +15,9 @@ public:
 
 	Vector3 _get_total_gravity() const override;
 
-	double _get_total_linear_damp() const override;
+	real_t _get_total_linear_damp() const override;
 
-	double _get_total_angular_damp() const override;
+	real_t _get_total_angular_damp() const override;
 
 	Vector3 _get_center_of_mass() const override;
 
@@ -25,7 +25,7 @@ public:
 
 	Basis _get_principal_inertia_axes() const override;
 
-	double _get_inverse_mass() const override;
+	real_t _get_inverse_mass() const override;
 
 	Vector3 _get_inverse_inertia() const override;
 
@@ -99,7 +99,7 @@ public:
 
 	Vector3 _get_contact_collider_velocity_at_position(int32_t p_contact_idx) const override;
 
-	double _get_step() const override;
+	real_t _get_step() const override;
 
 	void _integrate_forces() override;
 

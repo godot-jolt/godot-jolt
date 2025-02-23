@@ -97,17 +97,17 @@ public:
 
 	void _shape_set_data(const RID& p_shape, const Variant& p_data) override;
 
-	void _shape_set_custom_solver_bias(const RID& p_shape, double p_bias) override;
+	void _shape_set_custom_solver_bias(const RID& p_shape, real_t p_bias) override;
 
-	void _shape_set_margin(const RID& p_shape, double p_margin) override;
+	void _shape_set_margin(const RID& p_shape, real_t p_margin) override;
 
-	double _shape_get_margin(const RID& p_shape) const override;
+	real_t _shape_get_margin(const RID& p_shape) const override;
 
 	PhysicsServer3D::ShapeType _shape_get_type(const RID& p_shape) const override;
 
 	Variant _shape_get_data(const RID& p_shape) const override;
 
-	double _shape_get_custom_solver_bias(const RID& p_shape) const override;
+	real_t _shape_get_custom_solver_bias(const RID& p_shape) const override;
 
 	RID _space_create() override;
 
@@ -118,10 +118,10 @@ public:
 	void _space_set_param(
 		const RID& p_space,
 		PhysicsServer3D::SpaceParameter p_param,
-		double p_value
+		real_t p_value
 	) override;
 
-	double _space_get_param(const RID& p_space, PhysicsServer3D::SpaceParameter p_param)
+	real_t _space_get_param(const RID& p_space, PhysicsServer3D::SpaceParameter p_param)
 		const override;
 
 	PhysicsDirectSpaceState3D* _space_get_direct_state(const RID& p_space) override;
@@ -251,9 +251,9 @@ public:
 
 	uint32_t _body_get_collision_mask(const RID& p_body) const override;
 
-	void _body_set_collision_priority(const RID& p_body, double p_priority) override;
+	void _body_set_collision_priority(const RID& p_body, real_t p_priority) override;
 
-	double _body_get_collision_priority(const RID& p_body) const override;
+	real_t _body_get_collision_priority(const RID& p_body) const override;
 
 	void _body_set_user_flags(const RID& p_body, uint32_t p_flags) override;
 
@@ -327,10 +327,10 @@ public:
 
 	int32_t _body_get_max_contacts_reported(const RID& p_body) const override;
 
-	void _body_set_contacts_reported_depth_threshold(const RID& p_body, double p_threshold)
+	void _body_set_contacts_reported_depth_threshold(const RID& p_body, real_t p_threshold)
 		override;
 
-	double _body_get_contacts_reported_depth_threshold(const RID& p_body) const override;
+	real_t _body_get_contacts_reported_depth_threshold(const RID& p_body) const override;
 
 	void _body_set_omit_force_integration(const RID& p_body, bool p_enable) override;
 
@@ -350,7 +350,7 @@ public:
 		const RID& p_body,
 		const Transform3D& p_from,
 		const Vector3& p_motion,
-		double p_margin,
+		real_t p_margin,
 		int32_t p_max_collisions,
 		bool p_collide_separation_ray,
 		bool p_recovery_as_collision,
@@ -402,25 +402,25 @@ public:
 
 	int32_t _soft_body_get_simulation_precision(const RID& p_body) const override;
 
-	void _soft_body_set_total_mass(const RID& p_body, double p_total_mass) override;
+	void _soft_body_set_total_mass(const RID& p_body, real_t p_total_mass) override;
 
-	double _soft_body_get_total_mass(const RID& p_body) const override;
+	real_t _soft_body_get_total_mass(const RID& p_body) const override;
 
-	void _soft_body_set_linear_stiffness(const RID& p_body, double p_coefficient) override;
+	void _soft_body_set_linear_stiffness(const RID& p_body, real_t p_coefficient) override;
 
-	double _soft_body_get_linear_stiffness(const RID& p_body) const override;
+	real_t _soft_body_get_linear_stiffness(const RID& p_body) const override;
 
-	void _soft_body_set_pressure_coefficient(const RID& p_body, double p_coefficient) override;
+	void _soft_body_set_pressure_coefficient(const RID& p_body, real_t p_coefficient) override;
 
-	double _soft_body_get_pressure_coefficient(const RID& p_body) const override;
+	real_t _soft_body_get_pressure_coefficient(const RID& p_body) const override;
 
-	void _soft_body_set_damping_coefficient(const RID& p_body, double p_coefficient) override;
+	void _soft_body_set_damping_coefficient(const RID& p_body, real_t p_coefficient) override;
 
-	double _soft_body_get_damping_coefficient(const RID& p_body) const override;
+	real_t _soft_body_get_damping_coefficient(const RID& p_body) const override;
 
-	void _soft_body_set_drag_coefficient(const RID& p_body, double p_coefficient) override;
+	void _soft_body_set_drag_coefficient(const RID& p_body, real_t p_coefficient) override;
 
-	double _soft_body_get_drag_coefficient(const RID& p_body) const override;
+	real_t _soft_body_get_drag_coefficient(const RID& p_body) const override;
 
 	void _soft_body_set_mesh(const RID& p_body, const RID& p_mesh) override;
 
@@ -456,10 +456,10 @@ public:
 	void _pin_joint_set_param(
 		const RID& p_joint,
 		PhysicsServer3D::PinJointParam p_param,
-		double p_value
+		real_t p_value
 	) override;
 
-	double _pin_joint_get_param(const RID& p_joint, PhysicsServer3D::PinJointParam p_param)
+	real_t _pin_joint_get_param(const RID& p_joint, PhysicsServer3D::PinJointParam p_param)
 		const override;
 
 	void _pin_joint_set_local_a(const RID& p_joint, const Vector3& p_local_a) override;
@@ -491,10 +491,10 @@ public:
 	void _hinge_joint_set_param(
 		const RID& p_joint,
 		PhysicsServer3D::HingeJointParam p_param,
-		double p_value
+		real_t p_value
 	) override;
 
-	double _hinge_joint_get_param(const RID& p_joint, PhysicsServer3D::HingeJointParam p_param)
+	real_t _hinge_joint_get_param(const RID& p_joint, PhysicsServer3D::HingeJointParam p_param)
 		const override;
 
 	void _hinge_joint_set_flag(
@@ -517,10 +517,10 @@ public:
 	void _slider_joint_set_param(
 		const RID& p_joint,
 		PhysicsServer3D::SliderJointParam p_param,
-		double p_value
+		real_t p_value
 	) override;
 
-	double _slider_joint_get_param(const RID& p_joint, PhysicsServer3D::SliderJointParam p_param)
+	real_t _slider_joint_get_param(const RID& p_joint, PhysicsServer3D::SliderJointParam p_param)
 		const override;
 
 	void _joint_make_cone_twist(
@@ -534,10 +534,10 @@ public:
 	void _cone_twist_joint_set_param(
 		const RID& p_joint,
 		PhysicsServer3D::ConeTwistJointParam p_param,
-		double p_value
+		real_t p_value
 	) override;
 
-	double _cone_twist_joint_get_param(
+	real_t _cone_twist_joint_get_param(
 		const RID& p_joint,
 		PhysicsServer3D::ConeTwistJointParam p_param
 	) const override;
@@ -554,10 +554,10 @@ public:
 		const RID& p_joint,
 		Vector3::Axis p_axis,
 		PhysicsServer3D::G6DOFJointAxisParam p_param,
-		double p_value
+		real_t p_value
 	) override;
 
-	double _generic_6dof_joint_get_param(
+	real_t _generic_6dof_joint_get_param(
 		const RID& p_joint,
 		Vector3::Axis p_axis,
 		PhysicsServer3D::G6DOFJointAxisParam p_param
@@ -592,7 +592,7 @@ public:
 
 	void _init() override;
 
-	void _step(double p_step) override;
+	void _step(real_t p_step) override;
 
 	void _sync() override { }
 

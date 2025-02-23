@@ -216,7 +216,7 @@ void JoltPhysicsServer3D::_shape_set_data(const RID& p_shape, const Variant& p_d
 	shape->set_data(p_data);
 }
 
-void JoltPhysicsServer3D::_shape_set_custom_solver_bias(const RID& p_shape, double p_bias) {
+void JoltPhysicsServer3D::_shape_set_custom_solver_bias(const RID& p_shape, real_t p_bias) {
 	JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
@@ -237,25 +237,25 @@ Variant JoltPhysicsServer3D::_shape_get_data(const RID& p_shape) const {
 	return shape->get_data();
 }
 
-void JoltPhysicsServer3D::_shape_set_margin(const RID& p_shape, double p_margin) {
+void JoltPhysicsServer3D::_shape_set_margin(const RID& p_shape, real_t p_margin) {
 	JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
 
 	shape->set_margin((float)p_margin);
 }
 
-double JoltPhysicsServer3D::_shape_get_margin(const RID& p_shape) const {
+real_t JoltPhysicsServer3D::_shape_get_margin(const RID& p_shape) const {
 	const JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL_D(shape);
 
-	return (double)shape->get_margin();
+	return (real_t)shape->get_margin();
 }
 
-double JoltPhysicsServer3D::_shape_get_custom_solver_bias(const RID& p_shape) const {
+real_t JoltPhysicsServer3D::_shape_get_custom_solver_bias(const RID& p_shape) const {
 	const JoltShapeImpl3D* shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL_D(shape);
 
-	return (double)shape->get_solver_bias();
+	return (real_t)shape->get_solver_bias();
 }
 
 RID JoltPhysicsServer3D::_space_create() {
@@ -295,19 +295,19 @@ bool JoltPhysicsServer3D::_space_is_active(const RID& p_space) const {
 void JoltPhysicsServer3D::_space_set_param(
 	const RID& p_space,
 	SpaceParameter p_param,
-	double p_value
+	real_t p_value
 ) {
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL(space);
 
-	space->set_param(p_param, p_value);
+	space->set_param(p_param, (double)p_value);
 }
 
-double JoltPhysicsServer3D::_space_get_param(const RID& p_space, SpaceParameter p_param) const {
+real_t JoltPhysicsServer3D::_space_get_param(const RID& p_space, SpaceParameter p_param) const {
 	const JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
 
-	return space->get_param(p_param);
+	return (real_t)space->get_param(p_param);
 }
 
 PhysicsDirectSpaceState3D* JoltPhysicsServer3D::_space_get_direct_state(const RID& p_space) {
@@ -812,18 +812,18 @@ uint32_t JoltPhysicsServer3D::_body_get_collision_mask(const RID& p_body) const 
 	return body->get_collision_mask();
 }
 
-void JoltPhysicsServer3D::_body_set_collision_priority(const RID& p_body, double p_priority) {
+void JoltPhysicsServer3D::_body_set_collision_priority(const RID& p_body, real_t p_priority) {
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	body->set_collision_priority((float)p_priority);
 }
 
-double JoltPhysicsServer3D::_body_get_collision_priority(const RID& p_body) const {
+real_t JoltPhysicsServer3D::_body_get_collision_priority(const RID& p_body) const {
 	const JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	return (double)body->get_collision_priority();
+	return (real_t)body->get_collision_priority();
 }
 
 void JoltPhysicsServer3D::_body_set_user_flags(
@@ -1056,7 +1056,7 @@ int32_t JoltPhysicsServer3D::_body_get_max_contacts_reported(const RID& p_body) 
 
 void JoltPhysicsServer3D::_body_set_contacts_reported_depth_threshold(
 	[[maybe_unused]] const RID& p_body,
-	[[maybe_unused]] double p_threshold
+	[[maybe_unused]] real_t p_threshold
 ) {
 	WARN_PRINT(
 		"Per-body contact depth threshold is not supported by Godot Jolt. "
@@ -1064,7 +1064,7 @@ void JoltPhysicsServer3D::_body_set_contacts_reported_depth_threshold(
 	);
 }
 
-double JoltPhysicsServer3D::_body_get_contacts_reported_depth_threshold(
+real_t JoltPhysicsServer3D::_body_get_contacts_reported_depth_threshold(
 	[[maybe_unused]] const RID& p_body
 ) const {
 	return 0.0;
@@ -1116,7 +1116,7 @@ bool JoltPhysicsServer3D::_body_test_motion(
 	const RID& p_body,
 	const Transform3D& p_from,
 	const Vector3& p_motion,
-	double p_margin,
+	real_t p_margin,
 	int32_t p_max_collisions,
 	bool p_collide_separation_ray,
 	bool p_recovery_as_collision,
@@ -1317,37 +1317,37 @@ int32_t JoltPhysicsServer3D::_soft_body_get_simulation_precision(const RID& p_bo
 	return body->get_simulation_precision();
 }
 
-void JoltPhysicsServer3D::_soft_body_set_total_mass(const RID& p_body, double p_total_mass) {
+void JoltPhysicsServer3D::_soft_body_set_total_mass(const RID& p_body, real_t p_total_mass) {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	return body->set_mass((float)p_total_mass);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_total_mass(const RID& p_body) const {
+real_t JoltPhysicsServer3D::_soft_body_get_total_mass(const RID& p_body) const {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	return (double)body->get_mass();
+	return (real_t)body->get_mass();
 }
 
-void JoltPhysicsServer3D::_soft_body_set_linear_stiffness(const RID& p_body, double p_coefficient) {
+void JoltPhysicsServer3D::_soft_body_set_linear_stiffness(const RID& p_body, real_t p_coefficient) {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	return body->set_stiffness_coefficient((float)p_coefficient);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_linear_stiffness(const RID& p_body) const {
+real_t JoltPhysicsServer3D::_soft_body_get_linear_stiffness(const RID& p_body) const {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	return (double)body->get_stiffness_coefficient();
+	return (real_t)body->get_stiffness_coefficient();
 }
 
 void JoltPhysicsServer3D::_soft_body_set_pressure_coefficient(
 	const RID& p_body,
-	double p_coefficient
+	real_t p_coefficient
 ) {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
@@ -1355,16 +1355,16 @@ void JoltPhysicsServer3D::_soft_body_set_pressure_coefficient(
 	return body->set_pressure((float)p_coefficient);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_pressure_coefficient(const RID& p_body) const {
+real_t JoltPhysicsServer3D::_soft_body_get_pressure_coefficient(const RID& p_body) const {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	return (double)body->get_pressure();
+	return (real_t)body->get_pressure();
 }
 
 void JoltPhysicsServer3D::_soft_body_set_damping_coefficient(
 	const RID& p_body,
-	double p_coefficient
+	real_t p_coefficient
 ) {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
@@ -1372,25 +1372,25 @@ void JoltPhysicsServer3D::_soft_body_set_damping_coefficient(
 	return body->set_linear_damping((float)p_coefficient);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_damping_coefficient(const RID& p_body) const {
+real_t JoltPhysicsServer3D::_soft_body_get_damping_coefficient(const RID& p_body) const {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	return (double)body->get_linear_damping();
+	return (real_t)body->get_linear_damping();
 }
 
-void JoltPhysicsServer3D::_soft_body_set_drag_coefficient(const RID& p_body, double p_coefficient) {
+void JoltPhysicsServer3D::_soft_body_set_drag_coefficient(const RID& p_body, real_t p_coefficient) {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
 	return body->set_drag((float)p_coefficient);
 }
 
-double JoltPhysicsServer3D::_soft_body_get_drag_coefficient(const RID& p_body) const {
+real_t JoltPhysicsServer3D::_soft_body_get_drag_coefficient(const RID& p_body) const {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
-	return (double)body->get_drag();
+	return (real_t)body->get_drag();
 }
 
 void JoltPhysicsServer3D::_soft_body_move_point(
@@ -1491,7 +1491,7 @@ void JoltPhysicsServer3D::_joint_make_pin(
 void JoltPhysicsServer3D::_pin_joint_set_param(
 	const RID& p_joint,
 	PinJointParam p_param,
-	double p_value
+	real_t p_value
 ) {
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL(joint);
@@ -1499,17 +1499,17 @@ void JoltPhysicsServer3D::_pin_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_PIN);
 	auto* pin_joint = static_cast<JoltPinJointImpl3D*>(joint);
 
-	pin_joint->set_param(p_param, p_value);
+	pin_joint->set_param(p_param, (double)p_value);
 }
 
-double JoltPhysicsServer3D::_pin_joint_get_param(const RID& p_joint, PinJointParam p_param) const {
+real_t JoltPhysicsServer3D::_pin_joint_get_param(const RID& p_joint, PinJointParam p_param) const {
 	const JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_PIN);
 	const auto* pin_joint = static_cast<const JoltPinJointImpl3D*>(joint);
 
-	return pin_joint->get_param(p_param);
+	return (real_t)pin_joint->get_param(p_param);
 }
 
 void JoltPhysicsServer3D::_pin_joint_set_local_a(const RID& p_joint, const Vector3& p_local_a) {
@@ -1593,7 +1593,7 @@ void JoltPhysicsServer3D::_joint_make_hinge_simple(
 void JoltPhysicsServer3D::_hinge_joint_set_param(
 	const RID& p_joint,
 	HingeJointParam p_param,
-	double p_value
+	real_t p_value
 ) {
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL(joint);
@@ -1601,10 +1601,10 @@ void JoltPhysicsServer3D::_hinge_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
 	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->set_param(p_param, p_value);
+	return hinge_joint->set_param(p_param, (double)p_value);
 }
 
-double JoltPhysicsServer3D::_hinge_joint_get_param(const RID& p_joint, HingeJointParam p_param)
+real_t JoltPhysicsServer3D::_hinge_joint_get_param(const RID& p_joint, HingeJointParam p_param)
 	const {
 	const JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
@@ -1612,7 +1612,7 @@ double JoltPhysicsServer3D::_hinge_joint_get_param(const RID& p_joint, HingeJoin
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_HINGE);
 	const auto* hinge_joint = static_cast<const JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->get_param(p_param);
+	return (real_t)hinge_joint->get_param(p_param);
 }
 
 void JoltPhysicsServer3D::_hinge_joint_set_flag(
@@ -1666,7 +1666,7 @@ void JoltPhysicsServer3D::_joint_make_slider(
 void JoltPhysicsServer3D::_slider_joint_set_param(
 	const RID& p_joint,
 	SliderJointParam p_param,
-	double p_value
+	real_t p_value
 ) {
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL(joint);
@@ -1674,10 +1674,10 @@ void JoltPhysicsServer3D::_slider_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_SLIDER);
 	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
 
-	return slider_joint->set_param(p_param, p_value);
+	return slider_joint->set_param(p_param, (double)p_value);
 }
 
-double JoltPhysicsServer3D::_slider_joint_get_param(const RID& p_joint, SliderJointParam p_param)
+real_t JoltPhysicsServer3D::_slider_joint_get_param(const RID& p_joint, SliderJointParam p_param)
 	const {
 	const JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
@@ -1685,7 +1685,7 @@ double JoltPhysicsServer3D::_slider_joint_get_param(const RID& p_joint, SliderJo
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_SLIDER);
 	const auto* slider_joint = static_cast<const JoltSliderJointImpl3D*>(joint);
 
-	return slider_joint->get_param(p_param);
+	return (real_t)slider_joint->get_param(p_param);
 }
 
 void JoltPhysicsServer3D::_joint_make_cone_twist(
@@ -1715,7 +1715,7 @@ void JoltPhysicsServer3D::_joint_make_cone_twist(
 void JoltPhysicsServer3D::_cone_twist_joint_set_param(
 	const RID& p_joint,
 	ConeTwistJointParam p_param,
-	double p_value
+	real_t p_value
 ) {
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL(joint);
@@ -1723,10 +1723,10 @@ void JoltPhysicsServer3D::_cone_twist_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_CONE_TWIST);
 	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
 
-	return cone_twist_joint->set_param(p_param, p_value);
+	return cone_twist_joint->set_param(p_param, (double)p_value);
 }
 
-double JoltPhysicsServer3D::_cone_twist_joint_get_param(
+real_t JoltPhysicsServer3D::_cone_twist_joint_get_param(
 	const RID& p_joint,
 	ConeTwistJointParam p_param
 ) const {
@@ -1736,7 +1736,7 @@ double JoltPhysicsServer3D::_cone_twist_joint_get_param(
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_CONE_TWIST);
 	const auto* cone_twist_joint = static_cast<const JoltConeTwistJointImpl3D*>(joint);
 
-	return cone_twist_joint->get_param(p_param);
+	return (real_t)cone_twist_joint->get_param(p_param);
 }
 
 void JoltPhysicsServer3D::_joint_make_generic_6dof(
@@ -1767,7 +1767,7 @@ void JoltPhysicsServer3D::_generic_6dof_joint_set_param(
 	const RID& p_joint,
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisParam p_param,
-	double p_value
+	real_t p_value
 ) {
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL(joint);
@@ -1775,10 +1775,10 @@ void JoltPhysicsServer3D::_generic_6dof_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_6DOF);
 	auto* g6dof_joint = static_cast<JoltGeneric6DOFJointImpl3D*>(joint);
 
-	return g6dof_joint->set_param(p_axis, p_param, p_value);
+	return g6dof_joint->set_param(p_axis, p_param, (double)p_value);
 }
 
-double JoltPhysicsServer3D::_generic_6dof_joint_get_param(
+real_t JoltPhysicsServer3D::_generic_6dof_joint_get_param(
 	const RID& p_joint,
 	Vector3::Axis p_axis,
 	PhysicsServer3D::G6DOFJointAxisParam p_param
@@ -1789,7 +1789,7 @@ double JoltPhysicsServer3D::_generic_6dof_joint_get_param(
 	ERR_FAIL_COND_D(joint->get_type() != JOINT_TYPE_6DOF);
 	const auto* g6dof_joint = static_cast<const JoltGeneric6DOFJointImpl3D*>(joint);
 
-	return g6dof_joint->get_param(p_axis, p_param);
+	return (real_t)g6dof_joint->get_param(p_axis, p_param);
 }
 
 void JoltPhysicsServer3D::_generic_6dof_joint_set_flag(
@@ -1885,7 +1885,7 @@ void JoltPhysicsServer3D::_init() {
 	job_system = new JoltJobSystem();
 }
 
-void JoltPhysicsServer3D::_step(double p_step) {
+void JoltPhysicsServer3D::_step(real_t p_step) {
 	if (!active) {
 		return;
 	}

@@ -213,7 +213,7 @@ void JoltSliderJoint3D::_update_param(Param p_param) {
 		} break;
 	}
 
-	physics_server->slider_joint_set_param(rid, ServerParam(p_param), *value);
+	physics_server->slider_joint_set_param(rid, ServerParam(p_param), (real_t)*value);
 }
 
 void JoltSliderJoint3D::_update_jolt_param(Param p_param) {
