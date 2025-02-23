@@ -10,11 +10,11 @@ class JoltGeneric6DOFJointImpl3D final : public JoltJointImpl3D {
 
 	using Param = PhysicsServer3D::G6DOFJointAxisParam;
 
-	using JoltParam = JoltPhysicsServer3D::G6DOFJointAxisParamJolt;
+	using JoltParam = JoltPhysicsServer3DExtension::G6DOFJointAxisParamJolt;
 
 	using Flag = PhysicsServer3D::G6DOFJointAxisFlag;
 
-	using JoltFlag = JoltPhysicsServer3D::G6DOFJointAxisFlagJolt;
+	using JoltFlag = JoltPhysicsServer3DExtension::G6DOFJointAxisFlagJolt;
 
 	enum {
 		AXIS_LINEAR_X = JoltAxis::TranslationX,

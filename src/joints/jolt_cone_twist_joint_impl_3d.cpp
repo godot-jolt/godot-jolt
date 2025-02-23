@@ -96,19 +96,19 @@ void JoltConeTwistJointImpl3D::set_param(
 
 double JoltConeTwistJointImpl3D::get_jolt_param(JoltParameter p_param) const {
 	switch (p_param) {
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Y: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Y: {
 			return swing_motor_target_speed_y;
 		}
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Z: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Z: {
 			return swing_motor_target_speed_z;
 		}
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_TWIST_MOTOR_TARGET_VELOCITY: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_TWIST_MOTOR_TARGET_VELOCITY: {
 			return twist_motor_target_speed;
 		}
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_SWING_MOTOR_MAX_TORQUE: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_SWING_MOTOR_MAX_TORQUE: {
 			return swing_motor_max_torque;
 		}
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_TWIST_MOTOR_MAX_TORQUE: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_TWIST_MOTOR_MAX_TORQUE: {
 			return twist_motor_max_torque;
 		}
 		default: {
@@ -119,23 +119,23 @@ double JoltConeTwistJointImpl3D::get_jolt_param(JoltParameter p_param) const {
 
 void JoltConeTwistJointImpl3D::set_jolt_param(JoltParameter p_param, double p_value) {
 	switch (p_param) {
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Y: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Y: {
 			swing_motor_target_speed_y = p_value;
 			_motor_velocity_changed();
 		} break;
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Z: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_SWING_MOTOR_TARGET_VELOCITY_Z: {
 			swing_motor_target_speed_z = p_value;
 			_motor_velocity_changed();
 		} break;
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_TWIST_MOTOR_TARGET_VELOCITY: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_TWIST_MOTOR_TARGET_VELOCITY: {
 			twist_motor_target_speed = p_value;
 			_motor_velocity_changed();
 		} break;
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_SWING_MOTOR_MAX_TORQUE: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_SWING_MOTOR_MAX_TORQUE: {
 			swing_motor_max_torque = p_value;
 			_swing_motor_limit_changed();
 		} break;
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_TWIST_MOTOR_MAX_TORQUE: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_TWIST_MOTOR_MAX_TORQUE: {
 			twist_motor_max_torque = p_value;
 			_twist_motor_limit_changed();
 		} break;
@@ -147,16 +147,16 @@ void JoltConeTwistJointImpl3D::set_jolt_param(JoltParameter p_param, double p_va
 
 bool JoltConeTwistJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
 	switch (p_flag) {
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_USE_SWING_LIMIT: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_FLAG_USE_SWING_LIMIT: {
 			return swing_limit_enabled;
 		}
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_USE_TWIST_LIMIT: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_FLAG_USE_TWIST_LIMIT: {
 			return twist_limit_enabled;
 		}
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_ENABLE_SWING_MOTOR: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_FLAG_ENABLE_SWING_MOTOR: {
 			return swing_motor_enabled;
 		}
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_ENABLE_TWIST_MOTOR: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_FLAG_ENABLE_TWIST_MOTOR: {
 			return twist_motor_enabled;
 		}
 		default: {
@@ -167,19 +167,19 @@ bool JoltConeTwistJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
 
 void JoltConeTwistJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled) {
 	switch (p_flag) {
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_USE_SWING_LIMIT: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_FLAG_USE_SWING_LIMIT: {
 			swing_limit_enabled = p_enabled;
 			_limits_changed();
 		} break;
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_USE_TWIST_LIMIT: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_FLAG_USE_TWIST_LIMIT: {
 			twist_limit_enabled = p_enabled;
 			_limits_changed();
 		} break;
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_ENABLE_SWING_MOTOR: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_FLAG_ENABLE_SWING_MOTOR: {
 			swing_motor_enabled = p_enabled;
 			_swing_motor_state_changed();
 		} break;
-		case JoltPhysicsServer3D::CONE_TWIST_JOINT_FLAG_ENABLE_TWIST_MOTOR: {
+		case JoltPhysicsServer3DExtension::CONE_TWIST_JOINT_FLAG_ENABLE_TWIST_MOTOR: {
 			twist_motor_enabled = p_enabled;
 			_twist_motor_state_changed();
 		} break;

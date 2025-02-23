@@ -4,16 +4,16 @@ class JoltBodyImpl3D;
 class JoltShapeImpl3D;
 class JoltSpace3D;
 
-class JoltPhysicsDirectSpaceState3D final : public PhysicsDirectSpaceState3DExtension {
-	GDCLASS_QUIET(JoltPhysicsDirectSpaceState3D, PhysicsDirectSpaceState3DExtension)
+class JoltPhysicsDirectSpaceState3DExtension final : public PhysicsDirectSpaceState3DExtension {
+	GDCLASS_QUIET(JoltPhysicsDirectSpaceState3DExtension, PhysicsDirectSpaceState3DExtension)
 
 private:
 	static void _bind_methods() { }
 
 public:
-	JoltPhysicsDirectSpaceState3D() = default;
+	JoltPhysicsDirectSpaceState3DExtension() = default;
 
-	explicit JoltPhysicsDirectSpaceState3D(JoltSpace3D* p_space);
+	explicit JoltPhysicsDirectSpaceState3DExtension(JoltSpace3D* p_space);
 
 	bool _intersect_ray(
 		const Vector3& p_from,

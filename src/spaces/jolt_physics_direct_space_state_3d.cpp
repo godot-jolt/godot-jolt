@@ -12,10 +12,10 @@
 #include "spaces/jolt_query_filter_3d.hpp"
 #include "spaces/jolt_space_3d.hpp"
 
-JoltPhysicsDirectSpaceState3D::JoltPhysicsDirectSpaceState3D(JoltSpace3D* p_space)
+JoltPhysicsDirectSpaceState3DExtension::JoltPhysicsDirectSpaceState3DExtension(JoltSpace3D* p_space)
 	: space(p_space) { }
 
-bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
+bool JoltPhysicsDirectSpaceState3DExtension::_intersect_ray(
 	const Vector3& p_from,
 	const Vector3& p_to,
 	uint32_t p_collision_mask,
@@ -101,7 +101,7 @@ bool JoltPhysicsDirectSpaceState3D::_intersect_ray(
 	return true;
 }
 
-int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
+int32_t JoltPhysicsDirectSpaceState3DExtension::_intersect_point(
 	const Vector3& p_position,
 	uint32_t p_collision_mask,
 	bool p_collide_with_bodies,
@@ -149,7 +149,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_point(
 	return hit_count;
 }
 
-int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
+int32_t JoltPhysicsDirectSpaceState3DExtension::_intersect_shape(
 	const RID& p_shape_rid,
 	const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
@@ -166,7 +166,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 
 	space->try_optimize();
 
-	JoltShapeImpl3D* shape = JoltPhysicsServer3D::get_singleton()->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = JoltPhysicsServer3DExtension::get_singleton()->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -230,7 +230,7 @@ int32_t JoltPhysicsDirectSpaceState3D::_intersect_shape(
 	return hit_count;
 }
 
-bool JoltPhysicsDirectSpaceState3D::_cast_motion(
+bool JoltPhysicsDirectSpaceState3DExtension::_cast_motion(
 	const RID& p_shape_rid,
 	const Transform3D& p_transform,
 	const Vector3& p_motion,
@@ -251,7 +251,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 
 	space->try_optimize();
 
-	JoltShapeImpl3D* shape = JoltPhysicsServer3D::get_singleton()->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = JoltPhysicsServer3DExtension::get_singleton()->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -301,7 +301,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion(
 	return true;
 }
 
-bool JoltPhysicsDirectSpaceState3D::_collide_shape(
+bool JoltPhysicsDirectSpaceState3DExtension::_collide_shape(
 	const RID& p_shape_rid,
 	const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
@@ -321,7 +321,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 
 	space->try_optimize();
 
-	JoltShapeImpl3D* shape = JoltPhysicsServer3D::get_singleton()->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = JoltPhysicsServer3DExtension::get_singleton()->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -410,7 +410,7 @@ bool JoltPhysicsDirectSpaceState3D::_collide_shape(
 	return true;
 }
 
-bool JoltPhysicsDirectSpaceState3D::_rest_info(
+bool JoltPhysicsDirectSpaceState3DExtension::_rest_info(
 	const RID& p_shape_rid,
 	const Transform3D& p_transform,
 	[[maybe_unused]] const Vector3& p_motion,
@@ -422,7 +422,7 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 ) {
 	space->try_optimize();
 
-	JoltShapeImpl3D* shape = JoltPhysicsServer3D::get_singleton()->get_shape(p_shape_rid);
+	JoltShapeImpl3D* shape = JoltPhysicsServer3DExtension::get_singleton()->get_shape(p_shape_rid);
 	ERR_FAIL_NULL_D(shape);
 
 	const JPH::ShapeRefC jolt_shape = shape->try_build();
@@ -497,13 +497,13 @@ bool JoltPhysicsDirectSpaceState3D::_rest_info(
 	return true;
 }
 
-Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
+Vector3 JoltPhysicsDirectSpaceState3DExtension::_get_closest_point_to_object_volume(
 	const RID& p_object,
 	const Vector3& p_point
 ) const {
 	space->try_optimize();
 
-	JoltPhysicsServer3D* physics_server = JoltPhysicsServer3D::get_singleton();
+	JoltPhysicsServer3DExtension* physics_server = JoltPhysicsServer3DExtension::get_singleton();
 	JoltObjectImpl3D* object = physics_server->get_area(p_object);
 
 	if (object == nullptr) {
@@ -593,7 +593,7 @@ Vector3 JoltPhysicsDirectSpaceState3D::_get_closest_point_to_object_volume(
 	}
 }
 
-bool JoltPhysicsDirectSpaceState3D::test_body_motion(
+bool JoltPhysicsDirectSpaceState3DExtension::test_body_motion(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_motion,
@@ -676,7 +676,7 @@ bool JoltPhysicsDirectSpaceState3D::test_body_motion(
 	return collided;
 }
 
-bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
+bool JoltPhysicsDirectSpaceState3DExtension::_cast_motion_impl(
 	const JPH::Shape& p_jolt_shape,
 	const Transform3D& p_transform_com,
 	const Vector3& p_scale,
@@ -832,7 +832,7 @@ bool JoltPhysicsDirectSpaceState3D::_cast_motion_impl(
 	return collided;
 }
 
-bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
+bool JoltPhysicsDirectSpaceState3DExtension::_body_motion_recover(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	float p_margin,
@@ -941,7 +941,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_recover(
 	return recovered;
 }
 
-bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
+bool JoltPhysicsDirectSpaceState3DExtension::_body_motion_cast(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_scale,
@@ -1017,7 +1017,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_cast(
 	return collided;
 }
 
-bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
+bool JoltPhysicsDirectSpaceState3DExtension::_body_motion_collide(
 	const JoltBodyImpl3D& p_body,
 	const Transform3D& p_transform,
 	const Vector3& p_motion,
@@ -1141,7 +1141,7 @@ bool JoltPhysicsDirectSpaceState3D::_body_motion_collide(
 	return count > 0;
 }
 
-int JoltPhysicsDirectSpaceState3D::_try_get_face_index(
+int JoltPhysicsDirectSpaceState3DExtension::_try_get_face_index(
 	const JPH::Body& p_body,
 	const JPH::SubShapeID& p_sub_shape_id
 ) {
@@ -1161,7 +1161,7 @@ int JoltPhysicsDirectSpaceState3D::_try_get_face_index(
 	return (int)mesh_shape->GetTriangleUserData(sub_shape_id_remainder);
 }
 
-void JoltPhysicsDirectSpaceState3D::_generate_manifold(
+void JoltPhysicsDirectSpaceState3DExtension::_generate_manifold(
 	const JPH::CollideShapeResult& p_hit,
 	JPH::ContactPoints& p_contact_points1,
 	JPH::ContactPoints& p_contact_points2
@@ -1202,7 +1202,7 @@ void JoltPhysicsDirectSpaceState3D::_generate_manifold(
 	}
 }
 
-void JoltPhysicsDirectSpaceState3D::_collide_shape_queries(
+void JoltPhysicsDirectSpaceState3DExtension::_collide_shape_queries(
 	const JPH::Shape* p_shape,
 	JPH::Vec3Arg p_scale,
 	JPH::RMat44Arg p_transform_com,
@@ -1243,7 +1243,7 @@ void JoltPhysicsDirectSpaceState3D::_collide_shape_queries(
 	}
 }
 
-void JoltPhysicsDirectSpaceState3D::_collide_shape_kinematics(
+void JoltPhysicsDirectSpaceState3DExtension::_collide_shape_kinematics(
 	const JPH::Shape* p_shape,
 	JPH::Vec3Arg p_scale,
 	JPH::RMat44Arg p_transform_com,

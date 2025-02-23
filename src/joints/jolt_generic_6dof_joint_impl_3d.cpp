@@ -54,13 +54,13 @@ double JoltGeneric6DOFJointImpl3D::get_param(Axis p_axis, Param p_param) const {
 		case PhysicsServer3D::G6DOF_JOINT_LINEAR_MOTOR_FORCE_LIMIT: {
 			return motor_limit[axis_lin];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_STIFFNESS: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_STIFFNESS: {
 			return spring_stiffness[axis_lin];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_DAMPING: {
 			return spring_damping[axis_lin];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT: {
 			return spring_equilibrium[axis_lin];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_LOWER_LIMIT: {
@@ -90,13 +90,13 @@ double JoltGeneric6DOFJointImpl3D::get_param(Axis p_axis, Param p_param) const {
 		case PhysicsServer3D::G6DOF_JOINT_ANGULAR_MOTOR_FORCE_LIMIT: {
 			return motor_limit[axis_ang];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS: {
 			return spring_stiffness[axis_ang];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_DAMPING: {
 			return spring_damping[axis_ang];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT: {
 			return spring_equilibrium[axis_ang];
 		}
 		default: {
@@ -156,15 +156,15 @@ void JoltGeneric6DOFJointImpl3D::set_param(Axis p_axis, Param p_param, double p_
 			motor_limit[axis_lin] = p_value;
 			_motor_limit_changed(axis_lin);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_STIFFNESS: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_STIFFNESS: {
 			spring_stiffness[axis_lin] = p_value;
 			_spring_parameters_changed(axis_lin);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_DAMPING: {
 			spring_damping[axis_lin] = p_value;
 			_spring_parameters_changed(axis_lin);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_EQUILIBRIUM_POINT: {
 			spring_equilibrium[axis_lin] = p_value;
 			_spring_equilibrium_changed(axis_lin);
 		} break;
@@ -234,15 +234,15 @@ void JoltGeneric6DOFJointImpl3D::set_param(Axis p_axis, Param p_param, double p_
 			motor_limit[axis_ang] = p_value;
 			_motor_limit_changed(axis_ang);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_STIFFNESS: {
 			spring_stiffness[axis_ang] = p_value;
 			_spring_parameters_changed(axis_ang);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_DAMPING: {
 			spring_damping[axis_ang] = p_value;
 			_spring_parameters_changed(axis_ang);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_EQUILIBRIUM_POINT: {
 			spring_equilibrium[axis_ang] = p_value;
 			_spring_equilibrium_changed(axis_ang);
 		} break;
@@ -263,10 +263,10 @@ bool JoltGeneric6DOFJointImpl3D::get_flag(Axis p_axis, Flag p_flag) const {
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_LIMIT: {
 			return limit_enabled[axis_ang];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING: {
 			return spring_enabled[axis_ang];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING: {
 			return spring_enabled[axis_lin];
 		}
 		case PhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_MOTOR: {
@@ -294,11 +294,11 @@ void JoltGeneric6DOFJointImpl3D::set_flag(Axis p_axis, Flag p_flag, bool p_enabl
 			limit_enabled[axis_ang] = p_enabled;
 			_limits_changed();
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING: {
 			spring_enabled[axis_ang] = p_enabled;
 			_spring_state_changed(axis_ang);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING: {
 			spring_enabled[axis_lin] = p_enabled;
 			_spring_state_changed(axis_lin);
 		} break;
@@ -321,22 +321,22 @@ double JoltGeneric6DOFJointImpl3D::get_jolt_param(Axis p_axis, JoltParam p_param
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_param) {
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_FREQUENCY: {
 			return spring_frequency[axis_lin];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_MAX_FORCE: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_MAX_FORCE: {
 			return spring_limit[axis_lin];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_LIMIT_SPRING_FREQUENCY: {
 			return limit_spring_frequency[axis_lin];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_LIMIT_SPRING_DAMPING: {
 			return limit_spring_damping[axis_lin];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_FREQUENCY: {
 			return spring_frequency[axis_ang];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_MAX_TORQUE: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_MAX_TORQUE: {
 			return spring_limit[axis_ang];
 		}
 		default: {
@@ -350,27 +350,27 @@ void JoltGeneric6DOFJointImpl3D::set_jolt_param(Axis p_axis, JoltParam p_param, 
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_param) {
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_FREQUENCY: {
 			spring_frequency[axis_lin] = p_value;
 			_spring_parameters_changed(axis_lin);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_SPRING_MAX_FORCE: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_SPRING_MAX_FORCE: {
 			spring_limit[axis_lin] = p_value;
 			_spring_limit_changed(axis_lin);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_LIMIT_SPRING_FREQUENCY: {
 			limit_spring_frequency[axis_lin] = p_value;
 			_limit_spring_parameters_changed(axis_lin);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_LINEAR_LIMIT_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_LINEAR_LIMIT_SPRING_DAMPING: {
 			limit_spring_damping[axis_lin] = p_value;
 			_limit_spring_parameters_changed(axis_lin);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_FREQUENCY: {
 			spring_frequency[axis_ang] = p_value;
 			_spring_parameters_changed(axis_ang);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_ANGULAR_SPRING_MAX_TORQUE: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_ANGULAR_SPRING_MAX_TORQUE: {
 			spring_limit[axis_ang] = p_value;
 			_spring_limit_changed(axis_ang);
 		} break;
@@ -385,13 +385,13 @@ bool JoltGeneric6DOFJointImpl3D::get_jolt_flag(Axis p_axis, JoltFlag p_flag) con
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_flag) {
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT_SPRING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT_SPRING: {
 			return limit_spring_enabled[axis_lin];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING_FREQUENCY: {
 			return spring_use_frequency[axis_lin];
 		}
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING_FREQUENCY: {
 			return spring_use_frequency[axis_ang];
 		}
 		default: {
@@ -405,15 +405,15 @@ void JoltGeneric6DOFJointImpl3D::set_jolt_flag(Axis p_axis, JoltFlag p_flag, boo
 	const int32_t axis_ang = AXES_ANGULAR + (int32_t)p_axis;
 
 	switch ((int32_t)p_flag) {
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT_SPRING: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT_SPRING: {
 			limit_spring_enabled[axis_lin] = p_enabled;
 			_limit_spring_parameters_changed(axis_lin);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_LINEAR_SPRING_FREQUENCY: {
 			spring_use_frequency[axis_lin] = p_enabled;
 			_spring_parameters_changed(axis_lin);
 		} break;
-		case JoltPhysicsServer3D::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::G6DOF_JOINT_FLAG_ENABLE_ANGULAR_SPRING_FREQUENCY: {
 			spring_use_frequency[axis_ang] = p_enabled;
 			_spring_parameters_changed(axis_ang);
 		} break;

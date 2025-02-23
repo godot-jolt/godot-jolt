@@ -83,7 +83,7 @@ Also consider this note from Jolt's [documentation][jdc]:
 
 ## What versions of Godot are supported?
 
-Currently the **only** supported version is **Godot 4.3** (including 4.3.x).
+Currently the **only** supported versions of Godot are **4.3** and **4.4**.
 
 ## What platforms are supported?
 
@@ -104,7 +104,7 @@ Jellyfish) or newer.
 4. Open your project settings
 5. Make sure "Advanced Settings" is enabled
 6. Go to "Physics" and then "3D"
-7. Change "Physics Engine" to "JoltPhysics3D"
+7. Change "Physics Engine" to "Jolt Physics (Extension)"
 8. Restart Godot
 
 ## What settings are there?

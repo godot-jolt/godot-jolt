@@ -7,7 +7,7 @@ void JoltPinJoint3D::_bind_methods() {
 }
 
 float JoltPinJoint3D::get_applied_force() const {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
 	return physics_server->pin_joint_get_applied_force(rid);

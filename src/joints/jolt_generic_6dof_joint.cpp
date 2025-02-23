@@ -4,9 +4,9 @@ namespace {
 
 using ServerAxis = Vector3::Axis;
 using ServerParam = PhysicsServer3D::G6DOFJointAxisParam;
-using ServerParamJolt = JoltPhysicsServer3D::G6DOFJointAxisParamJolt;
-using ServerFlag = JoltPhysicsServer3D::G6DOFJointAxisFlag;
-using ServerFlagJolt = JoltPhysicsServer3D::G6DOFJointAxisFlagJolt;
+using ServerParamJolt = JoltPhysicsServer3DExtension::G6DOFJointAxisParamJolt;
+using ServerFlag = JoltPhysicsServer3DExtension::G6DOFJointAxisFlag;
+using ServerFlagJolt = JoltPhysicsServer3DExtension::G6DOFJointAxisFlagJolt;
 
 } // namespace
 
@@ -455,14 +455,14 @@ void JoltGeneric6DOFJoint3D::set_flag(Axis p_axis, Flag p_flag, bool p_enabled) 
 }
 
 float JoltGeneric6DOFJoint3D::get_applied_force() const {
-	JoltPhysicsServer3D* server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(server);
 
 	return server->generic_6dof_joint_get_applied_force(rid);
 }
 
 float JoltGeneric6DOFJoint3D::get_applied_torque() const {
-	JoltPhysicsServer3D* server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(server);
 
 	return server->generic_6dof_joint_get_applied_torque(rid);
@@ -637,7 +637,7 @@ void JoltGeneric6DOFJoint3D::_update_param(Axis p_axis, Param p_param) {
 void JoltGeneric6DOFJoint3D::_update_jolt_param(Axis p_axis, Param p_param, double p_value) {
 	QUIET_FAIL_COND(_is_invalid());
 
-	JoltPhysicsServer3D* server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(server);
 
 	server->generic_6dof_joint_set_jolt_param(rid, p_axis, (ServerParamJolt)p_param, p_value);
@@ -669,7 +669,7 @@ void JoltGeneric6DOFJoint3D::_update_flag(Axis p_axis, Flag p_flag) {
 void JoltGeneric6DOFJoint3D::_update_jolt_flag(Axis p_axis, Flag p_flag, bool p_enabled) {
 	QUIET_FAIL_COND(_is_invalid());
 
-	JoltPhysicsServer3D* server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(server);
 
 	server->generic_6dof_joint_set_jolt_flag(rid, p_axis, (ServerFlagJolt)p_flag, p_enabled);

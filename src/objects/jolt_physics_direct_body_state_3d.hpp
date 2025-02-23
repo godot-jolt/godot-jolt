@@ -2,16 +2,16 @@
 
 class JoltBodyImpl3D;
 
-class JoltPhysicsDirectBodyState3D final : public PhysicsDirectBodyState3DExtension {
-	GDCLASS_QUIET(JoltPhysicsDirectBodyState3D, PhysicsDirectBodyState3DExtension)
+class JoltPhysicsDirectBodyState3DExtension final : public PhysicsDirectBodyState3DExtension {
+	GDCLASS_QUIET(JoltPhysicsDirectBodyState3DExtension, PhysicsDirectBodyState3DExtension)
 
 private:
 	static void _bind_methods() { }
 
 public:
-	JoltPhysicsDirectBodyState3D() = default;
+	JoltPhysicsDirectBodyState3DExtension() = default;
 
-	explicit JoltPhysicsDirectBodyState3D(JoltBodyImpl3D* p_body);
+	explicit JoltPhysicsDirectBodyState3DExtension(JoltBodyImpl3D* p_body);
 
 	Vector3 _get_total_gravity() const override;
 

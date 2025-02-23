@@ -138,14 +138,14 @@ PhysicsServer3D* JoltJoint3D::_get_physics_server() {
 	return PhysicsServer3D::get_singleton();
 }
 
-JoltPhysicsServer3D* JoltJoint3D::_get_jolt_physics_server() {
-	JoltPhysicsServer3D* physics_server = JoltPhysicsServer3D::get_singleton();
+JoltPhysicsServer3DExtension* JoltJoint3D::_get_jolt_physics_server() {
+	JoltPhysicsServer3DExtension* physics_server = JoltPhysicsServer3DExtension::get_singleton();
 
 	if (unlikely(physics_server == nullptr)) {
 		ERR_PRINT_ONCE(
 			"JoltJoint3D was unable to retrieve the Jolt-based physics server. "
-			"Make sure that you have 'JoltPhysics3D' set as the currently active physics engine. "
-			"All Jolt-specific functionality related to joints will be ignored."
+			"Make sure that you have 'Jolt Physics (Extension)' set as the currently active "
+			"physics engine. All Jolt-specific functionality related to joints will be ignored."
 		);
 	}
 
@@ -297,7 +297,7 @@ void JoltJoint3D::_destroy() {
 }
 
 void JoltJoint3D::_update_enabled() {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(physics_server);
 
 	physics_server->joint_set_enabled(rid, enabled);
@@ -311,14 +311,14 @@ void JoltJoint3D::_update_collision_exclusion() {
 }
 
 void JoltJoint3D::_update_velocity_iterations() {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(physics_server);
 
 	physics_server->joint_set_solver_velocity_iterations(rid, velocity_iterations);
 }
 
 void JoltJoint3D::_update_position_iterations() {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(physics_server);
 
 	physics_server->joint_set_solver_position_iterations(rid, position_iterations);

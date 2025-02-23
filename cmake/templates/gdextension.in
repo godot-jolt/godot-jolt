@@ -5,8 +5,8 @@ build = "${PROJECT_VERSION_BUILD}"
 [configuration]
 
 entry_symbol = "${GDJ_ENTRY_POINT}"
-compatibility_minimum = "${GDJ_GODOT_VERSION_MAJOR}.${GDJ_GODOT_VERSION_MINOR}"
-compatibility_maximum = "${GDJ_GODOT_VERSION_MAJOR}.${GDJ_GODOT_VERSION_MINOR}"
+compatibility_minimum = "${GDJ_GODOT_VERSION_MAJOR_MIN}.${GDJ_GODOT_VERSION_MINOR_MIN}"
+compatibility_maximum = "${GDJ_GODOT_VERSION_MAJOR_MAX}.${GDJ_GODOT_VERSION_MINOR_MAX}"
 
 [libraries]
 

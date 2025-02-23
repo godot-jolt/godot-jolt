@@ -6,11 +6,11 @@
 class JoltHingeJointImpl3D final : public JoltJointImpl3D {
 	using Parameter = PhysicsServer3D::HingeJointParam;
 
-	using JoltParameter = JoltPhysicsServer3D::HingeJointParamJolt;
+	using JoltParameter = JoltPhysicsServer3DExtension::HingeJointParamJolt;
 
 	using Flag = PhysicsServer3D::HingeJointFlag;
 
-	using JoltFlag = JoltPhysicsServer3D::HingeJointFlagJolt;
+	using JoltFlag = JoltPhysicsServer3DExtension::HingeJointFlagJolt;
 
 public:
 	JoltHingeJointImpl3D(

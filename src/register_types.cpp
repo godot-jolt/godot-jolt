@@ -14,8 +14,8 @@
 
 namespace {
 
-JoltPhysicsServer3D* create_jolt_physics_server() {
-	return memnew(JoltPhysicsServer3D);
+JoltPhysicsServer3DExtension* create_jolt_physics_server() {
+	return memnew(JoltPhysicsServer3DExtension);
 }
 
 void on_initialize(ModuleInitializationLevel p_level) {
@@ -25,12 +25,12 @@ void on_initialize(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_SERVERS: {
 			jolt_initialize();
 
-			ClassDB::register_class<JoltPhysicsDirectBodyState3D>();
-			ClassDB::register_class<JoltPhysicsDirectSpaceState3D>();
-			ClassDB::register_class<JoltPhysicsServer3D>();
+			ClassDB::register_class<JoltPhysicsDirectBodyState3DExtension>();
+			ClassDB::register_class<JoltPhysicsDirectSpaceState3DExtension>();
+			ClassDB::register_class<JoltPhysicsServer3DExtension>();
 
 			PhysicsServer3DManager::get_singleton()->register_server(
-				"JoltPhysics3D",
+				"Jolt Physics (Extension)",
 				callable_mp_static(&create_jolt_physics_server)
 			);
 		} break;

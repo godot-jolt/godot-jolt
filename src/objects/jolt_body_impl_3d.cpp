@@ -858,9 +858,9 @@ void JoltBodyImpl3D::pre_step(float p_step, JPH::Body& p_jolt_body) {
 	contact_count = 0;
 }
 
-JoltPhysicsDirectBodyState3D* JoltBodyImpl3D::get_direct_state() {
+JoltPhysicsDirectBodyState3DExtension* JoltBodyImpl3D::get_direct_state() {
 	if (direct_state == nullptr) {
-		direct_state = memnew(JoltPhysicsDirectBodyState3D(this));
+		direct_state = memnew(JoltPhysicsDirectBodyState3DExtension(this));
 	}
 
 	return direct_state;

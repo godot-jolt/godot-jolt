@@ -338,16 +338,16 @@ void JoltSliderJointImpl3D::set_param(PhysicsServer3D::SliderJointParam p_param,
 
 double JoltSliderJointImpl3D::get_jolt_param(JoltParameter p_param) const {
 	switch (p_param) {
-		case JoltPhysicsServer3D::SLIDER_JOINT_LIMIT_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_LIMIT_SPRING_FREQUENCY: {
 			return limit_spring_frequency;
 		}
-		case JoltPhysicsServer3D::SLIDER_JOINT_LIMIT_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_LIMIT_SPRING_DAMPING: {
 			return limit_spring_damping;
 		}
-		case JoltPhysicsServer3D::SLIDER_JOINT_MOTOR_TARGET_VELOCITY: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_MOTOR_TARGET_VELOCITY: {
 			return motor_target_speed;
 		}
-		case JoltPhysicsServer3D::SLIDER_JOINT_MOTOR_MAX_FORCE: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_MOTOR_MAX_FORCE: {
 			return motor_max_force;
 		}
 		default: {
@@ -358,19 +358,19 @@ double JoltSliderJointImpl3D::get_jolt_param(JoltParameter p_param) const {
 
 void JoltSliderJointImpl3D::set_jolt_param(JoltParameter p_param, double p_value) {
 	switch (p_param) {
-		case JoltPhysicsServer3D::SLIDER_JOINT_LIMIT_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_LIMIT_SPRING_FREQUENCY: {
 			limit_spring_frequency = p_value;
 			_limit_spring_changed();
 		} break;
-		case JoltPhysicsServer3D::SLIDER_JOINT_LIMIT_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_LIMIT_SPRING_DAMPING: {
 			limit_spring_damping = p_value;
 			_limit_spring_changed();
 		} break;
-		case JoltPhysicsServer3D::SLIDER_JOINT_MOTOR_TARGET_VELOCITY: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_MOTOR_TARGET_VELOCITY: {
 			motor_target_speed = p_value;
 			_motor_speed_changed();
 		} break;
-		case JoltPhysicsServer3D::SLIDER_JOINT_MOTOR_MAX_FORCE: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_MOTOR_MAX_FORCE: {
 			motor_max_force = p_value;
 			_motor_limit_changed();
 		} break;
@@ -382,13 +382,13 @@ void JoltSliderJointImpl3D::set_jolt_param(JoltParameter p_param, double p_value
 
 bool JoltSliderJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
 	switch (p_flag) {
-		case JoltPhysicsServer3D::SLIDER_JOINT_FLAG_USE_LIMIT: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_FLAG_USE_LIMIT: {
 			return limits_enabled;
 		}
-		case JoltPhysicsServer3D::SLIDER_JOINT_FLAG_USE_LIMIT_SPRING: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_FLAG_USE_LIMIT_SPRING: {
 			return limit_spring_enabled;
 		}
-		case JoltPhysicsServer3D::SLIDER_JOINT_FLAG_ENABLE_MOTOR: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_FLAG_ENABLE_MOTOR: {
 			return motor_enabled;
 		}
 		default: {
@@ -399,15 +399,15 @@ bool JoltSliderJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
 
 void JoltSliderJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled) {
 	switch (p_flag) {
-		case JoltPhysicsServer3D::SLIDER_JOINT_FLAG_USE_LIMIT: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_FLAG_USE_LIMIT: {
 			limits_enabled = p_enabled;
 			_limits_changed();
 		} break;
-		case JoltPhysicsServer3D::SLIDER_JOINT_FLAG_USE_LIMIT_SPRING: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_FLAG_USE_LIMIT_SPRING: {
 			limit_spring_enabled = p_enabled;
 			_limit_spring_changed();
 		} break;
-		case JoltPhysicsServer3D::SLIDER_JOINT_FLAG_ENABLE_MOTOR: {
+		case JoltPhysicsServer3DExtension::SLIDER_JOINT_FLAG_ENABLE_MOTOR: {
 			motor_enabled = p_enabled;
 			_motor_state_changed();
 		} break;

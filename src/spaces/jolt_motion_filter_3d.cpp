@@ -11,7 +11,7 @@
 #include "spaces/jolt_space_3d.hpp"
 
 JoltMotionFilter3D::JoltMotionFilter3D(const JoltBodyImpl3D& p_body, bool p_collide_separation_ray)
-	: physics_server(*JoltPhysicsServer3D::get_singleton())
+	: physics_server(*JoltPhysicsServer3DExtension::get_singleton())
 	, body_self(p_body)
 	, space(*body_self.get_space())
 	, collide_separation_ray(p_collide_separation_ray) { }

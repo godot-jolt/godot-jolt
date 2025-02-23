@@ -6,7 +6,7 @@
 #include "spaces/jolt_space_3d.hpp"
 
 JoltQueryFilter3D::JoltQueryFilter3D(
-	const JoltPhysicsDirectSpaceState3D& p_space_state,
+	const JoltPhysicsDirectSpaceState3DExtension& p_space_state,
 	uint32_t p_collision_mask,
 	bool p_collide_with_bodies,
 	bool p_collide_with_areas,

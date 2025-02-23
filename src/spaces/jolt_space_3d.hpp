@@ -7,7 +7,7 @@ class JoltContactListener3D;
 class JoltJointImpl3D;
 class JoltLayerMapper;
 class JoltObjectImpl3D;
-class JoltPhysicsDirectSpaceState3D;
+class JoltPhysicsDirectSpaceState3DExtension;
 
 class JoltSpace3D {
 public:
@@ -68,7 +68,7 @@ public:
 
 	JoltWritableBodies3D write_bodies(const JPH::BodyID* p_body_ids, int32_t p_body_count) const;
 
-	JoltPhysicsDirectSpaceState3D* get_direct_state();
+	JoltPhysicsDirectSpaceState3DExtension* get_direct_state();
 
 	JoltAreaImpl3D* get_default_area() const { return default_area; }
 
@@ -129,7 +129,7 @@ private:
 
 	JPH::PhysicsSystem* physics_system = nullptr;
 
-	JoltPhysicsDirectSpaceState3D* direct_state = nullptr;
+	JoltPhysicsDirectSpaceState3DExtension* direct_state = nullptr;
 
 	JoltAreaImpl3D* default_area = nullptr;
 
