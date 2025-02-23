@@ -12,14 +12,14 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_total_gravity() const {
 	return body->get_gravity();
 }
 
-double JoltPhysicsDirectBodyState3D::_get_total_angular_damp() const {
+real_t JoltPhysicsDirectBodyState3D::_get_total_angular_damp() const {
 	QUIET_FAIL_NULL_D_ED(body);
-	return (double)body->get_total_angular_damp();
+	return (real_t)body->get_total_angular_damp();
 }
 
-double JoltPhysicsDirectBodyState3D::_get_total_linear_damp() const {
+real_t JoltPhysicsDirectBodyState3D::_get_total_linear_damp() const {
 	QUIET_FAIL_NULL_D_ED(body);
-	return (double)body->get_total_linear_damp();
+	return (real_t)body->get_total_linear_damp();
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_center_of_mass() const {
@@ -37,9 +37,9 @@ Basis JoltPhysicsDirectBodyState3D::_get_principal_inertia_axes() const {
 	return body->get_principal_inertia_axes();
 }
 
-double JoltPhysicsDirectBodyState3D::_get_inverse_mass() const {
+real_t JoltPhysicsDirectBodyState3D::_get_inverse_mass() const {
 	QUIET_FAIL_NULL_D_ED(body);
-	return 1.0 / body->get_mass();
+	return real_t(1.0 / body->get_mass());
 }
 
 Vector3 JoltPhysicsDirectBodyState3D::_get_inverse_inertia() const {
@@ -244,9 +244,9 @@ Vector3 JoltPhysicsDirectBodyState3D::_get_contact_collider_velocity_at_position
 	return body->get_contact(p_contact_idx).collider_velocity;
 }
 
-double JoltPhysicsDirectBodyState3D::_get_step() const {
+real_t JoltPhysicsDirectBodyState3D::_get_step() const {
 	QUIET_FAIL_NULL_D_ED(body);
-	return (double)body->get_space()->get_last_step();
+	return (real_t)body->get_space()->get_last_step();
 }
 
 void JoltPhysicsDirectBodyState3D::_integrate_forces() {

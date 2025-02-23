@@ -624,7 +624,7 @@ void JoltGeneric6DOFJoint3D::_update_param(Axis p_axis, Param p_param, double p_
 	PhysicsServer3D* server = _get_physics_server();
 	ERR_FAIL_NULL(server);
 
-	server->generic_6dof_joint_set_param(rid, p_axis, (ServerParam)p_param, p_value);
+	server->generic_6dof_joint_set_param(rid, p_axis, (ServerParam)p_param, (real_t)p_value);
 }
 
 void JoltGeneric6DOFJoint3D::_update_param(Axis p_axis, Param p_param) {

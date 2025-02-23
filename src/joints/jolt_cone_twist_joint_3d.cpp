@@ -247,7 +247,7 @@ void JoltConeTwistJoint3D::_update_param(Param p_param) {
 		} break;
 	}
 
-	physics_server->cone_twist_joint_set_param(rid, ServerParam(p_param), *value);
+	physics_server->cone_twist_joint_set_param(rid, ServerParam(p_param), (real_t)*value);
 }
 
 void JoltConeTwistJoint3D::_update_jolt_param(Param p_param) {
