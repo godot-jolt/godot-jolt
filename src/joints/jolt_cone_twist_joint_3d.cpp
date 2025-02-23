@@ -5,8 +5,8 @@
 namespace {
 
 using ServerParam = PhysicsServer3D::ConeTwistJointParam;
-using ServerParamJolt = JoltPhysicsServer3D::ConeTwistJointParamJolt;
-using ServerFlagJolt = JoltPhysicsServer3D::ConeTwistJointFlagJolt;
+using ServerParamJolt = JoltPhysicsServer3DExtension::ConeTwistJointParamJolt;
+using ServerFlagJolt = JoltPhysicsServer3DExtension::ConeTwistJointFlagJolt;
 
 } // namespace
 
@@ -186,14 +186,14 @@ void JoltConeTwistJoint3D::set_twist_motor_max_torque(double p_value) {
 }
 
 float JoltConeTwistJoint3D::get_applied_force() const {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
 	return physics_server->cone_twist_joint_get_applied_force(rid);
 }
 
 float JoltConeTwistJoint3D::get_applied_torque() const {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
 	return physics_server->cone_twist_joint_get_applied_torque(rid);
@@ -253,7 +253,7 @@ void JoltConeTwistJoint3D::_update_param(Param p_param) {
 void JoltConeTwistJoint3D::_update_jolt_param(Param p_param) {
 	QUIET_FAIL_COND(_is_invalid());
 
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(physics_server);
 
 	double* value = nullptr;
@@ -285,7 +285,7 @@ void JoltConeTwistJoint3D::_update_jolt_param(Param p_param) {
 void JoltConeTwistJoint3D::_update_jolt_flag(Flag p_flag) {
 	QUIET_FAIL_COND(_is_invalid());
 
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(physics_server);
 
 	bool* value = nullptr;

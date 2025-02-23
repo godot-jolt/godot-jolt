@@ -6,9 +6,9 @@
 class JoltSliderJointImpl3D final : public JoltJointImpl3D {
 	using Parameter = PhysicsServer3D::SliderJointParam;
 
-	using JoltParameter = JoltPhysicsServer3D::SliderJointParamJolt;
+	using JoltParameter = JoltPhysicsServer3DExtension::SliderJointParamJolt;
 
-	using JoltFlag = JoltPhysicsServer3D::SliderJointFlagJolt;
+	using JoltFlag = JoltPhysicsServer3DExtension::SliderJointFlagJolt;
 
 public:
 	JoltSliderJointImpl3D(

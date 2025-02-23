@@ -5,8 +5,8 @@
 namespace {
 
 using ServerParam = PhysicsServer3D::SliderJointParam;
-using ServerParamJolt = JoltPhysicsServer3D::SliderJointParamJolt;
-using ServerFlagJolt = JoltPhysicsServer3D::SliderJointFlagJolt;
+using ServerParamJolt = JoltPhysicsServer3DExtension::SliderJointParamJolt;
+using ServerFlagJolt = JoltPhysicsServer3DExtension::SliderJointFlagJolt;
 
 } // namespace
 
@@ -151,14 +151,14 @@ void JoltSliderJoint3D::set_motor_max_force(double p_value) {
 }
 
 float JoltSliderJoint3D::get_applied_force() const {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
 	return physics_server->slider_joint_get_applied_force(rid);
 }
 
 float JoltSliderJoint3D::get_applied_torque() const {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
 	return physics_server->slider_joint_get_applied_torque(rid);
@@ -219,7 +219,7 @@ void JoltSliderJoint3D::_update_param(Param p_param) {
 void JoltSliderJoint3D::_update_jolt_param(Param p_param) {
 	QUIET_FAIL_COND(_is_invalid());
 
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(physics_server);
 
 	double* value = nullptr;
@@ -248,7 +248,7 @@ void JoltSliderJoint3D::_update_jolt_param(Param p_param) {
 void JoltSliderJoint3D::_update_jolt_flag(Flag p_flag) {
 	QUIET_FAIL_COND(_is_invalid());
 
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(physics_server);
 
 	bool* value = nullptr;

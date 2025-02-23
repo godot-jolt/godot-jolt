@@ -125,13 +125,13 @@ void JoltHingeJointImpl3D::set_param(Parameter p_param, double p_value) {
 
 double JoltHingeJointImpl3D::get_jolt_param(JoltParameter p_param) const {
 	switch (p_param) {
-		case JoltPhysicsServer3D::HINGE_JOINT_LIMIT_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::HINGE_JOINT_LIMIT_SPRING_FREQUENCY: {
 			return limit_spring_frequency;
 		}
-		case JoltPhysicsServer3D::HINGE_JOINT_LIMIT_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::HINGE_JOINT_LIMIT_SPRING_DAMPING: {
 			return limit_spring_damping;
 		}
-		case JoltPhysicsServer3D::HINGE_JOINT_MOTOR_MAX_TORQUE: {
+		case JoltPhysicsServer3DExtension::HINGE_JOINT_MOTOR_MAX_TORQUE: {
 			return motor_max_torque;
 		}
 		default: {
@@ -142,15 +142,15 @@ double JoltHingeJointImpl3D::get_jolt_param(JoltParameter p_param) const {
 
 void JoltHingeJointImpl3D::set_jolt_param(JoltParameter p_param, double p_value) {
 	switch (p_param) {
-		case JoltPhysicsServer3D::HINGE_JOINT_LIMIT_SPRING_FREQUENCY: {
+		case JoltPhysicsServer3DExtension::HINGE_JOINT_LIMIT_SPRING_FREQUENCY: {
 			limit_spring_frequency = p_value;
 			_limit_spring_changed();
 		} break;
-		case JoltPhysicsServer3D::HINGE_JOINT_LIMIT_SPRING_DAMPING: {
+		case JoltPhysicsServer3DExtension::HINGE_JOINT_LIMIT_SPRING_DAMPING: {
 			limit_spring_damping = p_value;
 			_limit_spring_changed();
 		} break;
-		case JoltPhysicsServer3D::HINGE_JOINT_MOTOR_MAX_TORQUE: {
+		case JoltPhysicsServer3DExtension::HINGE_JOINT_MOTOR_MAX_TORQUE: {
 			motor_max_torque = p_value;
 			_motor_limit_changed();
 		} break;
@@ -193,7 +193,7 @@ void JoltHingeJointImpl3D::set_flag(Flag p_flag, bool p_enabled) {
 bool JoltHingeJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
 	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
 	switch (p_flag) {
-		case JoltPhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT_SPRING: {
+		case JoltPhysicsServer3DExtension::HINGE_JOINT_FLAG_USE_LIMIT_SPRING: {
 			return limit_spring_enabled;
 		}
 		default: {
@@ -205,7 +205,7 @@ bool JoltHingeJointImpl3D::get_jolt_flag(JoltFlag p_flag) const {
 void JoltHingeJointImpl3D::set_jolt_flag(JoltFlag p_flag, bool p_enabled) {
 	// NOLINTNEXTLINE(hicpp-multiway-paths-covered)
 	switch (p_flag) {
-		case JoltPhysicsServer3D::HINGE_JOINT_FLAG_USE_LIMIT_SPRING: {
+		case JoltPhysicsServer3DExtension::HINGE_JOINT_FLAG_USE_LIMIT_SPRING: {
 			limit_spring_enabled = p_enabled;
 			_limit_spring_changed();
 		} break;

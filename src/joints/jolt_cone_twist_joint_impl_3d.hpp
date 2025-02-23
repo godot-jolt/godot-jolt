@@ -6,9 +6,9 @@
 class JoltConeTwistJointImpl3D final : public JoltJointImpl3D {
 	using Parameter = PhysicsServer3D::ConeTwistJointParam;
 
-	using JoltParameter = JoltPhysicsServer3D::ConeTwistJointParamJolt;
+	using JoltParameter = JoltPhysicsServer3DExtension::ConeTwistJointParamJolt;
 
-	using JoltFlag = JoltPhysicsServer3D::ConeTwistJointFlagJolt;
+	using JoltFlag = JoltPhysicsServer3DExtension::ConeTwistJointFlagJolt;
 
 public:
 	JoltConeTwistJointImpl3D(

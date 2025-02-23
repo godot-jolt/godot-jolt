@@ -173,7 +173,7 @@ public:
 
 	void pre_step(float p_step, JPH::Body& p_jolt_body) override;
 
-	JoltPhysicsDirectBodyState3D* get_direct_state();
+	JoltPhysicsDirectBodyState3DExtension* get_direct_state();
 
 	PhysicsServer3D::BodyMode get_mode() const { return mode; }
 
@@ -346,7 +346,7 @@ private:
 
 	Callable custom_integration_callback;
 
-	JoltPhysicsDirectBodyState3D* direct_state = nullptr;
+	JoltPhysicsDirectBodyState3DExtension* direct_state = nullptr;
 
 	PhysicsServer3D::BodyMode mode = PhysicsServer3D::BODY_MODE_RIGID;
 

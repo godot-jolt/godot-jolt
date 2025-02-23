@@ -1,6 +1,6 @@
 #pragma once
 
-class JoltPhysicsServer3D;
+class JoltPhysicsServer3DExtension;
 
 class JoltJoint3D : public Node3D {
 	GDCLASS_QUIET(JoltJoint3D, Node3D)
@@ -46,7 +46,7 @@ public:
 protected:
 	static PhysicsServer3D* _get_physics_server();
 
-	static JoltPhysicsServer3D* _get_jolt_physics_server();
+	static JoltPhysicsServer3DExtension* _get_jolt_physics_server();
 
 	Transform3D _get_body_local_transform(const PhysicsBody3D& p_body) const;
 

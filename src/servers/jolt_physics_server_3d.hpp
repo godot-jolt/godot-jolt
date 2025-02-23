@@ -8,8 +8,8 @@ class JoltShapeImpl3D;
 class JoltSoftBodyImpl3D;
 class JoltSpace3D;
 
-class JoltPhysicsServer3D final : public PhysicsServer3DExtension {
-	GDCLASS_QUIET(JoltPhysicsServer3D, PhysicsServer3DExtension)
+class JoltPhysicsServer3DExtension final : public PhysicsServer3DExtension {
+	GDCLASS_QUIET(JoltPhysicsServer3DExtension, PhysicsServer3DExtension)
 
 public:
 	enum HingeJointParamJolt {
@@ -69,11 +69,11 @@ private:
 	static void _bind_methods();
 
 public:
-	JoltPhysicsServer3D();
+	JoltPhysicsServer3DExtension();
 
-	~JoltPhysicsServer3D() override;
+	~JoltPhysicsServer3DExtension() override;
 
-	static JoltPhysicsServer3D* get_singleton();
+	static JoltPhysicsServer3DExtension* get_singleton();
 
 	RID _world_boundary_shape_create() override;
 
@@ -755,11 +755,11 @@ private:
 	bool flushing_queries = false;
 };
 
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointParamJolt)
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointFlagJolt)
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointParamJolt)
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::SliderJointFlagJolt)
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointParamJolt)
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::ConeTwistJointFlagJolt)
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisParamJolt)
-VARIANT_ENUM_CAST(JoltPhysicsServer3D::G6DOFJointAxisFlagJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3DExtension::HingeJointParamJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3DExtension::HingeJointFlagJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3DExtension::SliderJointParamJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3DExtension::SliderJointFlagJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3DExtension::ConeTwistJointParamJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3DExtension::ConeTwistJointFlagJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3DExtension::G6DOFJointAxisParamJolt)
+VARIANT_ENUM_CAST(JoltPhysicsServer3DExtension::G6DOFJointAxisFlagJolt)

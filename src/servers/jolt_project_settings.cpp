@@ -9,47 +9,47 @@ enum JointWorldNode : int32_t {
 
 // clang-format off
 
-constexpr char SLEEP_ENABLED[] = "physics/jolt_3d/sleep/enabled";
-constexpr char SLEEP_VELOCITY_THRESHOLD[] = "physics/jolt_3d/sleep/velocity_threshold";
-constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_3d/sleep/time_threshold";
+constexpr char SLEEP_ENABLED[] = "physics/jolt_physics_extension_3d/sleep/enabled";
+constexpr char SLEEP_VELOCITY_THRESHOLD[] = "physics/jolt_physics_extension_3d/sleep/velocity_threshold";
+constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_physics_extension_3d/sleep/time_threshold";
 
-constexpr char SHAPE_MARGINS[] = "physics/jolt_3d/collisions/use_shape_margins";
-constexpr char BODY_EDGE_REMOVAL[] = "physics/jolt_3d/collisions/use_enhanced_internal_edge_removal";
-constexpr char AREAS_DETECT_STATIC[] = "physics/jolt_3d/collisions/areas_detect_static_bodies";
-constexpr char KINEMATIC_CONTACTS[] = "physics/jolt_3d/collisions/report_all_kinematic_contacts";
-constexpr char SOFT_BODY_POINT_MARGIN[] = "physics/jolt_3d/collisions/soft_body_point_margin";
-constexpr char PAIR_CACHE_ENABLED[] = "physics/jolt_3d/collisions/body_pair_cache_enabled";
-constexpr char PAIR_CACHE_DISTANCE[] = "physics/jolt_3d/collisions/body_pair_cache_distance_threshold";
-constexpr char PAIR_CACHE_ANGLE[] = "physics/jolt_3d/collisions/body_pair_cache_angle_threshold";
+constexpr char SHAPE_MARGINS[] = "physics/jolt_physics_extension_3d/collisions/use_shape_margins";
+constexpr char BODY_EDGE_REMOVAL[] = "physics/jolt_physics_extension_3d/collisions/use_enhanced_internal_edge_removal";
+constexpr char AREAS_DETECT_STATIC[] = "physics/jolt_physics_extension_3d/collisions/areas_detect_static_bodies";
+constexpr char KINEMATIC_CONTACTS[] = "physics/jolt_physics_extension_3d/collisions/report_all_kinematic_contacts";
+constexpr char SOFT_BODY_POINT_MARGIN[] = "physics/jolt_physics_extension_3d/collisions/soft_body_point_margin";
+constexpr char PAIR_CACHE_ENABLED[] = "physics/jolt_physics_extension_3d/collisions/body_pair_cache_enabled";
+constexpr char PAIR_CACHE_DISTANCE[] = "physics/jolt_physics_extension_3d/collisions/body_pair_cache_distance_threshold";
+constexpr char PAIR_CACHE_ANGLE[] = "physics/jolt_physics_extension_3d/collisions/body_pair_cache_angle_threshold";
 
-constexpr char JOINT_WORLD_NODE[] = "physics/jolt_3d/joints/world_node";
+constexpr char JOINT_WORLD_NODE[] = "physics/jolt_physics_extension_3d/joints/world_node";
 
-constexpr char CCD_MOVEMENT_THRESHOLD[] = "physics/jolt_3d/continuous_cd/movement_threshold";
-constexpr char CCD_MAX_PENETRATION[] = "physics/jolt_3d/continuous_cd/max_penetration";
+constexpr char CCD_MOVEMENT_THRESHOLD[] = "physics/jolt_physics_extension_3d/continuous_cd/movement_threshold";
+constexpr char CCD_MAX_PENETRATION[] = "physics/jolt_physics_extension_3d/continuous_cd/max_penetration";
 
-constexpr char KINEMATIC_EDGE_REMOVAL[] = "physics/jolt_3d/kinematics/use_enhanced_internal_edge_removal";
-constexpr char RECOVERY_ITERATIONS[] = "physics/jolt_3d/kinematics/recovery_iterations";
-constexpr char RECOVERY_AMOUNT[] = "physics/jolt_3d/kinematics/recovery_amount";
+constexpr char KINEMATIC_EDGE_REMOVAL[] = "physics/jolt_physics_extension_3d/kinematics/use_enhanced_internal_edge_removal";
+constexpr char RECOVERY_ITERATIONS[] = "physics/jolt_physics_extension_3d/kinematics/recovery_iterations";
+constexpr char RECOVERY_AMOUNT[] = "physics/jolt_physics_extension_3d/kinematics/recovery_amount";
 
-constexpr char QUERY_EDGE_REMOVAL[] = "physics/jolt_3d/queries/use_enhanced_internal_edge_removal";
-constexpr char LEGACY_RAY_CASTING[] = "physics/jolt_3d/queries/use_legacy_ray_casting";
-constexpr char RAY_FACE_INDEX[] = "physics/jolt_3d/queries/enable_ray_cast_face_index";
+constexpr char QUERY_EDGE_REMOVAL[] = "physics/jolt_physics_extension_3d/queries/use_enhanced_internal_edge_removal";
+constexpr char LEGACY_RAY_CASTING[] = "physics/jolt_physics_extension_3d/queries/use_legacy_ray_casting";
+constexpr char RAY_FACE_INDEX[] = "physics/jolt_physics_extension_3d/queries/enable_ray_cast_face_index";
 
-constexpr char POSITION_ITERATIONS[] = "physics/jolt_3d/solver/position_iterations";
-constexpr char VELOCITY_ITERATIONS[] = "physics/jolt_3d/solver/velocity_iterations";
-constexpr char POSITION_CORRECTION[] = "physics/jolt_3d/solver/position_correction";
-constexpr char ACTIVE_EDGE_THRESHOLD[] = "physics/jolt_3d/solver/active_edge_threshold";
-constexpr char BOUNCE_VELOCITY_THRESHOLD[] = "physics/jolt_3d/solver/bounce_velocity_threshold";
-constexpr char CONTACT_DISTANCE[] = "physics/jolt_3d/solver/contact_speculative_distance";
-constexpr char CONTACT_PENETRATION[] = "physics/jolt_3d/solver/contact_allowed_penetration";
+constexpr char POSITION_ITERATIONS[] = "physics/jolt_physics_extension_3d/solver/position_iterations";
+constexpr char VELOCITY_ITERATIONS[] = "physics/jolt_physics_extension_3d/solver/velocity_iterations";
+constexpr char POSITION_CORRECTION[] = "physics/jolt_physics_extension_3d/solver/position_correction";
+constexpr char ACTIVE_EDGE_THRESHOLD[] = "physics/jolt_physics_extension_3d/solver/active_edge_threshold";
+constexpr char BOUNCE_VELOCITY_THRESHOLD[] = "physics/jolt_physics_extension_3d/solver/bounce_velocity_threshold";
+constexpr char CONTACT_DISTANCE[] = "physics/jolt_physics_extension_3d/solver/contact_speculative_distance";
+constexpr char CONTACT_PENETRATION[] = "physics/jolt_physics_extension_3d/solver/contact_allowed_penetration";
 
-constexpr char WORLD_BOUNDARY_SIZE[] = "physics/jolt_3d/limits/world_boundary_shape_size";
-constexpr char MAX_LINEAR_VELOCITY[] = "physics/jolt_3d/limits/max_linear_velocity";
-constexpr char MAX_ANGULAR_VELOCITY[] = "physics/jolt_3d/limits/max_angular_velocity";
-constexpr char MAX_BODIES[] = "physics/jolt_3d/limits/max_bodies";
-constexpr char MAX_PAIRS[] = "physics/jolt_3d/limits/max_body_pairs";
-constexpr char MAX_CONTACTS[] = "physics/jolt_3d/limits/max_contact_constraints";
-constexpr char MAX_TEMP_MEMORY[] = "physics/jolt_3d/limits/max_temporary_memory";
+constexpr char WORLD_BOUNDARY_SIZE[] = "physics/jolt_physics_extension_3d/limits/world_boundary_shape_size";
+constexpr char MAX_LINEAR_VELOCITY[] = "physics/jolt_physics_extension_3d/limits/max_linear_velocity";
+constexpr char MAX_ANGULAR_VELOCITY[] = "physics/jolt_physics_extension_3d/limits/max_angular_velocity";
+constexpr char MAX_BODIES[] = "physics/jolt_physics_extension_3d/limits/max_bodies";
+constexpr char MAX_PAIRS[] = "physics/jolt_physics_extension_3d/limits/max_body_pairs";
+constexpr char MAX_CONTACTS[] = "physics/jolt_physics_extension_3d/limits/max_contact_constraints";
+constexpr char MAX_TEMP_MEMORY[] = "physics/jolt_physics_extension_3d/limits/max_temporary_memory";
 
 constexpr char RUN_ON_SEPARATE_THREAD[] = "physics/3d/run_on_separate_thread";
 constexpr char MAX_THREADS[] = "threading/worker_pool/max_threads";
@@ -143,9 +143,76 @@ TType get_setting(const char* p_setting) {
 	return setting_value;
 }
 
+void migrate_physics_engine_setting() {
+	ProjectSettings* project_settings = ProjectSettings::get_singleton();
+
+	String setting_name = "physics/3d/physics_engine";
+
+	if (project_settings->has_setting(setting_name)) {
+		String setting_value = project_settings->get_setting_with_override(setting_name);
+		if (setting_value == "JoltPhysics3D") {
+			project_settings->set_setting(setting_name, "Jolt Physics (Extension)");
+		}
+	}
+}
+
+void migrate_setting(const String& p_setting) {
+	ProjectSettings* project_settings = ProjectSettings::get_singleton();
+
+	const String old_name = "physics/jolt_3d/" + p_setting;
+	const String new_name = "physics/jolt_physics_extension_3d/" + p_setting;
+
+	if (!project_settings->has_setting(new_name) && project_settings->has_setting(old_name)) {
+		Variant old_value = project_settings->get_setting_with_override(old_name);
+		project_settings->set_setting(new_name, old_value);
+		project_settings->clear(old_name);
+	}
+}
+
+void migrate_settings() {
+	migrate_physics_engine_setting();
+
+	migrate_setting("sleep/enabled");
+	migrate_setting("sleep/velocity_threshold");
+	migrate_setting("sleep/time_threshold");
+	migrate_setting("collisions/use_shape_margins");
+	migrate_setting("collisions/use_enhanced_internal_edge_removal");
+	migrate_setting("collisions/areas_detect_static_bodies");
+	migrate_setting("collisions/report_all_kinematic_contacts");
+	migrate_setting("collisions/soft_body_point_margin");
+	migrate_setting("collisions/body_pair_cache_enabled");
+	migrate_setting("collisions/body_pair_cache_distance_threshold");
+	migrate_setting("collisions/body_pair_cache_angle_threshold");
+	migrate_setting("joints/world_node");
+	migrate_setting("continuous_cd/movement_threshold");
+	migrate_setting("continuous_cd/max_penetration");
+	migrate_setting("kinematics/use_enhanced_internal_edge_removal");
+	migrate_setting("kinematics/recovery_iterations");
+	migrate_setting("kinematics/recovery_amount");
+	migrate_setting("queries/use_enhanced_internal_edge_removal");
+	migrate_setting("queries/use_legacy_ray_casting");
+	migrate_setting("queries/enable_ray_cast_face_index");
+	migrate_setting("solver/position_iterations");
+	migrate_setting("solver/velocity_iterations");
+	migrate_setting("solver/position_correction");
+	migrate_setting("solver/active_edge_threshold");
+	migrate_setting("solver/bounce_velocity_threshold");
+	migrate_setting("solver/contact_speculative_distance");
+	migrate_setting("solver/contact_allowed_penetration");
+	migrate_setting("limits/world_boundary_shape_size");
+	migrate_setting("limits/max_linear_velocity");
+	migrate_setting("limits/max_angular_velocity");
+	migrate_setting("limits/max_bodies");
+	migrate_setting("limits/max_body_pairs");
+	migrate_setting("limits/max_contact_constraints");
+	migrate_setting("limits/max_temporary_memory");
+}
+
 } // namespace
 
 void JoltProjectSettings::register_settings() {
+	migrate_settings();
+
 	// clang-format off
 
 	register_setting_plain(SLEEP_ENABLED, true);

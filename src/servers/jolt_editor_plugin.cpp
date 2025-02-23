@@ -55,7 +55,7 @@ void JoltEditorPlugin::_tool_menu_pressed(int32_t p_index) {
 }
 
 void JoltEditorPlugin::_snapshots_dir_selected(const String& p_dir) {
-	JoltPhysicsServer3D::get_singleton()->dump_debug_snapshots(p_dir);
+	JoltPhysicsServer3DExtension::get_singleton()->dump_debug_snapshots(p_dir);
 }
 
 void JoltEditorPlugin::_dump_debug_snapshots() {

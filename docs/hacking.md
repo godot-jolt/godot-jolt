@@ -280,17 +280,15 @@ So instead of it looking like this:
 
 ```ini
 compatibility_minimum = "4.3"
-compatibility_maximum = "4.3"
+compatibility_maximum = "4.4"
 ```
 
 You would potentially change it to look like this:
 
 ```ini
 compatibility_minimum = "4.3"
-compatibility_maximum = "4.4"
+compatibility_maximum = "4.5"
 ```
-
-This would allow you to run a version of Godot Jolt that's meant for Godot 4.3 in Godot 4.4 as well.
 
 ### Updating the bindings
 
@@ -319,7 +317,8 @@ changes that are crucial for building and running Godot Jolt.
 9. Change `GIT_COMMIT` to be the commit hash that you got previously
 10. Replace any `\` in the repository path with `/`
 11. Open `godot-jolt/cmake/GodotJoltVersionInfo.cmake`
-12. Change `GDJ_GODOT_VERSION_MAJOR` and `GDJ_GODOT_VERSION_MINOR` to your desired Godot version
+12. Change `GDJ_GODOT_VERSION_MAJOR_MAX` and `GDJ_GODOT_VERSION_MINOR_MAX` to your desired Godot
+    version
 13. Build Godot Jolt
 
 To make these changes portable across workspaces you would need to push them to a remote repository

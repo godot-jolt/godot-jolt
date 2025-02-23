@@ -6,8 +6,8 @@ namespace {
 
 using ServerParam = PhysicsServer3D::HingeJointParam;
 using ServerFlag = PhysicsServer3D::HingeJointFlag;
-using ServerParamJolt = JoltPhysicsServer3D::HingeJointParamJolt;
-using ServerFlagJolt = JoltPhysicsServer3D::HingeJointFlagJolt;
+using ServerParamJolt = JoltPhysicsServer3DExtension::HingeJointParamJolt;
+using ServerFlagJolt = JoltPhysicsServer3DExtension::HingeJointFlagJolt;
 
 } // namespace
 
@@ -152,14 +152,14 @@ void JoltHingeJoint3D::set_motor_max_torque(double p_value) {
 }
 
 float JoltHingeJoint3D::get_applied_force() const {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
 	return physics_server->hinge_joint_get_applied_force(rid);
 }
 
 float JoltHingeJoint3D::get_applied_torque() const {
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL_D(physics_server);
 
 	return physics_server->hinge_joint_get_applied_torque(rid);
@@ -221,7 +221,7 @@ void JoltHingeJoint3D::_update_param(Param p_param) {
 void JoltHingeJoint3D::_update_jolt_param(Param p_param) {
 	QUIET_FAIL_COND(_is_invalid());
 
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(physics_server);
 
 	double* value = nullptr;
@@ -270,7 +270,7 @@ void JoltHingeJoint3D::_update_flag(Flag p_flag) {
 void JoltHingeJoint3D::_update_jolt_flag(Flag p_flag) {
 	QUIET_FAIL_COND(_is_invalid());
 
-	JoltPhysicsServer3D* physics_server = _get_jolt_physics_server();
+	JoltPhysicsServer3DExtension* physics_server = _get_jolt_physics_server();
 	QUIET_FAIL_NULL(physics_server);
 
 	bool* value = nullptr;

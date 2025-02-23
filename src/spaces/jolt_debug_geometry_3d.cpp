@@ -137,13 +137,13 @@ JoltDebugGeometry3D::~JoltDebugGeometry3D() = default;
 
 void JoltDebugGeometry3D::_process([[maybe_unused]] double p_delta) {
 #ifdef JPH_DEBUG_RENDERER
-	JoltPhysicsServer3D* physics_server = JoltPhysicsServer3D::get_singleton();
+	JoltPhysicsServer3DExtension* physics_server = JoltPhysicsServer3DExtension::get_singleton();
 
 	if (unlikely(physics_server == nullptr)) {
 		ERR_PRINT_ONCE(
 			"JoltDebugGeometry3D was unable to retrieve the Jolt-based physics server. Make sure "
-			"that you have set 'JoltPhysics3D' as the currently active physics server in your "
-			"project settings."
+			"that you have set 'Jolt Physics (Extension)' as the currently active physics server "
+			"in your project settings."
 		);
 
 		return;

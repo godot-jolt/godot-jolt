@@ -11,6 +11,12 @@ Breaking changes are denoted with ⚠️.
 
 ### Changed
 
+- ⚠️ Changed the registered physics engine name from "JoltPhysics3D" to "Jolt Physics (Extension)",
+  to avoid confusion when used in Godot 4.4.
+- ⚠️ Moved the project settings from `physics/jolt_3d/*` to `physics/jolt_physics_extension_3d/*`,
+  to avoid confusion when used in Godot 4.4.
+- ⚠️ Changed the name of `JoltPhysicsServer3D` to `JoltPhysicsServer3DExtension`, to avoid name
+  collision with the built-in Jolt module in Godot 4.4.
 - ⚠️ Raised the minimum required glibc version for the Linux binaries from 2.31 to 2.35, which for
   Ubuntu raises the minimum required version from Ubuntu 20.04 to Ubuntu 22.04.
 - ⚠️ Changed the "Use Enhanced Internal Edge Detection" project setting under the "Collisions"

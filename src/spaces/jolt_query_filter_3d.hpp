@@ -1,6 +1,6 @@
 #pragma once
 
-class JoltPhysicsDirectSpaceState3D;
+class JoltPhysicsDirectSpaceState3DExtension;
 class JoltSpace3D;
 
 class JoltQueryFilter3D final
@@ -9,7 +9,7 @@ class JoltQueryFilter3D final
 	, public JPH::BodyFilter {
 public:
 	JoltQueryFilter3D(
-		const JoltPhysicsDirectSpaceState3D& p_space_state,
+		const JoltPhysicsDirectSpaceState3DExtension& p_space_state,
 		uint32_t p_collision_mask,
 		bool p_collide_with_bodies,
 		bool p_collide_with_areas,
@@ -25,7 +25,7 @@ public:
 	bool ShouldCollideLocked(const JPH::Body& p_body) const override;
 
 private:
-	const JoltPhysicsDirectSpaceState3D& space_state;
+	const JoltPhysicsDirectSpaceState3DExtension& space_state;
 
 	const JoltSpace3D& space;
 

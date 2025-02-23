@@ -344,9 +344,9 @@ JoltWritableBodies3D JoltSpace3D::write_bodies(const JPH::BodyID* p_body_ids, in
 	return {*this, p_body_ids, p_body_count};
 }
 
-JoltPhysicsDirectSpaceState3D* JoltSpace3D::get_direct_state() {
+JoltPhysicsDirectSpaceState3DExtension* JoltSpace3D::get_direct_state() {
 	if (direct_state == nullptr) {
-		direct_state = memnew(JoltPhysicsDirectSpaceState3D(this));
+		direct_state = memnew(JoltPhysicsDirectSpaceState3DExtension(this));
 	}
 
 	return direct_state;

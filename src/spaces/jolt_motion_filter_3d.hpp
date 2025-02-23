@@ -1,7 +1,7 @@
 #pragma once
 
 class JoltBodyImpl3D;
-class JoltPhysicsServer3D;
+class JoltPhysicsServer3DExtension;
 class JoltSpace3D;
 
 class JoltMotionFilter3D final
@@ -31,7 +31,7 @@ public:
 	) const override;
 
 private:
-	const JoltPhysicsServer3D& physics_server;
+	const JoltPhysicsServer3DExtension& physics_server;
 
 	const JoltBodyImpl3D& body_self;
 
