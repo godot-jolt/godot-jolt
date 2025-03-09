@@ -31,7 +31,7 @@ import/blender/enabled=false
 
 [physics]
 
-3d/physics_engine="JoltPhysics3D"
+3d/physics_engine="Jolt Physics (Extension)"
 common/enable_object_picking=false
 
 [rendering]
