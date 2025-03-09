@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.15.0] - 2025-03-09
+
 ### Changed
 
 - ⚠️ Changed the registered physics engine name from "JoltPhysics3D" to "Jolt Physics (Extension)",
@@ -511,7 +513,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.14.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.15.0-stable...HEAD
+[0.15.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.14.0-stable...v0.15.0-stable
 [0.14.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.13.0-stable...v0.14.0-stable
 [0.13.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.12.0-stable...v0.13.0-stable
 [0.12.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.11.0-stable...v0.12.0-stable
