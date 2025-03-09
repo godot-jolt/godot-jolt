@@ -1353,10 +1353,6 @@ void JoltBodyImpl3D::_update_gravity(JPH::Body& p_jolt_body) {
 }
 
 void JoltBodyImpl3D::_update_damp() {
-	if (!in_space()) {
-		return;
-	}
-
 	total_linear_damp = 0.0;
 	total_angular_damp = 0.0;
 
