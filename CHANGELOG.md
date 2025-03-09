@@ -45,6 +45,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue with spring stiffness not having any effect for `Generic6DOFJoint3D`.
 - Fixed issue where effective total damping wouldn't be updated when changing the `linear_damp_mode`
   or `angular_damp_mode` properties of `RigidBody3D` after it had entered a scene tree.
+- Fixed issue where changing damping-related properties of `Area3D` wouldn't update damping for
+  the bodies it overlapped.
 
 ## [0.14.0] - 2024-11-03
 

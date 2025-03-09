@@ -123,13 +123,13 @@ void JoltAreaImpl3D::set_param(PhysicsServer3D::AreaParameter p_param, const Var
 			set_linear_damp_mode((OverrideMode)(int32_t)p_value);
 		} break;
 		case PhysicsServer3D::AREA_PARAM_LINEAR_DAMP: {
-			set_area_linear_damp(p_value);
+			set_linear_damp(p_value);
 		} break;
 		case PhysicsServer3D::AREA_PARAM_ANGULAR_DAMP_OVERRIDE_MODE: {
 			set_angular_damp_mode((OverrideMode)(int32_t)p_value);
 		} break;
 		case PhysicsServer3D::AREA_PARAM_ANGULAR_DAMP: {
-			set_area_angular_damp(p_value);
+			set_angular_damp(p_value);
 		} break;
 		case PhysicsServer3D::AREA_PARAM_PRIORITY: {
 			set_priority(p_value);
