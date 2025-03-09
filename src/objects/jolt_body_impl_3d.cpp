@@ -1012,13 +1012,7 @@ void JoltBodyImpl3D::set_linear_damp(float p_damp) {
 		p_damp = 0;
 	}
 
-	if (p_damp == linear_damp) {
-		return;
-	}
-
 	linear_damp = p_damp;
-
-	_update_damp();
 }
 
 void JoltBodyImpl3D::set_angular_damp(float p_damp) {
@@ -1033,33 +1027,7 @@ void JoltBodyImpl3D::set_angular_damp(float p_damp) {
 		p_damp = 0;
 	}
 
-	if (p_damp == angular_damp) {
-		return;
-	}
-
 	angular_damp = p_damp;
-
-	_update_damp();
-}
-
-void JoltBodyImpl3D::set_linear_damp_mode(DampMode p_mode) {
-	if (p_mode == linear_damp_mode) {
-		return;
-	}
-
-	linear_damp_mode = p_mode;
-
-	_update_damp();
-}
-
-void JoltBodyImpl3D::set_angular_damp_mode(DampMode p_mode) {
-	if (p_mode == angular_damp_mode) {
-		return;
-	}
-
-	angular_damp_mode = p_mode;
-
-	_update_damp();
 }
 
 bool JoltBodyImpl3D::is_axis_locked(PhysicsServer3D::BodyAxis p_axis) const {
@@ -1180,6 +1148,7 @@ void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 	}
 
 	_update_gravity(p_jolt_body);
+	_update_damp();
 
 	if (!custom_integrator) {
 		JPH::MotionProperties& motion_properties = *p_jolt_body.GetMotionPropertiesUnchecked();
@@ -1240,6 +1209,7 @@ void JoltBodyImpl3D::_pre_step_rigid(float p_step, JPH::Body& p_jolt_body) {
 
 void JoltBodyImpl3D::_pre_step_kinematic(float p_step, JPH::Body& p_jolt_body) {
 	_update_gravity(p_jolt_body);
+	_update_damp();
 
 	_move_kinematic(p_step, p_jolt_body);
 
@@ -1438,8 +1408,6 @@ void JoltBodyImpl3D::_update_damp() {
 			total_angular_damp = angular_damp;
 		} break;
 	}
-
-	_motion_changed();
 }
 
 void JoltBodyImpl3D::_update_kinematic_transform() {
@@ -1529,7 +1497,6 @@ void JoltBodyImpl3D::_space_changed() {
 }
 
 void JoltBodyImpl3D::_areas_changed() {
-	_update_damp();
 	wake_up();
 }
 

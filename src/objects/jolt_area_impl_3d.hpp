@@ -123,11 +123,11 @@ public:
 
 	float get_linear_damp() const { return linear_damp; }
 
-	void set_area_linear_damp(float p_damp) { linear_damp = p_damp; }
+	void set_linear_damp(float p_damp) { linear_damp = p_damp; }
 
 	float get_angular_damp() const { return angular_damp; }
 
-	void set_area_angular_damp(float p_damp) { angular_damp = p_damp; }
+	void set_angular_damp(float p_damp) { angular_damp = p_damp; }
 
 	OverrideMode get_gravity_mode() const { return gravity_mode; }
 
