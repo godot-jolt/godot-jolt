@@ -10,7 +10,7 @@ in order to see the settings listed here.
 
 - [Common](#common)
 - [3D](#3d)
-- [Jolt 3D](#jolt-3d)
+- [Jolt Physics Extension 3D](#jolt-3d)
 
 ## Common
 
@@ -149,9 +149,10 @@ These settings are part of Godot's default project settings and can be found und
   </tbody>
 </table>
 
-## Jolt 3D
+## Jolt Physics Extension 3D
 
-These settings are exposed by Godot Jolt and can be found under "Physics" - "Jolt 3D".
+These settings are exposed by Godot Jolt and can be found under "Physics" - "Jolt Physics Extension
+3D".
 
 <table>
   <thead>
