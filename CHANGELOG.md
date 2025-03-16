@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue where `ConcavePolygonShape3D` would effectively always have its `backface_collision`
+  property enabled in the context of shape-versus-shape collisions.
+
 ## [0.15.0] - 2025-03-09
 
 ### Changed

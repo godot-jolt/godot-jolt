@@ -53,6 +53,8 @@ public:
 		const JPH::ShapeFilter& p_shape_filter = {}
 	) const override;
 
+	bool should_collide_with_back_faces() const { return back_face_collision; }
+
 private:
 	bool back_face_collision = false;
 };
