@@ -26,7 +26,10 @@ void collide_double_sided_vs_shape(
 	const auto* shape1 = static_cast<const JoltCustomDoubleSidedShape*>(p_shape1);
 
 	JPH::CollideShapeSettings new_collide_shape_settings = p_collide_shape_settings;
-	new_collide_shape_settings.mBackFaceMode = JPH::EBackFaceMode::CollideWithBackFaces;
+
+	if (shape1->should_collide_with_back_faces()) {
+		new_collide_shape_settings.mBackFaceMode = JPH::EBackFaceMode::CollideWithBackFaces;
+	}
 
 	JPH::CollisionDispatch::sCollideShapeVsShape(
 		shape1->GetInnerShape(),
@@ -61,7 +64,10 @@ void collide_shape_vs_double_sided(
 	const auto* shape2 = static_cast<const JoltCustomDoubleSidedShape*>(p_shape2);
 
 	JPH::CollideShapeSettings new_collide_shape_settings = p_collide_shape_settings;
-	new_collide_shape_settings.mBackFaceMode = JPH::EBackFaceMode::CollideWithBackFaces;
+
+	if (shape2->should_collide_with_back_faces()) {
+		new_collide_shape_settings.mBackFaceMode = JPH::EBackFaceMode::CollideWithBackFaces;
+	}
 
 	JPH::CollisionDispatch::sCollideShapeVsShape(
 		p_shape1,
@@ -91,10 +97,13 @@ void cast_shape_vs_double_sided(
 ) {
 	ERR_FAIL_COND(p_shape->GetSubType() != JoltCustomShapeSubType::DOUBLE_SIDED);
 
-	JPH::ShapeCastSettings new_shape_cast_settings = p_shape_cast_settings;
-	new_shape_cast_settings.mBackFaceModeTriangles = JPH::EBackFaceMode::CollideWithBackFaces;
-
 	const auto* shape = static_cast<const JoltCustomDoubleSidedShape*>(p_shape);
+
+	JPH::ShapeCastSettings new_shape_cast_settings = p_shape_cast_settings;
+
+	if (shape->should_collide_with_back_faces()) {
+		new_shape_cast_settings.mBackFaceModeTriangles = JPH::EBackFaceMode::CollideWithBackFaces;
+	}
 
 	JPH::CollisionDispatch::sCastShapeVsShapeLocalSpace(
 		p_shape_cast,
