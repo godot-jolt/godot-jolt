@@ -59,7 +59,7 @@ Vector3 JoltPhysicsDirectBodyState3DExtension::_get_linear_velocity() const {
 
 void JoltPhysicsDirectBodyState3DExtension::_set_linear_velocity(const Vector3& p_velocity) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->set_linear_velocity(p_velocity);
+	body->set_linear_velocity(p_velocity);
 }
 
 Vector3 JoltPhysicsDirectBodyState3DExtension::_get_angular_velocity() const {
@@ -69,12 +69,12 @@ Vector3 JoltPhysicsDirectBodyState3DExtension::_get_angular_velocity() const {
 
 void JoltPhysicsDirectBodyState3DExtension::_set_angular_velocity(const Vector3& p_velocity) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->set_angular_velocity(p_velocity);
+	body->set_angular_velocity(p_velocity);
 }
 
 void JoltPhysicsDirectBodyState3DExtension::_set_transform(const Transform3D& p_transform) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->set_transform(p_transform);
+	body->set_transform(p_transform);
 }
 
 Transform3D JoltPhysicsDirectBodyState3DExtension::_get_transform() const {
@@ -91,7 +91,7 @@ Vector3 JoltPhysicsDirectBodyState3DExtension::_get_velocity_at_local_position(
 
 void JoltPhysicsDirectBodyState3DExtension::_apply_central_impulse(const Vector3& p_impulse) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->apply_central_impulse(p_impulse);
+	body->apply_central_impulse(p_impulse);
 }
 
 void JoltPhysicsDirectBodyState3DExtension::_apply_impulse(
@@ -99,17 +99,17 @@ void JoltPhysicsDirectBodyState3DExtension::_apply_impulse(
 	const Vector3& p_position
 ) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->apply_impulse(p_impulse, p_position);
+	body->apply_impulse(p_impulse, p_position);
 }
 
 void JoltPhysicsDirectBodyState3DExtension::_apply_torque_impulse(const Vector3& p_impulse) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->apply_torque_impulse(p_impulse);
+	body->apply_torque_impulse(p_impulse);
 }
 
 void JoltPhysicsDirectBodyState3DExtension::_apply_central_force(const Vector3& p_force) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->apply_central_force(p_force);
+	body->apply_central_force(p_force);
 }
 
 void JoltPhysicsDirectBodyState3DExtension::_apply_force(
@@ -117,17 +117,17 @@ void JoltPhysicsDirectBodyState3DExtension::_apply_force(
 	const Vector3& p_position
 ) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->apply_force(p_force, p_position);
+	body->apply_force(p_force, p_position);
 }
 
 void JoltPhysicsDirectBodyState3DExtension::_apply_torque(const Vector3& p_torque) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->apply_torque(p_torque);
+	body->apply_torque(p_torque);
 }
 
 void JoltPhysicsDirectBodyState3DExtension::_add_constant_central_force(const Vector3& p_force) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->add_constant_central_force(p_force);
+	body->add_constant_central_force(p_force);
 }
 
 void JoltPhysicsDirectBodyState3DExtension::_add_constant_force(
@@ -135,12 +135,12 @@ void JoltPhysicsDirectBodyState3DExtension::_add_constant_force(
 	const Vector3& p_position
 ) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->add_constant_force(p_force, p_position);
+	body->add_constant_force(p_force, p_position);
 }
 
 void JoltPhysicsDirectBodyState3DExtension::_add_constant_torque(const Vector3& p_torque) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->add_constant_torque(p_torque);
+	body->add_constant_torque(p_torque);
 }
 
 Vector3 JoltPhysicsDirectBodyState3DExtension::_get_constant_force() const {
@@ -150,7 +150,7 @@ Vector3 JoltPhysicsDirectBodyState3DExtension::_get_constant_force() const {
 
 void JoltPhysicsDirectBodyState3DExtension::_set_constant_force(const Vector3& p_force) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->set_constant_force(p_force);
+	body->set_constant_force(p_force);
 }
 
 Vector3 JoltPhysicsDirectBodyState3DExtension::_get_constant_torque() const {
@@ -160,7 +160,7 @@ Vector3 JoltPhysicsDirectBodyState3DExtension::_get_constant_torque() const {
 
 void JoltPhysicsDirectBodyState3DExtension::_set_constant_torque(const Vector3& p_torque) {
 	QUIET_FAIL_NULL_ED(body);
-	return body->set_constant_torque(p_torque);
+	body->set_constant_torque(p_torque);
 }
 
 bool JoltPhysicsDirectBodyState3DExtension::_is_sleeping() const {

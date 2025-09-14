@@ -136,7 +136,7 @@ public:
 		JPH::CastRayCollector& p_collector,
 		const JPH::ShapeFilter& p_shape_filter = {}
 	) const override {
-		return mInnerShape->CastRay(
+		mInnerShape->CastRay(
 			p_ray,
 			p_ray_cast_settings,
 			p_sub_shape_id_creator,

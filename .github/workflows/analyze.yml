@@ -58,6 +58,7 @@ jobs:
         uses: ./.github/actions/setup-linux
         with:
           toolchain: llvm
+          version-llvm: 20
 
       - name: Configure
         uses: ./.github/actions/cmake-configure

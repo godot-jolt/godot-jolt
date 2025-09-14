@@ -48,7 +48,7 @@ void pin_vertices(
 	}
 }
 
-} // anonymous namespace
+} // namespace
 
 JoltSoftBodyImpl3D::JoltSoftBodyImpl3D()
 	: JoltObjectImpl3D(OBJECT_TYPE_SOFT_BODY) {

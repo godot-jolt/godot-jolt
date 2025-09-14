@@ -9,6 +9,8 @@
 
 #include <mimalloc-new-delete.h>
 
+namespace {
+
 void* jolt_alloc(size_t p_size) {
 	return mi_malloc(p_size);
 }
@@ -29,9 +31,13 @@ void jolt_aligned_free(void* p_mem) {
 	mi_free(p_mem);
 }
 
+} // namespace
+
 #endif // GDJ_USE_MIMALLOC
 
 #ifdef JPH_ENABLE_ASSERTS
+
+namespace {
 
 void jolt_trace(const char* p_format, ...) {
 	// NOLINTNEXTLINE(cppcoreguidelines-init-variables)
@@ -54,6 +60,8 @@ bool jolt_assert(const char* p_expr, const char* p_msg, const char* p_file, uint
 
 	return false;
 }
+
+} // namespace
 
 #endif // JPH_ENABLE_ASSERTS
 
