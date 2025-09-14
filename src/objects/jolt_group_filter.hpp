@@ -18,6 +18,8 @@ public:
 	);
 
 private:
-	bool CanCollide(const JPH::CollisionGroup& p_group1, const JPH::CollisionGroup& p_group2)
-		const override;
+	bool CanCollide(
+		const JPH::CollisionGroup& p_group1,
+		const JPH::CollisionGroup& p_group2
+	) const override;
 };

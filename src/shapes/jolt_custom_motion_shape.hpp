@@ -28,7 +28,8 @@ public:
 
 	JPH::MassProperties GetMassProperties() const override { ERR_FAIL_D_NOT_IMPL(); }
 
-	const JPH::PhysicsMaterial* GetMaterial([[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id
+	const JPH::PhysicsMaterial* GetMaterial(
+		[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id
 	) const override {
 		ERR_FAIL_D_NOT_IMPL();
 	}
@@ -48,7 +49,8 @@ public:
 		JPH::Shape::SupportingFace& p_vertices
 	) const override;
 
-	JPH::uint64 GetSubShapeUserData([[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id
+	JPH::uint64 GetSubShapeUserData(
+		[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id
 	) const override {
 		ERR_FAIL_D_NOT_IMPL();
 	}

@@ -30,12 +30,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up LLVM
         uses: ./.github/actions/setup-linux
         with:
           toolchain: llvm
+          version-llvm: 20
 
       - name: Identify clang-format
         shell: pwsh
@@ -51,12 +52,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up LLVM
         uses: ./.github/actions/setup-linux
         with:
           toolchain: llvm
+          version-llvm: 20
 
       - name: Configure
         uses: ./.github/actions/cmake-configure

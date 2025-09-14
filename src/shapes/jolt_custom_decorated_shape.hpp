@@ -13,8 +13,10 @@ public:
 
 	JPH::AABox GetLocalBounds() const override { return mInnerShape->GetLocalBounds(); }
 
-	JPH::AABox GetWorldSpaceBounds(JPH::Mat44Arg p_center_of_mass_transform, JPH::Vec3Arg p_scale)
-		const override {
+	JPH::AABox GetWorldSpaceBounds(
+		JPH::Mat44Arg p_center_of_mass_transform,
+		JPH::Vec3Arg p_scale
+	) const override {
 		return mInnerShape->GetWorldSpaceBounds(p_center_of_mass_transform, p_scale);
 	}
 
@@ -134,7 +136,7 @@ public:
 		JPH::CastRayCollector& p_collector,
 		const JPH::ShapeFilter& p_shape_filter = {}
 	) const override {
-		return mInnerShape->CastRay(
+		mInnerShape->CastRay(
 			p_ray,
 			p_ray_cast_settings,
 			p_sub_shape_id_creator,

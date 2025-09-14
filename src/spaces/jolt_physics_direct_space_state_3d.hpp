@@ -85,8 +85,10 @@ public:
 		PhysicsServer3DExtensionShapeRestInfo* p_info
 	) override;
 
-	Vector3 _get_closest_point_to_object_volume(const RID& p_object, const Vector3& p_point)
-		const override;
+	Vector3 _get_closest_point_to_object_volume(
+		const RID& p_object,
+		const Vector3& p_point
+	) const override;
 
 	bool test_body_motion(
 		const JoltBodyImpl3D& p_body,

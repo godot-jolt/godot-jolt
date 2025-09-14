@@ -309,15 +309,18 @@ void JoltPhysicsServer3DExtension::_space_set_param(
 	space->set_param(p_param, (double)p_value);
 }
 
-real_t JoltPhysicsServer3DExtension::_space_get_param(const RID& p_space, SpaceParameter p_param)
-	const {
+real_t JoltPhysicsServer3DExtension::_space_get_param(
+	const RID& p_space,
+	SpaceParameter p_param
+) const {
 	const JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
 
 	return (real_t)space->get_param(p_param);
 }
 
-PhysicsDirectSpaceState3D* JoltPhysicsServer3DExtension::_space_get_direct_state(const RID& p_space
+PhysicsDirectSpaceState3D* JoltPhysicsServer3DExtension::_space_get_direct_state(
+	const RID& p_space
 ) {
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
 	ERR_FAIL_NULL_D(space);
@@ -350,7 +353,8 @@ PackedVector3Array JoltPhysicsServer3DExtension::_space_get_contacts(
 #endif // GDJ_CONFIG_EDITOR
 }
 
-int32_t JoltPhysicsServer3DExtension::_space_get_contact_count([[maybe_unused]] const RID& p_space
+int32_t JoltPhysicsServer3DExtension::_space_get_contact_count(
+	[[maybe_unused]] const RID& p_space
 ) const {
 #ifdef GDJ_CONFIG_EDITOR
 	JoltSpace3D* space = space_owner.get_or_null(p_space);
@@ -544,11 +548,13 @@ void JoltPhysicsServer3DExtension::_area_set_transform(
 	JoltAreaImpl3D* area = area_owner.get_or_null(p_area);
 	ERR_FAIL_NULL(area);
 
-	return area->set_transform(p_transform);
+	area->set_transform(p_transform);
 }
 
-Variant JoltPhysicsServer3DExtension::_area_get_param(const RID& p_area, AreaParameter p_param)
-	const {
+Variant JoltPhysicsServer3DExtension::_area_get_param(
+	const RID& p_area,
+	AreaParameter p_param
+) const {
 	RID area_rid = p_area;
 
 	if (space_owner.owns(area_rid)) {
@@ -801,7 +807,8 @@ void JoltPhysicsServer3DExtension::_body_set_enable_continuous_collision_detecti
 	body->set_ccd_enabled(p_enable);
 }
 
-bool JoltPhysicsServer3DExtension::_body_is_continuous_collision_detection_enabled(const RID& p_body
+bool JoltPhysicsServer3DExtension::_body_is_continuous_collision_detection_enabled(
+	const RID& p_body
 ) const {
 	const JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
@@ -864,7 +871,8 @@ void JoltPhysicsServer3DExtension::_body_set_user_flags(
 	);
 }
 
-uint32_t JoltPhysicsServer3DExtension::_body_get_user_flags([[maybe_unused]] const RID& p_body
+uint32_t JoltPhysicsServer3DExtension::_body_get_user_flags(
+	[[maybe_unused]] const RID& p_body
 ) const {
 	return 0;
 }
@@ -880,8 +888,10 @@ void JoltPhysicsServer3DExtension::_body_set_param(
 	body->set_param(p_param, p_value);
 }
 
-Variant JoltPhysicsServer3DExtension::_body_get_param(const RID& p_body, BodyParameter p_param)
-	const {
+Variant JoltPhysicsServer3DExtension::_body_get_param(
+	const RID& p_body,
+	BodyParameter p_param
+) const {
 	const JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
@@ -920,7 +930,7 @@ void JoltPhysicsServer3DExtension::_body_apply_central_impulse(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->apply_central_impulse(p_impulse);
+	body->apply_central_impulse(p_impulse);
 }
 
 void JoltPhysicsServer3DExtension::_body_apply_impulse(
@@ -931,7 +941,7 @@ void JoltPhysicsServer3DExtension::_body_apply_impulse(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->apply_impulse(p_impulse, p_position);
+	body->apply_impulse(p_impulse, p_position);
 }
 
 void JoltPhysicsServer3DExtension::_body_apply_torque_impulse(
@@ -941,7 +951,7 @@ void JoltPhysicsServer3DExtension::_body_apply_torque_impulse(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->apply_torque_impulse(p_impulse);
+	body->apply_torque_impulse(p_impulse);
 }
 
 void JoltPhysicsServer3DExtension::_body_apply_central_force(
@@ -951,7 +961,7 @@ void JoltPhysicsServer3DExtension::_body_apply_central_force(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->apply_central_force(p_force);
+	body->apply_central_force(p_force);
 }
 
 void JoltPhysicsServer3DExtension::_body_apply_force(
@@ -962,14 +972,14 @@ void JoltPhysicsServer3DExtension::_body_apply_force(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->apply_force(p_force, p_position);
+	body->apply_force(p_force, p_position);
 }
 
 void JoltPhysicsServer3DExtension::_body_apply_torque(const RID& p_body, const Vector3& p_torque) {
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->apply_torque(p_torque);
+	body->apply_torque(p_torque);
 }
 
 void JoltPhysicsServer3DExtension::_body_add_constant_central_force(
@@ -1085,7 +1095,8 @@ void JoltPhysicsServer3DExtension::_body_remove_collision_exception(
 	body->remove_collision_exception(p_excepted_body);
 }
 
-TypedArray<RID> JoltPhysicsServer3DExtension::_body_get_collision_exceptions(const RID& p_body
+TypedArray<RID> JoltPhysicsServer3DExtension::_body_get_collision_exceptions(
+	const RID& p_body
 ) const {
 	const JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
@@ -1100,7 +1111,7 @@ void JoltPhysicsServer3DExtension::_body_set_max_contacts_reported(
 	JoltBodyImpl3D* body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->set_max_contacts_reported(p_amount);
+	body->set_max_contacts_reported(p_amount);
 }
 
 int32_t JoltPhysicsServer3DExtension::_body_get_max_contacts_reported(const RID& p_body) const {
@@ -1225,7 +1236,7 @@ void JoltPhysicsServer3DExtension::_soft_body_update_rendering_server(
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->update_rendering_server(p_rendering_server_handler);
+	body->update_rendering_server(p_rendering_server_handler);
 }
 
 void JoltPhysicsServer3DExtension::_soft_body_set_space(const RID& p_body, const RID& p_space) {
@@ -1323,7 +1334,8 @@ void JoltPhysicsServer3DExtension::_soft_body_remove_collision_exception(
 	body->remove_collision_exception(p_excepted_body);
 }
 
-TypedArray<RID> JoltPhysicsServer3DExtension::_soft_body_get_collision_exceptions(const RID& p_body
+TypedArray<RID> JoltPhysicsServer3DExtension::_soft_body_get_collision_exceptions(
+	const RID& p_body
 ) const {
 	const JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
@@ -1342,8 +1354,10 @@ void JoltPhysicsServer3DExtension::_soft_body_set_state(
 	body->set_state(p_state, p_value);
 }
 
-Variant JoltPhysicsServer3DExtension::_soft_body_get_state(const RID& p_body, BodyState p_state)
-	const {
+Variant JoltPhysicsServer3DExtension::_soft_body_get_state(
+	const RID& p_body,
+	BodyState p_state
+) const {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL_D(body);
 
@@ -1357,14 +1371,14 @@ void JoltPhysicsServer3DExtension::_soft_body_set_transform(
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->set_transform(p_transform);
+	body->set_transform(p_transform);
 }
 
 void JoltPhysicsServer3DExtension::_soft_body_set_ray_pickable(const RID& p_body, bool p_enable) {
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->set_pickable(p_enable);
+	body->set_pickable(p_enable);
 }
 
 void JoltPhysicsServer3DExtension::_soft_body_set_simulation_precision(
@@ -1374,7 +1388,7 @@ void JoltPhysicsServer3DExtension::_soft_body_set_simulation_precision(
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->set_simulation_precision(p_precision);
+	body->set_simulation_precision(p_precision);
 }
 
 int32_t JoltPhysicsServer3DExtension::_soft_body_get_simulation_precision(const RID& p_body) const {
@@ -1391,7 +1405,7 @@ void JoltPhysicsServer3DExtension::_soft_body_set_total_mass(
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->set_mass((float)p_total_mass);
+	body->set_mass((float)p_total_mass);
 }
 
 real_t JoltPhysicsServer3DExtension::_soft_body_get_total_mass(const RID& p_body) const {
@@ -1408,7 +1422,7 @@ void JoltPhysicsServer3DExtension::_soft_body_set_linear_stiffness(
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->set_stiffness_coefficient((float)p_coefficient);
+	body->set_stiffness_coefficient((float)p_coefficient);
 }
 
 real_t JoltPhysicsServer3DExtension::_soft_body_get_linear_stiffness(const RID& p_body) const {
@@ -1425,7 +1439,7 @@ void JoltPhysicsServer3DExtension::_soft_body_set_pressure_coefficient(
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->set_pressure((float)p_coefficient);
+	body->set_pressure((float)p_coefficient);
 }
 
 real_t JoltPhysicsServer3DExtension::_soft_body_get_pressure_coefficient(const RID& p_body) const {
@@ -1442,7 +1456,7 @@ void JoltPhysicsServer3DExtension::_soft_body_set_damping_coefficient(
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->set_linear_damping((float)p_coefficient);
+	body->set_linear_damping((float)p_coefficient);
 }
 
 real_t JoltPhysicsServer3DExtension::_soft_body_get_damping_coefficient(const RID& p_body) const {
@@ -1459,7 +1473,7 @@ void JoltPhysicsServer3DExtension::_soft_body_set_drag_coefficient(
 	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
 
-	return body->set_drag((float)p_coefficient);
+	body->set_drag((float)p_coefficient);
 }
 
 real_t JoltPhysicsServer3DExtension::_soft_body_get_drag_coefficient(const RID& p_body) const {
@@ -1580,8 +1594,10 @@ void JoltPhysicsServer3DExtension::_pin_joint_set_param(
 	pin_joint->set_param(p_param, (double)p_value);
 }
 
-real_t JoltPhysicsServer3DExtension::_pin_joint_get_param(const RID& p_joint, PinJointParam p_param)
-	const {
+real_t JoltPhysicsServer3DExtension::_pin_joint_get_param(
+	const RID& p_joint,
+	PinJointParam p_param
+) const {
 	const JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
@@ -1686,7 +1702,7 @@ void JoltPhysicsServer3DExtension::_hinge_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
 	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->set_param(p_param, (double)p_value);
+	hinge_joint->set_param(p_param, (double)p_value);
 }
 
 real_t JoltPhysicsServer3DExtension::_hinge_joint_get_param(
@@ -1713,11 +1729,13 @@ void JoltPhysicsServer3DExtension::_hinge_joint_set_flag(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
 	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->set_flag(p_flag, p_enabled);
+	hinge_joint->set_flag(p_flag, p_enabled);
 }
 
-bool JoltPhysicsServer3DExtension::_hinge_joint_get_flag(const RID& p_joint, HingeJointFlag p_flag)
-	const {
+bool JoltPhysicsServer3DExtension::_hinge_joint_get_flag(
+	const RID& p_joint,
+	HingeJointFlag p_flag
+) const {
 	const JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
 
@@ -1762,7 +1780,7 @@ void JoltPhysicsServer3DExtension::_slider_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_SLIDER);
 	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
 
-	return slider_joint->set_param(p_param, (double)p_value);
+	slider_joint->set_param(p_param, (double)p_value);
 }
 
 real_t JoltPhysicsServer3DExtension::_slider_joint_get_param(
@@ -1813,7 +1831,7 @@ void JoltPhysicsServer3DExtension::_cone_twist_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_CONE_TWIST);
 	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
 
-	return cone_twist_joint->set_param(p_param, (double)p_value);
+	cone_twist_joint->set_param(p_param, (double)p_value);
 }
 
 real_t JoltPhysicsServer3DExtension::_cone_twist_joint_get_param(
@@ -1865,7 +1883,7 @@ void JoltPhysicsServer3DExtension::_generic_6dof_joint_set_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_6DOF);
 	auto* g6dof_joint = static_cast<JoltGeneric6DOFJointImpl3D*>(joint);
 
-	return g6dof_joint->set_param(p_axis, p_param, (double)p_value);
+	g6dof_joint->set_param(p_axis, p_param, (double)p_value);
 }
 
 real_t JoltPhysicsServer3DExtension::_generic_6dof_joint_get_param(
@@ -1894,7 +1912,7 @@ void JoltPhysicsServer3DExtension::_generic_6dof_joint_set_flag(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_6DOF);
 	auto* g6dof_joint = static_cast<JoltGeneric6DOFJointImpl3D*>(joint);
 
-	return g6dof_joint->set_flag(p_axis, p_flag, p_enable);
+	g6dof_joint->set_flag(p_axis, p_flag, p_enable);
 }
 
 bool JoltPhysicsServer3DExtension::_generic_6dof_joint_get_flag(
@@ -1945,7 +1963,8 @@ void JoltPhysicsServer3DExtension::_joint_disable_collisions_between_bodies(
 	joint->set_collision_disabled(p_disable);
 }
 
-bool JoltPhysicsServer3DExtension::_joint_is_disabled_collisions_between_bodies(const RID& p_joint
+bool JoltPhysicsServer3DExtension::_joint_is_disabled_collisions_between_bodies(
+	const RID& p_joint
 ) const {
 	const JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_D(joint);
@@ -2019,7 +2038,8 @@ bool JoltPhysicsServer3DExtension::_is_flushing_queries() const {
 	return flushing_queries;
 }
 
-int32_t JoltPhysicsServer3DExtension::_get_process_info([[maybe_unused]] ProcessInfo p_process_info
+int32_t JoltPhysicsServer3DExtension::_get_process_info(
+	[[maybe_unused]] ProcessInfo p_process_info
 ) {
 	return 0;
 }
@@ -2120,7 +2140,7 @@ void JoltPhysicsServer3DExtension::joint_set_solver_velocity_iterations(
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL(joint);
 
-	return joint->set_solver_velocity_iterations(p_value);
+	joint->set_solver_velocity_iterations(p_value);
 }
 
 int32_t JoltPhysicsServer3DExtension::joint_get_solver_position_iterations(const RID& p_joint) {
@@ -2137,7 +2157,7 @@ void JoltPhysicsServer3DExtension::joint_set_solver_position_iterations(
 	JoltJointImpl3D* joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL(joint);
 
-	return joint->set_solver_position_iterations(p_value);
+	joint->set_solver_position_iterations(p_value);
 }
 
 float JoltPhysicsServer3DExtension::pin_joint_get_applied_force(const RID& p_joint) {
@@ -2174,7 +2194,7 @@ void JoltPhysicsServer3DExtension::hinge_joint_set_jolt_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
 	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->set_jolt_param(p_param, p_value);
+	hinge_joint->set_jolt_param(p_param, p_value);
 }
 
 bool JoltPhysicsServer3DExtension::hinge_joint_get_jolt_flag(
@@ -2201,7 +2221,7 @@ void JoltPhysicsServer3DExtension::hinge_joint_set_jolt_flag(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_HINGE);
 	auto* hinge_joint = static_cast<JoltHingeJointImpl3D*>(joint);
 
-	return hinge_joint->set_jolt_flag(p_flag, p_enabled);
+	hinge_joint->set_jolt_flag(p_flag, p_enabled);
 }
 
 float JoltPhysicsServer3DExtension::hinge_joint_get_applied_force(const RID& p_joint) {
@@ -2248,7 +2268,7 @@ void JoltPhysicsServer3DExtension::slider_joint_set_jolt_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_SLIDER);
 	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
 
-	return slider_joint->set_jolt_param(p_param, p_value);
+	slider_joint->set_jolt_param(p_param, p_value);
 }
 
 bool JoltPhysicsServer3DExtension::slider_joint_get_jolt_flag(
@@ -2275,7 +2295,7 @@ void JoltPhysicsServer3DExtension::slider_joint_set_jolt_flag(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_SLIDER);
 	auto* slider_joint = static_cast<JoltSliderJointImpl3D*>(joint);
 
-	return slider_joint->set_jolt_flag(p_flag, p_enabled);
+	slider_joint->set_jolt_flag(p_flag, p_enabled);
 }
 
 float JoltPhysicsServer3DExtension::slider_joint_get_applied_force(const RID& p_joint) {
@@ -2322,7 +2342,7 @@ void JoltPhysicsServer3DExtension::cone_twist_joint_set_jolt_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_CONE_TWIST);
 	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
 
-	return cone_twist_joint->set_jolt_param(p_param, p_value);
+	cone_twist_joint->set_jolt_param(p_param, p_value);
 }
 
 bool JoltPhysicsServer3DExtension::cone_twist_joint_get_jolt_flag(
@@ -2349,7 +2369,7 @@ void JoltPhysicsServer3DExtension::cone_twist_joint_set_jolt_flag(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_CONE_TWIST);
 	auto* cone_twist_joint = static_cast<JoltConeTwistJointImpl3D*>(joint);
 
-	return cone_twist_joint->set_jolt_flag(p_flag, p_enabled);
+	cone_twist_joint->set_jolt_flag(p_flag, p_enabled);
 }
 
 float JoltPhysicsServer3DExtension::cone_twist_joint_get_applied_force(const RID& p_joint) {
@@ -2398,7 +2418,7 @@ void JoltPhysicsServer3DExtension::generic_6dof_joint_set_jolt_param(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_6DOF);
 	auto* g6dof_joint = static_cast<JoltGeneric6DOFJointImpl3D*>(joint);
 
-	return g6dof_joint->set_jolt_param(p_axis, p_param, p_value);
+	g6dof_joint->set_jolt_param(p_axis, p_param, p_value);
 }
 
 bool JoltPhysicsServer3DExtension::generic_6dof_joint_get_jolt_flag(
@@ -2427,7 +2447,7 @@ void JoltPhysicsServer3DExtension::generic_6dof_joint_set_jolt_flag(
 	ERR_FAIL_COND(joint->get_type() != JOINT_TYPE_6DOF);
 	auto* g6dof_joint = static_cast<JoltGeneric6DOFJointImpl3D*>(joint);
 
-	return g6dof_joint->set_jolt_flag(p_axis, p_flag, p_enabled);
+	g6dof_joint->set_jolt_flag(p_axis, p_flag, p_enabled);
 }
 
 float JoltPhysicsServer3DExtension::generic_6dof_joint_get_applied_force(const RID& p_joint) {

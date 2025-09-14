@@ -222,6 +222,26 @@ function(gdj_add_external_library library_name library_configs)
 		)
 	endif()
 
+	if(DEFINED CMAKE_AR)
+		# For whatever reason, `CMAKE_INTERPROCEDURAL_OPTIMIZATION` seems to rely on
+		# `CMAKE_<LANG>_COMPILER_AR` instead of `CMAKE_AR`, so we have to manually set those in
+		# order to avoid errors.
+		list(APPEND cmake_cache_args
+			-DCMAKE_C_COMPILER_AR=${CMAKE_AR}
+			-DCMAKE_CXX_COMPILER_AR=${CMAKE_AR}
+		)
+	endif()
+
+	if(DEFINED CMAKE_RANLIB)
+		# For whatever reason, `CMAKE_INTERPROCEDURAL_OPTIMIZATION` seems to rely on
+		# `CMAKE_<LANG>_COMPILER_RANLIB` instead of `CMAKE_RANLIB`, so we have to manually set those
+		# in order to avoid errors.
+		list(APPEND cmake_cache_args
+			-DCMAKE_C_COMPILER_RANLIB=${CMAKE_RANLIB}
+			-DCMAKE_CXX_COMPILER_RANLIB=${CMAKE_RANLIB}
+		)
+	endif()
+
 	if(CMAKE_SYSTEM_NAME STREQUAL Windows)
 		set(use_static_crt $<BOOL:${GDJ_STATIC_RUNTIME_LIBRARY}>)
 		set(msvcrt_debug $<$<CONFIG:${library_config_Debug},${library_config_EditorDebug}>:Debug>)

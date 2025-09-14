@@ -172,7 +172,7 @@ void JoltCustomDoubleSidedShape::CastRay(
 		new_ray_cast_settings.SetBackFaceMode(JPH::EBackFaceMode::IgnoreBackFaces);
 	}
 
-	return mInnerShape->CastRay(
+	mInnerShape->CastRay(
 		p_ray,
 		new_ray_cast_settings,
 		p_sub_shape_id_creator,

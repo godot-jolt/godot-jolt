@@ -65,7 +65,7 @@ public:
 	_FORCE_INLINE_ bool erase(const TKey& p_key) { return impl.erase(p_key) != 0; }
 
 	template<typename TPredicate>
-	_FORCE_INLINE_ int32_t erase_if(TPredicate&& p_pred) {
+	_FORCE_INLINE_ int32_t erase_if(const TPredicate& p_pred) {
 		int32_t count = 0;
 
 		for (auto iter = begin(); iter != end();) {

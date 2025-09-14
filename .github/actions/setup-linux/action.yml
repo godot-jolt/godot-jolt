@@ -6,7 +6,7 @@ inputs:
   version-gcc:
     default: 13
   version-llvm:
-    default: 16
+    default: 19
 
 runs:
   using: composite

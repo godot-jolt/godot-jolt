@@ -100,303 +100,303 @@ public:
 
 	double get_linear_limit_x_upper() const { return get_param_x(PARAM_LINEAR_LIMIT_UPPER); }
 
-	void set_linear_limit_x_upper(double p_value) { return set_param_x(PARAM_LINEAR_LIMIT_UPPER, p_value); }
+	void set_linear_limit_x_upper(double p_value) { set_param_x(PARAM_LINEAR_LIMIT_UPPER, p_value); }
 
 	double get_linear_limit_x_lower() const { return get_param_x(PARAM_LINEAR_LIMIT_LOWER); }
 
-	void set_linear_limit_x_lower(double p_value) { return set_param_x(PARAM_LINEAR_LIMIT_LOWER, p_value); }
+	void set_linear_limit_x_lower(double p_value) { set_param_x(PARAM_LINEAR_LIMIT_LOWER, p_value); }
 
 	double get_linear_limit_y_upper() const { return get_param_y(PARAM_LINEAR_LIMIT_UPPER); }
 
-	void set_linear_limit_y_upper(double p_value) { return set_param_y(PARAM_LINEAR_LIMIT_UPPER, p_value); }
+	void set_linear_limit_y_upper(double p_value) { set_param_y(PARAM_LINEAR_LIMIT_UPPER, p_value); }
 
 	double get_linear_limit_y_lower() const { return get_param_y(PARAM_LINEAR_LIMIT_LOWER); }
 
-	void set_linear_limit_y_lower(double p_value) { return set_param_y(PARAM_LINEAR_LIMIT_LOWER, p_value); }
+	void set_linear_limit_y_lower(double p_value) { set_param_y(PARAM_LINEAR_LIMIT_LOWER, p_value); }
 
 	double get_linear_limit_z_upper() const { return get_param_z(PARAM_LINEAR_LIMIT_UPPER); }
 
-	void set_linear_limit_z_upper(double p_value) { return set_param_z(PARAM_LINEAR_LIMIT_UPPER, p_value); }
+	void set_linear_limit_z_upper(double p_value) { set_param_z(PARAM_LINEAR_LIMIT_UPPER, p_value); }
 
 	double get_linear_limit_z_lower() const { return get_param_z(PARAM_LINEAR_LIMIT_LOWER); }
 
-	void set_linear_limit_z_lower(double p_value) { return set_param_z(PARAM_LINEAR_LIMIT_LOWER, p_value); }
+	void set_linear_limit_z_lower(double p_value) { set_param_z(PARAM_LINEAR_LIMIT_LOWER, p_value); }
 
 	double get_linear_limit_spring_x_frequency() const { return get_param_x(PARAM_LINEAR_LIMIT_SPRING_FREQUENCY); }
 
-	void set_linear_limit_spring_x_frequency(double p_value) { return set_param_x(PARAM_LINEAR_LIMIT_SPRING_FREQUENCY, p_value); }
+	void set_linear_limit_spring_x_frequency(double p_value) { set_param_x(PARAM_LINEAR_LIMIT_SPRING_FREQUENCY, p_value); }
 
 	double get_linear_limit_spring_x_damping() const { return get_param_x(PARAM_LINEAR_LIMIT_SPRING_DAMPING); }
 
-	void set_linear_limit_spring_x_damping(double p_value) { return set_param_x(PARAM_LINEAR_LIMIT_SPRING_DAMPING, p_value); }
+	void set_linear_limit_spring_x_damping(double p_value) { set_param_x(PARAM_LINEAR_LIMIT_SPRING_DAMPING, p_value); }
 
 	double get_linear_limit_spring_y_frequency() const { return get_param_y(PARAM_LINEAR_LIMIT_SPRING_FREQUENCY); }
 
-	void set_linear_limit_spring_y_frequency(double p_value) { return set_param_y(PARAM_LINEAR_LIMIT_SPRING_FREQUENCY, p_value); }
+	void set_linear_limit_spring_y_frequency(double p_value) { set_param_y(PARAM_LINEAR_LIMIT_SPRING_FREQUENCY, p_value); }
 
 	double get_linear_limit_spring_y_damping() const { return get_param_y(PARAM_LINEAR_LIMIT_SPRING_DAMPING); }
 
-	void set_linear_limit_spring_y_damping(double p_value) { return set_param_y(PARAM_LINEAR_LIMIT_SPRING_DAMPING, p_value); }
+	void set_linear_limit_spring_y_damping(double p_value) { set_param_y(PARAM_LINEAR_LIMIT_SPRING_DAMPING, p_value); }
 
 	double get_linear_limit_spring_z_frequency() const { return get_param_z(PARAM_LINEAR_LIMIT_SPRING_FREQUENCY); }
 
-	void set_linear_limit_spring_z_frequency(double p_value) { return set_param_z(PARAM_LINEAR_LIMIT_SPRING_FREQUENCY, p_value); }
+	void set_linear_limit_spring_z_frequency(double p_value) { set_param_z(PARAM_LINEAR_LIMIT_SPRING_FREQUENCY, p_value); }
 
 	double get_linear_limit_spring_z_damping() const { return get_param_z(PARAM_LINEAR_LIMIT_SPRING_DAMPING); }
 
-	void set_linear_limit_spring_z_damping(double p_value) { return set_param_z(PARAM_LINEAR_LIMIT_SPRING_DAMPING, p_value); }
+	void set_linear_limit_spring_z_damping(double p_value) { set_param_z(PARAM_LINEAR_LIMIT_SPRING_DAMPING, p_value); }
 
 	double get_linear_motor_x_target_velocity() const { return get_param_x(PARAM_LINEAR_MOTOR_TARGET_VELOCITY); }
 
-	void set_linear_motor_x_target_velocity(double p_value) { return set_param_x(PARAM_LINEAR_MOTOR_TARGET_VELOCITY, p_value); }
+	void set_linear_motor_x_target_velocity(double p_value) { set_param_x(PARAM_LINEAR_MOTOR_TARGET_VELOCITY, p_value); }
 
 	double get_linear_motor_x_max_force() const { return get_param_x(PARAM_LINEAR_MOTOR_MAX_FORCE); }
 
-	void set_linear_motor_x_max_force(double p_value) { return set_param_x(PARAM_LINEAR_MOTOR_MAX_FORCE, p_value); }
+	void set_linear_motor_x_max_force(double p_value) { set_param_x(PARAM_LINEAR_MOTOR_MAX_FORCE, p_value); }
 
 	double get_linear_motor_y_target_velocity() const { return get_param_y(PARAM_LINEAR_MOTOR_TARGET_VELOCITY); }
 
-	void set_linear_motor_y_target_velocity(double p_value) { return set_param_y(PARAM_LINEAR_MOTOR_TARGET_VELOCITY, p_value); }
+	void set_linear_motor_y_target_velocity(double p_value) { set_param_y(PARAM_LINEAR_MOTOR_TARGET_VELOCITY, p_value); }
 
 	double get_linear_motor_y_max_force() const { return get_param_y(PARAM_LINEAR_MOTOR_MAX_FORCE); }
 
-	void set_linear_motor_y_max_force(double p_value) { return set_param_y(PARAM_LINEAR_MOTOR_MAX_FORCE, p_value); }
+	void set_linear_motor_y_max_force(double p_value) { set_param_y(PARAM_LINEAR_MOTOR_MAX_FORCE, p_value); }
 
 	double get_linear_motor_z_target_velocity() const { return get_param_z(PARAM_LINEAR_MOTOR_TARGET_VELOCITY); }
 
-	void set_linear_motor_z_target_velocity(double p_value) { return set_param_z(PARAM_LINEAR_MOTOR_TARGET_VELOCITY, p_value); }
+	void set_linear_motor_z_target_velocity(double p_value) { set_param_z(PARAM_LINEAR_MOTOR_TARGET_VELOCITY, p_value); }
 
 	double get_linear_motor_z_max_force() const { return get_param_z(PARAM_LINEAR_MOTOR_MAX_FORCE); }
 
-	void set_linear_motor_z_max_force(double p_value) { return set_param_z(PARAM_LINEAR_MOTOR_MAX_FORCE, p_value); }
+	void set_linear_motor_z_max_force(double p_value) { set_param_z(PARAM_LINEAR_MOTOR_MAX_FORCE, p_value); }
 
 	double get_linear_spring_x_frequency() const { return get_param_x(PARAM_LINEAR_SPRING_FREQUENCY); }
 
-	void set_linear_spring_x_frequency(double p_value) { return set_param_x(PARAM_LINEAR_SPRING_FREQUENCY, p_value); }
+	void set_linear_spring_x_frequency(double p_value) { set_param_x(PARAM_LINEAR_SPRING_FREQUENCY, p_value); }
 
 	double get_linear_spring_x_damping() const { return get_param_x(PARAM_LINEAR_SPRING_DAMPING); }
 
-	void set_linear_spring_x_damping(double p_value) { return set_param_x(PARAM_LINEAR_SPRING_DAMPING, p_value); }
+	void set_linear_spring_x_damping(double p_value) { set_param_x(PARAM_LINEAR_SPRING_DAMPING, p_value); }
 
 	double get_linear_spring_x_equilibrium_point() const { return get_param_x(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT); }
 
-	void set_linear_spring_x_equilibrium_point(double p_value) { return set_param_x(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT, p_value); }
+	void set_linear_spring_x_equilibrium_point(double p_value) { set_param_x(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT, p_value); }
 
 	double get_linear_spring_x_max_force() const { return get_param_x(PARAM_LINEAR_SPRING_MAX_FORCE); }
 
-	void set_linear_spring_x_max_force(double p_value) { return set_param_x(PARAM_LINEAR_SPRING_MAX_FORCE, p_value); }
+	void set_linear_spring_x_max_force(double p_value) { set_param_x(PARAM_LINEAR_SPRING_MAX_FORCE, p_value); }
 
 	double get_linear_spring_y_frequency() const { return get_param_y(PARAM_LINEAR_SPRING_FREQUENCY); }
 
-	void set_linear_spring_y_frequency(double p_value) { return set_param_y(PARAM_LINEAR_SPRING_FREQUENCY, p_value); }
+	void set_linear_spring_y_frequency(double p_value) { set_param_y(PARAM_LINEAR_SPRING_FREQUENCY, p_value); }
 
 	double get_linear_spring_y_damping() const { return get_param_y(PARAM_LINEAR_SPRING_DAMPING); }
 
-	void set_linear_spring_y_damping(double p_value) { return set_param_y(PARAM_LINEAR_SPRING_DAMPING, p_value); }
+	void set_linear_spring_y_damping(double p_value) { set_param_y(PARAM_LINEAR_SPRING_DAMPING, p_value); }
 
 	double get_linear_spring_y_equilibrium_point() const { return get_param_y(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT); }
 
-	void set_linear_spring_y_equilibrium_point(double p_value) { return set_param_y(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT, p_value); }
+	void set_linear_spring_y_equilibrium_point(double p_value) { set_param_y(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT, p_value); }
 
 	double get_linear_spring_y_max_force() const { return get_param_y(PARAM_LINEAR_SPRING_MAX_FORCE); }
 
-	void set_linear_spring_y_max_force(double p_value) { return set_param_y(PARAM_LINEAR_SPRING_MAX_FORCE, p_value); }
+	void set_linear_spring_y_max_force(double p_value) { set_param_y(PARAM_LINEAR_SPRING_MAX_FORCE, p_value); }
 
 	double get_linear_spring_z_frequency() const { return get_param_z(PARAM_LINEAR_SPRING_FREQUENCY); }
 
-	void set_linear_spring_z_frequency(double p_value) { return set_param_z(PARAM_LINEAR_SPRING_FREQUENCY, p_value); }
+	void set_linear_spring_z_frequency(double p_value) { set_param_z(PARAM_LINEAR_SPRING_FREQUENCY, p_value); }
 
 	double get_linear_spring_z_damping() const { return get_param_z(PARAM_LINEAR_SPRING_DAMPING); }
 
-	void set_linear_spring_z_damping(double p_value) { return set_param_z(PARAM_LINEAR_SPRING_DAMPING, p_value); }
+	void set_linear_spring_z_damping(double p_value) { set_param_z(PARAM_LINEAR_SPRING_DAMPING, p_value); }
 
 	double get_linear_spring_z_equilibrium_point() const { return get_param_z(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT); }
 
-	void set_linear_spring_z_equilibrium_point(double p_value) { return set_param_z(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT, p_value); }
+	void set_linear_spring_z_equilibrium_point(double p_value) { set_param_z(PARAM_LINEAR_SPRING_EQUILIBRIUM_POINT, p_value); }
 
 	double get_linear_spring_z_max_force() const { return get_param_z(PARAM_LINEAR_SPRING_MAX_FORCE); }
 
-	void set_linear_spring_z_max_force(double p_value) { return set_param_z(PARAM_LINEAR_SPRING_MAX_FORCE, p_value); }
+	void set_linear_spring_z_max_force(double p_value) { set_param_z(PARAM_LINEAR_SPRING_MAX_FORCE, p_value); }
 
 	bool get_linear_limit_x_enabled() const { return get_flag_x(FLAG_ENABLE_LINEAR_LIMIT); }
 
-	void set_linear_limit_x_enabled(bool p_enabled) { return set_flag_x(FLAG_ENABLE_LINEAR_LIMIT, p_enabled); }
+	void set_linear_limit_x_enabled(bool p_enabled) { set_flag_x(FLAG_ENABLE_LINEAR_LIMIT, p_enabled); }
 
 	bool get_linear_limit_y_enabled() const { return get_flag_y(FLAG_ENABLE_LINEAR_LIMIT); }
 
-	void set_linear_limit_y_enabled(bool p_enabled) { return set_flag_y(FLAG_ENABLE_LINEAR_LIMIT, p_enabled); }
+	void set_linear_limit_y_enabled(bool p_enabled) { set_flag_y(FLAG_ENABLE_LINEAR_LIMIT, p_enabled); }
 
 	bool get_linear_limit_z_enabled() const { return get_flag_z(FLAG_ENABLE_LINEAR_LIMIT); }
 
-	void set_linear_limit_z_enabled(bool p_enabled) { return set_flag_z(FLAG_ENABLE_LINEAR_LIMIT, p_enabled); }
+	void set_linear_limit_z_enabled(bool p_enabled) { set_flag_z(FLAG_ENABLE_LINEAR_LIMIT, p_enabled); }
 
 	bool get_linear_limit_spring_x_enabled() const { return get_flag_x(FLAG_ENABLE_LINEAR_LIMIT_SPRING); }
 
-	void set_linear_limit_spring_x_enabled(bool p_enabled) { return set_flag_x(FLAG_ENABLE_LINEAR_LIMIT_SPRING, p_enabled); }
+	void set_linear_limit_spring_x_enabled(bool p_enabled) { set_flag_x(FLAG_ENABLE_LINEAR_LIMIT_SPRING, p_enabled); }
 
 	bool get_linear_limit_spring_y_enabled() const { return get_flag_y(FLAG_ENABLE_LINEAR_LIMIT_SPRING); }
 
-	void set_linear_limit_spring_y_enabled(bool p_enabled) { return set_flag_y(FLAG_ENABLE_LINEAR_LIMIT_SPRING, p_enabled); }
+	void set_linear_limit_spring_y_enabled(bool p_enabled) { set_flag_y(FLAG_ENABLE_LINEAR_LIMIT_SPRING, p_enabled); }
 
 	bool get_linear_limit_spring_z_enabled() const { return get_flag_z(FLAG_ENABLE_LINEAR_LIMIT_SPRING); }
 
-	void set_linear_limit_spring_z_enabled(bool p_enabled) { return set_flag_z(FLAG_ENABLE_LINEAR_LIMIT_SPRING, p_enabled); }
+	void set_linear_limit_spring_z_enabled(bool p_enabled) { set_flag_z(FLAG_ENABLE_LINEAR_LIMIT_SPRING, p_enabled); }
 
 	bool get_linear_motor_x_enabled() const { return get_flag_x(FLAG_ENABLE_LINEAR_MOTOR); }
 
-	void set_linear_motor_x_enabled(bool p_enabled) { return set_flag_x(FLAG_ENABLE_LINEAR_MOTOR, p_enabled); }
+	void set_linear_motor_x_enabled(bool p_enabled) { set_flag_x(FLAG_ENABLE_LINEAR_MOTOR, p_enabled); }
 
 	bool get_linear_motor_y_enabled() const { return get_flag_y(FLAG_ENABLE_LINEAR_MOTOR); }
 
-	void set_linear_motor_y_enabled(bool p_enabled) { return set_flag_y(FLAG_ENABLE_LINEAR_MOTOR, p_enabled); }
+	void set_linear_motor_y_enabled(bool p_enabled) { set_flag_y(FLAG_ENABLE_LINEAR_MOTOR, p_enabled); }
 
 	bool get_linear_motor_z_enabled() const { return get_flag_z(FLAG_ENABLE_LINEAR_MOTOR); }
 
-	void set_linear_motor_z_enabled(bool p_enabled) { return set_flag_z(FLAG_ENABLE_LINEAR_MOTOR, p_enabled); }
+	void set_linear_motor_z_enabled(bool p_enabled) { set_flag_z(FLAG_ENABLE_LINEAR_MOTOR, p_enabled); }
 
 	bool get_linear_spring_x_enabled() const { return get_flag_x(FLAG_ENABLE_LINEAR_SPRING); }
 
-	void set_linear_spring_x_enabled(bool p_enabled) { return set_flag_x(FLAG_ENABLE_LINEAR_SPRING, p_enabled); }
+	void set_linear_spring_x_enabled(bool p_enabled) { set_flag_x(FLAG_ENABLE_LINEAR_SPRING, p_enabled); }
 
 	bool get_linear_spring_y_enabled() const { return get_flag_y(FLAG_ENABLE_LINEAR_SPRING); }
 
-	void set_linear_spring_y_enabled(bool p_enabled) { return set_flag_y(FLAG_ENABLE_LINEAR_SPRING, p_enabled); }
+	void set_linear_spring_y_enabled(bool p_enabled) { set_flag_y(FLAG_ENABLE_LINEAR_SPRING, p_enabled); }
 
 	bool get_linear_spring_z_enabled() const { return get_flag_z(FLAG_ENABLE_LINEAR_SPRING); }
 
-	void set_linear_spring_z_enabled(bool p_enabled) { return set_flag_z(FLAG_ENABLE_LINEAR_SPRING, p_enabled); }
+	void set_linear_spring_z_enabled(bool p_enabled) { set_flag_z(FLAG_ENABLE_LINEAR_SPRING, p_enabled); }
 
 	double get_angular_limit_x_upper() const { return get_param_x(PARAM_ANGULAR_LIMIT_UPPER); }
 
-	void set_angular_limit_x_upper(double p_value) { return set_param_x(PARAM_ANGULAR_LIMIT_UPPER, p_value); }
+	void set_angular_limit_x_upper(double p_value) { set_param_x(PARAM_ANGULAR_LIMIT_UPPER, p_value); }
 
 	double get_angular_limit_x_lower() const { return get_param_x(PARAM_ANGULAR_LIMIT_LOWER); }
 
-	void set_angular_limit_x_lower(double p_value) { return set_param_x(PARAM_ANGULAR_LIMIT_LOWER, p_value); }
+	void set_angular_limit_x_lower(double p_value) { set_param_x(PARAM_ANGULAR_LIMIT_LOWER, p_value); }
 
 	double get_angular_limit_y_upper() const { return get_param_y(PARAM_ANGULAR_LIMIT_UPPER); }
 
-	void set_angular_limit_y_upper(double p_value) { return set_param_y(PARAM_ANGULAR_LIMIT_UPPER, p_value); }
+	void set_angular_limit_y_upper(double p_value) { set_param_y(PARAM_ANGULAR_LIMIT_UPPER, p_value); }
 
 	double get_angular_limit_y_lower() const { return get_param_y(PARAM_ANGULAR_LIMIT_LOWER); }
 
-	void set_angular_limit_y_lower(double p_value) { return set_param_y(PARAM_ANGULAR_LIMIT_LOWER, p_value); }
+	void set_angular_limit_y_lower(double p_value) { set_param_y(PARAM_ANGULAR_LIMIT_LOWER, p_value); }
 
 	double get_angular_limit_z_upper() const { return get_param_z(PARAM_ANGULAR_LIMIT_UPPER); }
 
-	void set_angular_limit_z_upper(double p_value) { return set_param_z(PARAM_ANGULAR_LIMIT_UPPER, p_value); }
+	void set_angular_limit_z_upper(double p_value) { set_param_z(PARAM_ANGULAR_LIMIT_UPPER, p_value); }
 
 	double get_angular_limit_z_lower() const { return get_param_z(PARAM_ANGULAR_LIMIT_LOWER); }
 
-	void set_angular_limit_z_lower(double p_value) { return set_param_z(PARAM_ANGULAR_LIMIT_LOWER, p_value); }
+	void set_angular_limit_z_lower(double p_value) { set_param_z(PARAM_ANGULAR_LIMIT_LOWER, p_value); }
 
 	double get_angular_motor_x_target_velocity() const { return get_param_x(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY); }
 
-	void set_angular_motor_x_target_velocity(double p_value) { return set_param_x(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY, p_value); }
+	void set_angular_motor_x_target_velocity(double p_value) { set_param_x(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY, p_value); }
 
 	double get_angular_motor_x_max_torque() const { return get_param_x(PARAM_ANGULAR_MOTOR_MAX_TORQUE); }
 
-	void set_angular_motor_x_max_torque(double p_value) { return set_param_x(PARAM_ANGULAR_MOTOR_MAX_TORQUE, p_value); }
+	void set_angular_motor_x_max_torque(double p_value) { set_param_x(PARAM_ANGULAR_MOTOR_MAX_TORQUE, p_value); }
 
 	double get_angular_motor_y_target_velocity() const { return get_param_y(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY); }
 
-	void set_angular_motor_y_target_velocity(double p_value) { return set_param_y(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY, p_value); }
+	void set_angular_motor_y_target_velocity(double p_value) { set_param_y(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY, p_value); }
 
 	double get_angular_motor_y_max_torque() const { return get_param_y(PARAM_ANGULAR_MOTOR_MAX_TORQUE); }
 
-	void set_angular_motor_y_max_torque(double p_value) { return set_param_y(PARAM_ANGULAR_MOTOR_MAX_TORQUE, p_value); }
+	void set_angular_motor_y_max_torque(double p_value) { set_param_y(PARAM_ANGULAR_MOTOR_MAX_TORQUE, p_value); }
 
 	double get_angular_motor_z_target_velocity() const { return get_param_z(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY); }
 
-	void set_angular_motor_z_target_velocity(double p_value) { return set_param_z(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY, p_value); }
+	void set_angular_motor_z_target_velocity(double p_value) { set_param_z(PARAM_ANGULAR_MOTOR_TARGET_VELOCITY, p_value); }
 
 	double get_angular_motor_z_max_torque() const { return get_param_z(PARAM_ANGULAR_MOTOR_MAX_TORQUE); }
 
-	void set_angular_motor_z_max_torque(double p_value) { return set_param_z(PARAM_ANGULAR_MOTOR_MAX_TORQUE, p_value); }
+	void set_angular_motor_z_max_torque(double p_value) { set_param_z(PARAM_ANGULAR_MOTOR_MAX_TORQUE, p_value); }
 
 	double get_angular_spring_x_frequency() const { return get_param_x(PARAM_ANGULAR_SPRING_FREQUENCY); }
 
-	void set_angular_spring_x_frequency(double p_value) { return set_param_x(PARAM_ANGULAR_SPRING_FREQUENCY, p_value); }
+	void set_angular_spring_x_frequency(double p_value) { set_param_x(PARAM_ANGULAR_SPRING_FREQUENCY, p_value); }
 
 	double get_angular_spring_x_damping() const { return get_param_x(PARAM_ANGULAR_SPRING_DAMPING); }
 
-	void set_angular_spring_x_damping(double p_value) { return set_param_x(PARAM_ANGULAR_SPRING_DAMPING, p_value); }
+	void set_angular_spring_x_damping(double p_value) { set_param_x(PARAM_ANGULAR_SPRING_DAMPING, p_value); }
 
 	double get_angular_spring_x_equilibrium_point() const { return get_param_x(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT); }
 
-	void set_angular_spring_x_equilibrium_point(double p_value) { return set_param_x(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT, p_value); }
+	void set_angular_spring_x_equilibrium_point(double p_value) { set_param_x(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT, p_value); }
 
 	double get_angular_spring_x_max_torque() const { return get_param_x(PARAM_ANGULAR_SPRING_MAX_TORQUE); }
 
-	void set_angular_spring_x_max_torque(double p_value) { return set_param_x(PARAM_ANGULAR_SPRING_MAX_TORQUE, p_value); }
+	void set_angular_spring_x_max_torque(double p_value) { set_param_x(PARAM_ANGULAR_SPRING_MAX_TORQUE, p_value); }
 
 	double get_angular_spring_y_frequency() const { return get_param_y(PARAM_ANGULAR_SPRING_FREQUENCY); }
 
-	void set_angular_spring_y_frequency(double p_value) { return set_param_y(PARAM_ANGULAR_SPRING_FREQUENCY, p_value); }
+	void set_angular_spring_y_frequency(double p_value) { set_param_y(PARAM_ANGULAR_SPRING_FREQUENCY, p_value); }
 
 	double get_angular_spring_y_damping() const { return get_param_y(PARAM_ANGULAR_SPRING_DAMPING); }
 
-	void set_angular_spring_y_damping(double p_value) { return set_param_y(PARAM_ANGULAR_SPRING_DAMPING, p_value); }
+	void set_angular_spring_y_damping(double p_value) { set_param_y(PARAM_ANGULAR_SPRING_DAMPING, p_value); }
 
 	double get_angular_spring_y_equilibrium_point() const { return get_param_y(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT); }
 
-	void set_angular_spring_y_equilibrium_point(double p_value) { return set_param_y(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT, p_value); }
+	void set_angular_spring_y_equilibrium_point(double p_value) { set_param_y(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT, p_value); }
 
 	double get_angular_spring_y_max_torque() const { return get_param_y(PARAM_ANGULAR_SPRING_MAX_TORQUE); }
 
-	void set_angular_spring_y_max_torque(double p_value) { return set_param_y(PARAM_ANGULAR_SPRING_MAX_TORQUE, p_value); }
+	void set_angular_spring_y_max_torque(double p_value) { set_param_y(PARAM_ANGULAR_SPRING_MAX_TORQUE, p_value); }
 
 	double get_angular_spring_z_frequency() const { return get_param_z(PARAM_ANGULAR_SPRING_FREQUENCY); }
 
-	void set_angular_spring_z_frequency(double p_value) { return set_param_z(PARAM_ANGULAR_SPRING_FREQUENCY, p_value); }
+	void set_angular_spring_z_frequency(double p_value) { set_param_z(PARAM_ANGULAR_SPRING_FREQUENCY, p_value); }
 
 	double get_angular_spring_z_damping() const { return get_param_z(PARAM_ANGULAR_SPRING_DAMPING); }
 
-	void set_angular_spring_z_damping(double p_value) { return set_param_z(PARAM_ANGULAR_SPRING_DAMPING, p_value); }
+	void set_angular_spring_z_damping(double p_value) { set_param_z(PARAM_ANGULAR_SPRING_DAMPING, p_value); }
 
 	double get_angular_spring_z_equilibrium_point() const { return get_param_z(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT); }
 
-	void set_angular_spring_z_equilibrium_point(double p_value) { return set_param_z(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT, p_value); }
+	void set_angular_spring_z_equilibrium_point(double p_value) { set_param_z(PARAM_ANGULAR_SPRING_EQUILIBRIUM_POINT, p_value); }
 
 	double get_angular_spring_z_max_torque() const { return get_param_z(PARAM_ANGULAR_SPRING_MAX_TORQUE); }
 
-	void set_angular_spring_z_max_torque(double p_value) { return set_param_z(PARAM_ANGULAR_SPRING_MAX_TORQUE, p_value); }
+	void set_angular_spring_z_max_torque(double p_value) { set_param_z(PARAM_ANGULAR_SPRING_MAX_TORQUE, p_value); }
 
 	bool get_angular_limit_x_enabled() const { return get_flag_x(FLAG_ENABLE_ANGULAR_LIMIT); }
 
-	void set_angular_limit_x_enabled(bool p_enabled) { return set_flag_x(FLAG_ENABLE_ANGULAR_LIMIT, p_enabled); }
+	void set_angular_limit_x_enabled(bool p_enabled) { set_flag_x(FLAG_ENABLE_ANGULAR_LIMIT, p_enabled); }
 
 	bool get_angular_limit_y_enabled() const { return get_flag_y(FLAG_ENABLE_ANGULAR_LIMIT); }
 
-	void set_angular_limit_y_enabled(bool p_enabled) { return set_flag_y(FLAG_ENABLE_ANGULAR_LIMIT, p_enabled); }
+	void set_angular_limit_y_enabled(bool p_enabled) { set_flag_y(FLAG_ENABLE_ANGULAR_LIMIT, p_enabled); }
 
 	bool get_angular_limit_z_enabled() const { return get_flag_z(FLAG_ENABLE_ANGULAR_LIMIT); }
 
-	void set_angular_limit_z_enabled(bool p_enabled) { return set_flag_z(FLAG_ENABLE_ANGULAR_LIMIT, p_enabled); }
+	void set_angular_limit_z_enabled(bool p_enabled) { set_flag_z(FLAG_ENABLE_ANGULAR_LIMIT, p_enabled); }
 
 	bool get_angular_motor_x_enabled() const { return get_flag_x(FLAG_ENABLE_ANGULAR_MOTOR); }
 
-	void set_angular_motor_x_enabled(bool p_enabled) { return set_flag_x(FLAG_ENABLE_ANGULAR_MOTOR, p_enabled); }
+	void set_angular_motor_x_enabled(bool p_enabled) { set_flag_x(FLAG_ENABLE_ANGULAR_MOTOR, p_enabled); }
 
 	bool get_angular_motor_y_enabled() const { return get_flag_y(FLAG_ENABLE_ANGULAR_MOTOR); }
 
-	void set_angular_motor_y_enabled(bool p_enabled) { return set_flag_y(FLAG_ENABLE_ANGULAR_MOTOR, p_enabled); }
+	void set_angular_motor_y_enabled(bool p_enabled) { set_flag_y(FLAG_ENABLE_ANGULAR_MOTOR, p_enabled); }
 
 	bool get_angular_motor_z_enabled() const { return get_flag_z(FLAG_ENABLE_ANGULAR_MOTOR); }
 
-	void set_angular_motor_z_enabled(bool p_enabled) { return set_flag_z(FLAG_ENABLE_ANGULAR_MOTOR, p_enabled); }
+	void set_angular_motor_z_enabled(bool p_enabled) { set_flag_z(FLAG_ENABLE_ANGULAR_MOTOR, p_enabled); }
 
 	bool get_angular_spring_x_enabled() const { return get_flag_x(FLAG_ENABLE_ANGULAR_SPRING); }
 
-	void set_angular_spring_x_enabled(bool p_enabled) { return set_flag_x(FLAG_ENABLE_ANGULAR_SPRING, p_enabled); }
+	void set_angular_spring_x_enabled(bool p_enabled) { set_flag_x(FLAG_ENABLE_ANGULAR_SPRING, p_enabled); }
 
 	bool get_angular_spring_y_enabled() const { return get_flag_y(FLAG_ENABLE_ANGULAR_SPRING); }
 
-	void set_angular_spring_y_enabled(bool p_enabled) { return set_flag_y(FLAG_ENABLE_ANGULAR_SPRING, p_enabled); }
+	void set_angular_spring_y_enabled(bool p_enabled) { set_flag_y(FLAG_ENABLE_ANGULAR_SPRING, p_enabled); }
 
 	bool get_angular_spring_z_enabled() const { return get_flag_z(FLAG_ENABLE_ANGULAR_SPRING); }
 
-	void set_angular_spring_z_enabled(bool p_enabled) { return set_flag_z(FLAG_ENABLE_ANGULAR_SPRING, p_enabled); }
+	void set_angular_spring_z_enabled(bool p_enabled) { set_flag_z(FLAG_ENABLE_ANGULAR_SPRING, p_enabled); }
 
 	// clang-format on
 

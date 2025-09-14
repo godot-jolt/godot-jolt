@@ -31,7 +31,8 @@ public:
 		}
 	}
 
-	JPH::uint64 GetSubShapeUserData([[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id
+	JPH::uint64 GetSubShapeUserData(
+		[[maybe_unused]] const JPH::SubShapeID& p_sub_shape_id
 	) const override {
 		return GetUserData();
 	}

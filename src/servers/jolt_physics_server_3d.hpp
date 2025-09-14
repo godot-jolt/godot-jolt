@@ -121,8 +121,10 @@ public:
 		real_t p_value
 	) override;
 
-	real_t _space_get_param(const RID& p_space, PhysicsServer3D::SpaceParameter p_param)
-		const override;
+	real_t _space_get_param(
+		const RID& p_space,
+		PhysicsServer3D::SpaceParameter p_param
+	) const override;
 
 	PhysicsDirectSpaceState3D* _space_get_direct_state(const RID& p_space) override;
 
@@ -177,8 +179,10 @@ public:
 
 	void _area_set_transform(const RID& p_area, const Transform3D& p_transform) override;
 
-	Variant _area_get_param(const RID& p_area, PhysicsServer3D::AreaParameter p_param)
-		const override;
+	Variant _area_get_param(
+		const RID& p_area,
+		PhysicsServer3D::AreaParameter p_param
+	) const override;
 
 	Transform3D _area_get_transform(const RID& p_area) const override;
 
@@ -265,8 +269,10 @@ public:
 		const Variant& p_value
 	) override;
 
-	Variant _body_get_param(const RID& p_body, PhysicsServer3D::BodyParameter p_param)
-		const override;
+	Variant _body_get_param(
+		const RID& p_body,
+		PhysicsServer3D::BodyParameter p_param
+	) const override;
 
 	void _body_reset_mass_properties(const RID& p_body) override;
 
@@ -280,15 +286,21 @@ public:
 
 	void _body_apply_central_impulse(const RID& p_body, const Vector3& p_impulse) override;
 
-	void _body_apply_impulse(const RID& p_body, const Vector3& p_impulse, const Vector3& p_position)
-		override;
+	void _body_apply_impulse(
+		const RID& p_body,
+		const Vector3& p_impulse,
+		const Vector3& p_position
+	) override;
 
 	void _body_apply_torque_impulse(const RID& p_body, const Vector3& p_impulse) override;
 
 	void _body_apply_central_force(const RID& p_body, const Vector3& p_force) override;
 
-	void _body_apply_force(const RID& p_body, const Vector3& p_force, const Vector3& p_position)
-		override;
+	void _body_apply_force(
+		const RID& p_body,
+		const Vector3& p_force,
+		const Vector3& p_position
+	) override;
 
 	void _body_apply_torque(const RID& p_body, const Vector3& p_torque) override;
 
@@ -312,8 +324,11 @@ public:
 
 	void _body_set_axis_velocity(const RID& p_body, const Vector3& p_axis_velocity) override;
 
-	void _body_set_axis_lock(const RID& p_body, PhysicsServer3D::BodyAxis p_axis, bool p_lock)
-		override;
+	void _body_set_axis_lock(
+		const RID& p_body,
+		PhysicsServer3D::BodyAxis p_axis,
+		bool p_lock
+	) override;
 
 	bool _body_is_axis_locked(const RID& p_body, PhysicsServer3D::BodyAxis p_axis) const override;
 
@@ -327,8 +342,10 @@ public:
 
 	int32_t _body_get_max_contacts_reported(const RID& p_body) const override;
 
-	void _body_set_contacts_reported_depth_threshold(const RID& p_body, real_t p_threshold)
-		override;
+	void _body_set_contacts_reported_depth_threshold(
+		const RID& p_body,
+		real_t p_threshold
+	) override;
 
 	real_t _body_get_contacts_reported_depth_threshold(const RID& p_body) const override;
 
@@ -382,8 +399,10 @@ public:
 
 	void _soft_body_add_collision_exception(const RID& p_body, const RID& p_excepted_body) override;
 
-	void _soft_body_remove_collision_exception(const RID& p_body, const RID& p_excepted_body)
-		override;
+	void _soft_body_remove_collision_exception(
+		const RID& p_body,
+		const RID& p_excepted_body
+	) override;
 
 	TypedArray<RID> _soft_body_get_collision_exceptions(const RID& p_body) const override;
 
@@ -393,8 +412,10 @@ public:
 		const Variant& p_value
 	) override;
 
-	Variant _soft_body_get_state(const RID& p_body, PhysicsServer3D::BodyState p_state)
-		const override;
+	Variant _soft_body_get_state(
+		const RID& p_body,
+		PhysicsServer3D::BodyState p_state
+	) const override;
 
 	void _soft_body_set_transform(const RID& p_body, const Transform3D& p_transform) override;
 
@@ -432,8 +453,10 @@ public:
 		const Vector3& p_global_position
 	) override;
 
-	Vector3 _soft_body_get_point_global_position(const RID& p_body, int32_t p_point_index)
-		const override;
+	Vector3 _soft_body_get_point_global_position(
+		const RID& p_body,
+		int32_t p_point_index
+	) const override;
 
 	void _soft_body_remove_all_pinned_points(const RID& p_body) override;
 
@@ -459,8 +482,10 @@ public:
 		real_t p_value
 	) override;
 
-	real_t _pin_joint_get_param(const RID& p_joint, PhysicsServer3D::PinJointParam p_param)
-		const override;
+	real_t _pin_joint_get_param(
+		const RID& p_joint,
+		PhysicsServer3D::PinJointParam p_param
+	) const override;
 
 	void _pin_joint_set_local_a(const RID& p_joint, const Vector3& p_local_a) override;
 
@@ -494,8 +519,10 @@ public:
 		real_t p_value
 	) override;
 
-	real_t _hinge_joint_get_param(const RID& p_joint, PhysicsServer3D::HingeJointParam p_param)
-		const override;
+	real_t _hinge_joint_get_param(
+		const RID& p_joint,
+		PhysicsServer3D::HingeJointParam p_param
+	) const override;
 
 	void _hinge_joint_set_flag(
 		const RID& p_joint,
@@ -503,8 +530,10 @@ public:
 		bool p_enabled
 	) override;
 
-	bool _hinge_joint_get_flag(const RID& p_joint, PhysicsServer3D::HingeJointFlag p_flag)
-		const override;
+	bool _hinge_joint_get_flag(
+		const RID& p_joint,
+		PhysicsServer3D::HingeJointFlag p_flag
+	) const override;
 
 	void _joint_make_slider(
 		const RID& p_joint,
@@ -520,8 +549,10 @@ public:
 		real_t p_value
 	) override;
 
-	real_t _slider_joint_get_param(const RID& p_joint, PhysicsServer3D::SliderJointParam p_param)
-		const override;
+	real_t _slider_joint_get_param(
+		const RID& p_joint,
+		PhysicsServer3D::SliderJointParam p_param
+	) const override;
 
 	void _joint_make_cone_twist(
 		const RID& p_joint,
@@ -682,8 +713,10 @@ public:
 
 	float slider_joint_get_applied_torque(const RID& p_joint);
 
-	double cone_twist_joint_get_jolt_param(const RID& p_joint, ConeTwistJointParamJolt p_param)
-		const;
+	double cone_twist_joint_get_jolt_param(
+		const RID& p_joint,
+		ConeTwistJointParamJolt p_param
+	) const;
 
 	void cone_twist_joint_set_jolt_param(
 		const RID& p_joint,

@@ -19,19 +19,19 @@ bool integrate(TValue& p_value, PhysicsServer3D::AreaSpaceOverrideMode p_mode, T
 			return false;
 		}
 		case PhysicsServer3D::AREA_SPACE_OVERRIDE_COMBINE: {
-			p_value += p_getter();
+			p_value += std::forward<TGetter>(p_getter)();
 			return false;
 		}
 		case PhysicsServer3D::AREA_SPACE_OVERRIDE_COMBINE_REPLACE: {
-			p_value += p_getter();
+			p_value += std::forward<TGetter>(p_getter)();
 			return true;
 		}
 		case PhysicsServer3D::AREA_SPACE_OVERRIDE_REPLACE: {
-			p_value = p_getter();
+			p_value = std::forward<TGetter>(p_getter)();
 			return true;
 		}
 		case PhysicsServer3D::AREA_SPACE_OVERRIDE_REPLACE_COMBINE: {
-			p_value = p_getter();
+			p_value = std::forward<TGetter>(p_getter)();
 			return false;
 		}
 		default: {

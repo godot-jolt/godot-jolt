@@ -193,7 +193,8 @@ void JoltCustomRayShape::register_type() {
 		JPH::EShapeSubType::Mesh,
 		JPH::EShapeSubType::HeightField,
 		JPH::EShapeSubType::Plane,
-		JPH::EShapeSubType::TaperedCylinder};
+		JPH::EShapeSubType::TaperedCylinder
+	};
 
 	for (const JPH::EShapeSubType concrete_sub_type : concrete_sub_types) {
 		JPH::CollisionDispatch::sRegisterCollideShape(

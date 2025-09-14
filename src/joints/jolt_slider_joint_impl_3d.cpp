@@ -471,7 +471,8 @@ void JoltSliderJointImpl3D::rebuild() {
 
 	const JPH::BodyID body_ids[2] = {
 		body_a != nullptr ? body_a->get_jolt_id() : JPH::BodyID(),
-		body_b != nullptr ? body_b->get_jolt_id() : JPH::BodyID()};
+		body_b != nullptr ? body_b->get_jolt_id() : JPH::BodyID()
+	};
 
 	const JoltWritableBodies3D jolt_bodies = space->write_bodies(body_ids, count_of(body_ids));
 
