@@ -17,7 +17,8 @@ _FORCE_INLINE_ Transform3D to_godot(const JPH::Mat44& p_mat) {
 		Vector3(p_mat(0, 0), p_mat(1, 0), p_mat(2, 0)),
 		Vector3(p_mat(0, 1), p_mat(1, 1), p_mat(2, 1)),
 		Vector3(p_mat(0, 2), p_mat(1, 2), p_mat(2, 2)),
-		Vector3(p_mat(0, 3), p_mat(1, 3), p_mat(2, 3))};
+		Vector3(p_mat(0, 3), p_mat(1, 3), p_mat(2, 3))
+	};
 }
 
 _FORCE_INLINE_ Color to_godot(const JPH::Color& p_color) {
@@ -30,7 +31,8 @@ _FORCE_INLINE_ Color to_godot(const JPH::Color& p_color) {
 		r == 0.0f ? 0.0f : 255.0f / r,
 		g == 0.0f ? 0.0f : 255.0f / g,
 		b == 0.0f ? 0.0f : 255.0f / b,
-		a == 0.0f ? 0.0f : 255.0f / a};
+		a == 0.0f ? 0.0f : 255.0f / a
+	};
 }
 
 _FORCE_INLINE_ String to_godot(const JPH::String& p_str) {
@@ -62,7 +64,8 @@ _FORCE_INLINE_ JPH::Mat44 to_jolt(const Transform3D& p_transform) {
 		JPH::Vec4(b[0][0], b[1][0], b[2][0], 0.0f),
 		JPH::Vec4(b[0][1], b[1][1], b[2][1], 0.0f),
 		JPH::Vec4(b[0][2], b[1][2], b[2][2], 0.0f),
-		JPH::Vec3(o.x, o.y, o.z)};
+		JPH::Vec3(o.x, o.y, o.z)
+	};
 }
 
 _FORCE_INLINE_ JPH::Color to_jolt(const Color& p_color) {
@@ -94,5 +97,6 @@ _FORCE_INLINE_ JPH::RMat44 to_jolt_r(const Transform3D& p_transform) {
 		JPH::Vec4(b[0][0], b[1][0], b[2][0], 0.0f),
 		JPH::Vec4(b[0][1], b[1][1], b[2][1], 0.0f),
 		JPH::Vec4(b[0][2], b[1][2], b[2][2], 0.0f),
-		JPH::RVec3(o.x, o.y, o.z)};
+		JPH::RVec3(o.x, o.y, o.z)
+	};
 }

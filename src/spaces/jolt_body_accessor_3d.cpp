@@ -79,7 +79,8 @@ const JPH::BodyID* JoltBodyAccessor3D::get_ids() const {
 			},
 			[](const BodyIDSpan& p_span) {
 				return p_span.ptr;
-			}},
+			}
+		},
 		ids
 	);
 }
@@ -97,7 +98,8 @@ int32_t JoltBodyAccessor3D::get_count() const {
 			},
 			[](const BodyIDSpan& p_span) {
 				return p_span.count;
-			}},
+			}
+		},
 		ids
 	);
 }

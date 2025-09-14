@@ -36,6 +36,7 @@ jobs:
         uses: ./.github/actions/setup-linux
         with:
           toolchain: llvm
+          version-llvm: 20
 
       - name: Identify clang-format
         shell: pwsh

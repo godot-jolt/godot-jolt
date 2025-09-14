@@ -334,13 +334,17 @@ JoltWritableBody3D JoltSpace3D::write_body(const JoltObjectImpl3D& p_object) con
 	return write_body(p_object.get_jolt_id());
 }
 
-JoltReadableBodies3D JoltSpace3D::read_bodies(const JPH::BodyID* p_body_ids, int32_t p_body_count)
-	const {
+JoltReadableBodies3D JoltSpace3D::read_bodies(
+	const JPH::BodyID* p_body_ids,
+	int32_t p_body_count
+) const {
 	return {*this, p_body_ids, p_body_count};
 }
 
-JoltWritableBodies3D JoltSpace3D::write_bodies(const JPH::BodyID* p_body_ids, int32_t p_body_count)
-	const {
+JoltWritableBodies3D JoltSpace3D::write_bodies(
+	const JPH::BodyID* p_body_ids,
+	int32_t p_body_count
+) const {
 	return {*this, p_body_ids, p_body_count};
 }
 

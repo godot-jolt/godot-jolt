@@ -199,7 +199,7 @@ Prerequisites:
 you to use clang-format from within the editor of your choosing, such as [the C++ extension][cpp]
 for Visual Studio Code, which can save you from the hassle of running the commands shown below.
 
-⚠️ The clang-format configuration that Godot Jolt uses is written for **LLVM 16.0** and won't work
+⚠️ The clang-format configuration that Godot Jolt uses is written for **LLVM 20.1** and won't work
 with earlier versions, possibly not newer ones either.
 
 There is a PowerShell script, `scripts/run_clang_format.ps1`, that runs clang-format on all source

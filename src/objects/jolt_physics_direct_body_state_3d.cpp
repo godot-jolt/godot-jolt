@@ -178,14 +178,16 @@ int32_t JoltPhysicsDirectBodyState3DExtension::_get_contact_count() const {
 	return body->get_contact_count();
 }
 
-Vector3 JoltPhysicsDirectBodyState3DExtension::_get_contact_local_position(int32_t p_contact_idx
+Vector3 JoltPhysicsDirectBodyState3DExtension::_get_contact_local_position(
+	int32_t p_contact_idx
 ) const {
 	QUIET_FAIL_NULL_D_ED(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
 	return body->get_contact(p_contact_idx).position;
 }
 
-Vector3 JoltPhysicsDirectBodyState3DExtension::_get_contact_local_normal(int32_t p_contact_idx
+Vector3 JoltPhysicsDirectBodyState3DExtension::_get_contact_local_normal(
+	int32_t p_contact_idx
 ) const {
 	QUIET_FAIL_NULL_D_ED(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
@@ -198,7 +200,8 @@ Vector3 JoltPhysicsDirectBodyState3DExtension::_get_contact_impulse(int32_t p_co
 	return body->get_contact(p_contact_idx).impulse;
 }
 
-int32_t JoltPhysicsDirectBodyState3DExtension::_get_contact_local_shape(int32_t p_contact_idx
+int32_t JoltPhysicsDirectBodyState3DExtension::_get_contact_local_shape(
+	int32_t p_contact_idx
 ) const {
 	QUIET_FAIL_NULL_D_ED(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
@@ -219,28 +222,32 @@ RID JoltPhysicsDirectBodyState3DExtension::_get_contact_collider(int32_t p_conta
 	return body->get_contact(p_contact_idx).collider_rid;
 }
 
-Vector3 JoltPhysicsDirectBodyState3DExtension::_get_contact_collider_position(int32_t p_contact_idx
+Vector3 JoltPhysicsDirectBodyState3DExtension::_get_contact_collider_position(
+	int32_t p_contact_idx
 ) const {
 	QUIET_FAIL_NULL_D_ED(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
 	return body->get_contact(p_contact_idx).collider_position;
 }
 
-uint64_t JoltPhysicsDirectBodyState3DExtension::_get_contact_collider_id(int32_t p_contact_idx
+uint64_t JoltPhysicsDirectBodyState3DExtension::_get_contact_collider_id(
+	int32_t p_contact_idx
 ) const {
 	QUIET_FAIL_NULL_D_ED(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
 	return body->get_contact(p_contact_idx).collider_id;
 }
 
-Object* JoltPhysicsDirectBodyState3DExtension::_get_contact_collider_object(int32_t p_contact_idx
+Object* JoltPhysicsDirectBodyState3DExtension::_get_contact_collider_object(
+	int32_t p_contact_idx
 ) const {
 	QUIET_FAIL_NULL_D_ED(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());
 	return ObjectDB::get_instance(body->get_contact(p_contact_idx).collider_id);
 }
 
-int32_t JoltPhysicsDirectBodyState3DExtension::_get_contact_collider_shape(int32_t p_contact_idx
+int32_t JoltPhysicsDirectBodyState3DExtension::_get_contact_collider_shape(
+	int32_t p_contact_idx
 ) const {
 	QUIET_FAIL_NULL_D_ED(body);
 	ERR_FAIL_INDEX_D(p_contact_idx, body->get_contact_count());

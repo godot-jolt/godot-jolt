@@ -55,8 +55,14 @@ bool JoltPhysicsDirectSpaceState3DExtension::_intersect_ray(
 
 	JoltQueryCollectorClosest<JPH::CastRayCollector> collector;
 
-	space->get_narrow_phase_query()
-		.CastRay(ray, settings, collector, query_filter, query_filter, query_filter);
+	space->get_narrow_phase_query().CastRay(
+		ray,
+		settings,
+		collector,
+		query_filter,
+		query_filter,
+		query_filter
+	);
 
 	if (!collector.had_hit()) {
 		return false;
@@ -120,8 +126,13 @@ int32_t JoltPhysicsDirectSpaceState3DExtension::_intersect_point(
 
 	JoltQueryCollectorAnyMulti<JPH::CollidePointCollector, 32> collector(p_max_results);
 
-	space->get_narrow_phase_query()
-		.CollidePoint(to_jolt_r(p_position), collector, query_filter, query_filter, query_filter);
+	space->get_narrow_phase_query().CollidePoint(
+		to_jolt_r(p_position),
+		collector,
+		query_filter,
+		query_filter,
+		query_filter
+	);
 
 	const int32_t hit_count = collector.get_hit_count();
 
@@ -717,8 +728,12 @@ bool JoltPhysicsDirectSpaceState3DExtension::_cast_motion_impl(
 
 	JoltQueryCollectorAnyMulti<JPH::CollideShapeBodyCollector, 2048> aabb_collector;
 
-	space->get_broad_phase_query()
-		.CollideAABox(aabb, aabb_collector, p_broad_phase_layer_filter, p_object_layer_filter);
+	space->get_broad_phase_query().CollideAABox(
+		aabb,
+		aabb_collector,
+		p_broad_phase_layer_filter,
+		p_object_layer_filter
+	);
 
 	if (!aabb_collector.had_hit()) {
 		return false;

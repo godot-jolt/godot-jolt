@@ -107,7 +107,8 @@ bool JoltSoftBodyImpl3D::can_interact_with(const JoltAreaImpl3D& p_other) const 
 	return p_other.can_interact_with(*this);
 }
 
-Vector3 JoltSoftBodyImpl3D::get_velocity_at_position([[maybe_unused]] const Vector3& p_position
+Vector3 JoltSoftBodyImpl3D::get_velocity_at_position(
+	[[maybe_unused]] const Vector3& p_position
 ) const {
 	return {0.0f, 0.0f, 0.0f};
 }

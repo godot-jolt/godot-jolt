@@ -1,5 +1,5 @@
 ---
-# Requires LLVM 16.0
+# Requires LLVM 20.1
 
 # General
 Language: Cpp
@@ -8,6 +8,7 @@ TabWidth: 4
 UseTab: Always
 LineEnding: LF
 InsertNewlineAtEOF: true
+KeepFormFeed: false
 
 # Braces
 BreakBeforeBraces: Custom
@@ -40,6 +41,7 @@ ContinuationIndentWidth: 4
 IndentAccessModifiers: false
 IndentCaseBlocks: false
 IndentCaseLabels: true
+IndentExportBlock: false
 IndentExternBlock: NoIndent
 IndentGotoLabels: false
 IndentPPDirectives: None
@@ -84,45 +86,60 @@ SpacesInSquareBrackets: false
 # Newlines/Packing
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
+AllowBreakBeforeNoexceptSpecifier: Never
 AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseExpressionOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
+AllowShortCompoundRequirementOnASingleLine: true
 AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: None
 AllowShortLoopsOnASingleLine: false
+AllowShortNamespacesOnASingleLine: false
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: true
-AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
-BreakAfterAttributes: Always
+BreakAdjacentStringLiterals: true
+BreakAfterAttributes: Never
+BreakAfterReturnType: Automatic
 BreakBeforeBinaryOperators: None
 BreakBeforeConceptDeclarations: Always
 BreakBeforeInlineASMColon: OnlyMultiline
 BreakBeforeTernaryOperators: true
+BreakBinaryOperations: Never
 BreakConstructorInitializers: BeforeComma
+BreakFunctionDefinitionParameters: false
 BreakInheritanceList: BeforeComma
 BreakStringLiterals: true
+BreakTemplateDeclarations: Yes
 CommentPragmas: ''
 CompactNamespaces: false
 DeriveLineEnding: false
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: Always
-KeepEmptyLinesAtTheStartOfBlocks: false
+KeepEmptyLines:
+  AtEndOfFile: false
+  AtStartOfBlock: false
+  AtStartOfFile: false
 MaxEmptyLinesToKeep: 1
 PackConstructorInitializers: Never
 ReflowComments: true
+RemoveEmptyLinesInUnwrappedLines: true
 RequiresClausePosition: OwnLine
 SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 1
+WrapNamespaceBodyWithEmptyLines: Always
 
 # Penalties
 PenaltyBreakAssignment: 1000000
 PenaltyBreakBeforeFirstCallParameter: 0
+PenaltyBreakBeforeMemberAccess: 1000000
 PenaltyBreakComment: 0
 PenaltyBreakFirstLessLess: 1000000
 PenaltyBreakOpenParenthesis: 0
+PenaltyBreakScopeResolution: 1000000
 PenaltyBreakString: 0
 PenaltyBreakTemplateDeclaration: 0
 PenaltyExcessCharacter: 1000000
@@ -165,6 +182,7 @@ AttributeMacros: []
 ForEachMacros: []
 IfMacros: []
 NamespaceMacros: []
+SkipMacroDefinitionBody: false
 StatementAttributeLikeMacros: []
 StatementMacros: []
 TypenameMacros: []
@@ -177,15 +195,25 @@ IntegerLiteralSeparator:
   Binary: 0
   Decimal: 0
   Hex: 0
+MainIncludeChar: Quote
 QualifierAlignment: Left
 RawStringFormats: []
+RemoveParentheses: ReturnStatement
 RemoveSemicolon: false
 SortUsingDeclarations: false
 
+# AlignConsecutiveShortCaseStatements
+# AlignConsecutiveTableGenBreakingDAGArgColons
+# AlignConsecutiveTableGenCondOperatorColons
+# AlignConsecutiveTableGenDefinitionColons
+# AlwaysBreakAfterDefinitionReturnType
+# AlwaysBreakTemplateDeclarations
 # BasedOnStyle
+# BracedInitializerIndentWidth
 # BreakAfterJavaFieldAnnotations
 # BreakArrays
 # DisableFormat
+# ExperimentalAutoDetectBinPacking
 # IncludeIsMainRegex
 # IncludeIsMainSourceRegex
 # JavaImportGroups
@@ -196,10 +224,14 @@ SortUsingDeclarations: false
 # ObjCBinPackProtocolList
 # ObjCBlockIndentWidth
 # ObjCBreakBeforeNestedBlockParam
+# ObjCPropertyAttributeOrder
 # ObjCSpaceAfterProperty
 # ObjCSpaceBeforeProtocolList
 # QualifierOrder
 # RemoveBracesLLVM
 # SortJavaStaticImport
+# SpaceBeforeJsonColon
 # SpaceBeforeParensOptions
+# TableGenBreakInsideDAGArg
+# VerilogBreakBetweenInstancePorts
 ...
