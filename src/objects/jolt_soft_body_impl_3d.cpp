@@ -483,6 +483,7 @@ void JoltSoftBodyImpl3D::_space_changing() {
 		ERR_FAIL_COND(body.is_invalid());
 
 		jolt_settings = new JPH::SoftBodyCreationSettings(body->GetSoftBodyCreationSettings());
+		jolt_settings->mVertexRadius = JoltProjectSettings::get_soft_body_point_margin();
 		jolt_settings->mSettings = nullptr;
 	}
 }
@@ -544,8 +545,6 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 		LocalVector<int32_t>& mesh_to_physics = iter_shared_data->second.mesh_to_physics;
 
 		JPH::SoftBodySharedSettings& settings = *iter_shared_data->second.settings;
-		settings.mVertexRadius = JoltProjectSettings::get_soft_body_point_margin();
-
 		JPH::Array<JPH::SoftBodySharedSettings::Vertex>& physics_vertices = settings.mVertices;
 		JPH::Array<JPH::SoftBodySharedSettings::Face>& physics_faces = settings.mFaces;
 

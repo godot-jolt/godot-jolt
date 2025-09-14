@@ -119,7 +119,7 @@ JPH::ShapeRefC JoltHeightMapShapeImpl3D::_build_height_field() const {
 	JPH::HeightFieldShapeSettings shape_settings(
 		heights_rev.ptr(),
 		JPH::Vec3(offset_x, 0, offset_y),
-		JPH::Vec3::sReplicate(1.0f),
+		JPH::Vec3::sOne(),
 		(JPH::uint32)width
 	);
 
