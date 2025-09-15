@@ -877,7 +877,7 @@ bool JoltPhysicsDirectSpaceState3DExtension::_body_motion_recover(
 
 		_collide_shape_kinematics(
 			jolt_shape,
-			JPH::Vec3::sReplicate(1.0f),
+			JPH::Vec3::sOne(),
 			to_jolt_r(transform_com),
 			settings,
 			to_jolt_r(base_offset),
@@ -1061,7 +1061,7 @@ bool JoltPhysicsDirectSpaceState3DExtension::_body_motion_collide(
 
 	_collide_shape_kinematics(
 		jolt_shape,
-		JPH::Vec3::sReplicate(1.0f),
+		JPH::Vec3::sOne(),
 		to_jolt_r(transform_com),
 		settings,
 		to_jolt_r(base_offset),
