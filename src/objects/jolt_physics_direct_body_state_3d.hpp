@@ -6,7 +6,7 @@ class JoltPhysicsDirectBodyState3DExtension final : public PhysicsDirectBodyStat
 	GDCLASS_QUIET(JoltPhysicsDirectBodyState3DExtension, PhysicsDirectBodyState3DExtension)
 
 private:
-	static void _bind_methods() { }
+	static void _bind_methods();
 
 public:
 	JoltPhysicsDirectBodyState3DExtension() = default;
@@ -74,6 +74,18 @@ public:
 	void _set_sleep_state(bool p_enabled) override;
 
 	bool _is_sleeping() const override;
+
+	// NOLINTBEGIN(readability-identifier-naming)
+
+	void _set_collision_layer(uint32_t p_layer);
+
+	uint32_t _get_collision_layer() const;
+
+	void _set_collision_mask(uint32_t p_mask);
+
+	uint32_t _get_collision_mask() const;
+
+	// NOLINTEND(readability-identifier-naming)
 
 	int32_t _get_contact_count() const override;
 

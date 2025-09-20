@@ -280,14 +280,14 @@ So instead of it looking like this:
 
 ```ini
 compatibility_minimum = "4.3"
-compatibility_maximum = "4.4"
+compatibility_maximum = "4.5"
 ```
 
 You would potentially change it to look like this:
 
 ```ini
 compatibility_minimum = "4.3"
-compatibility_maximum = "4.5"
+compatibility_maximum = "4.6"
 ```
 
 ### Updating the bindings

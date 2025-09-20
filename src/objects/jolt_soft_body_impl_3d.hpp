@@ -64,6 +64,10 @@ public:
 
 	void set_stiffness_coefficient(float p_coefficient);
 
+	float get_shrinking_factor() const;
+
+	void set_shrinking_factor(float p_shrinking_factor) const;
+
 	float get_pressure() const { return pressure; }
 
 	void set_pressure(float p_pressure);
@@ -91,6 +95,14 @@ public:
 	Vector3 get_vertex_position(int32_t p_index);
 
 	void set_vertex_position(int32_t p_index, const Vector3& p_position);
+
+	void apply_point_impulse(int32_t p_index, const Vector3& p_impulse);
+
+	void apply_point_force(int32_t p_index, const Vector3& p_force);
+
+	void apply_central_impulse(const Vector3& p_impulse);
+
+	void apply_central_force(const Vector3& p_force);
 
 	void pin_vertex(int32_t p_index);
 
