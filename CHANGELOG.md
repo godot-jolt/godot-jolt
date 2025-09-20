@@ -13,6 +13,9 @@ Breaking changes are denoted with ⚠️.
 
 - Fixed issue where `ConcavePolygonShape3D` would effectively always have its `backface_collision`
   property enabled in the context of shape-versus-shape collisions.
+- Fixed issue where the joint substitute nodes (`JoltHingeJoint3D`, etc.) would cause errors to be
+  emitted when setting the `node_a` and `node_b` properties before the joint was added to the scene
+  tree.
 
 ## [0.15.0] - 2025-03-09
 

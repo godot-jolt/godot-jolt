@@ -77,10 +77,12 @@ void JoltJoint3D::set_node_b(const NodePath& p_path) {
 }
 
 PhysicsBody3D* JoltJoint3D::get_body_a() const {
+	QUIET_FAIL_COND_V(!is_inside_tree(), nullptr);
 	return Object::cast_to<PhysicsBody3D>(get_node_or_null(node_a));
 }
 
 PhysicsBody3D* JoltJoint3D::get_body_b() const {
+	QUIET_FAIL_COND_V(!is_inside_tree(), nullptr);
 	return Object::cast_to<PhysicsBody3D>(get_node_or_null(node_b));
 }
 
