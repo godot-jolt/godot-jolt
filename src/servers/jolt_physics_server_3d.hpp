@@ -431,6 +431,14 @@ public:
 
 	real_t _soft_body_get_linear_stiffness(const RID& p_body) const override;
 
+	// NOLINTBEGIN(readability-identifier-naming)
+
+	void _soft_body_set_shrinking_factor(const RID& p_body, real_t p_shrinking_factor) const;
+
+	real_t _soft_body_get_shrinking_factor(const RID& p_body) const;
+
+	// NOLINTEND(readability-identifier-naming)
+
 	void _soft_body_set_pressure_coefficient(const RID& p_body, real_t p_coefficient) override;
 
 	real_t _soft_body_get_pressure_coefficient(const RID& p_body) const override;
@@ -457,6 +465,26 @@ public:
 		const RID& p_body,
 		int32_t p_point_index
 	) const override;
+
+	// NOLINTBEGIN(readability-identifier-naming)
+
+	void _soft_body_apply_point_impulse(
+		const RID& p_body,
+		int32_t p_point_index,
+		const Vector3& p_impulse
+	);
+
+	void _soft_body_apply_point_force(
+		const RID& p_body,
+		int32_t p_point_index,
+		const Vector3& p_force
+	);
+
+	void _soft_body_apply_central_impulse(const RID& p_body, const Vector3& p_impulse);
+
+	void _soft_body_apply_central_force(const RID& p_body, const Vector3& p_force);
+
+	// NOLINTEND(readability-identifier-naming)
 
 	void _soft_body_remove_all_pinned_points(const RID& p_body) override;
 

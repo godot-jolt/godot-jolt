@@ -31,6 +31,9 @@ constexpr char PHYSICS_SERVER_NAME[] = "JoltPhysicsServer3DExtension";
 void JoltPhysicsServer3DExtension::_bind_methods() {
 	// clang-format off
 
+	BIND_VIRTUAL_METHOD(JoltPhysicsServer3DExtension, _soft_body_set_shrinking_factor);
+	BIND_VIRTUAL_METHOD(JoltPhysicsServer3DExtension, _soft_body_get_shrinking_factor);
+
 #ifdef GDJ_CONFIG_EDITOR
 	BIND_METHOD(JoltPhysicsServer3DExtension, dump_debug_snapshots, "dir");
 	BIND_METHOD(JoltPhysicsServer3DExtension, space_dump_debug_snapshot, "space", "dir");
@@ -1432,6 +1435,23 @@ real_t JoltPhysicsServer3DExtension::_soft_body_get_linear_stiffness(const RID& 
 	return (real_t)body->get_stiffness_coefficient();
 }
 
+void JoltPhysicsServer3DExtension::_soft_body_set_shrinking_factor(
+	const RID& p_body,
+	real_t p_shrinking_factor
+) const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->set_shrinking_factor((float)p_shrinking_factor);
+}
+
+real_t JoltPhysicsServer3DExtension::_soft_body_get_shrinking_factor(const RID& p_body) const {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_D(body);
+
+	return (real_t)body->get_shrinking_factor();
+}
+
 void JoltPhysicsServer3DExtension::_soft_body_set_pressure_coefficient(
 	const RID& p_body,
 	real_t p_coefficient
@@ -1502,6 +1522,48 @@ Vector3 JoltPhysicsServer3DExtension::_soft_body_get_point_global_position(
 	ERR_FAIL_NULL_D(body);
 
 	return body->get_vertex_position(p_point_index);
+}
+
+void JoltPhysicsServer3DExtension::_soft_body_apply_point_impulse(
+	const RID& p_body,
+	int32_t p_point_index,
+	const Vector3& p_impulse
+) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->apply_point_impulse(p_point_index, p_impulse);
+}
+
+void JoltPhysicsServer3DExtension::_soft_body_apply_point_force(
+	const RID& p_body,
+	int32_t p_point_index,
+	const Vector3& p_force
+) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->apply_point_force(p_point_index, p_force);
+}
+
+void JoltPhysicsServer3DExtension::_soft_body_apply_central_impulse(
+	const RID& p_body,
+	const Vector3& p_impulse
+) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->apply_central_impulse(p_impulse);
+}
+
+void JoltPhysicsServer3DExtension::_soft_body_apply_central_force(
+	const RID& p_body,
+	const Vector3& p_force
+) {
+	JoltSoftBodyImpl3D* body = soft_body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	body->apply_central_force(p_force);
 }
 
 void JoltPhysicsServer3DExtension::_soft_body_remove_all_pinned_points(const RID& p_body) {

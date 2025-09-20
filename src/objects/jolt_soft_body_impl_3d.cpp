@@ -9,6 +9,8 @@
 
 namespace {
 
+constexpr float DEFAULT_SHRINKING_FACTOR = 0.0;
+
 template<typename TJoltVertex>
 void pin_vertices(
 	const JoltSoftBodyImpl3D& p_body,
@@ -170,6 +172,21 @@ float JoltSoftBodyImpl3D::get_stiffness_coefficient() const {
 
 void JoltSoftBodyImpl3D::set_stiffness_coefficient(float p_coefficient) {
 	stiffness_coefficient = CLAMP(p_coefficient, 0.0f, 1.0f);
+}
+
+float JoltSoftBodyImpl3D::get_shrinking_factor() const {
+	return DEFAULT_SHRINKING_FACTOR;
+}
+
+void JoltSoftBodyImpl3D::set_shrinking_factor(float p_shrinking_factor) const {
+	if (!Math::is_equal_approx(p_shrinking_factor, DEFAULT_SHRINKING_FACTOR)) {
+		WARN_PRINT(vformat(
+			"Failed to set shrinking factor for '%s'. "
+			"Soft body shrinking factor is not supported by the Godot Jolt extension. "
+			"Any such value will be ignored.",
+			to_string()
+		));
+	}
 }
 
 void JoltSoftBodyImpl3D::set_pressure(float p_pressure) {
@@ -420,6 +437,28 @@ void JoltSoftBodyImpl3D::set_vertex_position(int32_t p_index, const Vector3& p_p
 	physics_vertex.mVelocity = velocity;
 
 	_vertices_changed();
+}
+
+void JoltSoftBodyImpl3D::apply_point_impulse(
+	[[maybe_unused]] int32_t p_index,
+	[[maybe_unused]] const Vector3& p_impulse
+) {
+	ERR_FAIL_NOT_IMPL();
+}
+
+void JoltSoftBodyImpl3D::apply_point_force(
+	[[maybe_unused]] int32_t p_index,
+	[[maybe_unused]] const Vector3& p_force
+) {
+	ERR_FAIL_NOT_IMPL();
+}
+
+void JoltSoftBodyImpl3D::apply_central_impulse([[maybe_unused]] const Vector3& p_impulse) {
+	ERR_FAIL_NOT_IMPL();
+}
+
+void JoltSoftBodyImpl3D::apply_central_force([[maybe_unused]] const Vector3& p_force) {
+	ERR_FAIL_NOT_IMPL();
 }
 
 void JoltSoftBodyImpl3D::pin_vertex(int32_t p_index) {

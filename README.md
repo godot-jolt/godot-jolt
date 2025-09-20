@@ -82,7 +82,7 @@ Also consider this note from Jolt's [documentation][jdc]:
 
 ## What versions of Godot are supported?
 
-Currently the **only** supported versions of Godot are **4.3** and **4.4**.
+Currently the **only** supported versions of Godot are between **4.3** and **4.5**.
 
 ## What platforms are supported?
 

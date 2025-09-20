@@ -25,9 +25,9 @@ void on_initialize(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_SERVERS: {
 			jolt_initialize();
 
-			ClassDB::register_class<JoltPhysicsDirectBodyState3DExtension>();
-			ClassDB::register_class<JoltPhysicsDirectSpaceState3DExtension>();
-			ClassDB::register_class<JoltPhysicsServer3DExtension>();
+			GDREGISTER_VIRTUAL_CLASS(JoltPhysicsDirectBodyState3DExtension);
+			GDREGISTER_VIRTUAL_CLASS(JoltPhysicsDirectSpaceState3DExtension);
+			GDREGISTER_VIRTUAL_CLASS(JoltPhysicsServer3DExtension);
 
 			PhysicsServer3DManager::get_singleton()->register_server(
 				"Jolt Physics (Extension)",
@@ -37,23 +37,23 @@ void on_initialize(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
 			JoltProjectSettings::register_settings();
 
-			ClassDB::register_class<JoltJoint3D>(true);
-			ClassDB::register_class<JoltPinJoint3D>();
-			ClassDB::register_class<JoltHingeJoint3D>();
-			ClassDB::register_class<JoltSliderJoint3D>();
-			ClassDB::register_class<JoltConeTwistJoint3D>();
-			ClassDB::register_class<JoltGeneric6DOFJoint3D>();
+			GDREGISTER_VIRTUAL_CLASS(JoltJoint3D);
+			GDREGISTER_CLASS(JoltPinJoint3D);
+			GDREGISTER_CLASS(JoltHingeJoint3D);
+			GDREGISTER_CLASS(JoltSliderJoint3D);
+			GDREGISTER_CLASS(JoltConeTwistJoint3D);
+			GDREGISTER_CLASS(JoltGeneric6DOFJoint3D);
 
 #ifdef GDJ_CONFIG_DISTRIBUTION
-			ClassDB::register_internal_class<JoltDebugGeometry3D>();
+			GDREGISTER_INTERNAL_CLASS(JoltDebugGeometry3D);
 #else // GDJ_CONFIG_DISTRIBUTION
-			ClassDB::register_class<JoltDebugGeometry3D>();
+			GDREGISTER_CLASS(JoltDebugGeometry3D);
 #endif // GDJ_CONFIG_DISTRIBUTION
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 #ifdef GDJ_CONFIG_EDITOR
-			ClassDB::register_internal_class<JoltJointGizmoPlugin3D>();
-			ClassDB::register_internal_class<JoltEditorPlugin>();
+			GDREGISTER_INTERNAL_CLASS(JoltJointGizmoPlugin3D);
+			GDREGISTER_INTERNAL_CLASS(JoltEditorPlugin);
 			EditorPlugins::add_by_type<JoltEditorPlugin>();
 #endif // GDJ_CONFIG_EDITOR
 		} break;

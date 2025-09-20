@@ -9,6 +9,10 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Added
+
+- Added support for Godot 4.5.
+
 ### Fixed
 
 - Fixed issue where `ConcavePolygonShape3D` would effectively always have its `backface_collision`
@@ -16,6 +20,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where the joint substitute nodes (`JoltHingeJoint3D`, etc.) would cause errors to be
   emitted when setting the `node_a` and `node_b` properties before the joint was added to the scene
   tree.
+- Fixed issue where using the extension in Godot 4.5 would result in errors about required virtual
+  methods needing to be overridden.
 
 ## [0.15.0] - 2025-03-09
 
