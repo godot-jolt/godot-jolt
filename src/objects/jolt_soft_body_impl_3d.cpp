@@ -416,9 +416,6 @@ void JoltSoftBodyImpl3D::set_vertex_position(int32_t p_index, const Vector3& p_p
 	ERR_FAIL_INDEX(p_index, shared->mesh_to_physics.size());
 	const int32_t physics_index = shared->mesh_to_physics[p_index];
 
-	const float last_step = space->get_last_step();
-	QUIET_FAIL_COND(last_step == 0.0f);
-
 	JoltWritableBody3D body = space->write_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
 
@@ -430,11 +427,7 @@ void JoltSoftBodyImpl3D::set_vertex_position(int32_t p_index, const Vector3& p_p
 	JPH::SoftBodyVertex& physics_vertex = physics_vertices[(size_t)physics_index];
 
 	const JPH::RVec3 center_of_mass = body->GetCenterOfMassPosition();
-	const JPH::Vec3 local_position = JPH::Vec3(to_jolt_r(p_position) - center_of_mass);
-	const JPH::Vec3 displacement = local_position - physics_vertex.mPosition;
-	const JPH::Vec3 velocity = displacement / last_step;
-
-	physics_vertex.mVelocity = velocity;
+	physics_vertex.mPosition = JPH::Vec3(to_jolt_r(p_position) - center_of_mass);
 
 	_vertices_changed();
 }

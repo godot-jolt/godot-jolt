@@ -22,6 +22,7 @@ Breaking changes are denoted with ⚠️.
   tree.
 - Fixed issue where using the extension in Godot 4.5 would result in errors about required virtual
   methods needing to be overridden.
+- Fixed issue where `SoftBody3D` would lag behind any moving attachment.
 
 ## [0.15.0] - 2025-03-09
 
