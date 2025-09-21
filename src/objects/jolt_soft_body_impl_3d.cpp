@@ -338,6 +338,7 @@ void JoltSoftBodyImpl3D::update_rendering_server(
 
 	const auto physics_vertex_count = (int32_t)physics_vertices.size();
 
+	normals.clear();
 	normals.resize(physics_vertex_count);
 
 	for (const SoftBodyFace& physics_face : physics_faces) {
@@ -353,9 +354,16 @@ void JoltSoftBodyImpl3D::update_rendering_server(
 
 		const Vector3 normal = (v2 - v0).cross(v1 - v0).normalized();
 
-		normals[(int32_t)i0] = normal;
-		normals[(int32_t)i1] = normal;
-		normals[(int32_t)i2] = normal;
+		normals[(int32_t)i0] += normal;
+		normals[(int32_t)i1] += normal;
+		normals[(int32_t)i2] += normal;
+	}
+
+	for (Vector3& normal : normals) {
+		real_t normal_length = normal.length();
+		if (normal_length > CMP_EPSILON) {
+			normal /= normal_length;
+		}
 	}
 
 	const int32_t mesh_vertex_count = shared->mesh_to_physics.size();

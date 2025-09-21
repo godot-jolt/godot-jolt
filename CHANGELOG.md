@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Changed
+
+- ⚠️ Changed vertex normal calculation for `SoftBody3D` to use smooth shading instead of hard shading,
+  to match Godot Physics.
+
 ### Added
 
 - Added support for Godot 4.5.
