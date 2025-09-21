@@ -591,13 +591,8 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 
 		int32_t physics_index_count = 0;
 
-		auto is_face_degenerate = [](const int32_t p_face[3]) {
-			return p_face[0] == p_face[1] || p_face[0] == p_face[2] || p_face[1] == p_face[2];
-		};
-
 		for (int32_t i = 0; i < mesh_index_count; i += 3) {
 			int32_t physics_face[3];
-			int32_t mesh_face[3];
 
 			for (int32_t j = 0; j < 3; ++j) {
 				const int32_t mesh_index = mesh_indices[i + j];
@@ -615,23 +610,15 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 					iter_physics_index = vertex_to_physics.insert(vertex, physics_index_count++);
 				}
 
-				mesh_face[j] = mesh_index;
 				physics_face[j] = iter_physics_index->second;
 				mesh_to_physics[mesh_index] = iter_physics_index->second;
 			}
 
-			ERR_CONTINUE_MSG(
-				is_face_degenerate(physics_face),
-				vformat(
-					"Failed to append face to soft body '%s'. "
-					"Face was found to be degenerate. "
-					"Face consist of indices %d, %d and %d.",
-					to_string(),
-					mesh_face[0],
-					mesh_face[1],
-					mesh_face[2]
-				)
-			);
+			if (physics_face[0] == physics_face[1] || physics_face[0] == physics_face[2] ||
+				physics_face[1] == physics_face[2])
+			{
+				continue; // Skip degenerate faces.
+			}
 
 			// Jolt uses a different winding order, so we swap the indices to account for that.
 

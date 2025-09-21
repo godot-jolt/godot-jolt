@@ -23,6 +23,9 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where using the extension in Godot 4.5 would result in errors about required virtual
   methods needing to be overridden.
 - Fixed issue where `SoftBody3D` would lag behind any moving attachment.
+- Fixed issue where an error would be emitted for any degenerate faces present in the mesh data
+  passed to `SoftBody3D`. Now instead it behaves like Godot Physics and silently skips over such
+  faces.
 
 ## [0.15.0] - 2025-03-09
 
