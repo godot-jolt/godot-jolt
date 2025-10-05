@@ -297,6 +297,8 @@ void JoltSoftBodyImpl3D::set_transform(const Transform3D& p_transform) {
 		vertex.mPosition = vertex.mPreviousPosition = relative_transform * vertex.mPosition;
 		vertex.mVelocity = JPH::Vec3::sZero();
 	}
+
+	_transform_changed();
 }
 
 AABB JoltSoftBodyImpl3D::get_bounds() const {
@@ -764,6 +766,10 @@ void JoltSoftBodyImpl3D::_try_rebuild() {
 	if (space != nullptr) {
 		_reset_space();
 	}
+}
+
+void JoltSoftBodyImpl3D::_transform_changed() {
+	wake_up();
 }
 
 void JoltSoftBodyImpl3D::_mesh_changed() {

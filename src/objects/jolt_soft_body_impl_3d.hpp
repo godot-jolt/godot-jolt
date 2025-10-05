@@ -141,6 +141,8 @@ private:
 
 	void _try_rebuild();
 
+	void _transform_changed();
+
 	void _mesh_changed();
 
 	void _simulation_precision_changed();

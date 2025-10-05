@@ -33,6 +33,7 @@ Breaking changes are denoted with ⚠️.
   faces.
 - Fixed issue where contacts would not be reported on the first physics frame of a collision, and
   thus missed entirely if the contact only lasted a single physics frame.
+- Fixed issue where `SoftBody3D` would not wake up when settings its transform.
 
 ## [0.15.0] - 2025-03-09
 
