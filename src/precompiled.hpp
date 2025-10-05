@@ -83,6 +83,7 @@
 #include <Jolt/Core/TempAllocator.h>
 #include <Jolt/Geometry/ConvexSupport.h>
 #include <Jolt/Geometry/GJKClosestPoint.h>
+#include <Jolt/Physics/Body/BodyActivationListener.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyID.h>
 #include <Jolt/Physics/Collision/BroadPhase/BroadPhaseLayer.h>
