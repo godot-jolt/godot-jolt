@@ -31,6 +31,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where an error would be emitted for any degenerate faces present in the mesh data
   passed to `SoftBody3D`. Now instead it behaves like Godot Physics and silently skips over such
   faces.
+- Fixed issue where contacts would not be reported on the first physics frame of a collision, and
+  thus missed entirely if the contact only lasted a single physics frame.
 
 ## [0.15.0] - 2025-03-09
 

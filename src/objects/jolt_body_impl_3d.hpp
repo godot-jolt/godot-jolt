@@ -252,6 +252,8 @@ public:
 	bool can_interact_with(const JoltAreaImpl3D& p_other) const override;
 
 private:
+	friend class JoltBodyActivationListener3D;
+
 	JPH::BroadPhaseLayer _get_broad_phase_layer() const override;
 
 	JPH::ObjectLayer _get_object_layer() const override;
@@ -269,6 +271,8 @@ private:
 	void _pre_step_rigid(float p_step, JPH::Body& p_jolt_body);
 
 	void _pre_step_kinematic(float p_step, JPH::Body& p_jolt_body);
+
+	void _enqueue_state_synchronization();
 
 	JPH::EAllowedDOFs _calculate_allowed_dofs() const;
 

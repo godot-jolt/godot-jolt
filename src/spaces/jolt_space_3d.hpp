@@ -3,6 +3,7 @@
 #include "spaces/jolt_body_accessor_3d.hpp"
 
 class JoltAreaImpl3D;
+class JoltBodyActivationListener3D;
 class JoltContactListener3D;
 class JoltJointImpl3D;
 class JoltLayerMapper;
@@ -126,6 +127,8 @@ private:
 	JoltLayerMapper* layer_mapper = nullptr;
 
 	JoltContactListener3D* contact_listener = nullptr;
+
+	JoltBodyActivationListener3D* body_activation_listener = nullptr;
 
 	JPH::PhysicsSystem* physics_system = nullptr;
 

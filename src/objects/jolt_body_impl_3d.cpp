@@ -1174,7 +1174,7 @@ void JoltBodyImpl3D::_integrate_forces(float p_step, JPH::Body& p_jolt_body) {
 		p_jolt_body.AddTorque(to_jolt(constant_torque));
 	}
 
-	sync_state = true;
+	_enqueue_state_synchronization();
 }
 
 void JoltBodyImpl3D::_move_kinematic(float p_step, JPH::Body& p_jolt_body) {
@@ -1193,7 +1193,7 @@ void JoltBodyImpl3D::_move_kinematic(float p_step, JPH::Body& p_jolt_body) {
 
 	p_jolt_body.MoveKinematic(new_position, new_rotation, p_step);
 
-	sync_state = true;
+	_enqueue_state_synchronization();
 }
 
 void JoltBodyImpl3D::_pre_step_static(
@@ -1217,8 +1217,13 @@ void JoltBodyImpl3D::_pre_step_kinematic(float p_step, JPH::Body& p_jolt_body) {
 		// HACK(mihe): This seems to emulate the behavior of Godot Physics, where kinematic bodies
 		// are set as active (and thereby have their state synchronized on every step) only if its
 		// max reported contacts is non-zero.
-		sync_state = true;
+		_enqueue_state_synchronization();
 	}
+}
+
+void JoltBodyImpl3D::_enqueue_state_synchronization() {
+	// This method will be called on multiple threads during the simulation step.
+	sync_state = true;
 }
 
 JPH::EAllowedDOFs JoltBodyImpl3D::_calculate_allowed_dofs() const {

@@ -7,6 +7,7 @@
 #include "servers/jolt_project_settings.hpp"
 #include "shapes/jolt_custom_shape_type.hpp"
 #include "shapes/jolt_shape_impl_3d.hpp"
+#include "spaces/jolt_body_activation_listener_3d.hpp"
 #include "spaces/jolt_contact_listener_3d.hpp"
 #include "spaces/jolt_layer_mapper.hpp"
 #include "spaces/jolt_physics_direct_space_state_3d.hpp"
@@ -30,6 +31,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	, temp_allocator(new JoltTempAllocator())
 	, layer_mapper(new JoltLayerMapper())
 	, contact_listener(new JoltContactListener3D(this))
+	, body_activation_listener(new JoltBodyActivationListener3D())
 	, physics_system(new JPH::PhysicsSystem()) {
 	physics_system->Init(
 		(JPH::uint)JoltProjectSettings::get_max_bodies(),
@@ -61,6 +63,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	physics_system->SetGravity(JPH::Vec3::sZero());
 	physics_system->SetContactListener(contact_listener);
 	physics_system->SetSoftBodyContactListener(contact_listener);
+	physics_system->SetBodyActivationListener(body_activation_listener);
 
 	physics_system->SetCombineFriction(
 		[](const JPH::Body& p_body1,
@@ -96,6 +99,7 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 JoltSpace3D::~JoltSpace3D() {
 	memdelete_safely(direct_state);
 	delete_safely(physics_system);
+	delete_safely(body_activation_listener);
 	delete_safely(contact_listener);
 	delete_safely(layer_mapper);
 	delete_safely(temp_allocator);
