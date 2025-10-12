@@ -467,12 +467,18 @@ void JoltAreaImpl3D::_add_shape_pair(
 	p_overlap.rid = other_object->get_rid();
 	p_overlap.instance_id = other_object->get_instance_id();
 
-	ShapeIndexPair& shape_indices = p_overlap.shape_pairs[{p_other_shape_id, p_self_shape_id}];
+	auto shape_pair = p_overlap.shape_pairs.find(ShapeIDPair(p_other_shape_id, p_self_shape_id));
 
-	shape_indices.other = other_object->find_shape_index(p_other_shape_id);
-	shape_indices.self = find_shape_index(p_self_shape_id);
+	if (shape_pair == p_overlap.shape_pairs.end()) {
+		const int other_shape_index = other_object->find_shape_index(p_other_shape_id);
+		const int self_shape_index = find_shape_index(p_self_shape_id);
+		shape_pair = p_overlap.shape_pairs.insert(
+			ShapeIDPair(p_other_shape_id, p_self_shape_id),
+			ShapeIndexPair(other_shape_index, self_shape_index)
+		);
+	}
 
-	p_overlap.pending_added.push_back(shape_indices);
+	p_overlap.pending_added.push_back(shape_pair->second);
 }
 
 bool JoltAreaImpl3D::_remove_shape_pair(
@@ -497,26 +503,37 @@ void JoltAreaImpl3D::_flush_events(OverlapsById& p_objects, const Callable& p_ca
 		auto& [id, overlap] = p_pair;
 
 		if (p_callback.is_valid()) {
-			for (auto& shape_indices : overlap.pending_removed) {
-				_report_event(
-					p_callback,
-					PhysicsServer3D::AREA_BODY_REMOVED,
-					overlap.rid,
-					overlap.instance_id,
-					shape_indices.other,
-					shape_indices.self
-				);
+			for (const ShapeIndexPair& shape_indices : overlap.pending_added) {
+				int& ref_count = overlap.ref_counts[shape_indices];
+
+				if (ref_count++ == 0) {
+					_report_event(
+						p_callback,
+						PhysicsServer3D::AREA_BODY_ADDED,
+						overlap.rid,
+						overlap.instance_id,
+						shape_indices.other,
+						shape_indices.self
+					);
+				}
 			}
 
-			for (auto& shape_indices : overlap.pending_added) {
-				_report_event(
-					p_callback,
-					PhysicsServer3D::AREA_BODY_ADDED,
-					overlap.rid,
-					overlap.instance_id,
-					shape_indices.other,
-					shape_indices.self
-				);
+			for (const ShapeIndexPair& shape_indices : overlap.pending_removed) {
+				int& ref_count = overlap.ref_counts[shape_indices];
+				ERR_CONTINUE(ref_count <= 0);
+
+				if (--ref_count == 0) {
+					_report_event(
+						p_callback,
+						PhysicsServer3D::AREA_BODY_REMOVED,
+						overlap.rid,
+						overlap.instance_id,
+						shape_indices.other,
+						shape_indices.self
+					);
+
+					overlap.ref_counts.erase(shape_indices);
+				}
 			}
 		}
 

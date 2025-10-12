@@ -35,6 +35,8 @@ Breaking changes are denoted with ⚠️.
   thus missed entirely if the contact only lasted a single physics frame.
 - Fixed issue where `SoftBody3D` would not wake up when settings its transform.
 - Fixed crash when rendering `SoftBody3D` meshes that have unused vertices.
+- Fixed issue where `Area3D` would not report collisions with `ConcavePolygonShape3D` and
+  `HeightMapShape3D` correctly.
 
 ## [0.15.0] - 2025-03-09
 

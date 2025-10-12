@@ -39,6 +39,12 @@ class JoltAreaImpl3D final : public JoltShapedObjectImpl3D {
 			: other(p_other)
 			, self(p_self) { }
 
+		static uint32_t hash(const ShapeIndexPair& p_pair) {
+			uint32_t hash = hash_murmur3_one_32((uint32_t)p_pair.other);
+			hash = hash_murmur3_one_32((uint32_t)p_pair.self, hash);
+			return hash_fmix32(hash);
+		}
+
 		friend bool operator==(const ShapeIndexPair& p_lhs, const ShapeIndexPair& p_rhs) {
 			return std::tie(p_lhs.other, p_lhs.self) == std::tie(p_rhs.other, p_rhs.self);
 		}
@@ -50,6 +56,8 @@ class JoltAreaImpl3D final : public JoltShapedObjectImpl3D {
 
 	struct Overlap {
 		HashMap<ShapeIDPair, ShapeIndexPair, ShapeIDPair> shape_pairs;
+
+		HashMap<ShapeIndexPair, int, ShapeIndexPair> ref_counts;
 
 		InlineVector<ShapeIndexPair, 1> pending_added;
 
