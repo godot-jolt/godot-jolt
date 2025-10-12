@@ -76,10 +76,6 @@
 
 #include <Jolt/Jolt.h>
 
-// clang-format off
-#include <Jolt/Physics/Collision/TransformedShape.h>
-// clang-format on
-
 #include <Jolt/Core/Factory.h>
 #include <Jolt/Core/FixedSizeFreeList.h>
 #include <Jolt/Core/IssueReporting.h>
