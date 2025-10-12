@@ -368,16 +368,14 @@ void JoltSoftBodyImpl3D::update_rendering_server(
 		}
 	}
 
-	const int32_t mesh_vertex_count = shared->mesh_to_physics.size();
-
-	for (int32_t i = 0; i < mesh_vertex_count; ++i) {
-		const auto physics_index = (size_t)shared->mesh_to_physics[i];
-
-		const Vector3 vertex = to_godot(physics_vertices[physics_index].mPosition);
-		const Vector3 normal = normals[(int32_t)physics_index];
-
-		p_rendering_server_handler->set_vertex(i, vertex);
-		p_rendering_server_handler->set_normal(i, normal);
+	for (int32_t i = 0; i < shared->mesh_to_physics.size(); ++i) {
+		const int32_t physics_index = shared->mesh_to_physics[i];
+		if (physics_index >= 0) {
+			const Vector3 vertex = to_godot(physics_vertices[(size_t)physics_index].mPosition);
+			const Vector3 normal = normals[physics_index];
+			p_rendering_server_handler->set_vertex(i, vertex);
+			p_rendering_server_handler->set_normal(i, normal);
+		}
 	}
 
 	p_rendering_server_handler->set_aabb(get_bounds());
@@ -397,6 +395,16 @@ Vector3 JoltSoftBodyImpl3D::get_vertex_position(int32_t p_index) {
 	ERR_FAIL_NULL_D(shared);
 	ERR_FAIL_INDEX_D(p_index, shared->mesh_to_physics.size());
 	const int32_t physics_index = shared->mesh_to_physics[p_index];
+	ERR_FAIL_COND_V_MSG(
+		physics_index < 0,
+		Vector3(),
+		vformat(
+			"Failed to retrieve point position for '%s'. "
+			"Vertex %d was not used by any face so was omitted.",
+			p_index,
+			to_string()
+		)
+	);
 
 	const JoltReadableBody3D body = space->read_body(jolt_id);
 	ERR_FAIL_COND_D(body.is_invalid());
@@ -425,6 +433,15 @@ void JoltSoftBodyImpl3D::set_vertex_position(int32_t p_index, const Vector3& p_p
 	ERR_FAIL_NULL(shared);
 	ERR_FAIL_INDEX(p_index, shared->mesh_to_physics.size());
 	const int32_t physics_index = shared->mesh_to_physics[p_index];
+	ERR_FAIL_COND_MSG(
+		physics_index < 0,
+		vformat(
+			"Failed to set point position for '%s'. "
+			"Vertex %d was not used by any face so was omitted.",
+			p_index,
+			to_string()
+		)
+	);
 
 	JoltWritableBody3D body = space->write_body(jolt_id);
 	ERR_FAIL_COND(body.is_invalid());
@@ -596,6 +613,9 @@ bool JoltSoftBodyImpl3D::_ref_shared_data() {
 		const auto mesh_index_count = (int32_t)mesh_indices.size();
 
 		mesh_to_physics.resize(mesh_vertex_count);
+		for (int32_t& index : mesh_to_physics) {
+			index = -1;
+		}
 		physics_vertices.reserve((size_t)mesh_vertex_count);
 		vertex_to_physics.reserve(mesh_vertex_count);
 
