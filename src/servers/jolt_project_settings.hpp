@@ -12,8 +12,6 @@ public:
 
 	static bool use_shape_margins();
 
-	static bool areas_detect_static_bodies();
-
 	static bool report_all_kinematic_contacts();
 
 	static bool use_edge_removal_for_bodies();

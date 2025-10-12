@@ -15,7 +15,6 @@ constexpr char SLEEP_TIME_THRESHOLD[] = "physics/jolt_physics_extension_3d/sleep
 
 constexpr char SHAPE_MARGINS[] = "physics/jolt_physics_extension_3d/collisions/use_shape_margins";
 constexpr char BODY_EDGE_REMOVAL[] = "physics/jolt_physics_extension_3d/collisions/use_enhanced_internal_edge_removal";
-constexpr char AREAS_DETECT_STATIC[] = "physics/jolt_physics_extension_3d/collisions/areas_detect_static_bodies";
 constexpr char KINEMATIC_CONTACTS[] = "physics/jolt_physics_extension_3d/collisions/report_all_kinematic_contacts";
 constexpr char SOFT_BODY_POINT_MARGIN[] = "physics/jolt_physics_extension_3d/collisions/soft_body_point_margin";
 constexpr char PAIR_CACHE_ENABLED[] = "physics/jolt_physics_extension_3d/collisions/body_pair_cache_enabled";
@@ -169,6 +168,21 @@ void migrate_setting(const String& p_setting) {
 	}
 }
 
+void remove_setting(const String& p_setting) {
+	ProjectSettings* project_settings = ProjectSettings::get_singleton();
+
+	const String old_name = "physics/jolt_3d/" + p_setting;
+	const String new_name = "physics/jolt_physics_extension_3d/" + p_setting;
+
+	if (project_settings->has_setting(old_name)) {
+		project_settings->clear(old_name);
+	}
+
+	if (project_settings->has_setting(new_name)) {
+		project_settings->clear(new_name);
+	}
+}
+
 void migrate_settings() {
 	migrate_physics_engine_setting();
 
@@ -177,7 +191,7 @@ void migrate_settings() {
 	migrate_setting("sleep/time_threshold");
 	migrate_setting("collisions/use_shape_margins");
 	migrate_setting("collisions/use_enhanced_internal_edge_removal");
-	migrate_setting("collisions/areas_detect_static_bodies");
+	remove_setting("collisions/areas_detect_static_bodies");
 	migrate_setting("collisions/report_all_kinematic_contacts");
 	migrate_setting("collisions/soft_body_point_margin");
 	migrate_setting("collisions/body_pair_cache_enabled");
@@ -221,7 +235,6 @@ void JoltProjectSettings::register_settings() {
 
 	register_setting_plain(SHAPE_MARGINS, true);
 	register_setting_plain(BODY_EDGE_REMOVAL, true);
-	register_setting_plain(AREAS_DETECT_STATIC, false);
 	register_setting_plain(KINEMATIC_CONTACTS, false);
 
 	register_setting_ranged(SOFT_BODY_POINT_MARGIN, 0.01f, U"0,1,0.001,or_greater,suffix:m");
@@ -278,11 +291,6 @@ float JoltProjectSettings::get_sleep_time_threshold() {
 
 bool JoltProjectSettings::use_shape_margins() {
 	static const auto value = get_setting<bool>(SHAPE_MARGINS);
-	return value;
-}
-
-bool JoltProjectSettings::areas_detect_static_bodies() {
-	static const auto value = get_setting<bool>(AREAS_DETECT_STATIC);
 	return value;
 }
 

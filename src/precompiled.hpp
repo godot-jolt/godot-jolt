@@ -76,6 +76,10 @@
 
 #include <Jolt/Jolt.h>
 
+// clang-format off
+#include <Jolt/Physics/Collision/TransformedShape.h>
+// clang-format on
+
 #include <Jolt/Core/Factory.h>
 #include <Jolt/Core/FixedSizeFreeList.h>
 #include <Jolt/Core/IssueReporting.h>
@@ -91,6 +95,8 @@
 #include <Jolt/Physics/Collision/CastResult.h>
 #include <Jolt/Physics/Collision/CollidePointResult.h>
 #include <Jolt/Physics/Collision/CollideShape.h>
+#include <Jolt/Physics/Collision/CollideShapeVsShapePerLeaf.h>
+#include <Jolt/Physics/Collision/CollisionCollectorImpl.h>
 #include <Jolt/Physics/Collision/CollisionDispatch.h>
 #include <Jolt/Physics/Collision/CollisionGroup.h>
 #include <Jolt/Physics/Collision/ContactListener.h>

@@ -61,7 +61,6 @@ should not be relied upon if determinism is a hard requirement.
 ## What else is different?
 
 - Scale is actually used for all bodies, shapes and shape queries, except for `SoftBody3D`
-- `Area3D` detecting static bodies is opt-in, at a potentially [heavy performance/memory cost][jst]
 - Joints only support soft limits through their substitutes (`JoltHingeJoint3D`, etc.)
 - Springs and linear motors are actually implemented in `Generic6DOFJoint3D`
 - Single-body joints will make `node_a` be the "world node" rather than `node_b`
@@ -121,7 +120,7 @@ Godot Jolt is distributed under the MIT license. See [`LICENSE.txt`][lic] for mo
 
 [god]: https://godotengine.org/
 [jlt]: https://github.com/jrouwe/JoltPhysics
-[jst]: docs/settings.md#jolt-3d
+[jst]: docs/settings.md#jolt-physics-extension-3d
 [jdc]: https://jrouwe.github.io/JoltPhysics/
 [rls]: https://github.com/godot-jolt/godot-jolt/releases/latest
 [ast]: https://godotengine.org/asset-library/asset/1918
