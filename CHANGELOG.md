@@ -34,6 +34,7 @@ Breaking changes are denoted with ⚠️.
 - Fixed issue where contacts would not be reported on the first physics frame of a collision, and
   thus missed entirely if the contact only lasted a single physics frame.
 - Fixed issue where `SoftBody3D` would not wake up when settings its transform.
+- Fixed crash when rendering `SoftBody3D` meshes that have unused vertices.
 
 ## [0.15.0] - 2025-03-09
 
