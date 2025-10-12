@@ -9,6 +9,11 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+### Removed
+
+- ⚠️ Removed the "Areas Detect Static Bodies" project setting. `Area3D` will now always detect
+  overlaps with static bodies by default, and should do so much cheaper than before.
+
 ### Changed
 
 - ⚠️ Changed vertex normal calculation for `SoftBody3D` to use smooth shading instead of hard shading,
@@ -37,6 +42,8 @@ Breaking changes are denoted with ⚠️.
 - Fixed crash when rendering `SoftBody3D` meshes that have unused vertices.
 - Fixed issue where `Area3D` would not report collisions with `ConcavePolygonShape3D` and
   `HeightMapShape3D` correctly.
+- Fixed issue where adding/removing shapes from a body while it's overlapping with an `Area3D` could
+  result in strange overlap reports.
 
 ## [0.15.0] - 2025-03-09
 

@@ -10,7 +10,7 @@ in order to see the settings listed here.
 
 - [Common](#common)
 - [3D](#3d)
-- [Jolt Physics Extension 3D](#jolt-3d)
+- [Jolt Physics Extension 3D](#jolt-physics-extension-3d)
 
 ## Common
 
@@ -102,25 +102,25 @@ These settings are part of Godot's default project settings and can be found und
       <td>-</td>
       <td>Sleep Threshold Linear</td>
       <td>No</td>
-      <td>See extension settings <a href="#jolt-3d">below</a>.</td>
+      <td>See extension settings <a href="#jolt-physics-extension-3d">below</a>.</td>
     </tr>
     <tr>
       <td>-</td>
       <td>Sleep Threshold Angular</td>
       <td>No</td>
-      <td>See extension settings <a href="#jolt-3d">below</a>.</td>
+      <td>See extension settings <a href="#jolt-physics-extension-3d">below</a>.</td>
     </tr>
     <tr>
       <td>-</td>
       <td>Time Before Sleep</td>
       <td>No</td>
-      <td>See extension settings <a href="#jolt-3d">below</a>.</td>
+      <td>See extension settings <a href="#jolt-physics-extension-3d">below</a>.</td>
     </tr>
     <tr>
       <td>Solver</td>
       <td>Solver Iterations</td>
       <td>No</td>
-      <td>See extension settings <a href="#jolt-3d">below</a>.</td>
+      <td>See extension settings <a href="#jolt-physics-extension-3d">below</a>.</td>
     </tr>
     <tr>
       <td>Solver</td>
@@ -138,7 +138,7 @@ These settings are part of Godot's default project settings and can be found und
       <td>Solver</td>
       <td>Contact Max Allowed Penetration</td>
       <td>No</td>
-      <td>See extension settings <a href="#jolt-3d">below</a>.</td>
+      <td>See extension settings <a href="#jolt-physics-extension-3d">below</a>.</td>
     </tr>
     <tr>
       <td>Solver</td>
@@ -215,31 +215,16 @@ These settings are exposed by Godot Jolt and can be found under "Physics" - "Jol
     </tr>
     <tr>
       <td>Collisions</td>
-      <td>Areas Detect Static Bodies</td>
-      <td>
-        Whether or not <code>Area3D</code> is able to detect overlaps with <code>StaticBody3D</code>
-        and <code>RigidBody3D</code> frozen with <code>FREEZE_MODE_STATIC</code>.
-      </td>
-      <td>
-        ⚠️ This can come at a heavy performance and memory cost if you allow many/large areas to
-        overlap with complex static geometry, such as <code>ConcavePolygonShape3D</code> or
-        <code>HeightMapShape3D</code>.
-        <br><br>It is strongly recommended that you set up your collision layers and masks in such a
-        way that only a few small <code>Area3D</code> can detect static bodies.
-      </td>
-    </tr>
-    <tr>
-      <td>Collisions</td>
       <td>Report All Kinematic Contacts</td>
       <td>
         Whether or not a <code>RigidBody3D</code> frozen with <code>FREEZE_MODE_KINEMATIC</code> is
         able to collide with (and thus reports contacts for) other kinematic/static bodies.
       </td>
       <td>
-        ⚠️ Much like the "Areas Detect Static Bodies" setting, this setting can come at a heavy
-        performance and memory cost if you allow many/large frozen kinematic bodies with a non-zero
-        <code>max_contacts_reported</code> to overlap with complex static geometry, such as
-        <code>ConcavePolygonShape3D</code> or <code>HeightMapShape3D</code>.
+        ⚠️ This setting can come at a heavy performance and memory cost if you allow many/large
+        frozen kinematic bodies with a non-zero <code>max_contacts_reported</code> to overlap with
+        complex static geometry, such as <code>ConcavePolygonShape3D</code> or
+        <code>HeightMapShape3D</code>.
         <br><br>It is strongly recommended that you set up your collision layers and masks in such a
         way that only a few small such kinematic bodies can detect static bodies.
       </td>
