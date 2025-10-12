@@ -162,8 +162,6 @@ private:
 
 	void _flush_area_enters();
 
-	void _flush_area_shifts();
-
 	void _flush_area_exits();
 
 	ManifoldsByShapePair manifolds_by_shape_pair;
