@@ -44,6 +44,8 @@ Breaking changes are denoted with ⚠️.
   `HeightMapShape3D` correctly.
 - Fixed issue where adding/removing shapes from a body while it's overlapping with an `Area3D` could
   result in strange overlap reports.
+- Fixed issue where the position of `SoftBody3D` would greatly influence the accuracy of its
+  physics.
 
 ## [0.15.0] - 2025-03-09
 

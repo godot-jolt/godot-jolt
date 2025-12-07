@@ -56,7 +56,7 @@ JoltSoftBodyImpl3D::JoltSoftBodyImpl3D()
 	: JoltObjectImpl3D(OBJECT_TYPE_SOFT_BODY) {
 	jolt_settings->mRestitution = 0.0f;
 	jolt_settings->mFriction = 1.0f;
-	jolt_settings->mUpdatePosition = false;
+	jolt_settings->mUpdatePosition = true;
 	jolt_settings->mMakeRotationIdentity = false;
 }
 
@@ -287,6 +287,13 @@ void JoltSoftBodyImpl3D::set_transform(const Transform3D& p_transform) {
 	// We also discard any scaling, since we have no way of scaling the actual edge lengths.
 	const JPH::Mat44 relative_transform = to_jolt(p_transform.orthonormalized());
 
+	// The translation delta goes to the body's position to avoid vertices getting too far away.
+	space->get_body_iface().SetPosition(
+		jolt_id,
+		body->GetPosition() + relative_transform.GetTranslation(),
+		JPH::EActivation::DontActivate
+	);
+
 	auto& motion_properties = static_cast<JPH::SoftBodyMotionProperties&>(
 		*body->GetMotionPropertiesUnchecked()
 	);
@@ -294,7 +301,8 @@ void JoltSoftBodyImpl3D::set_transform(const Transform3D& p_transform) {
 	JPH::Array<JPH::SoftBodyVertex>& physics_vertices = motion_properties.GetVertices();
 
 	for (JPH::SoftBodyVertex& vertex : physics_vertices) {
-		vertex.mPosition = vertex.mPreviousPosition = relative_transform * vertex.mPosition;
+		vertex.mPreviousPosition = relative_transform.Multiply3x3(vertex.mPosition);
+		vertex.mPosition = vertex.mPreviousPosition;
 		vertex.mVelocity = JPH::Vec3::sZero();
 	}
 
@@ -368,10 +376,13 @@ void JoltSoftBodyImpl3D::update_rendering_server(
 		}
 	}
 
+	const JPH::RVec3 body_position = body->GetCenterOfMassPosition();
+
 	for (int32_t i = 0; i < shared->mesh_to_physics.size(); ++i) {
 		const int32_t physics_index = shared->mesh_to_physics[i];
 		if (physics_index >= 0) {
-			const Vector3 vertex = to_godot(physics_vertices[(size_t)physics_index].mPosition);
+			const JPH::Vec3& vertex_relative = physics_vertices[(size_t)physics_index].mPosition;
+			const Vector3 vertex = to_godot(body_position + vertex_relative);
 			const Vector3 normal = normals[physics_index];
 			p_rendering_server_handler->set_vertex(i, vertex);
 			p_rendering_server_handler->set_normal(i, normal);
@@ -542,6 +553,7 @@ void JoltSoftBodyImpl3D::_space_changing() {
 		ERR_FAIL_COND(body.is_invalid());
 
 		jolt_settings = new JPH::SoftBodyCreationSettings(body->GetSoftBodyCreationSettings());
+		jolt_settings->mPosition = JPH::RVec3::sZero();
 		jolt_settings->mVertexRadius = JoltProjectSettings::get_soft_body_point_margin();
 		jolt_settings->mSettings = nullptr;
 	}
