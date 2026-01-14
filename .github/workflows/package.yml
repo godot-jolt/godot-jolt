@@ -61,7 +61,7 @@ jobs:
           config: distribution
 
       - name: Upload builds
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: windows-${{ matrix.arch }}-${{ matrix.precision }}
           path: ./dist/**
@@ -120,7 +120,7 @@ jobs:
           config: distribution
 
       - name: Upload builds
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: linux-${{ matrix.arch }}-${{ matrix.precision }}
           path: ./dist/**
@@ -192,7 +192,7 @@ jobs:
         run: gci -R ./dist/*.framework | ./scripts/ci_sign_macos.ps1
 
       - name: Upload builds
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: macos-${{ matrix.precision }}
           path: ./dist/**
@@ -242,7 +242,7 @@ jobs:
           config: distribution
 
       - name: Upload builds
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ios-${{ matrix.precision }}
           path: ./dist/**
@@ -296,7 +296,7 @@ jobs:
           config: distribution
 
       - name: Upload builds
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: android-${{ matrix.arch }}-${{ matrix.precision }}
           path: ./dist/**
@@ -406,14 +406,14 @@ jobs:
         run: find . -type d -empty -delete
 
       - name: Upload builds
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: godot-jolt_${{ github.ref_name }}_${{ matrix.precision }}
           path: ./dist/**
           retention-days: 1
 
       - name: Upload debug symbols
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: godot-jolt_${{ github.ref_name }}_${{ matrix.precision }}_symbols
           path: ./symbols/**
