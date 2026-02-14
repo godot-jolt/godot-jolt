@@ -63,7 +63,6 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	physics_system->SetGravity(JPH::Vec3::sZero());
 	physics_system->SetContactListener(contact_listener);
 	physics_system->SetSoftBodyContactListener(contact_listener);
-	physics_system->SetBodyActivationListener(body_activation_listener);
 
 	physics_system->SetSimCollideBodyVsBody(
 		[](const JPH::Body& p_body1,
@@ -154,6 +153,8 @@ void JoltSpace3D::step(float p_step) {
 	last_step = p_step;
 
 	_pre_step(p_step);
+
+	physics_system->SetBodyActivationListener(body_activation_listener);
 
 	const JPH::EPhysicsUpdateError
 		update_error = physics_system->Update(p_step, 1, temp_allocator, job_system);
@@ -620,9 +621,15 @@ void JoltSpace3D::_pre_step(float p_step) {
 	}
 
 	body_accessor.release();
+
+	physics_system->SetBodyActivationListener(body_activation_listener);
 }
 
 void JoltSpace3D::_post_step(float p_step) {
+	// NOTE(mihe): We only want a listener during the step, as it will otherwise be called when
+	// pending bodies are flushed, which causes issues.
+	physics_system->SetBodyActivationListener(nullptr);
+
 	body_accessor.acquire_all();
 
 	contact_listener->post_step();
