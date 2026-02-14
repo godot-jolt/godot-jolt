@@ -9,6 +9,8 @@ Breaking changes are denoted with ⚠️.
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-02-14
+
 ### Removed
 
 - ⚠️ Removed the "Areas Detect Static Bodies" project setting. `Area3D` will now always detect
@@ -555,7 +557,8 @@ Breaking changes are denoted with ⚠️.
 
 Initial release.
 
-[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.15.0-stable...HEAD
+[Unreleased]: https://github.com/godot-jolt/godot-jolt/compare/v0.16.0-stable...HEAD
+[0.16.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.15.0-stable...v0.16.0-stable
 [0.15.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.14.0-stable...v0.15.0-stable
 [0.14.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.13.0-stable...v0.14.0-stable
 [0.13.0]: https://github.com/godot-jolt/godot-jolt/compare/v0.12.0-stable...v0.13.0-stable
