@@ -192,6 +192,8 @@ void JoltSpace3D::step(float p_step) {
 		));
 	}
 
+	physics_system->SetBodyActivationListener(nullptr);
+
 	_post_step(p_step);
 
 	has_stepped = true;
@@ -621,15 +623,9 @@ void JoltSpace3D::_pre_step(float p_step) {
 	}
 
 	body_accessor.release();
-
-	physics_system->SetBodyActivationListener(body_activation_listener);
 }
 
 void JoltSpace3D::_post_step(float p_step) {
-	// NOTE(mihe): We only want a listener during the step, as it will otherwise be called when
-	// pending bodies are flushed, which causes issues.
-	physics_system->SetBodyActivationListener(nullptr);
-
 	body_accessor.acquire_all();
 
 	contact_listener->post_step();

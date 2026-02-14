@@ -46,6 +46,10 @@ Breaking changes are denoted with ⚠️.
   result in strange overlap reports.
 - Fixed issue where the position of `SoftBody3D` would greatly influence the accuracy of its
   physics.
+- Fixed issue where gravity would cause a continuous increase in energy with every collision.
+- Fixed issue where scaling a `HeightMapShape3D` would cause jitter/wobbling when colliding with it,
+  while having the "Use Enhanced Internal Edge Removal" project setting enabled.
+- Fixed issue where very small rotations to kinematic bodies would end up being discarded.
 
 ## [0.15.0] - 2025-03-09
 
