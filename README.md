@@ -21,8 +21,6 @@ would use normally, like `RigidBody3D` or `CharacterBody3D`.
 > this extension exposes. However, once the engine module does reach feature parity in some way, and
 > a new stable release of Godot is out with said feature parity, this extension will be considered
 > fully deprecated and this repository will likely be archived entirely.
->
-> Until that time, new releases of this extension will continue to be published.
 
 ## Table of Contents
 
@@ -96,7 +94,7 @@ Jellyfish) or newer.
 
 ## How do I get started?
 
-1. Download it from [GitHub][rls] or from [Godot Asset Library][ast]
+1. Download it [here][rls]
 2. Extract the files to your project directory
 3. Start (or restart) Godot
 4. Open your project settings
@@ -123,7 +121,6 @@ Godot Jolt is distributed under the MIT license. See [`LICENSE.txt`][lic] for mo
 [jst]: docs/settings.md#jolt-physics-extension-3d
 [jdc]: https://jrouwe.github.io/JoltPhysics/
 [rls]: https://github.com/godot-jolt/godot-jolt/releases/latest
-[ast]: https://godotengine.org/asset-library/asset/1918
 [set]: docs/settings.md
 [bld]: docs/building.md
 [lic]: LICENSE.txt
