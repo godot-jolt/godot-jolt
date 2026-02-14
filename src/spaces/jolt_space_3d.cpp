@@ -63,7 +63,6 @@ JoltSpace3D::JoltSpace3D(JPH::JobSystem* p_job_system)
 	physics_system->SetGravity(JPH::Vec3::sZero());
 	physics_system->SetContactListener(contact_listener);
 	physics_system->SetSoftBodyContactListener(contact_listener);
-	physics_system->SetBodyActivationListener(body_activation_listener);
 
 	physics_system->SetSimCollideBodyVsBody(
 		[](const JPH::Body& p_body1,
@@ -155,6 +154,8 @@ void JoltSpace3D::step(float p_step) {
 
 	_pre_step(p_step);
 
+	physics_system->SetBodyActivationListener(body_activation_listener);
+
 	const JPH::EPhysicsUpdateError
 		update_error = physics_system->Update(p_step, 1, temp_allocator, job_system);
 
@@ -190,6 +191,8 @@ void JoltSpace3D::step(float p_step) {
 			JoltProjectSettings::get_max_contact_constraints()
 		));
 	}
+
+	physics_system->SetBodyActivationListener(nullptr);
 
 	_post_step(p_step);
 
