@@ -316,61 +316,61 @@ jobs:
 
     steps:
       - name: Download builds (windows-x64)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: windows-x64-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (windows-x86)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: windows-x86-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (linux-x64)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: linux-x64-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (linux-x86)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: linux-x86-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (macos)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: macos-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (ios)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ios-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (android-arm64)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: android-arm64-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (android-arm32)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: android-arm32-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (android-x64)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: android-x64-${{ matrix.precision }}
           path: ./dist
 
       - name: Download builds (android-x86)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: android-x86-${{ matrix.precision }}
           path: ./dist
